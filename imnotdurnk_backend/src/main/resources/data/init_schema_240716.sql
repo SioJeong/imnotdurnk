@@ -1,0 +1,60 @@
+DROP TABLE IF EXISTS user;
+
+CREATE TABLE user (
+id INT NOT NULL AUTO_INCREMENT,
+email VARCHAR(255) NOT NULL,
+password VARCHAR(255) NOT NULL,
+name VARCHAR(255) NOT NULL,
+phone VARCHAR(255) NULL,
+nickname VARCHAR(255) NULL,
+address VARCHAR(255) NULL,
+detailed_address VARCHAR(255) NULL,
+latitude VARCHAR(255) NULL,
+longitude VARCHAR(255) NULL,
+postal_code VARCHAR(255) NULL,
+voice VARCHAR(255) NULL,
+emergency_call VARCHAR(255) NULL,
+beer_capacity VARCHAR(255) NULL,
+soju_capacity VARCHAR(255) NULL,
+unsure VARCHAR(255) NULL,
+PRIMARY KEY (id)
+);
+
+DROP TABLE IF EXISTS drinking_plan;
+
+CREATE TABLE drinking_plan (
+id INT NOT NULL AUTO_INCREMENT,
+user_id INT NOT NULL,
+date DATE NOT NULL,
+time VARCHAR(255) NULL,
+title VARCHAR(255) NULL,
+alcohol_level VARCHAR(255) NULL,
+arrival_time VARCHAR(255) NULL,
+memo VARCHAR(255) NULL,
+beer_amount VARCHAR(255) NULL,
+soju_amount VARCHAR(255) NULL,
+PRIMARY KEY (id),
+FOREIGN KEY (user_id) REFERENCES user(id)
+);
+
+DROP TABLE IF EXISTS game_log;
+
+CREATE TABLE game_log (
+id INT NOT NULL AUTO_INCREMENT,
+plan_id INT NOT NULL,
+game_type VARCHAR(255) NULL,
+score VARCHAR(255) NULL,
+time_log VARCHAR(255) NULL,
+PRIMARY KEY (id),
+FOREIGN KEY (plan_id) REFERENCES drinking_plan(id)
+);
+
+DROP TABLE IF EXISTS voice;
+
+CREATE TABLE voice (
+id INT NOT NULL AUTO_INCREMENT,
+log_id INT NOT NULL,
+record BLOB NOT NULL,
+PRIMARY KEY (id),
+FOREIGN KEY (log_id) REFERENCES game_log(id)
+);
