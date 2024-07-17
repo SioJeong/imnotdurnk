@@ -1,3 +1,7 @@
+DROP DATABASE IF EXISTS `imnotdurnk_db`;
+CREATE DATABASE IF NOT EXISTS `imnotdurnk_db`;
+
+use `imnotdurnk_db`;
 DROP TABLE IF EXISTS user;
 
 CREATE TABLE user (
@@ -16,13 +20,13 @@ voice VARCHAR(255) NULL,
 emergency_call VARCHAR(255) NULL,
 beer_capacity VARCHAR(255) NULL,
 soju_capacity VARCHAR(255) NULL,
-unsure VARCHAR(255) NULL,
+unsure BOOLEAN NULL,
 PRIMARY KEY (id)
 );
 
-DROP TABLE IF EXISTS drinking_plan;
+DROP TABLE IF EXISTS calendar;
 
-CREATE TABLE drinking_plan (
+CREATE TABLE calendar (
 id INT NOT NULL AUTO_INCREMENT,
 user_id INT NOT NULL,
 date DATE NOT NULL,
@@ -46,7 +50,7 @@ game_type VARCHAR(255) NULL,
 score VARCHAR(255) NULL,
 time_log VARCHAR(255) NULL,
 PRIMARY KEY (id),
-FOREIGN KEY (plan_id) REFERENCES drinking_plan(id)
+FOREIGN KEY (plan_id) REFERENCES calendar(id)
 );
 
 DROP TABLE IF EXISTS voice;
