@@ -1,0 +1,14 @@
+${AnsiColor.BRIGHT_YELLOW}                                                                          .   *   ..  . *  *
+                                ${AnsiColor.BRIGHT_WHITE}  _,---._     )))o~88)      _,---._     ${AnsiColor.BRIGHT_YELLOW}*  * @()Ooc()*   o  .
+                                ${AnsiColor.BRIGHT_WHITE},' _____ `.  //(_)888(_)  ,' _____ `.   ${AnsiColor.BRIGHT_YELLOW}    (Q@*0CG*O()  ___
+                                ${AnsiColor.BRIGHT_WHITE}'-( X X )-'  `-( *,* )-'  '-( ? ? )-'   ${AnsiColor.BRIGHT_YELLOW}   |\_________/|/ _ \
+                                ${AnsiColor.BRIGHT_WHITE}   \(_)/        \ = /        \(_)/      ${AnsiColor.BRIGHT_YELLOW}   |  |  |  |  | / | |
+                                ${AnsiColor.BRIGHT_WHITE}    )~(          ) (          )o(       ${AnsiColor.BRIGHT_YELLOW}   |  |  |  |  | | | |
+ 위기에 빠진 NULL 9조 - 나안취햄ㅅ어 ${AnsiColor.BRIGHT_WHITE}    """          """          """       ${AnsiColor.BRIGHT_YELLOW}   |  |  |  |  | | | |
+${AnsiColor.BRIGHT_RED}  _____ __  __   _   _  ____ _______   _____  _    _ _____  _   _ _  __ ${AnsiColor.BRIGHT_YELLOW}   |  |  |  |  | | | |
+${AnsiColor.BRIGHT_MAGENTA} |_   _|  \/  | | \ | |/ __ \__   __| |  __ \| |  | |  __ \| \ | | |/ / ${AnsiColor.BRIGHT_YELLOW}   |  |  |  |  | | | |
+${AnsiColor.CYAN}   | | | \  / | |  \| | |  | | | |    | |  | | |  | | |__) |  \| | ' /  ${AnsiColor.BRIGHT_YELLOW}   |  |  |  |  | \_| |
+${AnsiColor.BRIGHT_GREEN}   | | | |\/| | | . ` | |  | | | |    | |  | | |  | |  _  /| . ` |  <   ${AnsiColor.BRIGHT_YELLOW}   |  |  |  |  |\___/
+${AnsiColor.BRIGHT_YELLOW}  _| |_| |  | | | |\  | |__| | | |    | |__| | |__| | | \ \| |\  | . \  ${AnsiColor.BRIGHT_YELLOW}   |\_|__|__|_/|
+${AnsiColor.BRIGHT_RED} |_____|_|  |_| |_| \_|\____/  |_|    |_____/ \____/|_|  \_\_| \_|_|\_\ ${AnsiColor.BRIGHT_YELLOW}    \_________/
+${AnsiColor.BRIGHT_WHITE}
