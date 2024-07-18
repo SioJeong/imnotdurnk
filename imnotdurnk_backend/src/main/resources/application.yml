@@ -1,11 +1,9 @@
 spring:
   application:
     name: imnotdurnk_backend
+  security: ignored=/**   # 일단 비활성화
 
-  spring:
-    security: ignored=/**   # 일단 비활성화
-
-  # DB Setting
+    # DB Setting
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/imnotdurnk_db?serverTimezone=UTC&characterEncoding=UTF-8
@@ -29,3 +27,14 @@ spring:
       ddl-auto: create
     open-in-view: false
     show-sql: true
+
+  # Mail Setting
+  mail:
+    host: smtp.naver.com
+    port: 465
+    username:
+    password:
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.ssl.enable: true
+      mail.smtp.ssl.trust: smtp.naver.com

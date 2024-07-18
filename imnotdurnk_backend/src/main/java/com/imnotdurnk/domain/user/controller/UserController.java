@@ -1,11 +1,15 @@
 package com.imnotdurnk.domain.user.controller;
 import com.imnotdurnk.domain.user.dto.UserDto;
 import com.imnotdurnk.domain.user.service.UserService;
+import jakarta.mail.MessagingException;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.UnsupportedEncodingException;
+import java.util.Random;
 
 @RestController
 @RequestMapping("/users")
@@ -22,15 +26,19 @@ public class UserController {
      * @throws BadRequestException 이메일이 이미 사용 중인 경우 발생하는 예외
      */
     @GetMapping("/signup/verify")
-    public ResponseEntity<?> checkEmailDuplication(@RequestParam String email) throws BadRequestException {
+    public ResponseEntity<?> verifyEmail(@RequestParam String email) throws BadRequestException, MessagingException, UnsupportedEncodingException {
         if (email == null || email.isEmpty()) {
-            throw new BadRequestException("이메일이 누락되었습니다.");
+            throw new BadRequestException("이메일 누락");
         }
-
+        //이메일 중복 확인
         if (userService.existsByEmail(email)) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("이미 사용중인 이메일 입니다.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("이미 존재하는 이메일");
+        }
+        //이메일로 인증 번호 전송
+        if(userService.sendVerificationCode(email)==true){
+            return ResponseEntity.status(HttpStatus.OK).body("메일 인증 요청 성공");
         }else{
-            return ResponseEntity.ok("사용 가능한 이메일 입니다.");
+            throw new BadRequestException("메일 인증 요청 실패");
         }
     }
 
@@ -44,13 +52,13 @@ public class UserController {
     @PostMapping("/signup")
     public ResponseEntity<UserDto> signUp(@RequestBody UserDto userDto) throws BadRequestException {
         if(userDto.getEmail()==null) {
-            throw new BadRequestException("이메일이 누락되었습니다.");
+            throw new BadRequestException("이메일 누락");
         }else if(userDto.getPassword()==null) {
-            throw new BadRequestException("비밀번호가 비어있습니다.");
+            throw new BadRequestException("비밀번호 누락");
         }else if(userDto.getName()==null){
-            throw new BadRequestException("이름이 비어있습니다.");
+            throw new BadRequestException("이름 누락");
         }else if(userService.existsByEmail(userDto.getEmail())==true){
-            throw new BadRequestException("이미 사용중인 이메일 입니다.");
+            throw new BadRequestException("이미 존재하는 이메일");
         }else{
             userDto.setVerified(false);
             UserDto savedUser = userService.signUp(userDto);
