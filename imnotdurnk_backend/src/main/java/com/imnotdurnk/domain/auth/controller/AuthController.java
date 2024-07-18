@@ -1,7 +1,6 @@
 package com.imnotdurnk.domain.auth.controller;
 
 import com.imnotdurnk.domain.auth.dto.TokenDto;
-import com.imnotdurnk.domain.auth.dto.TokenResponseDto;
 import com.imnotdurnk.domain.auth.enums.TokenType;
 import com.imnotdurnk.domain.auth.service.AuthService;
 import com.imnotdurnk.global.util.JwtUtil;
