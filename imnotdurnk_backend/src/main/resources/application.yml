@@ -6,8 +6,8 @@ spring:
     # DB Setting
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/imnotdurnk_db?serverTimezone=UTC&characterEncoding=UTF-8
-    username: ssafy
+    url: jdbc:mysql://localhost:3305/imnotdurnk_db?serverTimezone=UTC&characterEncoding=UTF-8
+    username: root
     password: ssafy
   data:
     redis:
@@ -38,3 +38,10 @@ spring:
       mail.smtp.auth: true
       mail.smtp.ssl.enable: true
       mail.smtp.ssl.trust: smtp.naver.com
+jwt:
+  expiretime:
+    accesstoken: 1800000 #30분
+    refreshtoken: 432000000 #5일
+  secretkey:
+    accesstoken: adfklasdjhlfakjsdhlfjkashdljkfahlsdkjfasdfasd
+    refreshtoken: eirouqpiwerupqoiweuoiuXZiucxziuizzzxxccxvbdlkjkc

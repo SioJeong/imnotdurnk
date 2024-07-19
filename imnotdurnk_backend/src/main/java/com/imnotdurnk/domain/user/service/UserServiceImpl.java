@@ -4,6 +4,7 @@ import com.imnotdurnk.domain.user.dto.UserDto;
 import com.imnotdurnk.domain.user.entity.UserEntity;
 import com.imnotdurnk.domain.user.repository.UserRepository;
 import com.imnotdurnk.global.util.RedisUtil;
+import com.imnotdurnk.global.util.SystemUtil;
 import jakarta.mail.Message;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
@@ -31,6 +32,20 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private RedisUtil redisUtil;
 
+
+    /**
+     * 임시 비밀번호 형식: 길이, 대소문자 여부
+     */
+    private static final int TMP_PASSWORD_LENGTH = 8;
+    private static final boolean PASS_UPPER = true;
+
+
+    /**
+     * 이메일 체크
+     *
+     * @param email 이미 등록되어있는지 확인하고자 하는 이메일
+     * @return 입력된 이메일의 기존 등록 여부를 반환
+     */
     @Override
     public boolean existsByEmail(String email){
         return userRepository.existsByEmail(email);
@@ -47,7 +62,7 @@ public class UserServiceImpl implements UserService {
     public UserDto signUp(UserDto userDto) {
         //비밀번호 암호화
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
-        UserEntity user = toUserEntity(userDto);
+        UserEntity user = userDto.toEntity();
         userRepository.save(user);
         return userDto;
     }
@@ -66,7 +81,7 @@ public class UserServiceImpl implements UserService {
         Random random = new Random();
         String verificationCode = String.valueOf(random.nextInt(999999));
 
-        if(sendMail(email,"회원 인증 메일입니다.",verificationCode)==true){
+        if(sendMail(email, "회원 인증 메일입니다.", verificationCode)){
 
             //Redis 저장소에 인증번호-메일을 5분동안 저장
             redisUtil.setDataExpire(verificationCode, email,60*5L);
@@ -74,10 +89,51 @@ public class UserServiceImpl implements UserService {
         }else{
             return false;
         }
-
     }
 
     /**
+     * 로그인
+     *
+     * @param email - 로그인을 시도한 이메일
+     * @param password - 로그인을 시도한 비밀번호
+     * @return 이메일로 찾은 유저의 비밀번호와 입력된 비밀번호가 일치할 경우 로그인된 {@link UserDto} 객체
+     *          비밀번호가 일치하지 않을 경우 null 반환
+     */
+    @Override
+    public UserDto login(String email, String password) {
+
+        UserEntity user = userRepository.findByEmail(email);
+        if(passwordEncoder.matches(password,user.getPassword())){
+            UserDto userDto = new UserDto();
+            return userDto.toDto(user);
+        }
+        return null;
+    }
+
+    /**
+     * 임시 비밀번호 발송
+     * 임시 비밀번호를 랜덤으로 생성하여 회원정보 변경 후 생성된 비밀번호를 이메일로 전송
+     *
+     * @param email 임시 비밀번호를 받고자 하는 이메일 계정
+     * @return 이메일 정상 전송 여부
+     */
+    @Override
+    public boolean sendTemporaryPassword(String email) throws MessagingException, UnsupportedEncodingException {
+        String tmpPassword = SystemUtil.generateRandomMixStr(TMP_PASSWORD_LENGTH, PASS_UPPER);
+        String title = "임시 비밀번호 입니다.";
+
+        if (sendMail(email, title, tmpPassword)) {
+            UserEntity user = userRepository.findByEmail(email);
+            user.setPassword(tmpPassword);
+            userRepository.save(user);
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * 이메일 전송
      * 주어진 이메일 주소, 제목, 코드를 사용하여 이메일을 보냄
      *
      * @param email 이메일을 보낼 주소
@@ -86,6 +142,13 @@ public class UserServiceImpl implements UserService {
      * @return 이메일 전송이 성공하면 true, 실패하면 false를 반환
      * @throws MessagingException 이메일 생성 또는 전송 중 오류가 발생할 경우
      * @throws UnsupportedEncodingException 지원되지 않는 문자 인코딩을 사용할 경우
+     *
+     * @param email 수신 메일 주소
+     * @param title 발송 메일 제목
+     * @param code 전송할 코드 (임시비밀번호 또는 인증번호)
+     * @return 메일 전송 성공 여부
+     * @throws MessagingException
+     * @throws UnsupportedEncodingException
      */
     @Override
     public boolean sendMail(String email, String title, String code) throws MessagingException, UnsupportedEncodingException {

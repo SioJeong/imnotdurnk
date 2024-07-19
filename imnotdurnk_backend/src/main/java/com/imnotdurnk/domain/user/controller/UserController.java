@@ -1,6 +1,6 @@
 package com.imnotdurnk.domain.user.controller;
 import com.imnotdurnk.domain.user.dto.UserDto;
-import com.imnotdurnk.domain.user.service.UserService;
+import com.imnotdurnk.domain.user.service.UserServiceImpl;
 import jakarta.mail.MessagingException;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,31 @@ import java.io.UnsupportedEncodingException;
 public class UserController {
 
     @Autowired
-    private UserService userService;
+    private UserServiceImpl userService;
+
+    /**
+     * 사용자 이메일 중복 체크 / 이메일 인증 요청
+     *
+     * @param email 중복 체크 / 인증 요청할 이메일
+     * @return 이메일 사용 가능 여부를 나타냄
+     * @throws BadRequestException 이메일이 이미 사용 중인 경우 발생하는 예외
+     */
+    @GetMapping("/signup/verify")
+    public ResponseEntity<?> verifyEmail(@RequestParam String email) throws BadRequestException, MessagingException, UnsupportedEncodingException {
+        if (email == null || email.isEmpty()) {
+            throw new BadRequestException("이메일 누락");
+        }
+        //이메일 중복 확인
+        if (userService.existsByEmail(email)) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("이미 존재하는 이메일");
+        }
+        //이메일로 인증 번호 전송
+        if(userService.sendVerificationCode(email)){
+            return ResponseEntity.status(HttpStatus.OK).body("메일 인증 요청 성공");
+        }else{
+            throw new BadRequestException("메일 인증 요청 실패");
+        }
+    }
 
     /**
      * 사용자 회원가입
@@ -31,7 +55,7 @@ public class UserController {
             throw new BadRequestException("비밀번호 누락");
         }else if(userDto.getName()==null){
             throw new BadRequestException("이름 누락");
-        }else if(userService.existsByEmail(userDto.getEmail())==true){
+        }else if(userService.existsByEmail(userDto.getEmail())){
             throw new BadRequestException("이미 존재하는 이메일");
         }else{
             userDto.setVerified(false);
@@ -41,46 +65,50 @@ public class UserController {
     }
 
     /**
-     * 사용자 이메일 중복 체크 / 이메일 인증 요청
+     * 로그인 요청
      *
-     * @param email 중복 체크 / 인증 요청할 이메일
-     * @return 이메일 사용 가능 여부를 나타냄
-     * @throws BadRequestException 존재하지 않는 이메일일 경우 예외 발생
+     * @param email 로그인을 시도할 이메일
+     * @param password 로그인을 시도할 비밀번호
+     * @return 로그인이 완료된 사용자 정보를 담은 {@link ResponseEntity} 객체
+     * @throws BadRequestException 입력된 이메일이 회원으로 존재하지 않거나, 이메일에 해당하는 비밀번호가 일치하지 않을 경우 예외 발생
      */
-    @GetMapping("/signup/verify")
-    public ResponseEntity<?> verifyEmail(@RequestParam String email) throws BadRequestException, MessagingException, UnsupportedEncodingException {
-        if (email == null || email.isEmpty()) {
-            throw new BadRequestException("이메일 누락");
+    @GetMapping("/login")
+    public ResponseEntity<UserDto> login
+    (@RequestParam String email, @RequestParam String password) throws BadRequestException {
+
+        if (!userService.existsByEmail(email)) {
+            throw new BadRequestException("존재하지 않는 이메일입니다.");
         }
-        //이메일 중복 확인
-        if (userService.existsByEmail(email)==false) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("존재하지 않는 이메일");
-        }
-        //이메일로 인증 번호 전송
-        if(userService.sendVerificationCode(email)==true){
-            return ResponseEntity.status(HttpStatus.OK).body("메일 인증 요청 성공");
-        }else{
-            throw new BadRequestException("메일 인증 요청 실패");
+
+        UserDto loginedUser = userService.login(email, password);
+        if (loginedUser == null) {
+            throw new BadRequestException("비밀번호가 일치하지 않습니다.");
+        } else {
+            return ResponseEntity.status(HttpStatus.OK).body(loginedUser);
         }
     }
 
     /**
-     * 이메일 인증 코드 확인
      *
-     * @param email 인증 코드를 받은 이메일 주소
-     * @param code  사용자가 입력한 인증 코드
-     * @return 인증 성공 시 OK(200) 응답, 실패 시 BadRequest(400) 응답
-     * @throws BadRequestException 필수 정보 누락 시 발생
+     * @param email 임시 비밀번호를 수신받을 이메일 주소
+     * @return
+     * @throws BadRequestException 이메일 전송에 실패한 경우
+     * @throws MessagingException
+     * @throws UnsupportedEncodingException
      */
-    @PostMapping("/signup/verify-code")
-    public ResponseEntity<?> verifyCode(@RequestParam String email, String code) throws BadRequestException {
-        if(email == null || email.isEmpty()) {
-            throw new BadRequestException("필수 정보 누락");
+    @GetMapping("/login/find-password")
+    public ResponseEntity<String> sendNewPassword(@RequestParam String email) throws BadRequestException, MessagingException, UnsupportedEncodingException {
+
+        if (!userService.existsByEmail(email)) {
+            throw new BadRequestException("존재하지 않는 이메일입니다.");
         }
-        else if(userService.verifyCode(email,code)==true) {
-            return ResponseEntity.status(HttpStatus.OK).body("메일 인증 성공");
-        } else{
-            throw new BadRequestException("메일 인증 실패");
+
+        String msg;
+        if(userService.sendTemporaryPassword(email)) {
+            msg = "임시 비밀번호를 이메일로 전송했습니다.";
+            return ResponseEntity.status(HttpStatus.OK).body(msg);
         }
+        msg = "임시 비밀번호 발급에 실패했습니다. 다시 시도해주세요.";
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(msg);
     }
 }
