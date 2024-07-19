@@ -46,6 +46,9 @@ public class UserServiceImpl implements UserService {
     @Value("${spring.application.title}")
     private String applicationTitle;
 
+    @Autowired
+    private AuthService authService;
+
 
     /**
      * 임시 비밀번호 형식: 길이, 대소문자 여부
