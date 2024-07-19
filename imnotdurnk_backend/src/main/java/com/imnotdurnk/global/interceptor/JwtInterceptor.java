@@ -83,7 +83,7 @@ public class JwtInterceptor implements HandlerInterceptor {
     /***
      * 인증이 필요한 요청에서 access token의 유효성을 검증
      * 토큰 재발급 요청 시 refresh token의 유효성 검증
-     * controller 단에서 token을 바로 사용할 수 있도록 전처리
+     * controller 단에서 token을 바로 사용할 수 있도록 전처리 (헤더로 받아온 토큰들을 attribute로 세팅함)
      * @param request
      * @param response
      * @param handler

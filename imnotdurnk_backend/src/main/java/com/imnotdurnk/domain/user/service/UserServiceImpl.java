@@ -1,6 +1,10 @@
 package com.imnotdurnk.domain.user.service;
 
 import com.imnotdurnk.domain.auth.enums.TokenType;
+import com.imnotdurnk.domain.auth.dto.AuthDto;
+import com.imnotdurnk.domain.auth.dto.TokenDto;
+import com.imnotdurnk.domain.auth.enums.TokenType;
+import com.imnotdurnk.domain.auth.service.AuthService;
 import com.imnotdurnk.domain.user.dto.UserDto;
 import com.imnotdurnk.domain.user.entity.UserEntity;
 import com.imnotdurnk.domain.user.repository.UserRepository;
@@ -12,9 +16,12 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.BeanUtils;
+import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -40,14 +47,23 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private SystemUtil systemUtil;
 
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    @Value("${spring.application.title}")
+    private String applicationTitle;
+
+    @Autowired
+    private AuthService authService;
+
 
     /**
      * 임시 비밀번호 형식: 길이, 대소문자 여부
      */
     private static final int TMP_PASSWORD_LENGTH = 8;
     private static final boolean PASS_UPPER = true;
-    @Autowired
-    private JwtUtil jwtUtil;
+
+    private JavaMailSenderImpl mailSender;
 
 
     /**
@@ -69,12 +85,14 @@ public class UserServiceImpl implements UserService {
      *
      */
     @Override
-    public UserDto signUp(UserDto userDto) {
+    public boolean signUp(UserDto userDto) {
         //비밀번호 암호화
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
         UserEntity user = userDto.toEntity();
-        userRepository.save(user);
-        return userDto;
+        if (userRepository.save(user).getName().equals(userDto.getName())) {
+            return true;
+        };
+        return false;
     }
 
     /**
@@ -106,18 +124,36 @@ public class UserServiceImpl implements UserService {
      *
      * @param email - 로그인을 시도한 이메일
      * @param password - 로그인을 시도한 비밀번호
-     * @return 이메일로 찾은 유저의 비밀번호와 입력된 비밀번호가 일치할 경우 로그인된 {@link UserDto} 객체
+     * @return 이메일로 찾은 유저의 비밀번호와 입력된 비밀번호가 일치할 경우 토큰 정보를 담은 {@link AuthDto} 객체를,
      *          비밀번호가 일치하지 않을 경우 null 반환
      */
     @Override
-    public UserDto login(String email, String password) {
+    public AuthDto login(String email, String password) throws BadRequestException{
 
+        //로그인한 사용자 정보를 담은 entity
         UserEntity user = userRepository.findByEmail(email);
-        if(passwordEncoder.matches(password,user.getPassword())){
-            UserDto userDto = new UserDto();
-            return userDto.toDto(user);
+
+        //이메일이 일치하는 회원이 없는 경우
+        if(user == null){
+            throw new BadRequestException("일치하는 회원이 존재하지 않습니다.");
         }
-        return null;
+
+        //비밀번호가 일치한 경우
+        if(passwordEncoder.matches(password,user.getPassword())){
+
+            //토큰 생성
+            TokenDto accessToken = jwtUtil.generateToken(user.getEmail(), TokenType.ACCESS);
+            TokenDto refreshToken = jwtUtil.generateToken(user.getEmail(), TokenType.REFRESH);
+
+            AuthDto authDto = new AuthDto();
+            authDto.setAccessToken(accessToken);
+            authDto.setRefreshToken(refreshToken);
+
+            return authDto;
+        }
+
+        //비밀번호가 일치하는 회원이 없는 경우
+        else throw new BadRequestException("비밀번호가 일치하지 않습니다.");
     }
 
     /**
@@ -134,7 +170,7 @@ public class UserServiceImpl implements UserService {
 
         if (sendMail(email, title, tmpPassword, "비밀번호")) {
             UserEntity user = userRepository.findByEmail(email);
-            user.setPassword(tmpPassword);
+            user.setPassword(passwordEncoder.encode(tmpPassword));
             userRepository.save(user);
             return true;
         }
@@ -176,7 +212,7 @@ public class UserServiceImpl implements UserService {
         msg += "</div>";
         message.setText(msg, "utf-8", "html");// 내용, charset 타입, subtype
 
-        message.setFrom(new InternetAddress("yeojin9905@naver.com", "나안취햄ㅅ어"));// 보내는 사람
+        message.setFrom(new InternetAddress(mailSender.getUsername(), applicationTitle));// 보내는 사람
 
         try {
             emailsender.send(message);
@@ -209,7 +245,6 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-
     /**
      * 사용자 정보를 추가합니다.
      * @param token 사용자 인증 토큰
@@ -239,5 +274,26 @@ public class UserServiceImpl implements UserService {
             userRepository.save(user);
             return profile;
         }
+
+    /***
+     * 로그아웃
+     * access token을 무효화하기 위해 블랙리스트에 추가
+     * refresh token을 무효화하기 위해 redis에서 삭제
+     * @param accessToken
+     * @param refreshToken
+     */
+    @Override
+    public void logout(String accessToken, String refreshToken) {
+
+        // access token 무효화
+        if (accessToken != null && jwtUtil.isValidToken(accessToken, TokenType.ACCESS)) {
+            authService.addAccessTokenToBlackListInRedis(accessToken);
+        }
+
+        // refresh token 무효화
+        if (refreshToken != null && jwtUtil.isValidToken(refreshToken, TokenType.REFRESH)) {
+            authService.deleteRefreshTokenInRedis(refreshToken);
+        }
+
     }
 }
