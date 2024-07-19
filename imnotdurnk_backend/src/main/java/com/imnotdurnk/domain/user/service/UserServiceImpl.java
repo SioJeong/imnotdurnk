@@ -16,8 +16,10 @@ import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.io.UnsupportedEncodingException;
@@ -41,8 +43,8 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private JwtUtil jwtUtil;
 
-    @Autowired
-    private AuthService authService;
+    @Value("${spring.application.title}")
+    private String applicationTitle;
 
 
     /**
@@ -50,6 +52,8 @@ public class UserServiceImpl implements UserService {
      */
     private static final int TMP_PASSWORD_LENGTH = 8;
     private static final boolean PASS_UPPER = true;
+    @Autowired
+    private JavaMailSenderImpl mailSender;
 
 
     /**
@@ -71,12 +75,14 @@ public class UserServiceImpl implements UserService {
      *
      */
     @Override
-    public UserDto signUp(UserDto userDto) {
+    public boolean signUp(UserDto userDto) {
         //비밀번호 암호화
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
         UserEntity user = userDto.toEntity();
-        userRepository.save(user);
-        return userDto;
+        if (userRepository.save(user).getName().equals(userDto.getName())) {
+            return true;
+        };
+        return false;
     }
 
     /**
@@ -154,7 +160,7 @@ public class UserServiceImpl implements UserService {
 
         if (sendMail(email, title, tmpPassword)) {
             UserEntity user = userRepository.findByEmail(email);
-            user.setPassword(tmpPassword);
+            user.setPassword(passwordEncoder.encode(tmpPassword));
             userRepository.save(user);
             return true;
         }
@@ -196,7 +202,7 @@ public class UserServiceImpl implements UserService {
         msg += "</div>";
         message.setText(msg, "utf-8", "html");// 내용, charset 타입, subtype
 
-        message.setFrom(new InternetAddress("yeojin9905@naver.com", "나안취햄ㅅ어"));// 보내는 사람
+        message.setFrom(new InternetAddress(mailSender.getUsername(), applicationTitle));// 보내는 사람
 
         try {
             emailsender.send(message);

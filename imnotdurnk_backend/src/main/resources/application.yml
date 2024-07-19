@@ -1,6 +1,7 @@
 spring:
   application:
     name: imnotdurnk_backend
+    title: 나안취햄ㅅ어
   security: ignored=/**   # 일단 비활성화
 
     # DB Setting
