@@ -1,8 +1,9 @@
 package com.imnotdurnk.domain.user.service;
 
+import com.imnotdurnk.domain.auth.dto.AuthDto;
 import com.imnotdurnk.domain.user.dto.UserDto;
-import com.imnotdurnk.domain.user.entity.UserEntity;
 import jakarta.mail.MessagingException;
+import org.apache.coyote.BadRequestException;
 
 import java.io.UnsupportedEncodingException;
 
@@ -17,7 +18,7 @@ public interface UserService {
     boolean sendMail(String email, String title, String code) throws MessagingException, UnsupportedEncodingException;
     boolean verifyCode(String email, String verificationCode);
 
-    UserDto login(String email, String password);
+    AuthDto login(String email, String password) throws BadRequestException;
 
     boolean sendTemporaryPassword(String email) throws MessagingException, UnsupportedEncodingException;
 

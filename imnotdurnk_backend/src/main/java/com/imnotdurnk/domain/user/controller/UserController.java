@@ -1,10 +1,14 @@
 package com.imnotdurnk.domain.user.controller;
+import com.imnotdurnk.domain.auth.dto.AuthDto;
+import com.imnotdurnk.domain.auth.dto.TokenDto;
 import com.imnotdurnk.domain.user.dto.UserDto;
 import com.imnotdurnk.domain.user.service.UserServiceImpl;
 import jakarta.mail.MessagingException;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.io.UnsupportedEncodingException;
@@ -69,23 +73,40 @@ public class UserController {
      *
      * @param email 로그인을 시도할 이메일
      * @param password 로그인을 시도할 비밀번호
-     * @return 로그인이 완료된 사용자 정보를 담은 {@link ResponseEntity} 객체
-     * @throws BadRequestException 입력된 이메일이 회원으로 존재하지 않거나, 이메일에 해당하는 비밀번호가 일치하지 않을 경우 예외 발생
+     * @return 로그인이 완료된 사용자의 인증 토큰을 header에 담은 {@link ResponseEntity} 객체
+     * @throws BadRequestException 이메일, 비밀번호, 이름 중 하나라도 누락되거나 이미 사용 중인 이메일인 경우 발생하는 예외
      */
     @GetMapping("/login")
     public ResponseEntity<UserDto> login
-    (@RequestParam String email, @RequestParam String password) throws BadRequestException {
+    (@RequestParam String email, @RequestParam String password) throws BadRequestException{
 
         if (!userService.existsByEmail(email)) {
             throw new BadRequestException("존재하지 않는 이메일입니다.");
         }
 
-        UserDto loginedUser = userService.login(email, password);
-        if (loginedUser == null) {
-            throw new BadRequestException("비밀번호가 일치하지 않습니다.");
-        } else {
-            return ResponseEntity.status(HttpStatus.OK).body(loginedUser);
-        }
+        AuthDto authDto = userService.login(email, password);
+
+        TokenDto accessTokenDto = authDto.getAccessToken();
+        TokenDto refreshTokenDto = authDto.getRefreshToken();
+
+        // RefreshToken은 cookie에 httpOnly를 통해 전달
+        long maxAge = (refreshTokenDto.getExpirationTime() - refreshTokenDto.getIssuedAt()) / 1000;
+
+        ResponseCookie responseCookie = ResponseCookie
+                .from("RefreshToken", refreshTokenDto.getToken())
+                .domain("localhost") // 어떤 사이트에서 쿠키를 사용할 수 있도록 허용할 지 설정.
+                .path("/") // 위 사이트에서 쿠키를 허용할 경로를 설정.
+                .httpOnly(true) // HTTP 통신을 위해서만 사용하도록 설정.
+                .secure(true) // Set-Cookie 설정.
+                .maxAge(maxAge) // RefreshToken과 동일한 만료 시간으로 설정.
+                .sameSite("None") // 동일한 사이트에서 사용할 수 있도록 설정 None: 동일한 사이트가 아니어도 된다.
+                .build();
+
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
+                .header("Authorization", "Bearer " + accessTokenDto.getToken())
+                .build();
     }
 
     /**
