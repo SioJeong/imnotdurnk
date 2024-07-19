@@ -172,36 +172,5 @@ public class JwtUtil {
         return tokenDto;
     }
 
-    /***
-     * 리프레시 토큰을 redis에 저장
-     * @param refreshToken
-     */
-    public void saveRefreshTokenInRedis(TokenDto refreshToken){
-        //key: refresh token, value: email, duration: 만료시간
-        redisUtil.setDataExpire(refreshToken.getToken(), refreshToken.getEmail(), refreshTokenExpireTime/1000);
-    }
 
-
-    /***
-     * 리프레시 토큰이 redis에 저장되어 있는지 확인(=유효한 리프레시 토큰인지)
-     * @param refreshToken
-     * @return redis에 저장되어있는지 여부
-     */
-    public boolean checkRefreshTokenInRedis(String refreshToken){
-        if(redisUtil.getData(refreshToken) != null){
-            //redis에 토큰이 저장되어 있는 경우
-            return true;
-        } else {
-            //redis에 토큰이 저장되어 있지 않은 경우
-            return false;
-        }
-    }
-
-    /***
-     * 리프레시 토큰을 redis에서 삭제
-     * @param refreshToken
-     */
-    public void deleteRefreshTokenInRedis(String refreshToken){
-        redisUtil.deleteData(refreshToken);
-    }
 }
