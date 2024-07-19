@@ -23,4 +23,5 @@ public interface UserService {
 
     boolean sendTemporaryPassword(String email) throws MessagingException, UnsupportedEncodingException;
 
+    void logout(String accessToken, String refreshToken);
 }

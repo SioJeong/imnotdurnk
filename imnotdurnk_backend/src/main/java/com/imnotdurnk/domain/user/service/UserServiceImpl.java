@@ -3,6 +3,7 @@ package com.imnotdurnk.domain.user.service;
 import com.imnotdurnk.domain.auth.dto.AuthDto;
 import com.imnotdurnk.domain.auth.dto.TokenDto;
 import com.imnotdurnk.domain.auth.enums.TokenType;
+import com.imnotdurnk.domain.auth.service.AuthService;
 import com.imnotdurnk.domain.user.dto.UserDto;
 import com.imnotdurnk.domain.user.entity.UserEntity;
 import com.imnotdurnk.domain.user.repository.UserRepository;
@@ -232,5 +233,27 @@ public class UserServiceImpl implements UserService {
         }else{  //코드와 이메일이 일치하지 않음
             return false;
         }
+    }
+
+    /***
+     * 로그아웃
+     * access token을 무효화하기 위해 블랙리스트에 추가
+     * refresh token을 무효화하기 위해 redis에서 삭제
+     * @param accessToken
+     * @param refreshToken
+     */
+    @Override
+    public void logout(String accessToken, String refreshToken) {
+
+        // access token 무효화
+        if (accessToken != null && jwtUtil.isValidToken(accessToken, TokenType.ACCESS)) {
+            authService.addAccessTokenToBlackListInRedis(accessToken);
+        }
+
+        // refresh token 무효화
+        if (refreshToken != null && jwtUtil.isValidToken(refreshToken, TokenType.REFRESH)) {
+            authService.deleteRefreshTokenInRedis(refreshToken);
+        }
+
     }
 }

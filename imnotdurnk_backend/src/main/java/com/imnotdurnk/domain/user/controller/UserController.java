@@ -155,4 +155,26 @@ public class UserController {
         msg = "임시 비밀번호 발급에 실패했습니다. 다시 시도해주세요.";
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(msg);
     }
+
+    /***
+     * 로그아웃
+     * @param refreshToken
+     * @param accessToken
+     * @return 로그아웃 완료
+     */
+    @GetMapping("logout")
+    public ResponseEntity<?> logout (
+            @RequestAttribute(value = "RefreshToken", required = false) String refreshToken,
+            @RequestAttribute(value = "AccessToken", required = false) String accessToken) throws BadRequestException {
+        
+        //access token과 refresh token이 모두 존재하지 않는 경우
+        if(refreshToken == null && accessToken == null){
+            throw new BadRequestException("인증 정보가 존재하지 않습니다.");
+        }
+        
+        userService.logout(accessToken, refreshToken);
+
+        return ResponseEntity.ok().build();
+    }
+
 }
