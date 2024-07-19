@@ -32,15 +32,36 @@ public class UserController {
         if (email == null || email.isEmpty()) {
             throw new BadRequestException("이메일 누락");
         }
-        //이메일 중복 확인
-        if (userService.existsByEmail(email)) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("이미 존재하는 이메일");
+
+        if (!userService.existsByEmail(email)) {
+            throw new BadRequestException("존재하지 않는 이메일");
         }
+
         //이메일로 인증 번호 전송
         if(userService.sendVerificationCode(email)){
             return ResponseEntity.status(HttpStatus.OK).body("메일 인증 요청 성공");
         }else{
             throw new BadRequestException("메일 인증 요청 실패");
+        }
+    }
+
+    /**
+     * 이메일 인증 코드 확인
+     *
+     * @param email 인증 코드를 받은 이메일 주소
+     * @param code  사용자가 입력한 인증 코드
+     * @return 인증 성공 시 OK(200) 응답, 실패 시 BadRequest(400) 응답
+     * @throws BadRequestException 필수 정보 누락 시 발생
+     */
+    @PostMapping("/signup/verify-code")
+    public ResponseEntity<?> verifyCode(@RequestParam String email, String code) throws BadRequestException {
+        if(email == null || email.isEmpty()) {
+            throw new BadRequestException("필수 정보 누락");
+        }
+        else if(userService.verifyCode(email, code)) {
+            return ResponseEntity.status(HttpStatus.OK).body("메일 인증 성공");
+        } else{
+            throw new BadRequestException("메일 인증 실패");
         }
     }
 
@@ -52,7 +73,7 @@ public class UserController {
      * @throws BadRequestException 이메일, 비밀번호, 이름 중 하나라도 누락되거나 이미 사용 중인 이메일인 경우 발생하는 예외
      */
     @PostMapping("/signup")
-    public ResponseEntity<UserDto> signUp(@RequestBody UserDto userDto) throws BadRequestException {
+    public ResponseEntity<Void> signUp(@RequestBody UserDto userDto) throws BadRequestException {
         if(userDto.getEmail()==null) {
             throw new BadRequestException("이메일 누락");
         }else if(userDto.getPassword()==null) {
@@ -63,8 +84,10 @@ public class UserController {
             throw new BadRequestException("이미 존재하는 이메일");
         }else{
             userDto.setVerified(false);
-            UserDto savedUser = userService.signUp(userDto);
-            return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
+            if (userService.signUp(userDto)) {
+                return ResponseEntity.status(HttpStatus.CREATED).build();
+            }
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
     }
 
@@ -77,7 +100,7 @@ public class UserController {
      * @throws BadRequestException 이메일, 비밀번호, 이름 중 하나라도 누락되거나 이미 사용 중인 이메일인 경우 발생하는 예외
      */
     @GetMapping("/login")
-    public ResponseEntity<UserDto> login
+    public ResponseEntity<?> login
     (@RequestParam String email, @RequestParam String password) throws BadRequestException{
 
         if (!userService.existsByEmail(email)) {
