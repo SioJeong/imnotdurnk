@@ -13,6 +13,4 @@ public interface AuthService {
     TokenDto generateToken(String email, TokenType tokenType);
     TokenDto reissueToken(String refreshToken, String prevToken, TokenType tokenType);
 
-    boolean isPresentToken(String refreshToken);
-    void saveRefreshToken(TokenDto refreshToken);
 }

@@ -1,18 +1,10 @@
 package com.imnotdurnk.domain.auth.service;
 
 import com.imnotdurnk.domain.auth.dto.TokenDto;
-import com.imnotdurnk.domain.auth.entity.TokenEntity;
 import com.imnotdurnk.domain.auth.enums.TokenType;
-import com.imnotdurnk.domain.auth.repository.TokenRepository;
-import com.imnotdurnk.global.util.HashUtil;
 import com.imnotdurnk.global.util.JwtUtil;
 import lombok.AllArgsConstructor;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 /**
  *
@@ -26,9 +18,6 @@ import java.util.Optional;
 public class AuthServiceImpl implements AuthService{
 
     private final JwtUtil jwtUtil;
-    private final HashUtil hashUtil;
-    private final TokenRepository tokenRepository;
-
 
     /**
      *
@@ -44,7 +33,7 @@ public class AuthServiceImpl implements AuthService{
 
         //Redis에 refresh token 저장
         if(tokenType == TokenType.REFRESH){
-            saveRefreshToken(token);
+            jwtUtil.saveRefreshTokenInRedis(token);
         }
 
         return token;
@@ -61,6 +50,7 @@ public class AuthServiceImpl implements AuthService{
     @Override
     public TokenDto reissueToken(String refreshToken, String prevToken, TokenType tokenType) {
 
+        //String 타입인 토큰을 해석해서 TokenDto 객체로 저장
         TokenDto refreshTokenDto = jwtUtil.convertTokenToTokenDto(refreshToken, TokenType.REFRESH);
 
         // refresh token 검증
@@ -70,17 +60,14 @@ public class AuthServiceImpl implements AuthService{
         }
 
         //refresh token 재발급 요청했지만 Redis에 기존 refresh token이 존재하지 않음
-        if(tokenType == TokenType.REFRESH && !isPresentToken(prevToken)){
+        if(tokenType == TokenType.REFRESH && !jwtUtil.checkRefreshTokenInRedis(prevToken)){
             System.out.println("존재하지않음");
             return null;
         }
 
-        // refresh token 검증 완료시 기존의 refresh token 폐기 후 재발급
+        // refresh token 검증 완료시 기존의 refresh token 폐기
         if(prevToken != null && jwtUtil.isValidToken(prevToken, tokenType)){
-            TokenEntity preToken = new TokenEntity();
-            preToken.setToken(prevToken);
-            preToken.setEmail(refreshTokenDto.getEmail());
-            tokenRepository.delete(preToken);
+            jwtUtil.deleteRefreshTokenInRedis(prevToken);
         }
 
         //재발급
@@ -88,43 +75,12 @@ public class AuthServiceImpl implements AuthService{
 
         //refresh token이면 redis에 저장
         if(tokenType == TokenType.REFRESH){
-            saveRefreshToken(newToken);
+            jwtUtil.saveRefreshTokenInRedis(newToken);
         }
 
         return newToken;
     }
 
-
-    /**
-     * 토큰을 Redis에 저장
-     * @param refreshToken
-     */
-    @Override
-    public void saveRefreshToken(TokenDto refreshToken) {
-
-        TokenEntity tokenEntity = new TokenEntity();
-        tokenEntity.setToken(refreshToken.getToken());
-        tokenEntity.setEmail(refreshToken.getEmail());
-
-        tokenRepository.save(tokenEntity);
-
-    }
-
-    /**
-     * Redis에 refresh token이 존재하는지 확인하는 함수
-     * @param refreshToken
-     * @return 존재 여부
-     */
-    @Override
-    public boolean isPresentToken(String refreshToken){
-        Optional<TokenEntity> savedToken = tokenRepository.findByToken(refreshToken);
-        if (savedToken.isPresent()) {
-            System.out.println(savedToken.get().getToken());
-            return true;
-        } else {
-            return false;
-        }
-    }
 
 
 }

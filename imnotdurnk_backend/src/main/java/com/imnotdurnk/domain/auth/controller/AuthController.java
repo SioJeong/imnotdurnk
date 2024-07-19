@@ -3,7 +3,6 @@ package com.imnotdurnk.domain.auth.controller;
 import com.imnotdurnk.domain.auth.dto.TokenDto;
 import com.imnotdurnk.domain.auth.enums.TokenType;
 import com.imnotdurnk.domain.auth.service.AuthService;
-import com.imnotdurnk.global.util.JwtUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @AllArgsConstructor
 public class AuthController {
-    private final JwtUtil jwtUtil;
     private final AuthService authService;
 
 
@@ -70,6 +68,6 @@ public class AuthController {
         }
 
         return ResponseEntity.badRequest().build();
-
     }
+
 }
