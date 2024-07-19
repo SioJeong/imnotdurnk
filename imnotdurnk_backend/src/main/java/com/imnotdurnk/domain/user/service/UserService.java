@@ -9,13 +9,14 @@ import java.io.UnsupportedEncodingException;
 
 public interface UserService {
 
-    UserDto signUp(UserDto userDto);
+    boolean signUp(UserDto userDto);
 
     boolean existsByEmail(String email);
 
     boolean sendVerificationCode(String email) throws MessagingException, UnsupportedEncodingException;
 
     boolean sendMail(String email, String title, String code) throws MessagingException, UnsupportedEncodingException;
+
     boolean verifyCode(String email, String verificationCode);
 
     AuthDto login(String email, String password) throws BadRequestException;
