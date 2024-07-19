@@ -1,14 +1,19 @@
 package com.imnotdurnk.domain.user.service;
 
+import com.imnotdurnk.domain.auth.dto.AuthDto;
+import com.imnotdurnk.domain.auth.dto.TokenDto;
+import com.imnotdurnk.domain.auth.enums.TokenType;
 import com.imnotdurnk.domain.user.dto.UserDto;
 import com.imnotdurnk.domain.user.entity.UserEntity;
 import com.imnotdurnk.domain.user.repository.UserRepository;
+import com.imnotdurnk.global.util.JwtUtil;
 import com.imnotdurnk.global.util.RedisUtil;
 import com.imnotdurnk.global.util.SystemUtil;
 import jakarta.mail.Message;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
+import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -31,6 +36,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private RedisUtil redisUtil;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
 
     /**
@@ -96,18 +104,36 @@ public class UserServiceImpl implements UserService {
      *
      * @param email - 로그인을 시도한 이메일
      * @param password - 로그인을 시도한 비밀번호
-     * @return 이메일로 찾은 유저의 비밀번호와 입력된 비밀번호가 일치할 경우 로그인된 {@link UserDto} 객체
+     * @return 이메일로 찾은 유저의 비밀번호와 입력된 비밀번호가 일치할 경우 토큰 정보를 담은 {@link AuthDto} 객체를,
      *          비밀번호가 일치하지 않을 경우 null 반환
      */
     @Override
-    public UserDto login(String email, String password) {
+    public AuthDto login(String email, String password) throws BadRequestException{
 
+        //로그인한 사용자 정보를 담은 entity
         UserEntity user = userRepository.findByEmail(email);
-        if(passwordEncoder.matches(password,user.getPassword())){
-            UserDto userDto = new UserDto();
-            return userDto.toDto(user);
+
+        //이메일이 일치하는 회원이 없는 경우
+        if(user == null){
+            throw new BadRequestException("일치하는 회원이 존재하지 않습니다.");
         }
-        return null;
+
+        //비밀번호가 일치한 경우
+        if(passwordEncoder.matches(password,user.getPassword())){
+
+            //토큰 생성
+            TokenDto accessToken = jwtUtil.generateToken(user.getEmail(), TokenType.ACCESS);
+            TokenDto refreshToken = jwtUtil.generateToken(user.getEmail(), TokenType.REFRESH);
+
+            AuthDto authDto = new AuthDto();
+            authDto.setAccessToken(accessToken);
+            authDto.setRefreshToken(refreshToken);
+
+            return authDto;
+        }
+
+        //비밀번호가 일치하는 회원이 없는 경우
+        else throw new BadRequestException("비밀번호가 일치하지 않습니다.");
     }
 
     /**
