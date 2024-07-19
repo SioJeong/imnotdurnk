@@ -1,5 +1,6 @@
 package com.imnotdurnk.domain.user.dto;
 
+import com.imnotdurnk.domain.user.entity.UserEntity;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
@@ -52,4 +53,58 @@ public class UserDto {
         this.verified = verified;
     }
 
+    /**
+     * Dto를 Entity로 변환하는 함수
+     *
+     * @return 변환된 {@link UserEntity}
+     *
+     */
+    public UserEntity toEntity() {
+        return UserEntity.builder()
+                .email(email)
+                .password(password)
+                .name(name)
+                .phone(phone)
+                .nickname(nickname)
+                .address(address)
+                .detailedAddress(detailedAddress)
+                .latitude(latitude)
+                .longitude(longitude)
+                .postalCode(postalCode)
+                .voice(voice)
+                .emergencyCall(emergencyCall)
+                .beerCapacity(beerCapacity)
+                .sojuCapacity(sojuCapacity)
+                .unsure(unsure)
+                .verified(verified)
+                .build();
+    }
+
+    /**
+     * Entity를 Dto로 변환하는 함수
+     *
+     * @param userEntity - Dto로 바꿀 대상이 되는 {@link UserEntity}
+     * @return 변환된 {@link UserDto}
+     *
+     */
+    public UserDto toDto(UserEntity userEntity) {
+        return UserDto.builder()
+                .email(userEntity.getEmail())
+                .password(userEntity.getPassword())
+                .name(userEntity.getName())
+                .phone(userEntity.getPhone())
+                .nickname(userEntity.getNickname())
+                .address(userEntity.getAddress())
+                .detailedAddress(userEntity.getDetailedAddress())
+                .latitude(userEntity.getLatitude())
+                .longitude(userEntity.getLongitude())
+                .postalCode(userEntity.getPostalCode())
+                .voice(userEntity.getVoice())
+                .emergencyCall(userEntity.getEmergencyCall())
+                .beerCapacity(userEntity.getBeerCapacity())
+                .sojuCapacity(userEntity.getSojuCapacity())
+                .unsure(userEntity.getUnsure())
+                .verified(userEntity.getVerified())
+                .build();
+    }
 }
