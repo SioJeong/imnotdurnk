@@ -12,6 +12,7 @@ public interface UserService {
     boolean existsByEmail(String email);
     boolean sendVerificationCode(String email) throws MessagingException, UnsupportedEncodingException;
     boolean sendMail(String email, String title, String code) throws MessagingException, UnsupportedEncodingException;
+    boolean verifyCode(String email, String verificationCode);
 
     /**
      * Dto를 Entity로 변환하는 함수

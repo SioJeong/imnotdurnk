@@ -7,9 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.io.UnsupportedEncodingException;
-import java.util.Random;
 
 @RestController
 @RequestMapping("/users")
@@ -17,30 +15,6 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-
-    /**
-     * 사용자 이메일 중복 체크 / 이메일 인증 요청
-     *
-     * @param email 중복 체크 / 인증 요청할 이메일
-     * @return 이메일 사용 가능 여부를 나타냄
-     * @throws BadRequestException 이메일이 이미 사용 중인 경우 발생하는 예외
-     */
-    @GetMapping("/signup/verify")
-    public ResponseEntity<?> verifyEmail(@RequestParam String email) throws BadRequestException, MessagingException, UnsupportedEncodingException {
-        if (email == null || email.isEmpty()) {
-            throw new BadRequestException("이메일 누락");
-        }
-        //이메일 중복 확인
-        if (userService.existsByEmail(email)) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("이미 존재하는 이메일");
-        }
-        //이메일로 인증 번호 전송
-        if(userService.sendVerificationCode(email)==true){
-            return ResponseEntity.status(HttpStatus.OK).body("메일 인증 요청 성공");
-        }else{
-            throw new BadRequestException("메일 인증 요청 실패");
-        }
-    }
 
     /**
      * 사용자 회원가입
@@ -66,4 +40,47 @@ public class UserController {
         }
     }
 
+    /**
+     * 사용자 이메일 중복 체크 / 이메일 인증 요청
+     *
+     * @param email 중복 체크 / 인증 요청할 이메일
+     * @return 이메일 사용 가능 여부를 나타냄
+     * @throws BadRequestException 존재하지 않는 이메일일 경우 예외 발생
+     */
+    @GetMapping("/signup/verify")
+    public ResponseEntity<?> verifyEmail(@RequestParam String email) throws BadRequestException, MessagingException, UnsupportedEncodingException {
+        if (email == null || email.isEmpty()) {
+            throw new BadRequestException("이메일 누락");
+        }
+        //이메일 중복 확인
+        if (userService.existsByEmail(email)==false) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("존재하지 않는 이메일");
+        }
+        //이메일로 인증 번호 전송
+        if(userService.sendVerificationCode(email)==true){
+            return ResponseEntity.status(HttpStatus.OK).body("메일 인증 요청 성공");
+        }else{
+            throw new BadRequestException("메일 인증 요청 실패");
+        }
+    }
+
+    /**
+     * 이메일 인증 코드 확인
+     *
+     * @param email 인증 코드를 받은 이메일 주소
+     * @param code  사용자가 입력한 인증 코드
+     * @return 인증 성공 시 OK(200) 응답, 실패 시 BadRequest(400) 응답
+     * @throws BadRequestException 필수 정보 누락 시 발생
+     */
+    @PostMapping("/signup/verify-code")
+    public ResponseEntity<?> verifyCode(@RequestParam String email, String code) throws BadRequestException {
+        if(email == null || email.isEmpty()) {
+            throw new BadRequestException("필수 정보 누락");
+        }
+        else if(userService.verifyCode(email,code)==true) {
+            return ResponseEntity.status(HttpStatus.OK).body("메일 인증 성공");
+        } else{
+            throw new BadRequestException("메일 인증 실패");
+        }
+    }
 }
