@@ -73,8 +73,7 @@ public class UserController {
      * @throws BadRequestException 입력된 이메일이 회원으로 존재하지 않거나, 이메일에 해당하는 비밀번호가 일치하지 않을 경우 예외 발생
      */
     @GetMapping("/login")
-    public ResponseEntity<UserDto> login
-    (@RequestParam String email, @RequestParam String password) throws BadRequestException {
+    public ResponseEntity<UserDto> login (@RequestParam String email, @RequestParam String password) throws BadRequestException {
 
         if (!userService.existsByEmail(email)) {
             throw new BadRequestException("존재하지 않는 이메일입니다.");
@@ -110,5 +109,37 @@ public class UserController {
         }
         msg = "임시 비밀번호 발급에 실패했습니다. 다시 시도해주세요.";
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(msg);
+    }
+
+    /**
+     * 사용자 프로필 정보를 업데이트
+     * @param token 사용자 인증 토큰
+     * @param userDto 업데이트할 사용자 정보
+     * @return 업데이트 성공 시 HTTP 200 OK, 실패 시 BadRequestException 발생
+     * @throws BadRequestException 수정 요청이 실패한 경우 발생
+     */
+    @PutMapping("mypage/profile")
+    public ResponseEntity<String> updateProfile(@RequestHeader("Authorization") String token, @RequestBody UserDto userDto) throws BadRequestException {
+        if(!userService.updateProfile(token,userDto)){
+            throw new BadRequestException("수정 요청 실패");
+        }else{
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }
+    }
+
+    /**
+     * 사용자 프로필 정보를 업데이트
+     * @param token 사용자 인증 토큰
+     * @return 사용자 정보담은 {@link UserDto} 반환
+     * @throws BadRequestException 조회 실패 시 발생
+     */
+    @GetMapping("mypage/profile")
+    public ResponseEntity<UserDto> getProfile(@RequestHeader("Authorization") String token) throws BadRequestException {
+        UserDto user=userService.getProfile(token);
+        if(user==null){
+            throw new BadRequestException("사용자 정보 조회 실패");
+        }else{
+            return ResponseEntity.status(HttpStatus.OK).body(user);
+        }
     }
 }

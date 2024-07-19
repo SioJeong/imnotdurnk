@@ -1,9 +1,13 @@
 package com.imnotdurnk.global.util;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.stereotype.Component;
 
 import java.security.SecureRandom;
+import java.util.HashSet;
+import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
@@ -29,4 +33,26 @@ public class SystemUtil {
         }
         return isUpperCase ? sb.toString() : sb.toString().toLowerCase();
     }
+
+    /**
+     * 주어진 객체의 모든 null 속성 이름을 가져옴
+     * 객체를 복사할 때 null 값을 무시하기 위해서 사용
+     *
+     * @param source null 속성 정보를 검사할 객체
+     * @return 소스 객체에서 null 값을 가진 속성 이름의 배열
+     */
+    public static String[] getNullPropertyNames (Object source) {
+        final BeanWrapper src = new BeanWrapperImpl(source);
+        java.beans.PropertyDescriptor[] pds = src.getPropertyDescriptors();
+
+        Set<String> emptyNames = new HashSet<String>();
+        for(java.beans.PropertyDescriptor pd : pds) {
+            Object srcValue = src.getPropertyValue(pd.getName());
+            if (srcValue == null) emptyNames.add(pd.getName());
+        }
+
+        String[] result = new String[emptyNames.size()];
+        return emptyNames.toArray(result);
+    }
+
 }

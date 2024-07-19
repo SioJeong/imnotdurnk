@@ -1,19 +1,24 @@
 package com.imnotdurnk.domain.user.service;
 
+import com.imnotdurnk.domain.auth.enums.TokenType;
 import com.imnotdurnk.domain.user.dto.UserDto;
 import com.imnotdurnk.domain.user.entity.UserEntity;
 import com.imnotdurnk.domain.user.repository.UserRepository;
+import com.imnotdurnk.global.util.JwtUtil;
 import com.imnotdurnk.global.util.RedisUtil;
 import com.imnotdurnk.global.util.SystemUtil;
 import jakarta.mail.Message;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestHeader;
+
 import java.io.UnsupportedEncodingException;
 import java.util.Random;
 
@@ -32,12 +37,17 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private RedisUtil redisUtil;
 
+    @Autowired
+    private SystemUtil systemUtil;
+
 
     /**
      * 임시 비밀번호 형식: 길이, 대소문자 여부
      */
     private static final int TMP_PASSWORD_LENGTH = 8;
     private static final boolean PASS_UPPER = true;
+    @Autowired
+    private JwtUtil jwtUtil;
 
 
     /**
@@ -81,7 +91,7 @@ public class UserServiceImpl implements UserService {
         Random random = new Random();
         String verificationCode = String.valueOf(random.nextInt(999999));
 
-        if(sendMail(email, "회원 인증 메일입니다.", verificationCode)){
+        if(sendMail(email, "회원 인증 메일입니다.", verificationCode, "코드")){
 
             //Redis 저장소에 인증번호-메일을 5분동안 저장
             redisUtil.setDataExpire(verificationCode, email,60*5L);
@@ -122,7 +132,7 @@ public class UserServiceImpl implements UserService {
         String tmpPassword = SystemUtil.generateRandomMixStr(TMP_PASSWORD_LENGTH, PASS_UPPER);
         String title = "임시 비밀번호 입니다.";
 
-        if (sendMail(email, title, tmpPassword)) {
+        if (sendMail(email, title, tmpPassword, "비밀번호")) {
             UserEntity user = userRepository.findByEmail(email);
             user.setPassword(tmpPassword);
             userRepository.save(user);
@@ -151,7 +161,7 @@ public class UserServiceImpl implements UserService {
      * @throws UnsupportedEncodingException
      */
     @Override
-    public boolean sendMail(String email, String title, String code) throws MessagingException, UnsupportedEncodingException {
+    public boolean sendMail(String email, String title, String code, String codeName) throws MessagingException, UnsupportedEncodingException {
         MimeMessage message = emailsender.createMimeMessage();
         message.addRecipients(Message.RecipientType.TO, email);
         message.setSubject(title);// 제목
@@ -161,7 +171,7 @@ public class UserServiceImpl implements UserService {
         msg += "<div align='center' style='border:1px solid black; font-family:verdana';>";
         msg += "<h3 style='color:black;'>"+title+"</h3>";
         msg += "<div style='font-size:130%'>";
-        msg += "CODE : <strong>";
+        msg += codeName+" : <strong>";
         msg += code + "</strong><div><br/> ";
         msg += "</div>";
         message.setText(msg, "utf-8", "html");// 내용, charset 타입, subtype
@@ -196,6 +206,38 @@ public class UserServiceImpl implements UserService {
             return true;
         }else{  //코드와 이메일이 일치하지 않음
             return false;
+        }
+    }
+
+
+    /**
+     * 사용자 정보를 추가합니다.
+     * @param token 사용자 인증 토큰
+     * @param userDto 업데이트할 사용자 정보
+     * @return 사용자 정보 추가 성공 여부
+     */
+    @Override
+    public boolean updateProfile(String token, UserDto userDto){
+        UserEntity user = userRepository.findByEmail(jwtUtil.getUserEmail(token, TokenType.ACCESS));
+        if(user==null){
+            return false;
+        }else{
+            UserEntity updateUser = userDto.toEntity();
+            BeanUtils.copyProperties(updateUser, user, systemUtil.getNullPropertyNames(updateUser));
+            userRepository.save(user);
+            return true;
+        }
+    }
+
+    public UserDto getProfile(String token){
+        UserEntity user = userRepository.findByEmail(jwtUtil.getUserEmail(token, TokenType.ACCESS));
+        if(user==null){
+            return null;
+        }else{
+            UserDto profile = user.toDto();
+            BeanUtils.copyProperties(profile, user, systemUtil.getNullPropertyNames(profile));
+            userRepository.save(user);
+            return profile;
         }
     }
 }
