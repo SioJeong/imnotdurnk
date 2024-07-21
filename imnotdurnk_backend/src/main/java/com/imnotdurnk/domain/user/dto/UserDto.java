@@ -27,8 +27,8 @@ public class UserDto {
     private String emergencyCall;
     private String beerCapacity;
     private String sojuCapacity;
-    private Boolean unsure;
-    private Boolean verified;
+    private Boolean unsure;     //주량 모름
+    private Boolean verified;   //이메일 인증 여부
 
     public UserDto() {
     }
@@ -57,7 +57,6 @@ public class UserDto {
      * Dto를 Entity로 변환하는 함수
      *
      * @return 변환된 {@link UserEntity}
-     *
      */
     public UserEntity toEntity() {
         return UserEntity.builder()
@@ -77,34 +76,6 @@ public class UserDto {
                 .sojuCapacity(sojuCapacity)
                 .unsure(unsure)
                 .verified(verified)
-                .build();
-    }
-
-    /**
-     * Entity를 Dto로 변환하는 함수
-     *
-     * @param userEntity - Dto로 바꿀 대상이 되는 {@link UserEntity}
-     * @return 변환된 {@link UserDto}
-     *
-     */
-    public UserDto toDto(UserEntity userEntity) {
-        return UserDto.builder()
-                .email(userEntity.getEmail())
-                .password(userEntity.getPassword())
-                .name(userEntity.getName())
-                .phone(userEntity.getPhone())
-                .nickname(userEntity.getNickname())
-                .address(userEntity.getAddress())
-                .detailedAddress(userEntity.getDetailedAddress())
-                .latitude(userEntity.getLatitude())
-                .longitude(userEntity.getLongitude())
-                .postalCode(userEntity.getPostalCode())
-                .voice(userEntity.getVoice())
-                .emergencyCall(userEntity.getEmergencyCall())
-                .beerCapacity(userEntity.getBeerCapacity())
-                .sojuCapacity(userEntity.getSojuCapacity())
-                .unsure(userEntity.getUnsure())
-                .verified(userEntity.getVerified())
                 .build();
     }
 }

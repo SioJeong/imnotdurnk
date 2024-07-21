@@ -3,8 +3,8 @@ package com.imnotdurnk.domain.user.service;
 import com.imnotdurnk.domain.auth.dto.AuthDto;
 import com.imnotdurnk.domain.user.dto.UserDto;
 import jakarta.mail.MessagingException;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.apache.coyote.BadRequestException;
-
 import java.io.UnsupportedEncodingException;
 
 public interface UserService {
@@ -23,5 +23,8 @@ public interface UserService {
 
     boolean sendTemporaryPassword(String email) throws MessagingException, UnsupportedEncodingException;
 
+    boolean updateProfile(String token, UserDto userDto);
+
     void logout(String accessToken, String refreshToken);
+
 }

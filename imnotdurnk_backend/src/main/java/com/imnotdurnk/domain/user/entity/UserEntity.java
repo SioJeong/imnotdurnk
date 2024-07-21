@@ -1,5 +1,6 @@
 package com.imnotdurnk.domain.user.entity;
 
+import com.imnotdurnk.domain.user.dto.UserDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -87,6 +88,32 @@ public class UserEntity {
         this.sojuCapacity = sojuCapacity;
         this.unsure = unsure;
         this.verified = verified;
+    }
+
+    /**
+     * Entity를 Dto로 변환하는 함수
+     *
+     * @return 변환된 {@link UserDto}
+     */
+    public UserDto toDto() {
+        return UserDto.builder()
+                .email(email)
+                .password(password)
+                .name(name)
+                .phone(phone)
+                .nickname(nickname)
+                .address(address)
+                .detailedAddress(detailedAddress)
+                .latitude(latitude)
+                .longitude(longitude)
+                .postalCode(postalCode)
+                .voice(voice)
+                .emergencyCall(emergencyCall)
+                .beerCapacity(beerCapacity)
+                .sojuCapacity(sojuCapacity)
+                .unsure(unsure)
+                .verified(verified)
+                .build();
     }
 
 }
