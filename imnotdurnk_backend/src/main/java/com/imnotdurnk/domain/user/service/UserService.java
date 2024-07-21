@@ -15,7 +15,7 @@ public interface UserService {
 
     boolean sendVerificationCode(String email) throws MessagingException, UnsupportedEncodingException;
 
-    boolean sendMail(String email, String title, String code) throws MessagingException, UnsupportedEncodingException;
+    boolean sendMail(String email, String title, String code, String codeName) throws MessagingException, UnsupportedEncodingException;
 
     boolean verifyCode(String email, String verificationCode);
 

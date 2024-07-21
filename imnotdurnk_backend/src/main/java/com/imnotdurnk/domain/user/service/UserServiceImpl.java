@@ -89,10 +89,7 @@ public class UserServiceImpl implements UserService {
         //비밀번호 암호화
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
         UserEntity user = userDto.toEntity();
-        if (userRepository.save(user).getName().equals(userDto.getName())) {
-            return true;
-        };
-        return false;
+        return userRepository.save(user).getName().equals(userDto.getName());
     }
 
     /**
@@ -109,12 +106,12 @@ public class UserServiceImpl implements UserService {
         Random random = new Random();
         String verificationCode = String.valueOf(random.nextInt(999999));
 
-        if(sendMail(email, "회원 인증 메일입니다.", verificationCode, "코드")){
+        if(sendMail(email, "회원 인증 메일입니다.", verificationCode, "코드")) {
 
             //Redis 저장소에 인증번호-메일을 5분동안 저장
             redisUtil.setDataExpire(verificationCode, email,60*5L);
             return true;
-        }else{
+        } else {
             return false;
         }
     }
@@ -128,13 +125,13 @@ public class UserServiceImpl implements UserService {
      *          비밀번호가 일치하지 않을 경우 null 반환
      */
     @Override
-    public AuthDto login(String email, String password) throws BadRequestException{
+    public AuthDto login(String email, String password) throws BadRequestException {
 
         //로그인한 사용자 정보를 담은 entity
         UserEntity user = userRepository.findByEmail(email);
 
         //이메일이 일치하는 회원이 없는 경우
-        if(user == null){
+        if(user == null) {
             throw new BadRequestException("일치하는 회원이 존재하지 않습니다.");
         }
 
@@ -174,7 +171,6 @@ public class UserServiceImpl implements UserService {
             userRepository.save(user);
             return true;
         }
-
         return false;
     }
 
@@ -264,16 +260,17 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    public UserDto getProfile(String token){
+    public UserDto getProfile(String token) {
         UserEntity user = userRepository.findByEmail(jwtUtil.getUserEmail(token, TokenType.ACCESS));
-        if(user==null){
+        if (user == null) {
             return null;
-        }else{
+        } else {
             UserDto profile = user.toDto();
             BeanUtils.copyProperties(profile, user, systemUtil.getNullPropertyNames(profile));
             userRepository.save(user);
             return profile;
         }
+    }
 
     /***
      * 로그아웃
