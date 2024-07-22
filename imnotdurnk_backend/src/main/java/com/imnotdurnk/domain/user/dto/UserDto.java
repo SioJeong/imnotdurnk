@@ -20,13 +20,13 @@ public class UserDto {
     private String nickname;
     private String address;
     private String detailedAddress;
-    private String latitude;
-    private String longitude;
+    private Double latitude;
+    private Double longitude;
     private String postalCode;
     private String voice;
     private String emergencyCall;
-    private String beerCapacity;
-    private String sojuCapacity;
+    private Integer beerCapacity;
+    private Integer sojuCapacity;
     private Boolean unsure;     //주량 모름
     private Boolean verified;   //이메일 인증 여부
 
@@ -34,7 +34,7 @@ public class UserDto {
     }
 
     @Builder
-    public UserDto(String email, String password, String name, String phone, String nickname, String address, String detailedAddress, String latitude, String longitude, String postalCode, String voice, String emergencyCall, String beerCapacity, String sojuCapacity, Boolean unsure, Boolean verified) {
+    public UserDto(String email, String password, String name, String phone, String nickname, String address, String detailedAddress, Double latitude, Double longitude, String postalCode, String voice, String emergencyCall, Integer beerCapacity, Integer sojuCapacity, Boolean unsure, Boolean verified) {
         this.email = email;
         this.password = password;
         this.name = name;
