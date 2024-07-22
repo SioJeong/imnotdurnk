@@ -40,10 +40,10 @@ public class UserEntity {
     private String detailedAddress;
 
     @Column(length = 255, nullable = true)
-    private String latitude;
+    private Double latitude;
 
     @Column(length = 255, nullable = true)
-    private String longitude;
+    private Double longitude;
 
     @Column(name = "postal_code", length = 255, nullable = true)
     private String postalCode;
@@ -54,11 +54,11 @@ public class UserEntity {
     @Column(name = "emergency_call", length = 255, nullable = true)
     private String emergencyCall;
 
-    @Column(name = "beer_capacity", length = 255, nullable = true)
-    private String beerCapacity;
+    @Column(name = "beer_capacity", nullable = true)
+    private Integer beerCapacity;
 
-    @Column(name = "soju_capacity", length = 255, nullable = true)
-    private String sojuCapacity;
+    @Column(name = "soju_capacity", nullable = true)
+    private Integer sojuCapacity;
 
     @Column(nullable = true)
     private Boolean unsure;
@@ -70,7 +70,7 @@ public class UserEntity {
     public UserEntity() {}
 
     @Builder
-    public UserEntity(Integer id, String email, String password, String name, String phone, String nickname, String address, String detailedAddress, String latitude, String longitude, String postalCode, String voice, String emergencyCall, String beerCapacity, String sojuCapacity, Boolean unsure, Boolean verified) {
+    public UserEntity(Integer id, String email, String password, String name, String phone, String nickname, String address, String detailedAddress, Double latitude, Double longitude, String postalCode, String voice, String emergencyCall, Integer beerCapacity, Integer sojuCapacity, Boolean unsure, Boolean verified) {
         this.id = id;
         this.email = email;
         this.password = password;
