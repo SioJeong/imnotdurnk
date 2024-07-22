@@ -55,9 +55,8 @@ public class CalendarDto {
         this.sojuAmount = sojuAmount;
     }
 
-    public CalendarEntity toEntity(UserEntity user) {
+    public CalendarEntity toEntity() {
         return CalendarEntity.builder()
-                .userEntity(user)
                 .date(date)
                 .title(title)
                 .alcoholLevel(alcoholLevel)
