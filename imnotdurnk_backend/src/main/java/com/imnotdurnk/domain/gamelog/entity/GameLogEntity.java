@@ -43,6 +43,10 @@ public class GameLogEntity {
         this.timeLog = timeLog;
     }
 
+    /**
+     * Entity -> Dto 변환 메서드
+     * @return
+     */
     public GameLogDto toDto() {
         return GameLogDto.builder()
                 .planId(calendarEntity.getId())

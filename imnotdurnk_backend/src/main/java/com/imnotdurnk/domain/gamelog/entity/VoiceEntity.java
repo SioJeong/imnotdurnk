@@ -29,6 +29,10 @@ public class VoiceEntity {
         this.record = record;
     }
 
+    /**
+     * Entity -> Dto 변환 메서드
+     * @return
+     */
     public VoiceDto toDto() {
         return VoiceDto.builder()
                 .logId(gameLogEntity.getId())

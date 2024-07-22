@@ -9,8 +9,13 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface GameLogRepository extends JpaRepository<GameLogEntity, Integer> {
 
-    @Query("SELECT AVG(gl.score) FROM GameLogEntity gl WHERE gl.gameType = :gameType")
-    double selectTotalAverage(@Param("gameType") int gameType);
+    @Query("""
+        SELECT AVG(gl.score)
+        FROM GameLogEntity gl
+        WHERE gl.calendarEntity.id IN (SELECT ce.id FROM CalendarEntity ce WHERE ce.userEntity.id = :userId)
+        AND gl.gameType = :gameType
+        """)
+    double selectTotalAverage(@Param("userId") int userId, @Param("gameType") int gameType);
 
     @Query("""
         SELECT AVG(gl.score)
