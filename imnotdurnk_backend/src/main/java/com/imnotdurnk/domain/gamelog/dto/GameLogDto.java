@@ -29,6 +29,11 @@ public class GameLogDto {
         this.timeLog = timeLog;
     }
 
+    /**
+     * Dto -> Entity 변환 메서드
+     * @param calendarEntity
+     * @return
+     */
     public GameLogEntity toEntity(CalendarEntity calendarEntity) {
         return GameLogEntity.builder()
                 .calendarEntity(calendarEntity)

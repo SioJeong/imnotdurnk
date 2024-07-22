@@ -22,6 +22,11 @@ public class VoiceDto {
         this.record = record;
     }
 
+    /**
+     * Dto -> Entity 변환 메서드
+     * @param logEntity
+     * @return
+     */
     public VoiceEntity toEntity(GameLogEntity logEntity) {
         return VoiceEntity.builder()
                 .gameLogEntity(logEntity)

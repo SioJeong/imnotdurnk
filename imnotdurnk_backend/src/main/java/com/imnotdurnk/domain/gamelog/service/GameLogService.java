@@ -4,7 +4,7 @@ import java.time.LocalDate;
 
 public interface GameLogService {
 
-    double getTotalAverage(int gameType);
+    double getTotalAverage(String token, int gameType);
 
     double getMonthAverage(int gameType, LocalDate date);
 
