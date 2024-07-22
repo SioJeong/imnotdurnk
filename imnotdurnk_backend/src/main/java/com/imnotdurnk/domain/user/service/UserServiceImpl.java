@@ -88,7 +88,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean signUp(UserDto userDto) throws BadRequestException{
 
-        //입력 받은 정보(이름, 이메일, 비밀번호, 전화번호 유효성 체크)
+        //입력 받은 정보(이름, 이메일, 비밀번호, 전화번호) 유효성 체크
         if(!checkName(userDto.getName())) throw new BadRequestException("형식에 맞지 않는 이름입니다.");
         if(!checkEmail(userDto.getEmail())) throw new BadRequestException("형식에 맞지 않는 이메일입니다.");
         if(!checkpassword(userDto.getPassword())) throw new BadRequestException("형식에 맞지 않는 비밀번호입니다.");
