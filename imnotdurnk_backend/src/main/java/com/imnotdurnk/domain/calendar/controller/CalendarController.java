@@ -18,6 +18,16 @@ public class CalendarController {
 
     private CalendarService calendarService;
 
+
+     /***
+     * 피드백 등록 API
+     * @param accessToken
+     * @param date
+     * @param planId
+     * @param calendarDto
+     * @return 수정이 완료된 경우 200, 오류 400 404 500
+     * @throws BadRequestException
+     */
     @PutMapping("/{date}/plans/{planId}")
     public ResponseEntity<?> feedbackPlan(@RequestAttribute(value = "AccessToken", required = true) String accessToken,
                                           @PathVariable String date,
