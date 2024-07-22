@@ -15,11 +15,8 @@ public class GameLogDto {
 
     @NotNull
     private Integer planId;
-
     private Integer gameType;
-
     private Integer score;
-
     private LocalTime timeLog;
 
     public GameLogDto() {}

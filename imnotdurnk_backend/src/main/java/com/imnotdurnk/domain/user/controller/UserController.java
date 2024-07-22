@@ -54,7 +54,7 @@ public class UserController {
      * @throws BadRequestException 필수 정보 누락 시 발생
      */
     @PostMapping("/signup/verify-code")
-    public ResponseEntity<?> verifyCode(@RequestParam String email, String code) throws BadRequestException {
+    public ResponseEntity<?> verifyCode(@RequestParam String email, @RequestParam String code) throws BadRequestException {
         if(email == null || email.isEmpty()) {
             throw new BadRequestException("필수 정보 누락");
         }
@@ -162,7 +162,7 @@ public class UserController {
      * @return 업데이트 성공 시 HTTP 200 OK, 실패 시 BadRequestException 발생
      * @throws BadRequestException 수정 요청이 실패한 경우 발생
      */
-    @PutMapping("mypage/profile")
+    @PutMapping("/profile")
     public ResponseEntity<String> updateProfile(@RequestHeader("Authorization") String token, @RequestBody UserDto userDto) throws BadRequestException {
         if(!userService.updateProfile(token,userDto)){
             throw new BadRequestException("수정 요청 실패");
@@ -177,7 +177,7 @@ public class UserController {
      * @return 사용자 정보담은 {@link UserDto} 반환
      * @throws BadRequestException 조회 실패 시 발생
      */
-    @GetMapping("mypage/profile")
+    @GetMapping("/profile")
     public ResponseEntity<UserDto> getProfile(@RequestHeader("Authorization") String token) throws BadRequestException {
         UserDto user=userService.getProfile(token);
         if(user==null){
