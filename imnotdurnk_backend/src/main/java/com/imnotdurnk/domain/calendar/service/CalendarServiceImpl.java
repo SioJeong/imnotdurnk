@@ -32,7 +32,7 @@ public class CalendarServiceImpl implements CalendarService {
      * @param accessToken
      */
     @Override
-    public CalendarEntity feedbackPlan(String accessToken, String date, int planId, CalendarDto calendarDto) throws BadRequestException, ResourceNotFoundException{
+    public CalendarEntity updateFeedback(String accessToken, String date, int planId, CalendarDto calendarDto) throws BadRequestException, ResourceNotFoundException{
 
         //accessToken과 일정의 사용자가 일치하는지 확인
         String tokenEmail = jwtUtil.getUserEmail(accessToken, TokenType.ACCESS);
