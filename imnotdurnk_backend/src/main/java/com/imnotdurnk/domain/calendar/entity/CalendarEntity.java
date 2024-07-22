@@ -2,6 +2,7 @@ package com.imnotdurnk.domain.calendar.entity;
 
 import com.imnotdurnk.domain.calendar.dto.CalendarDto;
 import com.imnotdurnk.domain.gamelog.entity.GameLogEntity;
+import com.imnotdurnk.domain.user.dto.UserDto;
 import com.imnotdurnk.domain.user.entity.UserEntity;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -86,5 +87,16 @@ public class CalendarEntity {
                 .beerAmount(beerAmount)
                 .sojuAmount(sojuAmount)
                 .build();
+    }
+
+
+    public void setEntityFromDto(CalendarDto calendarDto){
+        this.date = calendarDto.getDate();
+        this.arrivalTime = calendarDto.getArrivalTime();
+        this.sojuAmount = calendarDto.getSojuAmount();
+        this.beerAmount = calendarDto.getBeerAmount();
+        this.title = calendarDto.getTitle();
+        this.memo = calendarDto.getMemo();
+        this.alcoholLevel = calendarDto.getAlcoholLevel();
     }
 }
