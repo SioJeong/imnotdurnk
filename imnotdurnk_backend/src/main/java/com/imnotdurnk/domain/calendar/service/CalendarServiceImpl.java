@@ -4,6 +4,7 @@ import com.imnotdurnk.domain.auth.enums.TokenType;
 import com.imnotdurnk.domain.calendar.dto.CalendarDto;
 import com.imnotdurnk.domain.calendar.entity.CalendarEntity;
 import com.imnotdurnk.domain.calendar.repository.CalendarRepository;
+import com.imnotdurnk.domain.user.entity.UserEntity;
 import com.imnotdurnk.domain.user.repository.UserRepository;
 import com.imnotdurnk.global.exception.ResourceNotFoundException;
 import com.imnotdurnk.global.util.JwtUtil;
@@ -12,7 +13,10 @@ import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
 
 import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -52,5 +56,25 @@ public class CalendarServiceImpl implements CalendarService {
         //DB에 피드백 기록
         return calendarRepository.save(updatedCalendarEntity);
 
+    }
+
+    @Override
+    public boolean addCalendar(String token, CalendarDto calendarDto) {
+        try {
+            CalendarEntity calendar = calendarDto.toEntity();
+            calendar.setUserEntity(userRepository.findByEmail(jwtUtil.getUserEmail(token, TokenType.ACCESS)));
+            calendarRepository.save(calendar);
+            return true;  // 저장 성공
+        } catch (Exception e) {
+            return false;  // 저장 실패
+        }
+    }
+
+    @Override
+    public List<CalendarDto> getCalendar(Date date, String token){
+        UserEntity user = userRepository.findByEmail(jwtUtil.getUserEmail(token, TokenType.ACCESS));
+        List<CalendarEntity> calendarEntities = calendarRepository.findByUserEntity_IdAndDate(user.getId(), date);
+        List<CalendarDto> calendarDtos = calendarEntities.stream().map(CalendarEntity::toDto).collect(Collectors.toList());  //CalendarEntity 리스트를 CalendarDto 리스트로 변환
+        return calendarDtos;
     }
 }
