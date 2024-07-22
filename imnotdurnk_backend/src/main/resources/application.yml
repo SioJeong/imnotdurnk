@@ -1,13 +1,20 @@
 spring:
   application:
     name: imnotdurnk_backend
+    title: 나안취햄ㅅ어
+  security: ignored=/**   # 일단 비활성화
 
-  # DB Setting
+    # DB Setting
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/imnotdurnk_db?serverTimezone=UTC&characterEncoding=UTF-8
-    username: ssafy
+    url: jdbc:mysql://localhost:3305/imnotdurnk_db?serverTimezone=UTC&characterEncoding=UTF-8
+    username: root
     password: ssafy
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: ssafy
   jpa:
     database: mysql
     database-platform: org.hibernate.dialect.MySQL8Dialect
@@ -21,3 +28,21 @@ spring:
       ddl-auto: validate
     open-in-view: false
     show-sql: true
+
+  # Mail Setting
+  mail:
+    host: smtp.naver.com
+    port: 465
+    username: yeojin9905@naver.com
+    password: duwls990523?
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.ssl.enable: true
+      mail.smtp.ssl.trust: smtp.naver.com
+jwt:
+  expiretime:
+    accesstoken: 1800000 #30분
+    refreshtoken: 432000000 #5일
+  secretkey:
+    accesstoken: adfklasdjhlfakjsdhlfjkashdljkfahlsdkjfasdfasd
+    refreshtoken: eirouqpiwerupqoiweuoiuXZiucxziuizzzxxccxvbdlkjkc
