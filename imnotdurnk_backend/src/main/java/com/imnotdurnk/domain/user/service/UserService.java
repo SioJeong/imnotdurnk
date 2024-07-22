@@ -9,7 +9,7 @@ import java.io.UnsupportedEncodingException;
 
 public interface UserService {
 
-    boolean signUp(UserDto userDto);
+    boolean signUp(UserDto userDto) throws BadRequestException;
 
     boolean existsByEmail(String email);
 
@@ -26,5 +26,14 @@ public interface UserService {
     boolean updateProfile(String token, UserDto userDto);
 
     void logout(String accessToken, String refreshToken);
+
+    boolean checkEmail(String email);
+
+    boolean checkName(String name);
+
+    boolean checkpassword(String password);
+
+    boolean checkphone(String phone);
+
 
 }
