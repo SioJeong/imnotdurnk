@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Random;
+import java.util.regex.Pattern;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -85,7 +86,14 @@ public class UserServiceImpl implements UserService {
      *
      */
     @Override
-    public boolean signUp(UserDto userDto) {
+    public boolean signUp(UserDto userDto) throws BadRequestException{
+
+        //입력 받은 정보(이름, 이메일, 비밀번호, 전화번호) 유효성 체크
+        if(!checkName(userDto.getName())) throw new BadRequestException("형식에 맞지 않는 이름입니다.");
+        if(!checkEmail(userDto.getEmail())) throw new BadRequestException("형식에 맞지 않는 이메일입니다.");
+        if(!checkpassword(userDto.getPassword())) throw new BadRequestException("형식에 맞지 않는 비밀번호입니다.");
+        if(!checkphone(userDto.getPhone())) throw new BadRequestException("형식에 맞지 않는 전화번호입니다");
+
         //비밀번호 암호화
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
         UserEntity user = userDto.toEntity();
@@ -293,4 +301,52 @@ public class UserServiceImpl implements UserService {
         }
 
     }
+
+    /***
+     * 이메일 유효성 체크
+     *      abc@abc.com 형태
+     * @param email
+     * @return 기준에 부합하면 true, 아니면 false
+     */
+    @Override
+    public boolean checkEmail(String email) {
+        return Pattern.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$", email);
+    }
+
+    /***
+     * 이름, 닉네임 유효성 체크
+     *      한글 2-10자
+     * @param name
+     * @return 기준에 부합하면 true, 아니면 false
+     */
+    @Override
+    public boolean checkName(String name) {
+        return Pattern.matches("^[가-힣]{2,10}$", name);
+    }
+
+    /***
+     * 비밀번호 유효성 체크
+     *      대소문자 각각 1개 이상, 숫자 포함 / 8-16자
+     * @param password
+     * @return 기준에 부합하면 true, 아니면 false
+     */
+    @Override
+    public boolean checkpassword(String password) {
+        return Pattern.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{8,16}$", password);
+    }
+
+    /***
+     * 핸드폰 번호 유효성 체크
+     *      000-0000-000
+     * @param phone
+     * @return 기준에 부합하면 true, 아니면 false
+     */
+    @Override
+    public boolean checkphone(String phone) {
+        return Pattern.matches("^(01[0-9])-\\d{4}-\\d{4}$", phone);
+    }
+
+
+
+
 }
