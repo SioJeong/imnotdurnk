@@ -1,6 +1,6 @@
-import * as St from './ButtonWithIcon.style';
+import * as St from './IconButton.style';
 
-const ButtonWithIcon = ({ iconname }) => {
+const IconButton = ({ iconname }) => {
     return (
         <St.StyledButton $isEmpty={iconname === 'empty'}>
             {iconname !== 'empty' && (
@@ -13,4 +13,4 @@ const ButtonWithIcon = ({ iconname }) => {
     );
 };
 
-export default ButtonWithIcon;
+export default IconButton;
