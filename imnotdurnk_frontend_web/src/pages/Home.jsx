@@ -1,17 +1,23 @@
-import DropButton from '../components/common/DropButton';
-import Navigation from '../components/common/Navigation';
+import { useEffect } from 'react';
+import useNavigationStore from '../stores/useNavigationStore';
 
 const Home = () => {
+    const setNavigation = useNavigationStore((state) => state.setNavigation);
+
+    useEffect(() => {
+        setNavigation({
+            isVisible: false,
+            icon1: 'address',
+            title: 'Home',
+            icon2: 'empty',
+        });
+    }, [setNavigation]);
+
     return (
         <>
-            {/* <Navigation /> */}
-            <Navigation icon1="address" title="메인" icon2="empty" />;
-            <DropButton options={['오전', '오후']} />
+            <p>홈입니다.</p>
         </>
     );
-
-    /* 테스트용 */
-    // <Navigation icon1="address" title="메인" icon2="empty" />;
 };
 
 export default Home;
