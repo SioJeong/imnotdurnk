@@ -4,10 +4,14 @@
 package com.imnotdurnk.global.response;
 
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
+@Getter
+@Setter
 @NoArgsConstructor
 public class ListResponse<T> extends CommonResponse{
 
@@ -15,7 +19,7 @@ public class ListResponse<T> extends CommonResponse{
 
 
     @Builder
-    ListResponse(int statusCode, String message, List<T> dataList){
+    public ListResponse(int statusCode, String message, List<T> dataList){
         super(statusCode, message);
         this.dataList = dataList;
     }

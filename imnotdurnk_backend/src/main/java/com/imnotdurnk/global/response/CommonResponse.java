@@ -3,9 +3,13 @@
  */
 package com.imnotdurnk.global.response;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.http.HttpStatus;
 
+@Getter
+@Setter
 @NoArgsConstructor
 public class CommonResponse {
 
@@ -13,7 +17,7 @@ public class CommonResponse {
     String message;
 
 
-    CommonResponse(int statusCode, String message) {
+    public CommonResponse(int statusCode, String message) {
         this.statusCode = statusCode;
         this.message = message;
     }

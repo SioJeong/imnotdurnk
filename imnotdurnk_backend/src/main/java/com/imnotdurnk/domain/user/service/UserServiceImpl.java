@@ -3,11 +3,13 @@ package com.imnotdurnk.domain.user.service;
 import com.imnotdurnk.domain.auth.enums.TokenType;
 import com.imnotdurnk.domain.auth.dto.AuthDto;
 import com.imnotdurnk.domain.auth.dto.TokenDto;
-import com.imnotdurnk.domain.auth.enums.TokenType;
 import com.imnotdurnk.domain.auth.service.AuthService;
 import com.imnotdurnk.domain.user.dto.UserDto;
 import com.imnotdurnk.domain.user.entity.UserEntity;
 import com.imnotdurnk.domain.user.repository.UserRepository;
+import com.imnotdurnk.global.exception.RequiredFieldMissingException;
+import com.imnotdurnk.global.exception.ResourceNotFoundException;
+import com.imnotdurnk.global.exception.UserNotVerifiedException;
 import com.imnotdurnk.global.util.JwtUtil;
 import com.imnotdurnk.global.util.RedisUtil;
 import com.imnotdurnk.global.util.SystemUtil;
@@ -24,7 +26,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Random;
@@ -74,19 +75,22 @@ public class UserServiceImpl implements UserService {
      * @return 입력된 이메일의 기존 등록 여부를 반환
      */
     @Override
-    public boolean existsByEmail(String email){
-        return userRepository.existsByEmail(email);
+    public boolean existsByEmail(String email) {
+        if(userRepository.existsByEmail(email)) return true;
+        else return false;
     }
 
     /**
      * 회원가입
      *
      * @param userDto - 회원가입 정보를 저장하는 {@link UserDto} 객체
-     * @return 회원가입이 완료된 {@link UserDto} 객체
-     *
      */
     @Override
-    public boolean signUp(UserDto userDto) throws BadRequestException{
+    public void signUp(UserDto userDto) throws BadRequestException{
+
+        if (userDto.getEmail() == null) throw new RequiredFieldMissingException("이메일 누락");
+        if (userDto.getPassword() == null) throw new RequiredFieldMissingException("비밀번호 누락");
+        if (userDto.getName() == null) throw new RequiredFieldMissingException("이름 누락");
 
         //입력 받은 정보(이름, 이메일, 비밀번호, 전화번호) 유효성 체크
         if(!checkName(userDto.getName())) throw new BadRequestException("형식에 맞지 않는 이름입니다.");
@@ -97,31 +101,33 @@ public class UserServiceImpl implements UserService {
         //비밀번호 암호화
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
         UserEntity user = userDto.toEntity();
-        return userRepository.save(user).getName().equals(userDto.getName());
+        if(!userRepository.save(user).getName().equals(userDto.getName())) throw new BadRequestException("저장 실패");
     }
 
     /**
      * 사용자에게 이메일 인증 코드를 전송
      *
      * @param email 인증 코드를 전송할 이메일 주소
-     * @return 인증 코드 전송 성공 여부
      * @throws MessagingException 이메일 전송 중 오류 발생 시 예외 발생
      */
     @Override
-    public boolean sendVerificationCode(String email) throws MessagingException, UnsupportedEncodingException {
+    public void sendVerificationCode(String email) throws MessagingException, UnsupportedEncodingException, BadRequestException {
+
+        if (email == null || email.isEmpty()) throw new RequiredFieldMissingException("이메일 누락");
+        if(!existsByEmail(email)) throw new ResourceNotFoundException("이메일이 존재하지 않음");
 
         //인증번호 생성
         Random random = new Random();
         String verificationCode = String.valueOf(random.nextInt(999999));
 
-        if(sendMail(email, "회원 인증 메일입니다.", verificationCode, "코드")) {
-
-            //Redis 저장소에 인증번호-메일을 5분동안 저장
-            redisUtil.setDataExpire(verificationCode, email,60*5L);
-            return true;
-        } else {
-            return false;
+        try {
+            sendMail(email, "회원 인증 메일입니다.", verificationCode, "코드");
+        } catch (MessagingException e) {
+            throw new MessagingException(e.getMessage());
         }
+        //Redis 저장소에 인증번호-메일을 5분동안 저장
+        redisUtil.setDataExpire(verificationCode, email,60*5L);
+
     }
 
     /**
@@ -139,26 +145,24 @@ public class UserServiceImpl implements UserService {
         UserEntity user = userRepository.findByEmail(email);
 
         //이메일이 일치하는 회원이 없는 경우
-        if(user == null) {
-            throw new BadRequestException("일치하는 회원이 존재하지 않습니다.");
-        }
-
-        //비밀번호가 일치한 경우
-        if(passwordEncoder.matches(password,user.getPassword())){
-
-            //토큰 생성
-            TokenDto accessToken = jwtUtil.generateToken(user.getEmail(), TokenType.ACCESS);
-            TokenDto refreshToken = jwtUtil.generateToken(user.getEmail(), TokenType.REFRESH);
-
-            AuthDto authDto = new AuthDto();
-            authDto.setAccessToken(accessToken);
-            authDto.setRefreshToken(refreshToken);
-
-            return authDto;
-        }
+        if(user == null) throw new BadRequestException("일치하는 회원이 존재하지 않습니다.");
 
         //비밀번호가 일치하는 회원이 없는 경우
-        else throw new BadRequestException("비밀번호가 일치하지 않습니다.");
+        if(!passwordEncoder.matches(password,user.getPassword())) throw new BadRequestException("비밀번호가 일치하지 않습니다.");
+
+        //이메일 인증 전인 경우
+        if(user.getVerified() == false) throw new UserNotVerifiedException("이메일이 인증되지 않았습니다.");
+
+        //토큰 생성
+        TokenDto accessToken = jwtUtil.generateToken(user.getEmail(), TokenType.ACCESS);
+        TokenDto refreshToken = jwtUtil.generateToken(user.getEmail(), TokenType.REFRESH);
+
+        AuthDto authDto = new AuthDto();
+        authDto.setAccessToken(accessToken);
+        authDto.setRefreshToken(refreshToken);
+
+        return authDto;
+
     }
 
     /**
@@ -166,20 +170,25 @@ public class UserServiceImpl implements UserService {
      * 임시 비밀번호를 랜덤으로 생성하여 회원정보 변경 후 생성된 비밀번호를 이메일로 전송
      *
      * @param email 임시 비밀번호를 받고자 하는 이메일 계정
-     * @return 이메일 정상 전송 여부
      */
     @Override
-    public boolean sendTemporaryPassword(String email) throws MessagingException, UnsupportedEncodingException {
+    public void sendTemporaryPassword(String email) throws MessagingException, UnsupportedEncodingException, BadRequestException {
+
+        if (!existsByEmail(email)) throw new BadRequestException("존재하지 않는 이메일");
+
         String tmpPassword = SystemUtil.generateRandomMixStr(TMP_PASSWORD_LENGTH, PASS_UPPER);
         String title = "임시 비밀번호 입니다.";
 
-        if (sendMail(email, title, tmpPassword, "비밀번호")) {
-            UserEntity user = userRepository.findByEmail(email);
-            user.setPassword(passwordEncoder.encode(tmpPassword));
-            userRepository.save(user);
-            return true;
+        try {
+            sendMail(email, title, tmpPassword, "비밀번호");
+        } catch (MessagingException e) {
+            throw new MessagingException();
         }
-        return false;
+
+        UserEntity user = userRepository.findByEmail(email);
+        user.setPassword(passwordEncoder.encode(tmpPassword));
+        userRepository.save(user);
+
     }
 
     /**
@@ -188,20 +197,18 @@ public class UserServiceImpl implements UserService {
      *
      * @param email 이메일을 보낼 주소
      * @param title 이메일의 제목
-     * @param code 이메일 본문에 포함될 코드
-     * @return 이메일 전송이 성공하면 true, 실패하면 false를 반환
-     * @throws MessagingException 이메일 생성 또는 전송 중 오류가 발생할 경우
-     * @throws UnsupportedEncodingException 지원되지 않는 문자 인코딩을 사용할 경우
-     *
+     * @param code  이메일 본문에 포함될 코드
      * @param email 수신 메일 주소
      * @param title 발송 메일 제목
-     * @param code 전송할 코드 (임시비밀번호 또는 인증번호)
+     * @param code  전송할 코드 (임시비밀번호 또는 인증번호)
      * @return 메일 전송 성공 여부
+     * @throws MessagingException           이메일 생성 또는 전송 중 오류가 발생할 경우
+     * @throws UnsupportedEncodingException 지원되지 않는 문자 인코딩을 사용할 경우
      * @throws MessagingException
      * @throws UnsupportedEncodingException
      */
     @Override
-    public boolean sendMail(String email, String title, String code, String codeName) throws MessagingException, UnsupportedEncodingException {
+    public void sendMail(String email, String title, String code, String codeName) throws MessagingException, UnsupportedEncodingException {
         MimeMessage message = emailsender.createMimeMessage();
         message.addRecipients(Message.RecipientType.TO, email);
         message.setSubject(title);// 제목
@@ -224,7 +231,6 @@ public class UserServiceImpl implements UserService {
             es.printStackTrace();
             throw new IllegalArgumentException();
         }
-        return true;
     }
 
     /**
@@ -235,7 +241,9 @@ public class UserServiceImpl implements UserService {
      * @return 인증 코드가 일치하면 true, 일치하지 않으면 false를 반환
      */
     @Override
-    public boolean verifyCode(String email, String verificationCode) {
+    public boolean verifyCode(String email, String verificationCode) throws BadRequestException {
+        if (email == null || email.isEmpty()) throw new BadRequestException("메일 정보 누락");
+
         if(redisUtil.getData(verificationCode)==null){  //redis 저장소에 해당 코드가 존재하지 않음
             return false;
         }
@@ -251,33 +259,28 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 사용자 정보를 추가합니다.
-     * @param token 사용자 인증 토큰
+     *
+     * @param token   사용자 인증 토큰
      * @param userDto 업데이트할 사용자 정보
-     * @return 사용자 정보 추가 성공 여부
      */
     @Override
-    public boolean updateProfile(String token, UserDto userDto){
+    public void updateProfile(String token, UserDto userDto) throws BadRequestException {
         UserEntity user = userRepository.findByEmail(jwtUtil.getUserEmail(token, TokenType.ACCESS));
-        if(user==null){
-            return false;
-        }else{
-            UserEntity updateUser = userDto.toEntity();
-            BeanUtils.copyProperties(updateUser, user, systemUtil.getNullPropertyNames(updateUser));
-            userRepository.save(user);
-            return true;
-        }
+        if(user==null) throw new BadRequestException("일치하는 회원이 없음");
+
+        UserEntity updateUser = userDto.toEntity();
+        BeanUtils.copyProperties(updateUser, user, systemUtil.getNullPropertyNames(updateUser));
+        userRepository.save(user);
+
     }
 
-    public UserDto getProfile(String token) {
+    public UserDto getProfile(String token) throws BadRequestException {
         UserEntity user = userRepository.findByEmail(jwtUtil.getUserEmail(token, TokenType.ACCESS));
-        if (user == null) {
-            return null;
-        } else {
-            UserDto profile = user.toDto();
-            BeanUtils.copyProperties(profile, user, systemUtil.getNullPropertyNames(profile));
-            userRepository.save(user);
-            return profile;
-        }
+        if (user == null) throw new BadRequestException("일치하는 회원 없음");
+        UserDto profile = user.toDto();
+        BeanUtils.copyProperties(profile, user, systemUtil.getNullPropertyNames(profile));
+        userRepository.save(user);
+        return profile;
     }
 
     /***
@@ -288,7 +291,12 @@ public class UserServiceImpl implements UserService {
      * @param refreshToken
      */
     @Override
-    public void logout(String accessToken, String refreshToken) {
+    public void logout(String accessToken, String refreshToken) throws BadRequestException {
+
+        //access token과 refresh token이 모두 존재하지 않는 경우
+        if(refreshToken == null && accessToken == null){
+            throw new BadRequestException("인증 정보가 존재하지 않습니다.");
+        }
 
         // access token 무효화
         if (accessToken != null && jwtUtil.isValidToken(accessToken, TokenType.ACCESS)) {
