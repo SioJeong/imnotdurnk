@@ -3,6 +3,6 @@ dist/
 build/
 public/
 
-.eslintrc.js
+.eslintrc.cjs
 vite.config.js
-main.js
+main.jsx

@@ -85,12 +85,8 @@ module.exports = {
             version: 'detect',
         },
         'import/resolver': {
-            alias: {
-                map: [
-                    ['@src', './src'],
-                    ['@public', './public'],
-                ],
-                extensions: ['.js', '.jsx', '.mjs', '.cjs', '.svg'],
+            node: {
+                extensions: ['.js', '.jsx', '.ts', '.tsx'], // 사용할 확장자 목록
             },
         },
     },
