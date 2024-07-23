@@ -16,7 +16,7 @@ const App = () => {
     });
 
     if (!fontsLoaded) {
-        return <Text>폰트 로딩 중</Text>;
+        return <Text>폰트 로딩 중</Text>; // TODO: 추후 loading 컴포넌트로 변경 필요
     }
 
     return (

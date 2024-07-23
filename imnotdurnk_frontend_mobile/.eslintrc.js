@@ -45,7 +45,12 @@ module.exports = {
         'react-native/no-unused-styles': 'warn',
         'react-native/no-inline-styles': 'warn',
         'react-native/no-color-literals': 'warn',
-        'react-native/no-raw-text': 'warn',
+        'react-native/no-raw-text': [
+            'warn',
+            {
+                skip: ['GlobalText'], // Text 감싸서 커스텀 한 거니까 제외
+            },
+        ],
 
         // 3) Hooks 관련 규칙
         'react-hooks/rules-of-hooks': 'error', // Hooks 규칙 강제
