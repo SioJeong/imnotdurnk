@@ -1,7 +1,7 @@
-import React from "react";
+import Navigation from '../components/common/Navigation';
 
 const Home = () => {
-  return <div>Home 화면 입니다.</div>;
+    return <Navigation />;
 };
 
 export default Home;
