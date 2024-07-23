@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface CalendarService {
 
-    CalendarEntity feedbackPlan(String accessToken, String date, int planId, CalendarDto calendarDto) throws BadRequestException, ResourceNotFoundException;
+    CalendarEntity updateFeedback(String accessToken, String date, int planId, CalendarDto calendarDto) throws BadRequestException, ResourceNotFoundException;
 
     boolean addCalendar(String token, CalendarDto calendarDto);
 

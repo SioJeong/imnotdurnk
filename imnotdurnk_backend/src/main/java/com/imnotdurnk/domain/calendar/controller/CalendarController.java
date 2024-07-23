@@ -32,13 +32,13 @@ public class CalendarController {
      * @throws BadRequestException
      */
     @PutMapping("/{date}/plans/{planId}")
-    public ResponseEntity<?> feedbackPlan(@RequestAttribute(value = "AccessToken", required = true) String accessToken,
+    public ResponseEntity<?> updateFeedback(@RequestAttribute(value = "AccessToken", required = true) String accessToken,
                                           @PathVariable String date,
                                           @PathVariable int planId,
                                           @RequestBody CalendarDto calendarDto) throws BadRequestException {
 
         //피드백 등록
-        CalendarEntity calendarEntity = calendarService.feedbackPlan(accessToken, date, planId, calendarDto);
+        CalendarEntity calendarEntity = calendarService.updateFeedback(accessToken, date, planId, calendarDto);
 
         //수정이 되지 않은 경우
         if (calendarEntity == null) {
