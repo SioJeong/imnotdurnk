@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const NavContainer = styled.div`
+const NavContainer = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -11,3 +11,5 @@ export const NavContainer = styled.div`
 
     padding: 0.57rem 0.71rem; /* 8px -> 0.57rem, 10px -> 0.71rem */
 `;
+
+export { NavContainer };

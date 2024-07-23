@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const StyledButton = styled.button`
+const StyledButton = styled.button`
     display: flex;
     justify-content: center;
     align-items: center;
@@ -25,3 +25,5 @@ export const StyledButton = styled.button`
     visibility: hidden;
   `}
 `;
+
+export { StyledButton };
