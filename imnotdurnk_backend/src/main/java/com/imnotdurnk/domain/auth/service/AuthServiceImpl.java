@@ -110,7 +110,7 @@ public class AuthServiceImpl implements AuthService{
         }
 
         // 토큰이 invalid하면 예외를 던짐
-        throw new InvalidTokenException();
+        throw new InvalidTokenException("토큰 인증 실패");
 
     }
 
@@ -162,11 +162,9 @@ public class AuthServiceImpl implements AuthService{
      */
     @Override
     public void deleteRefreshTokenInRedis(String refreshToken){
+
         redisUtil.deleteData(refreshToken);
     }
-
-
-
 
 }
 

@@ -40,6 +40,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(HttpStatus.BAD_REQUEST.value(), "잘못된 요청 형식입니다.");
     }
 
+    // 유효하지 않은 형식인 경우 발생하는 예외
+    @ExceptionHandler(InvalidDateException.class)
+    public ResponseEntity<?> handleInvalidDateException(InvalidDateException exception){
+        return handleExceptionInternal(exception.getCode(), exception.getMessage());
+    }
+
     private ResponseEntity<?> handleExceptionInternal(int code, String message){
 
         //응답 객체

@@ -6,6 +6,6 @@ import java.time.LocalDate;
 
 public interface GameLogService {
 
-    GameStatistic getGameStatistic(String token, int gameType, LocalDate date);
+    GameStatistic getGameStatistic(String token, int gameType, LocalDate date) throws Exception;
 
 }

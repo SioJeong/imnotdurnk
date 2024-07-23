@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface GameLogRepository extends JpaRepository<GameLogEntity, Integer> {
 
     @Query("""
-        SELECT AVG(gl.score)
+        SELECT COALESCE(AVG(gl.score), 0)
         FROM GameLogEntity gl
         WHERE gl.calendarEntity.id IN (SELECT ce.id FROM CalendarEntity ce WHERE ce.userEntity.id = :userId)
         AND gl.gameType = :gameType
@@ -21,7 +21,7 @@ public interface GameLogRepository extends JpaRepository<GameLogEntity, Integer>
     double selectTotalAverage(@Param("userId") int userId, @Param("gameType") int gameType);
 
     @Query("""
-        SELECT AVG(gl.score)
+        SELECT COALESCE(AVG(gl.score), 0)
         FROM GameLogEntity gl
         JOIN gl.calendarEntity c
         WHERE gl.gameType = :gameType
