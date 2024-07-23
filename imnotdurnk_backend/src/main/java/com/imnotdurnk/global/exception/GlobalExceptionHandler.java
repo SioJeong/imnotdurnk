@@ -1,6 +1,7 @@
 package com.imnotdurnk.global.exception;
 
 import com.imnotdurnk.global.response.CommonResponse;
+import jakarta.mail.MessagingException;
 import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +39,24 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<?> handlerBadRequestException(){
         return handleExceptionInternal(HttpStatus.BAD_REQUEST.value(), "잘못된 요청 형식입니다.");
+    }
+
+    // 필수 필드가 누락된 경우
+    @ExceptionHandler(RequiredFieldMissingException.class)
+    public ResponseEntity<?> handlerRequiredFieldMissingException(RequiredFieldMissingException exception){
+        return handleExceptionInternal(exception.getCode(), exception.getMessage());
+    }
+
+    // 메일 전송 실패
+    @ExceptionHandler(MessagingException.class)
+    public ResponseEntity<?> handleMessagingException(MessagingException exception){
+        return handleExceptionInternal(HttpStatus.INTERNAL_SERVER_ERROR.value(), exception.getMessage());
+    }
+
+    // 메일 인증 전인 경우
+    @ExceptionHandler(UserNotVerifiedException.class)
+    public ResponseEntity<?> handleUserNotVerifiedException(UserNotVerifiedException exception){
+         return handleExceptionInternal(exception.getCode(), exception.getMessage());
     }
 
     // 유효하지 않은 형식인 경우 발생하는 예외
