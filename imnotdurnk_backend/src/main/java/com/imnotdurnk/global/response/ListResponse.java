@@ -4,11 +4,15 @@
 package com.imnotdurnk.global.response;
 
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
 @NoArgsConstructor
+@Getter
+@Setter
 public class ListResponse<T> extends CommonResponse{
 
     List<T> dataList;
