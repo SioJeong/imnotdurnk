@@ -4,6 +4,9 @@ import com.imnotdurnk.domain.calendar.dto.CalendarDto;
 import com.imnotdurnk.domain.calendar.dto.CalendarStatistic;
 import com.imnotdurnk.domain.calendar.entity.CalendarEntity;
 import com.imnotdurnk.domain.calendar.service.CalendarService;
+import com.imnotdurnk.global.exception.EntitySaveFailedException;
+import com.imnotdurnk.global.exception.ResourceNotFoundException;
+import com.imnotdurnk.global.response.SingleResponse;
 import lombok.AllArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
@@ -22,6 +25,7 @@ import java.util.Date;
 public class CalendarController {
 
     private CalendarService calendarService;
+
 
 
      /***
@@ -102,6 +106,39 @@ public class CalendarController {
         // Null 값 예외처리 필요(db에 값이 없을 때)
         CalendarStatistic calendarStatistic = calendarService.getCalendarStatistic(date, token);
         return ResponseEntity.status(HttpStatus.OK).body(calendarStatistic);
+    }
+
+    /***
+     * 도착시간 등록/수정 API
+     *
+     * @param accessToken
+     * @param planId
+     * @param arrivalTime
+     *
+     * @return
+     */
+    @GetMapping("/{planId}")
+    public ResponseEntity<?> updateArrivalTime(@RequestAttribute(value = "AccessToken", required = true) String accessToken,
+                                               @PathVariable int planId,
+                                               @RequestParam(value = "arrival-time", required = true) String arrivalTime){
+
+        try {
+
+            calendarService.updateArrivalTime(accessToken, planId, arrivalTime);
+
+        } catch (ResourceNotFoundException resourceNotFoundException){
+            //NOT_FOUND 404
+            ResponseEntity.status(resourceNotFoundException.getStatus()).body(resourceNotFoundException.getMessage());
+        } catch (BadRequestException badRequestException){
+            //BAD_REQUEST 400
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(badRequestException.getMessage());
+
+        } catch (EntitySaveFailedException entitySaveFailedException){
+            //UNPROCESSABLE_ENTITY 422
+            return ResponseEntity.status(entitySaveFailedException.getStatus()).body(entitySaveFailedException.getMessage());
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
 }
