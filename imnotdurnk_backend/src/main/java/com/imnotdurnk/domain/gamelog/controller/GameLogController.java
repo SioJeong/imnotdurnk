@@ -25,12 +25,11 @@ public class GameLogController {
      * @param token 유저 인증 토큰
      * @param date  기준이 되는 날짜
      * @param gameType  게임의 종류
-     * @return 전체 평균(double totalAverage), 월평균(double monthAverage), 평균이하 일수(int lowerCount) 필드를 가진
-     *          {@link GameStatistic}를 ResponseEntity body에 포함
+     * @return {@link GameStatistic}를 ResponseEntity body에 포함
      * @throws BadRequestException
      */
     @GetMapping("/statistics")
-    public ResponseEntity<GameStatistic> getStatistics(@RequestHeader("Authorization") String token,
+    public ResponseEntity<GameStatistic> getStatistics(@RequestAttribute(value = "AccessToken", required = true) String token,
                                                        @RequestParam LocalDate date,
                                                        @RequestParam int gameType) throws BadRequestException {
 
@@ -41,13 +40,8 @@ public class GameLogController {
             throw new BadRequestException("게임 타입 오류");
         }
 
-        GameStatistic gameStatistic = GameStatistic.builder()
-                .totalAverage(gameLogService.getTotalAverage(token, gameType))
-                .monthAverage(gameLogService.getMonthAverage(gameType, date))
-                .build();
-        gameStatistic.setLowerCount(gameLogService.getLowerCount(
-                gameType, date, gameStatistic.getMonthAverage()));
-
+        // DB에 레코드가 없을 때 예외처리 필요
+        GameStatistic gameStatistic = gameLogService.getGameStatistic(token, gameType, date);
         return ResponseEntity.ok().body(gameStatistic);
     }
 

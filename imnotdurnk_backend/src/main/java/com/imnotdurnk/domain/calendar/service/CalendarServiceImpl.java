@@ -2,6 +2,7 @@ package com.imnotdurnk.domain.calendar.service;
 
 import com.imnotdurnk.domain.auth.enums.TokenType;
 import com.imnotdurnk.domain.calendar.dto.CalendarDto;
+import com.imnotdurnk.domain.calendar.dto.CalendarStatistic;
 import com.imnotdurnk.domain.calendar.entity.CalendarEntity;
 import com.imnotdurnk.domain.calendar.repository.CalendarRepository;
 import com.imnotdurnk.domain.user.entity.UserEntity;
@@ -12,6 +13,7 @@ import lombok.AllArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -58,6 +60,15 @@ public class CalendarServiceImpl implements CalendarService {
 
     }
 
+    /**
+     * 일정 등록
+     *
+     * @param token      사용자의 액세스 토큰
+     * @param calendarDto   추가할 캘린더의 정보가 담긴 DTO 객체
+     * @return          캘린더 저장 성공 시 true, 실패 시 false를 반환
+     *
+     * @throws Exception 데이터베이스 저장 과정에서 발생할 수 있는 예외
+     */
     @Override
     public boolean addCalendar(String token, CalendarDto calendarDto) {
         try {
@@ -70,11 +81,33 @@ public class CalendarServiceImpl implements CalendarService {
         }
     }
 
+    /**
+     * 특정 날짜에 사용자가 생성한 캘린더 목록을 조회
+     *
+     * @param date      조회할 캘린더의 날짜
+     * @param token     사용자의 액세스 토큰
+     * @return         지정된 날짜에 해당하는 사용자의 캘린더 목록을 담고 있는 CalendarDto 리스트
+     *
+     * @throws Exception 사용자의 이메일을 찾거나 캘린더를 조회하는 과정에서 발생할 수 있는 예외
+     */
     @Override
     public List<CalendarDto> getCalendar(Date date, String token){
         UserEntity user = userRepository.findByEmail(jwtUtil.getUserEmail(token, TokenType.ACCESS));
         List<CalendarEntity> calendarEntities = calendarRepository.findByUserEntity_IdAndDate(user.getId(), date);
-        List<CalendarDto> calendarDtos = calendarEntities.stream().map(CalendarEntity::toDto).collect(Collectors.toList());  //CalendarEntity 리스트를 CalendarDto 리스트로 변환
-        return calendarDtos;
+        return calendarEntities.stream().map(CalendarEntity::toDto).collect(Collectors.toList());
     }
+
+    @Override
+    public CalendarStatistic getCalendarStatistic(LocalDate date, String token) {
+        UserEntity user = userRepository.findByEmail(jwtUtil.getUserEmail(token, TokenType.ACCESS));
+
+        return CalendarStatistic.builder()
+                .lastMonthCount(calendarRepository.countByMonth(user.getId(), date.getMonthValue()-1, date.getYear()))
+                .thisMonthCount(calendarRepository.countByMonth(user.getId(), date.getMonthValue(), date.getYear()))
+                .yearTotal(calendarRepository.sumAlcoholByYear(user.getId(), date.getMonthValue()))
+                .monthTotal(calendarRepository.sumAlcoholByMonth(user.getId(), date.getMonthValue(), date.getYear()))
+                .build();
+    }
+
+
 }

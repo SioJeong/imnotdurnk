@@ -1,12 +1,11 @@
 package com.imnotdurnk.domain.gamelog.service;
 
+import com.imnotdurnk.domain.gamelog.dto.GameStatistic;
+
 import java.time.LocalDate;
 
 public interface GameLogService {
 
-    double getTotalAverage(String token, int gameType);
+    GameStatistic getGameStatistic(String token, int gameType, LocalDate date);
 
-    double getMonthAverage(int gameType, LocalDate date);
-
-    int getLowerCount(int gameType, LocalDate date, double monthAverage);
 }

@@ -1,6 +1,7 @@
 package com.imnotdurnk.domain.calendar.controller;
 
 import com.imnotdurnk.domain.calendar.dto.CalendarDto;
+import com.imnotdurnk.domain.calendar.dto.CalendarStatistic;
 import com.imnotdurnk.domain.calendar.entity.CalendarEntity;
 import com.imnotdurnk.domain.calendar.service.CalendarService;
 import lombok.AllArgsConstructor;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -85,5 +87,21 @@ public class CalendarController {
         return ResponseEntity.status(HttpStatus.OK).body(calendarService.getCalendar(date, token));
     }
 
+    /**
+     *
+     * @param token
+     * @param date
+     * @return
+     */
+    @GetMapping("/statistics")
+    public ResponseEntity<?> getStatistics(@RequestAttribute(value = "AccessToken", required = false) String token,
+                                           @RequestParam LocalDate date) {
+        if (date != null) {
+            return ResponseEntity.badRequest().body("잘못된 날짜 형식"); // 오류 처리
+        }
+        // Null 값 예외처리 필요(db에 값이 없을 때)
+        CalendarStatistic calendarStatistic = calendarService.getCalendarStatistic(date, token);
+        return ResponseEntity.status(HttpStatus.OK).body(calendarStatistic);
+    }
 
 }
