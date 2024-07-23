@@ -1,6 +1,7 @@
 package com.imnotdurnk.domain.gamelog.service;
 
 import com.imnotdurnk.domain.auth.enums.TokenType;
+import com.imnotdurnk.domain.gamelog.dto.GameStatistic;
 import com.imnotdurnk.domain.gamelog.repository.GameLogRepository;
 import com.imnotdurnk.domain.user.entity.UserEntity;
 import com.imnotdurnk.domain.user.repository.UserRepository;
@@ -18,39 +19,26 @@ public class GameLogServiceImpl implements GameLogService {
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
 
-    /**
-     * 유저의 게임별 전체 평균점수
-     * @param token 유저인증 토큰
-     * @param gameType  게임 종류
-     * @return
-     */
-    @Override
-    public double getTotalAverage(String token, int gameType) {
-        UserEntity user = userRepository.findByEmail(jwtUtil.getUserEmail(token, TokenType.ACCESS));
-        return gameLogRepository.selectTotalAverage(user.getId(), gameType);
-    }
 
     /**
-     * 유저의 게임별 월평균점수
-     * @param gameType  게임 종류
-     * @param date  기준이 되는 날짜
+     * 게임 통계 제공
+     * 연평균, 월평균, 월평균대비 점수가 낮은 일수를 {@link GameStatistic}에 담아 반환하는 메서드
+     * @param AccessToken 유저 인증 토큰
+     * @param gameType
+     * @param date
      * @return
      */
     @Override
-    public double getMonthAverage(int gameType, LocalDate date) {
-        return gameLogRepository.selectMonthAverage(gameType, date.getMonthValue(), date.getYear());
+    public GameStatistic getGameStatistic(String AccessToken, int gameType, LocalDate date) {
+        UserEntity user = userRepository.findByEmail(jwtUtil.getUserEmail(AccessToken, TokenType.ACCESS));
+        double monthAverage = gameLogRepository.selectMonthAverage(gameType, date.getMonthValue(), date.getYear());
+
+        return GameStatistic.builder()
+                .totalAverage(gameLogRepository.selectTotalAverage(user.getId(), gameType))
+                .monthAverage(monthAverage)
+                .lowerCount(gameLogRepository.countDaysWithLowScores(
+                        gameType, date.getMonthValue(), date.getYear(), monthAverage))
+                .build();
     }
 
-    /**
-     * 월평균 점수보다 낮은 기록이 있는 날의 일수
-     * @param gameType  게임 종류
-     * @param date  기준이 되는 날짜
-     * @param monthAverage  월평균 점수
-     * @return
-     */
-    @Override
-    public int getLowerCount(int gameType, LocalDate date, double monthAverage) {
-        return gameLogRepository.countDaysWithLowScores(
-                gameType, date.getMonthValue(), date.getYear(), monthAverage);
-    }
 }
