@@ -2,10 +2,10 @@ import { create } from 'zustand';
 
 const useNavigationStore = create((set) => ({
     navigation: {
-        isVisible: true,
-        icon1: null,
+        isVisible: false,
+        icon1: { iconname: null, isRed: true },
         title: '',
-        icon2: null,
+        icon2: { iconname: null, isRed: false },
     },
     setNavigation: (navigation) => set({ navigation }),
 }));

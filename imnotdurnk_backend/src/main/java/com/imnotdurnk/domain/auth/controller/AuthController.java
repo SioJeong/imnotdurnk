@@ -3,8 +3,10 @@ package com.imnotdurnk.domain.auth.controller;
 import com.imnotdurnk.domain.auth.dto.TokenDto;
 import com.imnotdurnk.domain.auth.enums.TokenType;
 import com.imnotdurnk.domain.auth.service.AuthService;
+import com.imnotdurnk.global.response.CommonResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,12 +34,14 @@ public class AuthController {
      * @return 재발급 완료 여부 (토큰은 헤더에 넣어서 전송)
      */
     @GetMapping("/refresh")
-    public ResponseEntity<?> reissuedToken(
+    public ResponseEntity<CommonResponse> reissuedToken(
             @RequestAttribute(value = "RefreshToken", required = false) String refreshToken,
             @RequestAttribute(value = "AccessToken", required = false) String accessToken,
             @RequestParam String type) {
 
+        CommonResponse response = new CommonResponse();
         TokenType tokenType = TokenType.ACCESS;
+
         if (type.equals("refresh")) {
             tokenType = TokenType.REFRESH;
 
@@ -55,20 +59,27 @@ public class AuthController {
                     .sameSite("None")
                     .build();
 
-            return ResponseEntity.ok()
-                    .header(HttpHeaders.SET_COOKIE, responseCookie.toString()).build();
+            response.setStatusCode(HttpStatus.OK.value());
+            response.setMessage("Refresh token 발급 완료");
+            return ResponseEntity.status(response.getStatusCode())
+                    .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
+                    .body(response);
         }
 
         if (type.equals("access")) {
             tokenType = TokenType.ACCESS;
 
             TokenDto accessTokenDto = authService.reissueToken(refreshToken, accessToken, tokenType);
-
-            return ResponseEntity.ok()
-                    .header("Authorization", "Bearer " + accessTokenDto.getToken()).build();
+            response.setStatusCode(HttpStatus.OK.value());
+            response.setMessage("Access token 발급 완료");
+            return ResponseEntity.status(response.getHttpStatus())
+                    .header("Authorization", "Bearer " + accessTokenDto.getToken())
+                    .body(response);
         }
 
-        return ResponseEntity.badRequest().build();
+        response.setStatusCode(HttpStatus.BAD_REQUEST.value());
+        response.setMessage("토큰 발급 실패");
+        return ResponseEntity.status(response.getHttpStatus()).body(response);
     }
 
 }

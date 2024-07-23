@@ -3,29 +3,28 @@ package com.imnotdurnk.domain.user.service;
 import com.imnotdurnk.domain.auth.dto.AuthDto;
 import com.imnotdurnk.domain.user.dto.UserDto;
 import jakarta.mail.MessagingException;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.apache.coyote.BadRequestException;
 import java.io.UnsupportedEncodingException;
 
 public interface UserService {
 
-    boolean signUp(UserDto userDto) throws BadRequestException;
+    void signUp(UserDto userDto) throws BadRequestException;
 
-    boolean existsByEmail(String email);
+    boolean existsByEmail(String email) throws BadRequestException;
 
-    boolean sendVerificationCode(String email) throws MessagingException, UnsupportedEncodingException;
+    void sendVerificationCode(String email) throws MessagingException, UnsupportedEncodingException, BadRequestException;
 
-    boolean sendMail(String email, String title, String code, String codeName) throws MessagingException, UnsupportedEncodingException;
+    void sendMail(String email, String title, String code, String codeName) throws MessagingException, UnsupportedEncodingException;
 
-    boolean verifyCode(String email, String verificationCode);
+    boolean verifyCode(String email, String verificationCode) throws BadRequestException;
 
     AuthDto login(String email, String password) throws BadRequestException;
 
-    boolean sendTemporaryPassword(String email) throws MessagingException, UnsupportedEncodingException;
+    void sendTemporaryPassword(String email) throws MessagingException, UnsupportedEncodingException, BadRequestException;
 
-    boolean updateProfile(String token, UserDto userDto);
+    void updateProfile(String token, UserDto userDto) throws BadRequestException;
 
-    void logout(String accessToken, String refreshToken);
+    void logout(String accessToken, String refreshToken) throws BadRequestException;
 
     boolean checkEmail(String email);
 

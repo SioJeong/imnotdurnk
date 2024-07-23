@@ -1,21 +1,22 @@
 import { useEffect } from 'react';
 import useNavigationStore from '../stores/useNavigationStore';
+import MiniButton from '../components/_common/MiniButton';
 
 const Home = () => {
     const setNavigation = useNavigationStore((state) => state.setNavigation);
 
     useEffect(() => {
         setNavigation({
-            isVisible: false,
-            icon1: 'address',
+            isVisible: true,
+            icon1: { iconname: 'address' },
             title: 'Home',
-            icon2: 'empty',
+            icon2: { iconname: 'check', isRed: true },
         });
     }, [setNavigation]);
 
     return (
         <>
-            <p>홈입니다.</p>
+            <MiniButton text={'회원탈퇴'} iconname={'bin'} />
         </>
     );
 };
