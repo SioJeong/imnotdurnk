@@ -13,9 +13,9 @@ import java.util.List;
 
 public interface CalendarService {
 
-    CalendarEntity updateFeedback(String accessToken, String date, int planId, CalendarDto calendarDto) throws BadRequestException, ResourceNotFoundException;
+    void updateFeedback(String accessToken, String date, int planId, CalendarDto calendarDto) throws BadRequestException, ResourceNotFoundException, EntitySaveFailedException;
 
-    boolean addCalendar(String token, CalendarDto calendarDto);
+    void addCalendar(String token, CalendarDto calendarDto) throws EntitySaveFailedException;
 
     List<CalendarDto> getCalendar(Date date, String token);
 

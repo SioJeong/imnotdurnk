@@ -37,7 +37,7 @@ public class CalendarServiceImpl implements CalendarService {
      * @param accessToken
      */
     @Override
-    public CalendarEntity updateFeedback(String accessToken, String date, int planId, CalendarDto calendarDto) throws BadRequestException, ResourceNotFoundException{
+    public void updateFeedback(String accessToken, String date, int planId, CalendarDto calendarDto) throws BadRequestException, ResourceNotFoundException{
 
         //accessToken과 일정의 사용자가 일치하는지 확인
         String tokenEmail = jwtUtil.getUserEmail(accessToken, TokenType.ACCESS);
@@ -58,8 +58,9 @@ public class CalendarServiceImpl implements CalendarService {
 
         updatedCalendarEntity.setEntityFromDto(calendarDto);
 
-        //DB에 피드백 기록
-        return calendarRepository.save(updatedCalendarEntity);
+        updatedCalendarEntity = calendarRepository.save(updatedCalendarEntity);
+
+        if(updatedCalendarEntity == null) throw new EntitySaveFailedException("피드백 등록에 실패하였습니다.");
 
     }
 
@@ -73,15 +74,14 @@ public class CalendarServiceImpl implements CalendarService {
      * @throws Exception 데이터베이스 저장 과정에서 발생할 수 있는 예외
      */
     @Override
-    public boolean addCalendar(String token, CalendarDto calendarDto) {
-        try {
-            CalendarEntity calendar = calendarDto.toEntity();
-            calendar.setUserEntity(userRepository.findByEmail(jwtUtil.getUserEmail(token, TokenType.ACCESS)));
-            calendarRepository.save(calendar);
-            return true;  // 저장 성공
-        } catch (Exception e) {
-            return false;  // 저장 실패
-        }
+    public void addCalendar(String token, CalendarDto calendarDto) throws EntitySaveFailedException {
+
+        CalendarEntity calendar = calendarDto.toEntity();
+        calendar.setUserEntity(userRepository.findByEmail(jwtUtil.getUserEmail(token, TokenType.ACCESS)));
+        calendar = calendarRepository.save(calendar);
+
+        if(calendar == null) throw new EntitySaveFailedException("저장에 실패하였습니다.");
+
     }
 
     /**
