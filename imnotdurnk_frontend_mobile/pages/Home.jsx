@@ -1,9 +1,11 @@
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
+import * as St from './Home.style';
 
 const Home = () => {
     return (
         <View>
-            <Text>Home 화면 입니다.</Text>
+            <St.TitleText weight="medium">Home 화면 입니다.</St.TitleText>
+            <St.BodyText>여기는 본문 텍스트입니다.</St.BodyText>
         </View>
     );
 };
