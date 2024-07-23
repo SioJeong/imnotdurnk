@@ -1,10 +1,12 @@
 package com.imnotdurnk.domain.calendar.service;
 
 import com.imnotdurnk.domain.calendar.dto.CalendarDto;
+import com.imnotdurnk.domain.calendar.dto.CalendarStatistic;
 import com.imnotdurnk.domain.calendar.entity.CalendarEntity;
 import com.imnotdurnk.global.exception.ResourceNotFoundException;
 import org.apache.coyote.BadRequestException;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -16,4 +18,5 @@ public interface CalendarService {
 
     List<CalendarDto> getCalendar(Date date, String token);
 
+    CalendarStatistic getCalendarStatistic(LocalDate date, String token);
 }
