@@ -2,6 +2,7 @@ package com.imnotdurnk.domain.calendar.service;
 
 import com.imnotdurnk.domain.calendar.dto.CalendarDto;
 import com.imnotdurnk.domain.calendar.dto.CalendarStatistic;
+import com.imnotdurnk.domain.calendar.dto.PlanDetailDto;
 import com.imnotdurnk.domain.calendar.entity.CalendarEntity;
 import com.imnotdurnk.global.exception.EntitySaveFailedException;
 import com.imnotdurnk.global.exception.ResourceNotFoundException;
@@ -23,5 +24,7 @@ public interface CalendarService {
 
     void updateArrivalTime(String accessToken, int planId, String arrivalTime) throws BadRequestException, ResourceNotFoundException, EntitySaveFailedException;
 
+    PlanDetailDto getPlanDetail(String accessToken, int planId) throws ResourceNotFoundException, BadRequestException;
 
+    CalendarEntity isSameUserAndGetCalendarEntity (String accessToken, int planId) throws ResourceNotFoundException, BadRequestException;
 }

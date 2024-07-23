@@ -2,6 +2,7 @@ package com.imnotdurnk.domain.calendar.controller;
 
 import com.imnotdurnk.domain.calendar.dto.CalendarDto;
 import com.imnotdurnk.domain.calendar.dto.CalendarStatistic;
+import com.imnotdurnk.domain.calendar.dto.PlanDetailDto;
 import com.imnotdurnk.domain.calendar.entity.CalendarEntity;
 import com.imnotdurnk.domain.calendar.service.CalendarService;
 import com.imnotdurnk.global.exception.EntitySaveFailedException;
@@ -153,6 +154,27 @@ public class CalendarController {
         CommonResponse response = new CommonResponse();
         response.setStatusCode(HttpStatus.OK.value());
         response.setMessage("도착 시간이 등록되었습니다.");
+
+        return ResponseEntity.status(response.getHttpStatus()).body(response);
+    }
+
+    /**
+     * 상세일정 조회 API
+     * @param accessToken
+     * @param planId
+     * @throws BadRequestException
+     */
+    @GetMapping("/{date}/plans/{planId}")
+    public ResponseEntity<?> getPlanDetail(@RequestAttribute(value = "AccessToken", required = true) String accessToken,
+                                           @PathVariable int planId) throws BadRequestException {
+
+        // 일정 조회
+        PlanDetailDto planDetailDto = calendarService.getPlanDetail(accessToken, planId);
+
+        SingleResponse<PlanDetailDto> response = new SingleResponse();
+        response.setStatusCode(HttpStatus.OK.value());
+        response.setMessage("일정 조회에 성공하였습니다.");
+        response.setData(planDetailDto);
 
         return ResponseEntity.status(response.getHttpStatus()).body(response);
     }
