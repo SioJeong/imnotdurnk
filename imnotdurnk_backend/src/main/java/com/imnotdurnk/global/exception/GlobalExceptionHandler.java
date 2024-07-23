@@ -56,6 +56,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     // 메일 인증 전인 경우
     @ExceptionHandler(UserNotVerifiedException.class)
     public ResponseEntity<?> handleUserNotVerifiedException(UserNotVerifiedException exception){
+         return handleExceptionInternal(exception.getCode(), exception.getMessage());
+    }
+
+    // 유효하지 않은 형식인 경우 발생하는 예외
+    @ExceptionHandler(InvalidDateException.class)
+    public ResponseEntity<?> handleInvalidDateException(InvalidDateException exception){
         return handleExceptionInternal(exception.getCode(), exception.getMessage());
     }
 
