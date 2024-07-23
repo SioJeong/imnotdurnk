@@ -70,11 +70,13 @@ const GlobalStyles = createGlobalStyle`
     h1, h2, h3, h4, h5, h6 {
         font-family: 'Pretendard', sans-serif;
         font-weight: 500; /* Medium */
+        color: var(--color-green3);
     }
 
     body, p, span, div {
         font-family: 'Pretendard', sans-serif;
         font-weight: 300; /* Light */
+        color: var(--color-green3);
     }
 
     h1 {
