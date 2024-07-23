@@ -6,6 +6,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+import java.util.Optional;
+
 @Repository
 public interface GameLogRepository extends JpaRepository<GameLogEntity, Integer> {
 
@@ -42,4 +45,7 @@ public interface GameLogRepository extends JpaRepository<GameLogEntity, Integer>
                                @Param("month") int month,
                                @Param("year") int year,
                                @Param("averageScore") double averageScore);
+
+
+    Optional<List<GameLogEntity>> findByCalendarEntity_Id(int planId);
 }
