@@ -11,7 +11,6 @@ import com.imnotdurnk.global.exception.InvalidTokenException;
  */
 
 public interface AuthService {
-    TokenDto generateToken(String email, TokenType tokenType);
     TokenDto reissueToken(String refreshToken, String prevToken, TokenType tokenType);
     boolean isTokenValid(String token, TokenType tokenType) throws InvalidTokenException;
     void saveRefreshTokenInRedis(TokenDto refreshToken);
