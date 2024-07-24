@@ -4,6 +4,7 @@ import com.imnotdurnk.domain.calendar.dto.CalendarDto;
 import com.imnotdurnk.domain.gamelog.entity.GameLogEntity;
 import com.imnotdurnk.domain.user.dto.UserDto;
 import com.imnotdurnk.domain.user.entity.UserEntity;
+import com.imnotdurnk.global.commonClass.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,7 +22,7 @@ import java.util.List;
 @Setter
 @Entity
 @Table(name = "calendar")
-public class CalendarEntity {
+public class CalendarEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,14 +54,6 @@ public class CalendarEntity {
 
     @Column(name = "soju_amount")
     private Integer sojuAmount;
-
-    @CreatedDate
-    @Column(name = "reg_date", updatable = false)
-    private LocalDateTime regDate;
-
-    @LastModifiedDate
-    @Column(name = "mod_date")
-    private LocalDateTime modDate;
 
     @OneToMany(mappedBy = "calendarEntity")
     private List<GameLogEntity> gameLogEntities;
