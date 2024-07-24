@@ -6,6 +6,10 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.Builder;
 import org.hibernate.annotations.ColumnDefault;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -27,7 +31,7 @@ public class UserEntity {
     @Column(length = 255, nullable = false)
     private String name;
 
-    @Column(length = 255, nullable = true)
+    @Column(length = 255, nullable = false)
     private String phone;
 
     @Column(length = 255, nullable = true)
@@ -66,6 +70,18 @@ public class UserEntity {
     @Column(nullable = true)
     @ColumnDefault("0")
     private Boolean verified;
+
+    @Column(nullable = true)
+    @ColumnDefault("false")
+    private Boolean deleted;
+
+    @CreatedDate
+    @Column(name = "reg_date", updatable = false)
+    private LocalDateTime regDate;
+
+    @LastModifiedDate
+    @Column(name = "mod_date")
+    private LocalDateTime modDate;
 
     public UserEntity() {}
 

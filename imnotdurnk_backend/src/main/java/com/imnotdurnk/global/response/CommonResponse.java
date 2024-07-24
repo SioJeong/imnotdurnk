@@ -11,8 +11,6 @@ import org.springframework.http.HttpStatus;
 @Getter
 @Setter
 @NoArgsConstructor
-@Getter
-@Setter
 public class CommonResponse {
 
     int statusCode;

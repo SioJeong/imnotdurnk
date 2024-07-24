@@ -8,6 +8,8 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -51,6 +53,14 @@ public class CalendarEntity {
 
     @Column(name = "soju_amount")
     private Integer sojuAmount;
+
+    @CreatedDate
+    @Column(name = "reg_date", updatable = false)
+    private LocalDateTime regDate;
+
+    @LastModifiedDate
+    @Column(name = "mod_date")
+    private LocalDateTime modDate;
 
     @OneToMany(mappedBy = "calendarEntity")
     private List<GameLogEntity> gameLogEntities;
