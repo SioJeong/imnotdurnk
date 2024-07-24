@@ -1,7 +1,7 @@
 package com.imnotdurnk.domain.calendar.service;
 
 import com.imnotdurnk.domain.calendar.dto.CalendarDto;
-import com.imnotdurnk.domain.calendar.dto.CalendarStatistic;
+import com.imnotdurnk.domain.calendar.dto.CalendarStatisticDto;
 import com.imnotdurnk.domain.calendar.dto.PlanDetailDto;
 import com.imnotdurnk.domain.calendar.entity.CalendarEntity;
 import com.imnotdurnk.global.exception.EntitySaveFailedException;
@@ -20,7 +20,7 @@ public interface CalendarService {
 
     List<CalendarDto> getCalendar(Date date, String token);
 
-    CalendarStatistic getCalendarStatistic(LocalDate date, String token);
+    CalendarStatisticDto getCalendarStatistic(LocalDate date, String token);
 
     void updateArrivalTime(String accessToken, int planId, String arrivalTime) throws BadRequestException, ResourceNotFoundException, EntitySaveFailedException;
 

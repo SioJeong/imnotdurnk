@@ -1,6 +1,6 @@
 package com.imnotdurnk.domain.calendar.repository;
 
-import com.imnotdurnk.domain.calendar.dto.AlcoholAmount;
+import com.imnotdurnk.domain.calendar.repository.mapping.AlcoholAmount;
 import com.imnotdurnk.domain.calendar.entity.CalendarEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

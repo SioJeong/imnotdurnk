@@ -3,6 +3,7 @@
  */
 package com.imnotdurnk.global.response;
 
+import com.imnotdurnk.global.commonClass.CommonResponse;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ListResponse<T> extends CommonResponse{
+public class ListResponse<T> extends CommonResponse {
 
     List<T> dataList;
 

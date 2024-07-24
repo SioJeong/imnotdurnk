@@ -1,6 +1,6 @@
 package com.imnotdurnk.global.exception;
 
-import com.imnotdurnk.global.response.CommonResponse;
+import com.imnotdurnk.global.commonClass.CommonResponse;
 import jakarta.mail.MessagingException;
 import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
