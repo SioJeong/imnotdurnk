@@ -4,6 +4,7 @@ import com.imnotdurnk.domain.auth.enums.TokenType;
 import com.imnotdurnk.domain.auth.dto.AuthDto;
 import com.imnotdurnk.domain.auth.dto.TokenDto;
 import com.imnotdurnk.domain.auth.service.AuthService;
+import com.imnotdurnk.domain.user.dto.LoginUserDto;
 import com.imnotdurnk.domain.user.dto.UserDto;
 import com.imnotdurnk.domain.user.entity.UserEntity;
 import com.imnotdurnk.domain.user.repository.UserRepository;
@@ -80,6 +81,17 @@ public class UserServiceImpl implements UserService {
         else return false;
     }
 
+    /***
+     * 탈퇴한 회원인지 확인
+     * @param email
+     * @return 탈퇴한 회원이면 false
+     */
+    @Override
+    public boolean isDeletedUser(String email) {
+        return userRepository.findDeletedByEmail(email).getDeleted();
+    }
+
+
     /**
      * 회원가입
      *
@@ -91,17 +103,19 @@ public class UserServiceImpl implements UserService {
         if (userDto.getEmail() == null) throw new RequiredFieldMissingException("이메일 누락");
         if (userDto.getPassword() == null) throw new RequiredFieldMissingException("비밀번호 누락");
         if (userDto.getName() == null) throw new RequiredFieldMissingException("이름 누락");
+        if (userDto.getPhone() == null) throw new RequiredFieldMissingException("전화번호 누락");
 
         //입력 받은 정보(이름, 이메일, 비밀번호, 전화번호) 유효성 체크
-        if(!checkName(userDto.getName())) throw new BadRequestException("형식에 맞지 않는 이름입니다.");
-        if(!checkEmail(userDto.getEmail())) throw new BadRequestException("형식에 맞지 않는 이메일입니다.");
-        if(!checkpassword(userDto.getPassword())) throw new BadRequestException("형식에 맞지 않는 비밀번호입니다.");
-        if(!checkphone(userDto.getPhone())) throw new BadRequestException("형식에 맞지 않는 전화번호입니다");
+        if (!checkName(userDto.getName())) throw new BadRequestException("형식에 맞지 않는 이름입니다.");
+        if (!checkEmail(userDto.getEmail())) throw new BadRequestException("형식에 맞지 않는 이메일입니다.");
+        if (!checkpassword(userDto.getPassword())) throw new BadRequestException("형식에 맞지 않는 비밀번호입니다.");
+        if (!checkphone(userDto.getPhone())) throw new BadRequestException("형식에 맞지 않는 전화번호입니다");
 
         //비밀번호 암호화
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
         UserEntity user = userDto.toEntity();
-        if(!userRepository.save(user).getName().equals(userDto.getName())) throw new BadRequestException("저장 실패");
+        user.setDeleted(false);
+        if (!userRepository.save(user).getName().equals(userDto.getName())) throw new BadRequestException("저장 실패");
     }
 
     /**
@@ -114,7 +128,7 @@ public class UserServiceImpl implements UserService {
     public void sendVerificationCode(String email) throws MessagingException, UnsupportedEncodingException, BadRequestException {
 
         if (email == null || email.isEmpty()) throw new RequiredFieldMissingException("이메일 누락");
-        if(!existsByEmail(email)) throw new ResourceNotFoundException("이메일이 존재하지 않음");
+        if (!existsByEmail(email)) throw new ResourceNotFoundException("이메일이 존재하지 않음");
 
         //인증번호 생성
         Random random = new Random();
@@ -133,25 +147,29 @@ public class UserServiceImpl implements UserService {
     /**
      * 로그인
      *
-     * @param email - 로그인을 시도한 이메일
-     * @param password - 로그인을 시도한 비밀번호
+     * @param loginUserDto 로그인 시도할 아이디와 비밀번호를 담은 객체
      * @return 이메일로 찾은 유저의 비밀번호와 입력된 비밀번호가 일치할 경우 토큰 정보를 담은 {@link AuthDto} 객체를,
      *          비밀번호가 일치하지 않을 경우 null 반환
      */
     @Override
-    public AuthDto login(String email, String password) throws BadRequestException {
+    public AuthDto login(LoginUserDto loginUserDto) throws BadRequestException {
+        String email = loginUserDto.getEmail();
+        String password = loginUserDto.getPassword();
 
         //로그인한 사용자 정보를 담은 entity
         UserEntity user = userRepository.findByEmail(email);
 
         //이메일이 일치하는 회원이 없는 경우
-        if(user == null) throw new BadRequestException("일치하는 회원이 존재하지 않습니다.");
+        if (user == null) throw new BadRequestException("일치하는 회원이 존재하지 않습니다.");
+
+        //이미 탈퇴한 회원인 경우 (true == 탈퇴)
+        if (isDeletedUser(email)) throw new BadRequestException("탈퇴한 회원입니다.");
 
         //비밀번호가 일치하는 회원이 없는 경우
-        if(!passwordEncoder.matches(password,user.getPassword())) throw new BadRequestException("비밀번호가 일치하지 않습니다.");
+        if (!passwordEncoder.matches(password,user.getPassword())) throw new BadRequestException("비밀번호가 일치하지 않습니다.");
 
         //이메일 인증 전인 경우
-        if(user.getVerified() == false) throw new UserNotVerifiedException("이메일이 인증되지 않았습니다.");
+        if (user.getVerified() == false) throw new UserNotVerifiedException("이메일이 인증되지 않았습니다.");
 
         //토큰 생성
         TokenDto accessToken = jwtUtil.generateToken(user.getEmail(), TokenType.ACCESS);
@@ -174,7 +192,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public void sendTemporaryPassword(String email) throws MessagingException, UnsupportedEncodingException, BadRequestException {
 
+        //이메일이 존재하지 않는 경우
         if (!existsByEmail(email)) throw new BadRequestException("존재하지 않는 이메일");
+
+        //탈퇴한 회원인 경우
+        if(isDeletedUser(email)) throw new BadRequestException("탈퇴한 회원");
+
 
         String tmpPassword = SystemUtil.generateRandomMixStr(TMP_PASSWORD_LENGTH, PASS_UPPER);
         String title = "임시 비밀번호 입니다.";
@@ -244,15 +267,15 @@ public class UserServiceImpl implements UserService {
     public boolean verifyCode(String email, String verificationCode) throws BadRequestException {
         if (email == null || email.isEmpty()) throw new BadRequestException("메일 정보 누락");
 
-        if(redisUtil.getData(verificationCode)==null){  //redis 저장소에 해당 코드가 존재하지 않음
+        if (redisUtil.getData(verificationCode)==null){  //redis 저장소에 해당 코드가 존재하지 않음
             return false;
         }
-        if(redisUtil.getData(verificationCode).equals(email)){  //인증코드와 이메일이 일치함
+        if (redisUtil.getData(verificationCode).equals(email)){  //인증코드와 이메일이 일치함
             UserEntity user = userRepository.findByEmail(email);
             user.setVerified(true);
             userRepository.save(user);
             return true;
-        }else{  //코드와 이메일이 일치하지 않음
+        } else {  //코드와 이메일이 일치하지 않음
             return false;
         }
     }
@@ -266,7 +289,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateProfile(String token, UserDto userDto) throws BadRequestException {
         UserEntity user = userRepository.findByEmail(jwtUtil.getUserEmail(token, TokenType.ACCESS));
-        if(user==null) throw new BadRequestException("일치하는 회원이 없음");
+        if (user==null) throw new BadRequestException("일치하는 회원이 없음");
 
         UserEntity updateUser = userDto.toEntity();
         BeanUtils.copyProperties(updateUser, user, systemUtil.getNullPropertyNames(updateUser));
@@ -294,7 +317,7 @@ public class UserServiceImpl implements UserService {
     public void logout(String accessToken, String refreshToken) throws BadRequestException {
 
         //access token과 refresh token이 모두 존재하지 않는 경우
-        if(refreshToken == null && accessToken == null){
+        if (refreshToken == null && accessToken == null){
             throw new BadRequestException("인증 정보가 존재하지 않습니다.");
         }
 

@@ -72,8 +72,8 @@ public class UserEntity extends BaseEntity {
     @ColumnDefault("0")
     private Boolean verified;
 
-    @Column(nullable = true)
-    @ColumnDefault("false")
+    @Column(nullable = false)
+    @ColumnDefault("0")
     private Boolean deleted;
 
     public UserEntity() {}
