@@ -1,8 +1,8 @@
 import * as St from './InputBox.style';
 
-const InputBox = ({labelText, iconName,inputType}) => {
+const InputBox = ({labelText, iconName,inputType, size}) => {
     return (
-        <St.InputBoxContainer >
+        <St.InputBoxContainer $size={size}>
             <St.TextContainer>
                 <St.InputLabel>
                     {labelText}

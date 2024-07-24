@@ -2,11 +2,12 @@ import styled from 'styled-components';
 
 export const InputBoxContainer = styled.div`
     display: flex;
-    padding: 0.4375rem 1.25rem;
-    justify-content: center;
+    padding: 0.4375rem   ${(props) => props.$size === 'small' ? '1rem':'1.25rem'};
+    justify-content: space-between;
     align-items: center;
-    gap: 7.1875rem;
-    align-self: stretch;
+    ${(props) => props.$size === 'small' && `
+        width: 15rem; 
+      `}
     border-radius: 0.625rem;
     background: var(----color-white1, #FFF);
 `;
@@ -16,31 +17,21 @@ export const TextContainer = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
-    width: 15.5625rem;
-    gap: 0.1875rem;
-    flex-shrink: 0; 
+    gap: 0.3125rem; 
+    
 `
 
-export const InputLabel = styled.label`
+export const InputLabel = styled.h6`
     align-self: stretch;
     color: var(----color-green3, #252F2C);
-    font-family: Pretendard;
     font-size: 0.5rem;
-    font-style: normal;
-    font-weight: 500;
-    line-height: normal;
+    
 `
 
 export const Input = styled.input`
-    align-self: stretch;    
-    color: var(----color-green3, #252F2C);
-    border: none; 
+    font-size: var(--font-body-h5, 0.71rem);
+    border: none;
     outline: none;
-    font-family: Pretendard;
-    font-size: 0.625rem;
-    font-style: normal;
-    font-weight: 300;
-    line-height: normal;
 `
 
 export const InputIcon= styled.img`
