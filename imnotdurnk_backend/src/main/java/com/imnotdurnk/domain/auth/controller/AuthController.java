@@ -35,7 +35,7 @@ public class AuthController {
      */
     @GetMapping("/refresh")
     public ResponseEntity<CommonResponse> reissuedToken(
-            @RequestAttribute(value = "RefreshToken", required = false) String refreshToken,
+            @RequestAttribute(value = "RefreshToken", required = true) String refreshToken,
             @RequestAttribute(value = "AccessToken", required = false) String accessToken,
             @RequestParam String type) {
 
