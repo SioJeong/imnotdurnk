@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useFonts } from 'expo-font';
 import { Text } from 'react-native';
 import { ThemeProvider } from 'styled-components/native';
+import Layout from './components/_common/Layout';
 import Router from './Router';
 import theme from './shared/styles/theme';
 
@@ -22,7 +23,9 @@ const App = () => {
     return (
         <QueryClientProvider client={queryClient}>
             <ThemeProvider theme={theme}>
-                <Router />
+                <Layout>
+                    <Router />
+                </Layout>
             </ThemeProvider>
         </QueryClientProvider>
     );

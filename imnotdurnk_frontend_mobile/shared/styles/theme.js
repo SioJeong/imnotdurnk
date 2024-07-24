@@ -2,18 +2,12 @@ const baseFontSize = 14; // 1rem = 14px
 
 const theme = {
     fontSize: {
-        titleH1: 2.29 * baseFontSize,
-        titleH2: 1.43 * baseFontSize,
-        titleH3: 1 * baseFontSize,
-        titleH4: 0.86 * baseFontSize,
-        titleH5: 0.71 * baseFontSize,
-        titleH6: 0.57 * baseFontSize,
-        bodyH1: 2.29 * baseFontSize,
-        bodyH2: 1.43 * baseFontSize,
-        bodyH3: 1 * baseFontSize,
-        bodyH4: 0.86 * baseFontSize,
-        bodyH5: 0.71 * baseFontSize,
-        bodyH6: 0.57 * baseFontSize,
+        H1: 2.29 * baseFontSize,
+        H2: 1.43 * baseFontSize,
+        H3: 1 * baseFontSize,
+        H4: 0.86 * baseFontSize,
+        H5: 0.71 * baseFontSize,
+        H6: 0.57 * baseFontSize,
     },
     colors: {
         green3: '#252F2C',

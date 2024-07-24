@@ -48,7 +48,7 @@ module.exports = {
         'react-native/no-raw-text': [
             'warn',
             {
-                skip: ['GlobalText'], // Text 감싸서 커스텀 한 거니까 제외
+                skip: ['St.GlobalText'], // Text 감싸서 커스텀 한 거니까 제외
             },
         ],
 
