@@ -5,7 +5,7 @@ const IconButton = ({ iconname, isRed = false }) => {
         <St.StyledButton $isEmpty={iconname === 'empty'} $isRed={isRed}>
             {iconname !== 'empty' && (
                 <St.StyledIcon
-                    src={`src/assets/icons/Icon-${iconname}.svg`}
+                    src={`src/assets/icons/size_24/Icon-${iconname}.svg`}
                     alt={`${iconname} icon`}
                     $isRed={isRed}
                 />

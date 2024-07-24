@@ -1,6 +1,6 @@
+import IconDown from '@/assets/icons/size_24/Icon-down.svg';
 import React, { useState } from 'react';
 import * as St from './DropButton.style';
-import IconDown from '@/assets/icons/Icon-down.svg';
 
 const DropButton = ({ options }) => {
     const [isOpen, setIsOpen] = useState(false);

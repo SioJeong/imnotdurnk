@@ -6,7 +6,7 @@ const MiniButton = ({ text, iconname, isRed = false }) => {
             <St.StyledContainer>
                 <St.StyledText $isRed={isRed}>{text}</St.StyledText>
                 <St.StyledIcon
-                    src={`src/assets/icons/Icon-${iconname}.svg`}
+                    src={`src/assets/icons/size_16/Icon-${iconname}.svg`}
                     alt={`${iconname} icon`}
                     $isRed={isRed}
                 />
