@@ -175,6 +175,9 @@ public class UserServiceImpl implements UserService {
         TokenDto accessToken = jwtUtil.generateToken(user.getEmail(), TokenType.ACCESS);
         TokenDto refreshToken = jwtUtil.generateToken(user.getEmail(), TokenType.REFRESH);
 
+        //리프레시 토큰 redis 저장
+        authService.saveRefreshTokenInRedis(refreshToken);
+        
         AuthDto authDto = new AuthDto();
         authDto.setAccessToken(accessToken);
         authDto.setRefreshToken(refreshToken);
