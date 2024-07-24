@@ -1,7 +1,7 @@
 /**
  * 반환 데이터가 없는 기본 Response Object
  */
-package com.imnotdurnk.global.response;
+package com.imnotdurnk.global.commonClass;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

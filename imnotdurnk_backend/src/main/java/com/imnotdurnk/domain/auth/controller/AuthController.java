@@ -3,7 +3,7 @@ package com.imnotdurnk.domain.auth.controller;
 import com.imnotdurnk.domain.auth.dto.TokenDto;
 import com.imnotdurnk.domain.auth.enums.TokenType;
 import com.imnotdurnk.domain.auth.service.AuthService;
-import com.imnotdurnk.global.response.CommonResponse;
+import com.imnotdurnk.global.commonClass.CommonResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -35,7 +35,7 @@ public class AuthController {
      */
     @GetMapping("/refresh")
     public ResponseEntity<CommonResponse> reissuedToken(
-            @RequestAttribute(value = "RefreshToken", required = false) String refreshToken,
+            @RequestAttribute(value = "RefreshToken", required = true) String refreshToken,
             @RequestAttribute(value = "AccessToken", required = false) String accessToken,
             @RequestParam String type) {
 

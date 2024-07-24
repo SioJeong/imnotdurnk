@@ -45,7 +45,12 @@ module.exports = {
         'react-native/no-unused-styles': 'warn',
         'react-native/no-inline-styles': 'warn',
         'react-native/no-color-literals': 'warn',
-        'react-native/no-raw-text': 'warn',
+        'react-native/no-raw-text': [
+            'warn',
+            {
+                skip: ['St.GlobalText'], // Text 감싸서 커스텀 한 거니까 제외
+            },
+        ],
 
         // 3) Hooks 관련 규칙
         'react-hooks/rules-of-hooks': 'error', // Hooks 규칙 강제
@@ -85,12 +90,8 @@ module.exports = {
             version: 'detect',
         },
         'import/resolver': {
-            alias: {
-                map: [
-                    ['@src', './src'],
-                    ['@public', './public'],
-                ],
-                extensions: ['.js', '.jsx', '.mjs', '.cjs', '.svg'],
+            node: {
+                extensions: ['.js', '.jsx', '.ts', '.tsx'], // 사용할 확장자 목록
             },
         },
     },

@@ -8,7 +8,11 @@ const Router = () => {
     return (
         <NavigationContainer>
             <Stack.Navigator initialRouteName="Home">
-                <Stack.Screen name="HOME" component={Home} />
+                <Stack.Screen
+                    name="HOME"
+                    component={Home}
+                    options={{ headerShown: false }}
+                />
             </Stack.Navigator>
         </NavigationContainer>
     );

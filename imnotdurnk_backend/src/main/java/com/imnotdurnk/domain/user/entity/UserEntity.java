@@ -1,17 +1,22 @@
 package com.imnotdurnk.domain.user.entity;
 
 import com.imnotdurnk.domain.user.dto.UserDto;
+import com.imnotdurnk.global.commonClass.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.Builder;
 import org.hibernate.annotations.ColumnDefault;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "user")
-public class UserEntity {
+public class UserEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,7 +32,7 @@ public class UserEntity {
     @Column(length = 255, nullable = false)
     private String name;
 
-    @Column(length = 255, nullable = true)
+    @Column(length = 255, nullable = false)
     private String phone;
 
     @Column(length = 255, nullable = true)
@@ -66,6 +71,10 @@ public class UserEntity {
     @Column(nullable = true)
     @ColumnDefault("0")
     private Boolean verified;
+
+    @Column(nullable = true)
+    @ColumnDefault("false")
+    private Boolean deleted;
 
     public UserEntity() {}
 
