@@ -16,6 +16,7 @@ const Home = () => {
 
     return (
         <>
+            <ToggleButton toggle1 = '토글1' toggle2='토글2' isMono ={true}/>
         </>
     );
 };

@@ -21,9 +21,14 @@ export const ToggleButton = styled.div`
     gap: 0.625rem;
     border-radius: 2.8125rem;
     background: ${(props) => props.$isSelected ? 
-        props.$isMono? 'var(--color-green3, #252F2C)' : 'var(--color-red, #FF6A5F)'
-        :'var(--color-white1, #FFFFFF)'}; 
-`
+        props.$isMono? 'var(--color-green3, #252F2C)' 
+        : 'var(--color-red, #FF6A5F)':'var(--color-white1, #FFFFFF)'}; 
+     ${(props) =>
+        (props.$isMono && !props.$isSelected) &&
+        `
+        border: 1px solid var(--color-green3, #252F2C);
+  `}
+`   
 export const StyledH4 = styled.h4`
     color: ${(props) => props.$isSelected ? 'var(--color-white1, #FFFFFF)' : 'var(--color-green3, #252F2C)'}; 
     font-size: 0.75rem; 
