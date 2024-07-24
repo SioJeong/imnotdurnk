@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import useNavigationStore from '@/stores/useNavigationStore';
-import ToggleButton  from '@/components/_common/ToggleButton';
+import Pagenation from '@/components/_common/Pagination';
 
 const Home = () => {
     const setNavigation = useNavigationStore((state) => state.setNavigation);
@@ -16,7 +16,7 @@ const Home = () => {
 
     return (
         <>
-            <ToggleButton toggle1 = '토글1' toggle2='토글2' isMono ={true}/>
+           <Pagenation totalPages ='4' />
         </>
     );
 };
