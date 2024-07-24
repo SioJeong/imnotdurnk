@@ -2,10 +2,9 @@ import styled from 'styled-components';
 
 const StyledButton = styled.button`
     display: flex;
-    justify-content: space-evenly;
+    justify-content: center;
     align-items: center;
-    width: 5.6429rem;
-    padding: 0.2857rem;
+    padding: 1rem 8.1429rem;
     background-color: ${(props) =>
         props.$isRed
             ? 'var(--color-red, #FF6A5F)'
@@ -14,13 +13,9 @@ const StyledButton = styled.button`
     border-radius: 45px;
 `;
 
-const StyledText = styled.h6`
+const StyledText = styled.h4`
     color: ${(props) => (props.$isRed ? 'white' : 'inherit')};
     margin: 0;
 `;
 
-const StyledIcon = styled.img`
-    filter: ${(props) => (props.$isRed ? 'brightness(0) invert(1)' : 'none')};
-`;
-
-export { StyledButton, StyledText, StyledIcon };
+export { StyledButton, StyledText };

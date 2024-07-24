@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 const StyledButton = styled.button`
     display: flex;
@@ -10,22 +10,24 @@ const StyledButton = styled.button`
 
     padding: 0.14rem 0.93rem;
 
-    background: ${(props) =>
-        props.$isEmpty
-            ? 'transparent'
-            : props.$isRed
-              ? 'var(--color-red, #FF6A5F)'
-              : 'var(--color-white2, #F7F7EC)'};
+    background: ${(props) => {
+        if (props.$isEmpty) {
+            return 'transparent';
+        }
+        return props.$isRed
+            ? 'var(--color-red, #FF6A5F)'
+            : 'var(--color-white2, #F7F7EC)';
+    }};
 
     border: none;
     border-radius: 45px;
 
     ${(props) =>
         props.$isEmpty &&
-        css`
-            pointer-events: none;
-            visibility: hidden;
-        `}
+        `
+        pointer-events: none;
+        visibility: hidden;
+    `}
 `;
 
 const StyledIcon = styled.img`
