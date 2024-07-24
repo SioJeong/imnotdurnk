@@ -34,7 +34,7 @@ public class CalendarServiceImpl implements CalendarService {
     private GameLogRepository gameLogRepository;
 
     /***
-     * 음주 일정 등록하기 API
+     * 음주 일정(피드백) 등록하기 API
      * @param calendarDto
      * @param accessToken
      */
@@ -56,10 +56,7 @@ public class CalendarServiceImpl implements CalendarService {
         //accessToken에 저장된 사용자 이메일과 조회 요청한 일정을 등록한 사용자의 이메일이 일치하지 않는 경우
         if(!tokenEmail.equals(userIdFromPlan)) throw new BadRequestException("잘못된 접근입니다.");
 
-        //CalendarEntity updatedCalendarEntity = calendarDto.toEntity(calendarEntity.get().getUserEntity());
-
         updatedCalendarEntity.setEntityFromDto(calendarDto);
-
         updatedCalendarEntity = calendarRepository.save(updatedCalendarEntity);
 
         if(updatedCalendarEntity == null) throw new EntitySaveFailedException("피드백 등록에 실패하였습니다.");
