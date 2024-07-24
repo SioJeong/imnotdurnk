@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import useNavigationStore from '@/stores/useNavigationStore';
-import MiniButton from '@/components/_common/MiniButton';
-import InputBox from '@/components/_common/InputBox';
+import ToggleButton  from '@/components/_common/ToggleButton';
 
 const Home = () => {
     const setNavigation = useNavigationStore((state) => state.setNavigation);
@@ -17,9 +16,7 @@ const Home = () => {
 
     return (
         <>
-            {/* <MiniButton text={'회원탈퇴'} iconname={'bin'} /> */}
-            <InputBox iconName='email' labelText='입력라벨' inputType='text' size ='small'/>
-            
+            <ToggleButton toggle1 = '토글1' toggle2='토글2' isMono ={true}/>
         </>
     );
 };
