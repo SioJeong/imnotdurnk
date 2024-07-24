@@ -37,8 +37,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     // 잘못된 요청이 온 경우(400에러)
     @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<?> handlerBadRequestException(){
-        return handleExceptionInternal(HttpStatus.BAD_REQUEST.value(), "잘못된 요청 형식입니다.");
+    public ResponseEntity<?> handlerBadRequestException(BadRequestException exception){
+        return handleExceptionInternal(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
     }
 
     // 필수 필드가 누락된 경우
