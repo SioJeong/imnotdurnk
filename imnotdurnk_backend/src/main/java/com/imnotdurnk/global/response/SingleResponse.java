@@ -11,8 +11,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@Getter
-@Setter
 public class SingleResponse<T> extends CommonResponse{
 
     T data;
