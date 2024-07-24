@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import * as St from '../components/_common/globalStyle';
+import * as St from '../components/_layout/globalStyle';
 import useNavigationStore from '../stores/useNavigationStore';
 
 const Home = () => {

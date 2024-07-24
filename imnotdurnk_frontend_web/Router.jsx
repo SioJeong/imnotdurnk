@@ -1,9 +1,7 @@
-import Home from '@/pages/Home.jsx';
 import Layout from '@/components/_layout/Layout';
+import Home from '@/pages/Home.jsx';
 
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-
-
 
 const Router = () => {
     return (
