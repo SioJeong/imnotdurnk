@@ -2,7 +2,7 @@ package com.imnotdurnk.domain.calendar.service;
 
 import com.imnotdurnk.domain.auth.enums.TokenType;
 import com.imnotdurnk.domain.calendar.dto.CalendarDto;
-import com.imnotdurnk.domain.calendar.dto.CalendarStatistic;
+import com.imnotdurnk.domain.calendar.dto.CalendarStatisticDto;
 import com.imnotdurnk.domain.calendar.dto.PlanDetailDto;
 import com.imnotdurnk.domain.calendar.entity.CalendarEntity;
 import com.imnotdurnk.domain.calendar.repository.CalendarRepository;
@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -103,11 +102,18 @@ public class CalendarServiceImpl implements CalendarService {
         return calendarEntities.stream().map(CalendarEntity::toDto).collect(Collectors.toList());
     }
 
+    /**
+     * 게임 통계
+     * 전월, 금월 음주 횟수 및 연간, 월간 총 음주량을 {@link CalendarStatisticDto} 객체에 담아 반환
+     * @param date 기준이 되는 날짜
+     * @param token 유저 토큰
+     * @return {@link CalendarStatisticDto}
+     */
     @Override
-    public CalendarStatistic getCalendarStatistic(LocalDate date, String token) {
+    public CalendarStatisticDto getCalendarStatistic(LocalDate date, String token) {
         UserEntity user = userRepository.findByEmail(jwtUtil.getUserEmail(token, TokenType.ACCESS));
 
-        return CalendarStatistic.builder()
+        return CalendarStatisticDto.builder()
                 .lastMonthCount(calendarRepository.countByMonth(user.getId(), date.getMonthValue()-1, date.getYear()))
                 .thisMonthCount(calendarRepository.countByMonth(user.getId(), date.getMonthValue(), date.getYear()))
                 .yearTotal(calendarRepository.sumAlcoholByYear(user.getId(), date.getMonthValue()))
