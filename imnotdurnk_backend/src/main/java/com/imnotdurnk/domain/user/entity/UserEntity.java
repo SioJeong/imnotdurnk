@@ -1,6 +1,7 @@
 package com.imnotdurnk.domain.user.entity;
 
 import com.imnotdurnk.domain.user.dto.UserDto;
+import com.imnotdurnk.global.commonClass.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,7 +16,7 @@ import java.time.LocalDateTime;
 @Setter
 @Entity
 @Table(name = "user")
-public class UserEntity {
+public class UserEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -74,14 +75,6 @@ public class UserEntity {
     @Column(nullable = true)
     @ColumnDefault("false")
     private Boolean deleted;
-
-    @CreatedDate
-    @Column(name = "reg_date", updatable = false)
-    private LocalDateTime regDate;
-
-    @LastModifiedDate
-    @Column(name = "mod_date")
-    private LocalDateTime modDate;
 
     public UserEntity() {}
 
