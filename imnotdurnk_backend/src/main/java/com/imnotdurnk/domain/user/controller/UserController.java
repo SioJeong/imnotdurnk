@@ -1,17 +1,15 @@
 package com.imnotdurnk.domain.user.controller;
 import com.imnotdurnk.domain.auth.dto.AuthDto;
 import com.imnotdurnk.domain.auth.dto.TokenDto;
+import com.imnotdurnk.domain.user.dto.LoginUserDto;
 import com.imnotdurnk.domain.user.dto.UserDto;
 import com.imnotdurnk.domain.user.service.UserServiceImpl;
-import com.imnotdurnk.global.response.CommonResponse;
-import com.imnotdurnk.global.response.ListResponse;
+import com.imnotdurnk.global.commonClass.CommonResponse;
 import com.imnotdurnk.global.response.SingleResponse;
 import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
 import org.apache.coyote.BadRequestException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -77,15 +75,14 @@ public class UserController {
     /**
      * 로그인 요청
      *
-     * @param email 로그인을 시도할 이메일
-     * @param password 로그인을 시도할 비밀번호
+     * @param loginUserDto 로그인할 이메일과 비밀번호를 저장한 Dto
      * @return 로그인이 완료된 사용자의 인증 토큰을 header에 담은 {@link ResponseEntity} 객체
      * @throws BadRequestException 이메일, 비밀번호, 이름 중 하나라도 누락되거나 이미 사용 중인 이메일인 경우 발생하는 예외
      */
-    @GetMapping("/login")
-    public ResponseEntity<?> login (@RequestParam String email, @RequestParam String password) throws BadRequestException {
+    @PostMapping("/login")
+    public ResponseEntity<?> login (@RequestBody LoginUserDto loginUserDto) throws BadRequestException {
 
-        AuthDto authDto = userService.login(email, password);
+        AuthDto authDto = userService.login(loginUserDto);
 
         TokenDto accessTokenDto = authDto.getAccessToken();
         TokenDto refreshTokenDto = authDto.getRefreshToken();

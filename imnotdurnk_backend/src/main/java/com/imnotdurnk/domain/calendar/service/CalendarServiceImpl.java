@@ -2,7 +2,7 @@ package com.imnotdurnk.domain.calendar.service;
 
 import com.imnotdurnk.domain.auth.enums.TokenType;
 import com.imnotdurnk.domain.calendar.dto.CalendarDto;
-import com.imnotdurnk.domain.calendar.dto.CalendarStatistic;
+import com.imnotdurnk.domain.calendar.dto.CalendarStatisticDto;
 import com.imnotdurnk.domain.calendar.dto.PlanDetailDto;
 import com.imnotdurnk.domain.calendar.entity.CalendarEntity;
 import com.imnotdurnk.domain.calendar.repository.CalendarRepository;
@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -35,7 +34,7 @@ public class CalendarServiceImpl implements CalendarService {
     private GameLogRepository gameLogRepository;
 
     /***
-     * 음주 일정 등록하기 API
+     * 음주 일정(피드백) 등록하기 API
      * @param calendarDto
      * @param accessToken
      */
@@ -57,10 +56,7 @@ public class CalendarServiceImpl implements CalendarService {
         //accessToken에 저장된 사용자 이메일과 조회 요청한 일정을 등록한 사용자의 이메일이 일치하지 않는 경우
         if(!tokenEmail.equals(userIdFromPlan)) throw new BadRequestException("잘못된 접근입니다.");
 
-        //CalendarEntity updatedCalendarEntity = calendarDto.toEntity(calendarEntity.get().getUserEntity());
-
         updatedCalendarEntity.setEntityFromDto(calendarDto);
-
         updatedCalendarEntity = calendarRepository.save(updatedCalendarEntity);
 
         if(updatedCalendarEntity == null) throw new EntitySaveFailedException("피드백 등록에 실패하였습니다.");
@@ -103,11 +99,18 @@ public class CalendarServiceImpl implements CalendarService {
         return calendarEntities.stream().map(CalendarEntity::toDto).collect(Collectors.toList());
     }
 
+    /**
+     * 게임 통계
+     * 전월, 금월 음주 횟수 및 연간, 월간 총 음주량을 {@link CalendarStatisticDto} 객체에 담아 반환
+     * @param date 기준이 되는 날짜
+     * @param token 유저 토큰
+     * @return {@link CalendarStatisticDto}
+     */
     @Override
-    public CalendarStatistic getCalendarStatistic(LocalDate date, String token) {
+    public CalendarStatisticDto getCalendarStatistic(LocalDate date, String token) {
         UserEntity user = userRepository.findByEmail(jwtUtil.getUserEmail(token, TokenType.ACCESS));
 
-        return CalendarStatistic.builder()
+        return CalendarStatisticDto.builder()
                 .lastMonthCount(calendarRepository.countByMonth(user.getId(), date.getMonthValue()-1, date.getYear()))
                 .thisMonthCount(calendarRepository.countByMonth(user.getId(), date.getMonthValue(), date.getYear()))
                 .yearTotal(calendarRepository.sumAlcoholByYear(user.getId(), date.getMonthValue()))

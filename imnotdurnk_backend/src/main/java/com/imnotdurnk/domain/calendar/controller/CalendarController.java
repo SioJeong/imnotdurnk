@@ -1,13 +1,10 @@
 package com.imnotdurnk.domain.calendar.controller;
 
 import com.imnotdurnk.domain.calendar.dto.CalendarDto;
-import com.imnotdurnk.domain.calendar.dto.CalendarStatistic;
+import com.imnotdurnk.domain.calendar.dto.CalendarStatisticDto;
 import com.imnotdurnk.domain.calendar.dto.PlanDetailDto;
-import com.imnotdurnk.domain.calendar.entity.CalendarEntity;
 import com.imnotdurnk.domain.calendar.service.CalendarService;
-import com.imnotdurnk.global.exception.EntitySaveFailedException;
-import com.imnotdurnk.global.exception.ResourceNotFoundException;
-import com.imnotdurnk.global.response.CommonResponse;
+import com.imnotdurnk.global.commonClass.CommonResponse;
 import com.imnotdurnk.global.response.ListResponse;
 import com.imnotdurnk.global.response.SingleResponse;
 import lombok.AllArgsConstructor;
@@ -19,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -122,15 +118,15 @@ public class CalendarController {
                                            @RequestParam(required = true) LocalDate date) {
 
         // 응답 객체
-        SingleResponse<CalendarStatistic> response = new SingleResponse<>();
+        SingleResponse<CalendarStatisticDto> response = new SingleResponse<>();
 
-        CalendarStatistic calendarStatistic = calendarService.getCalendarStatistic(date, token);
+        CalendarStatisticDto calendarStatisticDto = calendarService.getCalendarStatistic(date, token);
 
         response.setStatusCode(HttpStatus.OK.value());
         response.setMessage("일정 조회에 성공하였습니다.");
-        response.setData(calendarStatistic);
+        response.setData(calendarStatisticDto);
 
-        return ResponseEntity.status(HttpStatus.OK).body(calendarStatistic);
+        return ResponseEntity.status(HttpStatus.OK).body(calendarStatisticDto);
     }
 
     /***

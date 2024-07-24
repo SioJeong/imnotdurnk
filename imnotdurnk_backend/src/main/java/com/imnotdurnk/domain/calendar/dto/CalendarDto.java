@@ -18,6 +18,8 @@ import java.util.List;
 @Setter
 public class CalendarDto {
 
+    private Integer id;
+
     private Integer userId;
 
     private LocalDateTime date;
@@ -37,7 +39,8 @@ public class CalendarDto {
     public CalendarDto() {}
 
     @Builder
-    public CalendarDto(Integer userId,
+    public CalendarDto(Integer Id,
+                       Integer userId,
                        LocalDateTime date,
                        String title,
                        Integer alcoholLevel,
@@ -45,6 +48,7 @@ public class CalendarDto {
                        String memo,
                        Integer beerAmount,
                        Integer sojuAmount) {
+        this.id = id;
         this.userId = userId;
         this.date = date;
         this.title = title;

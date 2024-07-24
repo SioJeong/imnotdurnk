@@ -1,4 +1,4 @@
-package com.imnotdurnk.domain.calendar.dto;
+package com.imnotdurnk.domain.calendar.repository.mapping;
 
 public interface AlcoholAmount {
 

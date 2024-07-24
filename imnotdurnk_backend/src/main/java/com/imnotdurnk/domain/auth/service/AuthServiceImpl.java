@@ -29,26 +29,6 @@ public class AuthServiceImpl implements AuthService{
     @Value("${jwt.expiretime.refreshtoken}")
     private int refreshTokenExpireTime;
 
-    /**
-     *
-     * 토큰 생성
-     * @param email
-     * @param tokenType
-     * @return 생성된 토큰 DTO
-     */
-    @Override
-    public TokenDto generateToken(String email, TokenType tokenType) {
-        //type에 맞는 token 생성
-        TokenDto token = jwtUtil.generateToken(email, tokenType);
-
-        //Redis에 refresh token 저장
-        if(tokenType == TokenType.REFRESH){
-            saveRefreshTokenInRedis(token);
-        }
-
-        return token;
-
-    }
 
     /**
      * 토큰 재발급
@@ -65,14 +45,12 @@ public class AuthServiceImpl implements AuthService{
 
         // refresh token 검증
         if(!jwtUtil.isValidToken(refreshTokenDto.getToken(), TokenType.REFRESH)){
-            System.out.println("유효기간 만료");
-            return null;
+            throw new InvalidTokenException("유효기간 만료");
         }
 
         //refresh token 재발급 요청했지만 Redis에 기존 refresh token이 존재하지 않음
         if(tokenType == TokenType.REFRESH && !checkTokenInRedis(prevToken)){
-            System.out.println("존재하지않음");
-            return null;
+            throw new InvalidTokenException("존재하지 않는 토큰");
         }
 
         // refresh token 검증 완료시 기존의 refresh token 폐기

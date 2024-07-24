@@ -1,6 +1,7 @@
 package com.imnotdurnk.domain.user.service;
 
 import com.imnotdurnk.domain.auth.dto.AuthDto;
+import com.imnotdurnk.domain.user.dto.LoginUserDto;
 import com.imnotdurnk.domain.user.dto.UserDto;
 import jakarta.mail.MessagingException;
 import org.apache.coyote.BadRequestException;
@@ -12,13 +13,15 @@ public interface UserService {
 
     boolean existsByEmail(String email) throws BadRequestException;
 
+    boolean isDeletedUser(String email);
+
     void sendVerificationCode(String email) throws MessagingException, UnsupportedEncodingException, BadRequestException;
 
     void sendMail(String email, String title, String code, String codeName) throws MessagingException, UnsupportedEncodingException;
 
     boolean verifyCode(String email, String verificationCode) throws BadRequestException;
 
-    AuthDto login(String email, String password) throws BadRequestException;
+    AuthDto login(LoginUserDto loginUserDto) throws BadRequestException;
 
     void sendTemporaryPassword(String email) throws MessagingException, UnsupportedEncodingException, BadRequestException;
 
