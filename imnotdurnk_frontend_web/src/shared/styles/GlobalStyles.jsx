@@ -73,7 +73,7 @@ const GlobalStyles = createGlobalStyle`
         color: var(--color-green3);
     }
 
-    body, p, span, div {
+    body, p, span, div, input {
         font-family: 'Pretendard', sans-serif;
         font-weight: 300; /* Light */
         color: var(--color-green3);

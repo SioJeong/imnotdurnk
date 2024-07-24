@@ -2,16 +2,26 @@ import styled from 'styled-components';
 
 const StyledButton = styled.button`
     display: flex;
-    justify-content: space-evenly;
+    justify-content: center;
     align-items: center;
-    width: 5.6429rem;
-    padding: 0.2857rem;
+
     background-color: ${(props) =>
         props.$isRed
             ? 'var(--color-red, #FF6A5F)'
             : 'var(--color-white1, #fff)'};
+
     border: none;
-    border-radius: 45px;
+    border-radius: 3.2143rem;
+`;
+
+const StyledContainer = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 0.2143rem;
+    width: 5.6429rem;
+    height: 1.7143rem;
 `;
 
 const StyledText = styled.h6`
@@ -23,4 +33,4 @@ const StyledIcon = styled.img`
     filter: ${(props) => (props.$isRed ? 'brightness(0) invert(1)' : 'none')};
 `;
 
-export { StyledButton, StyledText, StyledIcon };
+export { StyledButton, StyledContainer, StyledText, StyledIcon };
