@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const StyledButton = styled.button`
+const StyledButton = styled.button`
     display: flex;
     justify-content: space-evenly;
     align-items: center;
@@ -14,11 +14,13 @@ export const StyledButton = styled.button`
     border-radius: 45px;
 `;
 
-export const StyledText = styled.h6`
+const StyledText = styled.h6`
     color: ${(props) => (props.$isRed ? 'white' : 'inherit')};
     margin: 0;
 `;
 
-export const StyledIcon = styled.img`
+const StyledIcon = styled.img`
     filter: ${(props) => (props.$isRed ? 'brightness(0) invert(1)' : 'none')};
 `;
+
+export { StyledButton, StyledText, StyledIcon };
