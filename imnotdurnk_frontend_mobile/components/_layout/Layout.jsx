@@ -1,5 +1,5 @@
 import useNavigationStore from '../../stores/useNavigationStore';
-import * as St from '../_common/globalStyle';
+import * as St from './globalStyle';
 import Navigation from './Navigation';
 
 const Layout = ({ children }) => {
