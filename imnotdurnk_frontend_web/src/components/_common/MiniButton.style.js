@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import { styled } from 'styled-components';
 
 const StyledButton = styled.button`
     display: flex;
@@ -33,4 +33,4 @@ const StyledIcon = styled.img`
     filter: ${(props) => (props.$isRed ? 'brightness(0) invert(1)' : 'none')};
 `;
 
-export { StyledButton, StyledContainer, StyledText, StyledIcon };
+export { StyledButton, StyledContainer, StyledIcon, StyledText };

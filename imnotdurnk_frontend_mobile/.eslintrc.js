@@ -61,6 +61,43 @@ module.exports = {
         'import/default': 'error',
         'import/namespace': 'off', // react-native 모듈 해석 못해서 꺼버림
         'import/no-unresolved': 'error',
+        'no-restricted-imports': [
+            'error',
+            {
+                paths: [
+                    {
+                        name: 'react',
+                        importNames: ['default'],
+                        message:
+                            'React 훅과 같은 기능은 named import 형태로 가져와야 합니다.',
+                    },
+                    {
+                        name: 'react-native',
+                        importNames: ['default'],
+                        message:
+                            'React Native 컴포넌트는 named import 형태로 가져와야 합니다.',
+                    },
+                    {
+                        name: 'axios',
+                        importNames: ['default'],
+                        message:
+                            'Axios 인스턴스는 named import 형태로 가져와야 합니다.',
+                    },
+                    {
+                        name: 'styled-components',
+                        importNames: ['default'],
+                        message:
+                            'styled-components는 named import 형태로 가져와야 합니다.',
+                    },
+                    {
+                        name: 'zustand',
+                        importNames: ['default'],
+                        message:
+                            'zustand 스토어는 named import 형태로 가져와야 합니다.',
+                    },
+                ],
+            },
+        ],
         'import/no-unused-modules': [
             'warn',
             {

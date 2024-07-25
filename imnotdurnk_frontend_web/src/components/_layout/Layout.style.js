@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import { styled } from 'styled-components';
 
 const LayoutContainer = styled.div`
     min-width: 25.7143rem;

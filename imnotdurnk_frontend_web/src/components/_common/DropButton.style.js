@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import { styled } from 'styled-components';
 
 const DropButton = styled.div`
     position: relative;
@@ -39,4 +39,4 @@ const DropdownItem = styled.li`
     }
 `;
 
-export { DropButton, DropdownHeader, DropdownList, DropdownItem };
+export { DropButton, DropdownHeader, DropdownItem, DropdownList };

@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import { styled } from 'styled-components';
 
 const StyledButton = styled.button`
     display: flex;
@@ -47,4 +47,4 @@ const StyledTextH4 = styled.h4`
     margin: 0;
 `;
 
-export { StyledButton, StyledTextP, StyledTextH4 };
+export { StyledButton, StyledTextH4, StyledTextP };

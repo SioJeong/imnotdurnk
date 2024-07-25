@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import { styled } from 'styled-components';
 
 const StyledLabel = styled.label`
     display: flex;
@@ -52,4 +52,4 @@ const StyledText = styled.p`
     font-size: var(--font-body-h6, 0.57rem);
 `;
 
-export { StyledLabel, StyledInput, StyledText };
+export { StyledInput, StyledLabel, StyledText };

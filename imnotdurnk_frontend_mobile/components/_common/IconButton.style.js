@@ -1,5 +1,5 @@
 import { Pressable } from 'react-native';
-import styled, { css } from 'styled-components/native';
+import { css, styled } from 'styled-components/native';
 
 const StyledButton = styled(Pressable)`
     display: flex;
