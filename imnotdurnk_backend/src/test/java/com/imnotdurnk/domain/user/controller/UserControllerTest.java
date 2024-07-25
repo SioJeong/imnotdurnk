@@ -129,7 +129,7 @@ class UserControllerTest {
         String email = "test@example.com";
         String password = "Password1234";
 
-        mockMvc.perform(get("/users/login")
+        mockMvc.perform(post("/users/login")
                         .param("email", email)
                         .param("password", password))
                 .andExpect(status().isOk());
