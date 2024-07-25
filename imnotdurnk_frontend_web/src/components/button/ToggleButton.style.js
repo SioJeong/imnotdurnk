@@ -2,12 +2,12 @@ import { styled } from 'styled-components';
 
 export const ToggleButtonContainer = styled.div`
     display: inline-flex;
-    height: 2.75rem;
-    padding: 0.625rem 1.5625rem;
+    height: 3.1429rem;
+    padding: 0.7143rem 1.7857rem;
     justify-content: center;
     align-items: center;
-    gap: 1.25rem;
-    border-radius: 2.8125rem;
+    gap: 1.4286rem;
+    border-radius: 3.2143rem;
     background: ${(props) =>
         props.$isMono
             ? 'var(--color-white1, #FFFFFF)'
@@ -17,11 +17,11 @@ export const ToggleButtonContainer = styled.div`
 export const ToggleButton = styled.div`
     display: flex;
     height: 1.5rem;
-    padding: 0.3125rem 1.4375rem;
+    padding: 0.3571rem 1.6429rem;
     justify-content: center;
     align-items: center;
-    gap: 0.625rem;
-    border-radius: 2.8125rem;
+    gap: 10px;
+    border-radius: 3.2143rem;
     background: ${(props) =>
         props.$isSelected
             ? props.$isMono
