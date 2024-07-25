@@ -5,12 +5,11 @@ const InputBox = ({ labelText, iconName, inputType, size }) => {
         <St.InputBoxContainer $size={size}>
             <St.TextContainer>
                 <St.InputLabel>{labelText}</St.InputLabel>
-                <St.Input />
+                <St.Input type={inputType} />
             </St.TextContainer>
             <St.InputIcon
                 src={`src/assets/icons/size_24/Icon-${iconName}.svg`}
                 alt={`${iconName} icon`}
-                type={inputType}
                 $isEmpty={iconName === 'empty'}
             />
         </St.InputBoxContainer>

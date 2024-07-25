@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { styled } from 'styled-components';
 import ToggleButton from '@/components/button/ToggleButton';
 import useNavigationStore from '@/stores/useNavigationStore';
+import Login from '@/components/login/Login';
 
 const Account = () => {
     const setNavigation = useNavigationStore((state) => state.setNavigation);
@@ -18,6 +19,7 @@ const Account = () => {
     return (
         <AccountContainer>
             <ToggleButton toggle1="Log in" toggle2="Sign up" isMono={true} />
+            <Login></Login>
         </AccountContainer>
     );
 };
