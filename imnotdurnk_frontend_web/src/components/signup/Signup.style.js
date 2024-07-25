@@ -2,7 +2,7 @@ import { styled } from 'styled-components';
 
 export const SignupContainer = styled.div`
     display: flex;
-    width: 329px;
+    width: 23.5rem;
     padding: 0rem 2.3571rem;
     flex-direction: column;
     justify-content: center;

@@ -8,21 +8,21 @@ const StyledButton = styled.button`
     /* size props에 따라 버튼 사이즈 동적으로 변경 */
     width: ${(props) => {
         if (props.$size === 'small') {
-            return '50px';
+            return '3.5714rem';
         } else if (props.$size === 'medium') {
-            return '99px';
+            return '7.0714rem';
         } else {
-            return '265.0004px';
+            return '18.9286rem';
         }
     }};
 
     height: ${(props) => {
         if (props.$size === 'small') {
-            return '28px';
+            return '2rem';
         } else if (props.$size === 'medium') {
-            return '42px';
+            return '3rem';
         } else {
-            return '42px';
+            return '3rem';
         }
     }};
 

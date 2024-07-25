@@ -7,7 +7,7 @@ const InputBoxContainer = styled.div`
         ${(props) => (props.$size === 'small' ? '1.1429rem' : '1.4286rem')};
     justify-content: space-between;
     align-items: center;
-    border-radius: 0.7143rem;
+    border-radius: 10.0002px;
     background: var(----color-white1, #fff);
     gap: ${(props) => (props.$size === 'small' ? '0.2143rem' : '0.3571rem')};
 `;
@@ -15,17 +15,17 @@ const InputBoxContainer = styled.div`
 const TextContainer = styled.div`
     display: flex;
     width: ${(props) =>
-        props.$size === 'small' ? '4.0714rem ' : '13.5714rem'};
+        props.$size === 'small' ? '56.9996px ' : '189.9996px'};
 
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
-    gap: ${(props) => (props.$size === 'small' ? '0.2143rem' : '.3571rem')};
+    gap: ${(props) => (props.$size === 'small' ? '3.0002px' : '4.9994px')};
 `;
 
 const InputLabel = styled.h6`
     color: var(----color-green3, #252f2c);
-    font-size: var(---font-title-h6, 0.57rem);
+    font-size: var(---font-title-h6, 7.98px);
 `;
 
 const Input = styled.input`
@@ -33,7 +33,7 @@ const Input = styled.input`
     padding: 0;
     border: none;
     outline: none;
-    font-size: var(--font-body-h5, 0.71rem);
+    font-size: var(--font-body-h5, 9.94px);
 `;
 
 const InputIcon = styled.img`
@@ -41,8 +41,8 @@ const InputIcon = styled.img`
     justify-content: center;
     align-items: center;
     flex-shrink: 0;
-    width: 24px;
-    height: 24px;
+    width: 1.7143rem;
+    height: 1.7143rem;
     ${(props) =>
         props.$isEmpty &&
         `

@@ -2,15 +2,15 @@ import { styled } from 'styled-components';
 
 export const PagesContainer = styled.div`
     display: flex;
-    width: 70.9996px;
+    width: 5.0714rem;
     justify-content: center;
     align-items: center;
-    gap: 0.7143rem;
+    gap: 10.0002px;
 `;
 
 export const Page = styled.div`
-    width: 10px;
-    height: 10px;
+    width: 0.7143rem;
+    height: 0.7143rem;
     flex-shrink: 0;
     border-radius: 100px;
     background: ${(props) =>

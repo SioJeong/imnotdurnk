@@ -20,8 +20,8 @@ export const MainTitle = styled.h1`
 `;
 export const LoginSubQuestionContainer = styled.div`
     display: flex;
-    width: 263px;
-    height: 16px;
+    width: 18.7857rem;
+    height: 1.1429rem;
     justify-content: space-between;
     align-items: center;
 `;
