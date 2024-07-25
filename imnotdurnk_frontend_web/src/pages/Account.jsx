@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { styled } from 'styled-components';
-import ToggleButton from '@/components/button/ToggleButton';
+import ToggleButton from '@/components/_button/ToggleButton';
 import useNavigationStore from '@/stores/useNavigationStore';
 import Signup from '@/components/signup/Signup';
 import Login from '@/components/login/Login';

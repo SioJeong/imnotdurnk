@@ -1,7 +1,7 @@
 import * as St from './Signup.style';
 import InputBox from '@/components/_common/InputBox';
 import Checkbox from '@/components/_common/Checkbox';
-import Button from '@/components/button/Button';
+import Button from '@/components/_button/Button.jsx';
 const Signup = () => {
     return (
         <St.SignupContainer>
