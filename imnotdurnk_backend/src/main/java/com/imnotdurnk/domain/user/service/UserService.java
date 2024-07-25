@@ -29,13 +29,4 @@ public interface UserService {
 
     void logout(String accessToken, String refreshToken) throws BadRequestException;
 
-    boolean checkEmail(String email);
-
-    boolean checkName(String name);
-
-    boolean checkpassword(String password);
-
-    boolean checkphone(String phone);
-
-
 }
