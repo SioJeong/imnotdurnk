@@ -24,6 +24,7 @@ public class AuthConfig implements WebMvcConfigurer {
          * 4. Swagger UI
          */
         registry.addInterceptor(jwtTokenInterceptor)
-                .excludePathPatterns("/users/login", "/users/signup/**", "/swagger-ui/**", "users/login/find-password");
+                .excludePathPatterns("/users/login", "/users/signup/**",
+                        "/v3/api-docs", "/swagger-ui/**", "/swagger-resources/**", "/webjars/**", "users/login/find-password");
     }
 }
