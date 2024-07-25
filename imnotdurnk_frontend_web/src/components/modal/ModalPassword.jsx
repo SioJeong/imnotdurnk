@@ -2,7 +2,7 @@ import * as St from './Modal.style';
 
 import InputBox from '../_common/InputBox';
 
-const ModalTextBox = () => {
+const ModalPassword = () => {
     return (
         <St.StyledBox>
             <St.StyledForm>
@@ -31,4 +31,4 @@ const ModalTextBox = () => {
     );
 };
 
-export default ModalTextBox;
+export default ModalPassword;
