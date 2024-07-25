@@ -14,6 +14,7 @@ import com.imnotdurnk.global.exception.ResourceNotFoundException;
 import com.imnotdurnk.global.util.JwtUtil;
 import lombok.AllArgsConstructor;
 import org.apache.coyote.BadRequestException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -30,6 +31,7 @@ public class CalendarServiceImpl implements CalendarService {
 
     private JwtUtil jwtUtil;
     private CalendarRepository calendarRepository;
+    @Autowired
     private UserRepository userRepository;
     private GameLogRepository gameLogRepository;
 
@@ -57,6 +59,7 @@ public class CalendarServiceImpl implements CalendarService {
         if(!tokenEmail.equals(userIdFromPlan)) throw new BadRequestException("잘못된 접근입니다.");
 
         updatedCalendarEntity.setEntityFromDto(calendarDto);
+
         updatedCalendarEntity = calendarRepository.save(updatedCalendarEntity);
 
         if(updatedCalendarEntity == null) throw new EntitySaveFailedException("피드백 등록에 실패하였습니다.");
@@ -86,15 +89,16 @@ public class CalendarServiceImpl implements CalendarService {
     /**
      * 특정 날짜에 사용자가 생성한 캘린더 목록을 조회
      *
-     * @param date      조회할 캘린더의 날짜
+     * @param dateStr      조회할 캘린더의 날짜
      * @param token     사용자의 액세스 토큰
      * @return         지정된 날짜에 해당하는 사용자의 캘린더 목록을 담고 있는 CalendarDto 리스트
      *
      * @throws Exception 사용자의 이메일을 찾거나 캘린더를 조회하는 과정에서 발생할 수 있는 예외
      */
     @Override
-    public List<CalendarDto> getCalendar(Date date, String token){
+    public List<CalendarDto> getCalendar(String token, String dateStr){
         UserEntity user = userRepository.findByEmail(jwtUtil.getUserEmail(token, TokenType.ACCESS));
+        LocalDate date = LocalDate.parse(dateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         List<CalendarEntity> calendarEntities = calendarRepository.findByUserEntity_IdAndDate(user.getId(), date);
         return calendarEntities.stream().map(CalendarEntity::toDto).collect(Collectors.toList());
     }
