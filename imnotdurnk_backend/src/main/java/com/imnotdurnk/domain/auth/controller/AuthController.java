@@ -5,6 +5,7 @@ import com.imnotdurnk.domain.auth.enums.TokenType;
 import com.imnotdurnk.domain.auth.service.AuthService;
 import com.imnotdurnk.global.commonClass.CommonResponse;
 import lombok.AllArgsConstructor;
+import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -37,7 +38,11 @@ public class AuthController {
     public ResponseEntity<CommonResponse> reissuedToken(
             @RequestAttribute(value = "RefreshToken", required = true) String refreshToken,
             @RequestAttribute(value = "AccessToken", required = false) String accessToken,
-            @RequestParam String type) {
+            @RequestParam String type) throws BadRequestException {
+
+        if (type == null || type.equals("")) {
+            throw new BadRequestException();
+        }
 
         CommonResponse response = new CommonResponse();
         TokenType tokenType = TokenType.ACCESS;

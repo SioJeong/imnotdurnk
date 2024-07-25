@@ -2,6 +2,8 @@ package com.imnotdurnk.domain.gamelog.controller;
 
 import com.imnotdurnk.domain.gamelog.dto.GameStatistic;
 import com.imnotdurnk.domain.gamelog.service.GameLogServiceImpl;
+import com.imnotdurnk.global.exception.InvalidDateException;
+import com.imnotdurnk.global.exception.ResourceNotFoundException;
 import com.imnotdurnk.global.response.SingleResponse;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
@@ -25,6 +27,8 @@ public class GameLogController {
 
     private GameLogServiceImpl gameLogService;
 
+    private static final int GAME_TYPE_COUNT = 4;
+
 
     /**
      * 유저의 게임 통계
@@ -38,11 +42,19 @@ public class GameLogController {
     public ResponseEntity<SingleResponse<GameStatistic>> getStatistics
             (@RequestAttribute(value = "AccessToken", required = true) String token,
              @RequestParam LocalDate date,
-             @RequestParam int gameType) throws Exception {
+             @RequestParam int gameType) {
 
-        SingleResponse<GameStatistic> response = new SingleResponse<>();
+        if (date == null) {
+            throw new InvalidDateException("날짜 입력 오류");
+        }
+
+        if (gameType <= 0 || gameType > GAME_TYPE_COUNT) {
+            throw new ResourceNotFoundException("게임 타입 오류");
+        }
 
         GameStatistic gameStatistic = gameLogService.getGameStatistic(token, gameType, date);
+
+        SingleResponse<GameStatistic> response = new SingleResponse<>();
         response.setStatusCode(HttpStatus.OK.value());
         response.setMessage("게임 통계 응답 완료");
         response.setData(gameStatistic);
