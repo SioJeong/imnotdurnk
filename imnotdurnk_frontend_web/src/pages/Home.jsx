@@ -1,5 +1,6 @@
 import ToggleButton from '@/components/_common/ToggleButton';
 import useNavigationStore from '@/stores/useNavigationStore';
+import Pagenation from '@/components/_common/Pagination';
 import { useEffect } from 'react';
 import DropButton from '../components/_common/DropButton';
 import InputBox from '../components/_common/InputBox';
@@ -22,6 +23,7 @@ const Home = () => {
 
     return (
         <>
+            <Pagenation totalPages="4" />
             <ToggleButton toggle1="토글1" toggle2="토글2" isMono={true} />
             <DropButton options={options} />
             <InputBox
