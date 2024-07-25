@@ -1,11 +1,11 @@
-import { useState } from 'react';
 import * as St from './ToggleButton.style';
-const ToggleButton = ({ toggle1, toggle2, isMono }) => {
-    const [isFirstSelected, setIsFirstSelected] = useState(true);
-
-    const changeToggle = () => {
-        setIsFirstSelected(!isFirstSelected);
-    };
+const ToggleButton = ({
+    toggle1,
+    toggle2,
+    isMono,
+    isFirstSelected,
+    changeToggle,
+}) => {
     return (
         <St.ToggleButtonContainer $isMono={isMono}>
             <St.ToggleButton
