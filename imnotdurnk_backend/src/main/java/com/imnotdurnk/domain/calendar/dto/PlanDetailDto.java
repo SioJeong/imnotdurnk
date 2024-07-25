@@ -13,6 +13,8 @@ import java.util.List;
 @Setter
 public class PlanDetailDto {
 
+    private Integer id;
+
     private Integer userId;
 
     private LocalDateTime date;
@@ -32,7 +34,8 @@ public class PlanDetailDto {
     private List<GameLogEntity> gameLogEntities;
 
     @Builder
-    public PlanDetailDto(Integer userId,
+    public PlanDetailDto(Integer id,
+                         Integer userId,
                          LocalDateTime date,
                          String title,
                          Integer alcoholLevel,
@@ -41,6 +44,7 @@ public class PlanDetailDto {
                          Integer beerAmount,
                          Integer sojuAmount,
                          List<GameLogEntity> gameLogEntities) {
+        this.id = id;
         this.userId = userId;
         this.date = date;
         this.title = title;

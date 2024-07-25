@@ -5,6 +5,7 @@ import com.imnotdurnk.domain.calendar.dto.CalendarStatisticDto;
 import com.imnotdurnk.domain.calendar.dto.PlanDetailDto;
 import com.imnotdurnk.domain.calendar.service.CalendarService;
 import com.imnotdurnk.global.commonClass.CommonResponse;
+import com.imnotdurnk.global.exception.InvalidDateException;
 import com.imnotdurnk.global.response.ListResponse;
 import com.imnotdurnk.global.response.SingleResponse;
 import lombok.AllArgsConstructor;
@@ -16,8 +17,10 @@ import org.springframework.web.bind.annotation.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
 
 @RestController
 @RequestMapping("/calendars")
@@ -25,8 +28,6 @@ import java.util.List;
 public class CalendarController {
 
     private CalendarService calendarService;
-
-
 
      /***
      * 피드백 등록 API
@@ -41,7 +42,10 @@ public class CalendarController {
     public ResponseEntity<?> updateFeedback(@RequestAttribute(value = "AccessToken", required = true) String accessToken,
                                           @PathVariable String date,
                                           @PathVariable int planId,
-                                          @RequestBody CalendarDto calendarDto) throws BadRequestException {
+                                          @RequestBody CalendarDto calendarDto) throws BadRequestException, InvalidDateException {
+
+        if(!checkDate(date)) throw new InvalidDateException("날짜 입력 오류");
+        calendarDto.setDate(LocalDateTime.parse(date));
 
         //응답 객체
         CommonResponse response = new CommonResponse();
@@ -68,6 +72,8 @@ public class CalendarController {
      */
     @PostMapping
     public ResponseEntity<?> addCalendar(@RequestAttribute(value = "AccessToken", required = true) String token, @RequestBody CalendarDto calendarDto) throws BadRequestException{
+
+        if(!checkTitle(calendarDto.getTitle())) throw new BadRequestException("제목이 없거나 50자를 초과했습니다.");
 
         CommonResponse response = new CommonResponse();
 
@@ -97,6 +103,7 @@ public class CalendarController {
         ListResponse<CalendarDto> response = new ListResponse<>();
         Date date;
 
+        if(!checkDate(dateStr)) throw new InvalidDateException("날짜 입력 오류");
         date = new SimpleDateFormat("yyyy-MM-dd").parse(dateStr);
         List<CalendarDto> plans = calendarService.getCalendar(date, token);
 
@@ -143,6 +150,7 @@ public class CalendarController {
                                                @PathVariable int planId,
                                                @RequestParam(value = "arrival-time", required = true) String arrivalTime) throws BadRequestException {
 
+        if(!checkTime(arrivalTime)) throw new BadRequestException("시간 입력 오류");
 
         calendarService.updateArrivalTime(accessToken, planId, arrivalTime);
         
@@ -173,6 +181,39 @@ public class CalendarController {
         response.setData(planDetailDto);
 
         return ResponseEntity.status(response.getHttpStatus()).body(response);
+    }
+
+    /***
+     * 제목 유효성 체크
+     *      50자 제한
+     * @param title
+     * @return 기준에 부합하면 true, 아니면 false
+     */
+    public boolean checkTitle(String title) {
+        if(title==null) return false;
+        return Pattern.matches("^.{0,50}$", title);
+    }
+
+    /***
+     * 날짜 유효성 체크
+     *      yyyy-MM-dd 형태
+     * @param date
+     * @return 기준에 부합하면 true, 아니면 false
+     */
+    public boolean checkDate(String date) {
+        if(date==null) return false;
+        return Pattern.matches("\\d{4}-\\d{2}-\\d{2}", date);
+    }
+
+    /***
+     * 시간 유효성 체크
+     *      HH:mm (00~23) : (00~59)
+     * @param time
+     * @return 기준에 부합하면 true, 아니면 false
+     */
+    public boolean checkTime(String time) {
+        if(time==null) return false;
+        return Pattern.matches("^([01]\\\\d|2[0-3]):([0-5]\\\\d)$", time);
     }
 
 }
