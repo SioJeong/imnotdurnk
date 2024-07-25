@@ -2,6 +2,7 @@ package com.imnotdurnk.domain.user.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.imnotdurnk.domain.auth.enums.TokenType;
+import com.imnotdurnk.domain.user.dto.LoginUserDto;
 import com.imnotdurnk.domain.user.dto.UserDto;
 import com.imnotdurnk.domain.user.repository.UserRepository;
 import com.imnotdurnk.domain.user.service.UserServiceImpl;
@@ -126,12 +127,10 @@ class UserControllerTest {
     @Test
     @Order(4)
     public void testLogin() throws Exception {
-        String email = "test@example.com";
-        String password = "Password1234";
-
+        LoginUserDto user = new LoginUserDto("test@example.com", "Password1234");
         mockMvc.perform(post("/users/login")
-                        .param("email", email)
-                        .param("password", password))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(user)))
                 .andExpect(status().isOk());
     }
 
@@ -152,7 +151,7 @@ class UserControllerTest {
         String accessToken = jwtUtil.generateToken("test@example.com", TokenType.ACCESS).getToken();
 
         UserDto userDto = UserDto.builder()
-                .password("newpassword")
+                .password("Newpassword123")
                 .name("Updated User")
                 .build();
 
@@ -160,8 +159,7 @@ class UserControllerTest {
                         .header("Authorization", "Bearer " + accessToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userDto)))
-                .andExpect(status().isOk());
-    }
+                .andExpect(status().isOk());    }
 
     @Test
     @Order(7)
