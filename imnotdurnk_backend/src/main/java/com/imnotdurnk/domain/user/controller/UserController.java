@@ -1,10 +1,14 @@
 package com.imnotdurnk.domain.user.controller;
+
 import com.imnotdurnk.domain.auth.dto.AuthDto;
 import com.imnotdurnk.domain.auth.dto.TokenDto;
 import com.imnotdurnk.domain.user.dto.LoginUserDto;
 import com.imnotdurnk.domain.user.dto.UserDto;
 import com.imnotdurnk.domain.user.service.UserServiceImpl;
 import com.imnotdurnk.global.commonClass.CommonResponse;
+import com.imnotdurnk.global.exception.InvalidDateException;
+import com.imnotdurnk.global.exception.InvalidTokenException;
+import com.imnotdurnk.global.exception.RequiredFieldMissingException;
 import com.imnotdurnk.global.response.SingleResponse;
 import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
@@ -14,6 +18,7 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.io.UnsupportedEncodingException;
+import java.util.regex.Pattern;
 
 @RestController
 @RequestMapping("/users")
@@ -36,6 +41,9 @@ public class UserController {
      */
     @GetMapping("/signup/verify")
     public ResponseEntity<?> verifyEmail(@RequestParam String email) throws BadRequestException, MessagingException, UnsupportedEncodingException {
+
+        if(email == null || email.equals("")) throw new RequiredFieldMissingException("이메일 누락");
+
         userService.sendVerificationCode(email);
         CommonResponse response = new CommonResponse(200,"이메일 인증 요청");
         return ResponseEntity.status(response.getHttpStatus()).body(response);
@@ -51,6 +59,10 @@ public class UserController {
      */
     @PostMapping("/signup/verify-code")
     public ResponseEntity<?> verifyCode(@RequestParam String email, @RequestParam String code) throws Exception {
+
+        if(email == null || email.equals("")) throw new RequiredFieldMissingException("이메일 누락");
+        if(code == null || code.equals("")) throw new RequiredFieldMissingException("인증번호 누락");
+
         userService.verifyCode(email, code);
         CommonResponse response = new CommonResponse(200,"이메일 인증");
         return ResponseEntity.status(response.getHttpStatus()).body(response);
@@ -66,6 +78,12 @@ public class UserController {
      */
     @PostMapping("/signup")
     public ResponseEntity<?> signUp(@RequestBody UserDto userDto) throws BadRequestException {
+
+        if (userDto.getEmail() == null || !checkEmail(userDto.getEmail())) throw new BadRequestException("이메일이 누락되었거나 형식에 맞지 않습니다.");
+        if (userDto.getPassword() == null || !checkpassword(userDto.getPassword())) throw new BadRequestException("비밀번호가 누락되었거나 형식에 맞지 않습니다.");
+        if (userDto.getName() == null || !checkName(userDto.getName())) throw new BadRequestException("이름이 누락되었거나 형식에 맞지 않습니다.");
+        if (userDto.getPhone() == null || !checkphone(userDto.getPhone())) throw new BadRequestException("전화번호가 누락되었거나 형식에 맞지 않습니다.");
+
         userService.existsByEmail(userDto.getEmail());
         userService.signUp(userDto);
         CommonResponse response = new CommonResponse(201,"회원가입 성공");
@@ -81,6 +99,9 @@ public class UserController {
      */
     @PostMapping("/login")
     public ResponseEntity<?> login (@RequestBody LoginUserDto loginUserDto) throws BadRequestException {
+
+        if(loginUserDto.getEmail() == null || !checkEmail(loginUserDto.getEmail())) throw new BadRequestException("형식에 맞지 않는 이메일입니다.");
+        if(loginUserDto.getPassword() == null) throw new RequiredFieldMissingException("비밀번호가 누락되었습니다.");
 
         AuthDto authDto = userService.login(loginUserDto);
 
@@ -118,6 +139,9 @@ public class UserController {
      */
     @GetMapping("/login/find-password")
     public ResponseEntity<?> sendNewPassword(@RequestParam String email) throws BadRequestException, MessagingException, UnsupportedEncodingException {
+
+        if(email == null || email.equals("")) throw new RequiredFieldMissingException("이메일이 누락되었습니다.");
+
         userService.sendTemporaryPassword(email);
         CommonResponse response = new CommonResponse(200,"임시 비밀번호 발송 성공");
         return ResponseEntity.status(response.getHttpStatus()).body(response);
@@ -132,6 +156,12 @@ public class UserController {
      */
     @PutMapping("/profile")
     public ResponseEntity<?> updateProfile(@RequestHeader("Authorization") String token, @RequestBody UserDto userDto) throws BadRequestException {
+
+        if(token == null) throw new InvalidDateException("사용자 인증 정보가 존재하지 않습니다.");
+        //수정된 정보 유효성 검사
+        if(userDto.getPhone() == null || !checkphone(userDto.getPhone())) throw new BadRequestException("형식이 잘못된 전화번호입니다.");
+        if(userDto.getNickname() != null && !checkName(userDto.getNickname())) throw new BadRequestException("형식이 잘못된 닉네임입니다.");
+
         userService.updateProfile(token,userDto);
         CommonResponse response = new CommonResponse(200,"사용자 프로필 정보 업데이트 성공");
         return ResponseEntity.status(response.getHttpStatus()).body(response);
@@ -145,6 +175,9 @@ public class UserController {
      */
     @GetMapping("/profile")
     public ResponseEntity<?> getProfile(@RequestHeader("Authorization") String token) throws BadRequestException {
+
+        if(token == null) throw new InvalidTokenException("인증 정보가 존재하지 않습니다.");
+
         UserDto user=userService.getProfile(token);
         SingleResponse response = new SingleResponse<>(200,"프로필 조회 성공",user);
         return ResponseEntity.status(response.getHttpStatus()).body(response);
@@ -156,13 +189,63 @@ public class UserController {
      * @param accessToken
      * @return 로그아웃 완료
      */
-    @GetMapping("logout")
+    @PostMapping("logout")
     public ResponseEntity<?> logout (
             @RequestAttribute(value = "RefreshToken", required = false) String refreshToken,
             @RequestAttribute(value = "AccessToken", required = false) String accessToken) throws BadRequestException {
+
+        if (refreshToken == null && accessToken == null){
+            throw new BadRequestException("인증 정보가 존재하지 않습니다.");
+        }
+
         userService.logout(accessToken, refreshToken);
         CommonResponse response = new CommonResponse(200,"로그아웃 성공");
         return ResponseEntity.status(response.getHttpStatus()).body(response);
     }
+
+
+
+    //---유효성 체크 메소드------------------------------------------------------------
+
+    /***
+     * 이메일 유효성 체크
+     *      abc@abc.com 형태
+     * @param email
+     * @return 기준에 부합하면 true, 아니면 false
+     */
+    public boolean checkEmail(String email) {
+        return Pattern.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$", email);
+    }
+
+    /***
+     * 이름, 닉네임 유효성 체크
+     *      한글 2-10자
+     * @param name
+     * @return 기준에 부합하면 true, 아니면 false
+     */
+    public boolean checkName(String name) {
+        return Pattern.matches("^[가-힣]{2,10}$", name);
+    }
+
+    /***
+     * 비밀번호 유효성 체크
+     *      대소문자 각각 1개 이상, 숫자 포함 / 8-16자
+     * @param password
+     * @return 기준에 부합하면 true, 아니면 false
+     */
+    public boolean checkpassword(String password) {
+        return Pattern.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{8,16}$", password);
+    }
+
+    /***
+     * 핸드폰 번호 유효성 체크
+     *      000-0000-000
+     * @param phone
+     * @return 기준에 부합하면 true, 아니면 false
+     */
+    public boolean checkphone(String phone) {
+        return Pattern.matches("^(01[0-9])-\\d{4}-\\d{4}$", phone);
+    }
+
 
 }
