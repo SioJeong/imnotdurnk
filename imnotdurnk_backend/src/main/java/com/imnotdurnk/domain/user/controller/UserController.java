@@ -86,7 +86,7 @@ public class UserController {
         if (userDto.getName() == null || !checkName(userDto.getName())) throw new BadRequestException("이름이 누락되었거나 형식에 맞지 않습니다.");
         if (userDto.getPhone() == null || !checkphone(userDto.getPhone())) throw new BadRequestException("전화번호가 누락되었거나 형식에 맞지 않습니다.");
 
-        userService.existsByEmail(userDto.getEmail());
+        if(userService.existsByEmail(userDto.getEmail())) throw new BadRequestException("중복된 이메일 입니다.");
         userService.signUp(userDto);
         CommonResponse response = new CommonResponse(201,"회원가입 성공");
         return ResponseEntity.status(response.getHttpStatus()).body(response);
@@ -157,7 +157,7 @@ public class UserController {
      * @throws BadRequestException 수정 요청이 실패한 경우 발생
      */
     @PutMapping("/profile")
-    public ResponseEntity<?> updateProfile(@RequestHeader("Authorization") String token, @RequestBody UserDto userDto) throws BadRequestException {
+    public ResponseEntity<?> updateProfile(@RequestAttribute(value = "AccessToken", required = true)  String token, @RequestBody UserDto userDto) throws BadRequestException {
 
         if(token == null) throw new InvalidDateException("사용자 인증 정보가 존재하지 않습니다.");
         //수정된 정보 유효성 검사
@@ -176,7 +176,7 @@ public class UserController {
      * @throws BadRequestException 조회 실패 시 발생
      */
     @GetMapping("/profile")
-    public ResponseEntity<?> getProfile(@RequestHeader("Authorization") String token) throws BadRequestException {
+    public ResponseEntity<?> getProfile(@RequestAttribute(value = "AccessToken", required = true) String token) throws BadRequestException {
 
         if(token == null) throw new InvalidTokenException("인증 정보가 존재하지 않습니다.");
 

@@ -59,6 +59,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private AuthService authService;
 
+    @Value("${spring.mail.username}")
+    private String senderUsername;
+
 
     /**
      * 임시 비밀번호 형식: 길이, 대소문자 여부
@@ -237,7 +240,7 @@ public class UserServiceImpl implements UserService {
         msg += "</div>";
         message.setText(msg, "utf-8", "html");// 내용, charset 타입, subtype
 
-        message.setFrom(new InternetAddress(mailSender.getUsername(), applicationTitle));// 보내는 사람
+        message.setFrom(new InternetAddress(senderUsername, applicationTitle));// 보내는 사람
 
         try {
             emailsender.send(message);
