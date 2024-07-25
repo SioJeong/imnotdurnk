@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import { styled } from 'styled-components';
 
 const ModalBackground = styled.div`
     display: flex;
@@ -51,4 +51,22 @@ const StyledBox = styled.div`
     border-radius: 20px;
 `;
 
-export { ModalBackground, ModalContainer, StyledBezel, StyledBox };
+const StyledForm = styled.form`
+    display: flex;
+    flex-direction: column;
+    gap: 0.7143rem;
+`;
+
+const StyledIcon = styled.img`
+    width: 11rem;
+    height: 11rem;
+`;
+
+export {
+    ModalBackground,
+    ModalContainer,
+    StyledBezel,
+    StyledBox,
+    StyledForm,
+    StyledIcon,
+};

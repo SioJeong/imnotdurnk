@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import * as St from './Modal.style';
 
-import Button from '@/components/_common/Button';
+import Button from '@/components/button/Button';
 
 const Modal = ({ contents, ButtonText }) => {
     const [isModalOpened, setIsModalOpened] = useState(true);
@@ -10,7 +10,7 @@ const Modal = ({ contents, ButtonText }) => {
         <>
             {isModalOpened && (
                 <St.ModalBackground onClick={() => setIsModalOpened(false)}>
-                    <St.ModalContainer>
+                    <St.ModalContainer onClick={(e) => e.stopPropagation()}>
                         <img src="src/assets/images/bezel.svg" alt="Bezel" />
                         <div>{contents}</div>
                         <Button text={ButtonText} size={'large'} isRed={true} />
