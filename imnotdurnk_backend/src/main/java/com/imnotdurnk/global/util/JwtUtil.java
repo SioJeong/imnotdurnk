@@ -2,6 +2,8 @@ package com.imnotdurnk.global.util;
 
 import com.imnotdurnk.domain.auth.dto.TokenDto;
 import com.imnotdurnk.domain.auth.enums.TokenType;
+import com.imnotdurnk.global.exception.InvalidTokenException;
+import com.imnotdurnk.global.exception.RequiredFieldMissingException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
@@ -14,16 +16,16 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-    private final int accessTokenExpireTime;
-    private final int refreshTokenExpireTime;
+    private final long accessTokenExpireTime;
+    private final long refreshTokenExpireTime;
     private final String accessTokenSecretKey;
     private final String refreshTokenSecreteKey;
     private final RedisUtil redisUtil;
 
     @Autowired
     public JwtUtil(
-            @Value("${jwt.expiretime.accesstoken}") int accessTokenExpireTime, //엑세스 토큰 유효시간
-            @Value("${jwt.expiretime.refreshtoken}") int refreshTokenExpireTime, //리프레시 토큰 유효시간
+            @Value("${jwt.expiretime.accesstoken}") long accessTokenExpireTime, //엑세스 토큰 유효시간
+            @Value("${jwt.expiretime.refreshtoken}") long refreshTokenExpireTime, //리프레시 토큰 유효시간
             @Value("${jwt.secretkey.accesstoken}") String accessTokenSecretKey, //엑세스 토큰 시크릿키
             @Value("${jwt.secretkey.refreshtoken}") String refreshTokenSecretKey, //리프레시 토큰 시크릿키
             RedisUtil redisUtil
@@ -77,6 +79,8 @@ public class JwtUtil {
      * @return 토큰
      */
     public TokenDto generateToken(String email, TokenType type){
+
+        if(email == null || type == null) throw new RequiredFieldMissingException("필드 누락");
 
         // 발급 시간과 만료 시간을 계산
         long issuedAt = System.currentTimeMillis();
@@ -163,6 +167,11 @@ public class JwtUtil {
      * @return TokenDto
      */
     public TokenDto convertTokenToTokenDto(String token, TokenType type){
+
+        if(!isValidToken(token, type)){
+            throw new InvalidTokenException("잘못된 토큰입니다.");
+        }
+
         TokenDto tokenDto = new TokenDto();
 
         tokenDto.setToken(token);
