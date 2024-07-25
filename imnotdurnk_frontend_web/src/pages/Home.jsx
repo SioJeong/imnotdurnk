@@ -34,6 +34,12 @@ const Home = () => {
             />
             <MiniButton text="비밀번호 변경" iconname="key" isRed={true} />
             <StepperButton icon1="plus" icon2="minus" />
+            <InputBox
+                labelText="label1"
+                iconName="email"
+                inputType="text"
+                size="small"
+            />
         </>
     );
 };
