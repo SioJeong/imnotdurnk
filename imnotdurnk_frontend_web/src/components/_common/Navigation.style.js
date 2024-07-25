@@ -6,8 +6,7 @@ const NavContainer = styled.div`
     align-items: center;
     flex-shrink: 0;
 
-    min-width: 25.7143rem;
-    max-width: 51.4286rem;
+    width: 25.7143rem;
     height: 3.14rem; /* 44px -> 3.14rem */
 
     margin: 0 auto;
