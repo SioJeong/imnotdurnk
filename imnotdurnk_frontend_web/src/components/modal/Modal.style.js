@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import { styled } from 'styled-components';
 
 const ModalBackground = styled.div`
     display: flex;
@@ -17,13 +17,13 @@ const ModalBackground = styled.div`
 
 const ModalContainer = styled.div`
     display: flex;
-    width: 25.7143rem;
+    width: 360.0002px;
     flex-direction: column;
     align-items: center;
 
     margin: 0 auto;
     padding: 0.7143rem 1rem 1rem 1rem;
-    gap: 1.7143rem;
+    gap: 24.0002px;
 
     position: fixed;
     bottom: 0;
@@ -43,7 +43,7 @@ const StyledBox = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 23.7143rem;
+    width: 332.0002px;
     padding: 1.7143rem;
     gap: 0.7143rem;
     background-color: var(--color-white2, #f7f7ec);

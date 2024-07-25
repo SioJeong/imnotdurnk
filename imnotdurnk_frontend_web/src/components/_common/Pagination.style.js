@@ -2,17 +2,17 @@ import { styled } from 'styled-components';
 
 export const PagesContainer = styled.div`
     display: flex;
-    width: 5.0714rem;
+    width: 70.9996px;
     justify-content: center;
     align-items: center;
     gap: 0.7143rem;
 `;
 
 export const Page = styled.div`
-    width: 0.7143rem;
-    height: 0.7143rem;
+    width: 10px;
+    height: 10px;
     flex-shrink: 0;
-    border-radius: 7.1429rem;
+    border-radius: 100px;
     background: ${(props) =>
         props.$isCurrentPage
             ? `var(--color-green3, #252F2C)`

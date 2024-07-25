@@ -12,14 +12,12 @@ export const LoginContainer = styled.div`
 
 export const SubTitle = styled.h3`
     color: var(----color-green3, #252f2c);
-
-    font-size: 14px;
+    font-size: var(--font-body-h3, 1rem);
     line-height: normal;
 `;
 export const MainTitle = styled.h1`
-    color: var(----color-green3, #252f2c);
-
-    font-size: 32px;
+    color: var(--color-green3, #252f2c);
+    font-size: var(--font-title-h1, 2.29rem);
     line-height: normal;
 `;
 export const LoginSubQuestionContainer = styled.div`
@@ -32,6 +30,6 @@ export const LoginSubQuestionContainer = styled.div`
 export const ForgetPasswordMessage = styled.h6`
     color: var(----color-green3, #252f2c);
     text-align: right;
-    font-size: 8px;
+    font-size: var(--font-body-h6, 0.57rem);
     line-height: normal;
 `;

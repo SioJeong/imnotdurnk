@@ -41,8 +41,8 @@ const InputIcon = styled.img`
     justify-content: center;
     align-items: center;
     flex-shrink: 0;
-    width: 1.7143rem;
-    height: 1.7143rem;
+    width: 24px;
+    height: 24px;
     ${(props) =>
         props.$isEmpty &&
         `
