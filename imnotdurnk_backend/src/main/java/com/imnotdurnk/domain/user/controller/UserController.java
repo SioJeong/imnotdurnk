@@ -3,6 +3,7 @@ package com.imnotdurnk.domain.user.controller;
 import com.imnotdurnk.domain.auth.dto.AuthDto;
 import com.imnotdurnk.domain.auth.dto.TokenDto;
 import com.imnotdurnk.domain.user.dto.LoginUserDto;
+import com.imnotdurnk.domain.user.dto.UpdatedPasswordDto;
 import com.imnotdurnk.domain.user.dto.UserDto;
 import com.imnotdurnk.domain.user.service.UserServiceImpl;
 import com.imnotdurnk.global.commonClass.CommonResponse;
@@ -14,6 +15,7 @@ import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -121,7 +123,7 @@ public class UserController {
                 .sameSite("None") // 동일한 사이트에서 사용할 수 있도록 설정 None: 동일한 사이트가 아니어도 된다.
                 .build();
 
-        CommonResponse response = new CommonResponse(201, "로그인 성공");
+        CommonResponse response = new CommonResponse(HttpStatus.OK.value(), "로그인 성공");
 
         return ResponseEntity.status(response.getHttpStatus())
                 .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
@@ -203,6 +205,26 @@ public class UserController {
         return ResponseEntity.status(response.getHttpStatus()).body(response);
     }
 
+    @PostMapping("update-password")
+    public ResponseEntity<?> updatePassword(@RequestAttribute(value = "AccessToken", required = true) String accessToken,
+                                            @RequestBody UpdatedPasswordDto updatedPasswordDto) throws BadRequestException {
+
+        //누락 확인
+        if(updatedPasswordDto.getPrevPassword() == null || updatedPasswordDto.getPrevPassword().equals(""))
+            throw new RequiredFieldMissingException("기존 비밀번호가 누락되었습니다.");
+        if(updatedPasswordDto.getNewPassword() == null || updatedPasswordDto.getNewPassword().equals(""))
+            throw new RequiredFieldMissingException("변경하려는 비밀번호가 누락되었습니다.");
+
+        //신규 비밀번호 유효성 확인
+        if(!checkpassword(updatedPasswordDto.getNewPassword())) throw new BadRequestException("잘못된 형식의 비밀번호입니다.");
+
+        userService.updatePassword(accessToken, updatedPasswordDto);
+
+        CommonResponse response = new CommonResponse();
+        response.setStatusCode(HttpStatus.OK.value());
+        response.setMessage("비밀번호 변경이 완료되었습니다.");
+        return ResponseEntity.status(response.getHttpStatus()).body(response);
+    }
 
 
     //---유효성 체크 메소드------------------------------------------------------------
