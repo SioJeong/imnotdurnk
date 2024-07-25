@@ -30,6 +30,7 @@ const InputLabel = styled.h6`
 
 const Input = styled.input`
     width: 100%;
+    padding: 0;
     border: none;
     outline: none;
     font-size: var(--font-body-h5, 0.71rem);
@@ -40,8 +41,8 @@ const InputIcon = styled.img`
     justify-content: center;
     align-items: center;
     flex-shrink: 0;
-    width: 1.7143rem;
-    height: 1.7143rem;
+    width: 24px;
+    height: 24px;
     ${(props) =>
         props.$isEmpty &&
         `
