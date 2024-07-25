@@ -2,6 +2,7 @@ package com.imnotdurnk.domain.user.service;
 
 import com.imnotdurnk.domain.auth.dto.AuthDto;
 import com.imnotdurnk.domain.user.dto.LoginUserDto;
+import com.imnotdurnk.domain.user.dto.UpdatedPasswordDto;
 import com.imnotdurnk.domain.user.dto.UserDto;
 import jakarta.mail.MessagingException;
 import org.apache.coyote.BadRequestException;
@@ -29,4 +30,5 @@ public interface UserService {
 
     void logout(String accessToken, String refreshToken) throws BadRequestException;
 
+    void updatePassword(String accessToken, UpdatedPasswordDto updatedPasswordDto) throws BadRequestException;
 }

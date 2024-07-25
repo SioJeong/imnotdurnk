@@ -5,9 +5,11 @@ import com.imnotdurnk.domain.auth.dto.AuthDto;
 import com.imnotdurnk.domain.auth.dto.TokenDto;
 import com.imnotdurnk.domain.auth.service.AuthService;
 import com.imnotdurnk.domain.user.dto.LoginUserDto;
+import com.imnotdurnk.domain.user.dto.UpdatedPasswordDto;
 import com.imnotdurnk.domain.user.dto.UserDto;
 import com.imnotdurnk.domain.user.entity.UserEntity;
 import com.imnotdurnk.domain.user.repository.UserRepository;
+import com.imnotdurnk.global.exception.EntitySaveFailedException;
 import com.imnotdurnk.global.exception.ResourceNotFoundException;
 import com.imnotdurnk.global.exception.UserNotVerifiedException;
 import com.imnotdurnk.global.util.JwtUtil;
@@ -29,7 +31,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Random;
-import java.util.regex.Pattern;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -317,7 +318,24 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    @Override
+    public void updatePassword(String accessToken, UpdatedPasswordDto updatedPasswordDto) throws BadRequestException {
 
+        // 사용자 이메일 정보 가져오기
+        String email = jwtUtil.getUserEmail(accessToken, TokenType.ACCESS);
+
+        // 기존 비밀번호 확인
+        UserEntity userEntity = userRepository.findByEmail(email);
+        if (!passwordEncoder.matches(updatedPasswordDto.getPrevPassword(), userEntity.getPassword()))
+            throw new BadRequestException("비밀번호가 일치하지 않습니다.");
+
+        //새로운 비밀번호로 설정
+        userEntity.setPassword(passwordEncoder.encode(updatedPasswordDto.getNewPassword()));
+        userEntity = userRepository.save(userEntity);
+
+        if(userEntity == null) throw new EntitySaveFailedException("비밀번호가 업데이트 과정 중 오류 발생");
+
+    }
 
 
 }
