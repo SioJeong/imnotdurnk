@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { styled } from 'styled-components';
-import ToggleButton from '@/components/_common/ToggleButton';
+import ToggleButton from '@/components/button/ToggleButton';
 import useNavigationStore from '@/stores/useNavigationStore';
 
 const Account = () => {
