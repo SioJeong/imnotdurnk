@@ -17,7 +17,7 @@ const ModalBackground = styled.div`
 
 const ModalContainer = styled.div`
     display: flex;
-    width: 360.0002px;
+    width: 25.7143rem;
     flex-direction: column;
     align-items: center;
 
@@ -43,7 +43,7 @@ const StyledBox = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 332.0002px;
+    width: 23.7143rem;
     padding: 1.7143rem;
     gap: 0.7143rem;
     background-color: var(--color-white2, #f7f7ec);

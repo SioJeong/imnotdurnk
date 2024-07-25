@@ -1,7 +1,7 @@
 import * as St from './Login.style';
-import InputBox from '@/components/_common/InputBox';
-import Checkbox from '@/components/_common/Checkbox';
-import Button from '@/components/button/Button';
+import InputBox from '@/components/_common/InputBox.jsx';
+import Checkbox from '@/components/_common/Checkbox.jsx';
+import Button from '@/components/_button/Button.jsx';
 const Login = () => {
     return (
         <St.LoginContainer>
