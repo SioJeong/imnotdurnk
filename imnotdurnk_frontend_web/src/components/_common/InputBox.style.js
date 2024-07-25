@@ -30,6 +30,7 @@ const InputLabel = styled.h6`
 
 const Input = styled.input`
     width: 100%;
+    padding: 0;
     border: none;
     outline: none;
     font-size: var(--font-body-h5, 0.71rem);
