@@ -23,7 +23,7 @@ const ModalContainer = styled.div`
 
     margin: 0 auto;
     padding: 0.7143rem 1rem 1rem 1rem;
-    gap: 24.0002px;
+    gap: 1.7143rem;
 
     position: fixed;
     bottom: 0;
@@ -62,6 +62,36 @@ const StyledIcon = styled.img`
     height: 11rem;
 `;
 
+const StyledStepperHeader = styled.div`
+    display: flex;
+    width: 19.9286rem;
+    justify-content: space-between;
+    align-items: center;
+`;
+
+const StyledStepperBody = styled.div`
+    display: flex;
+    width: 17.7857rem;
+    justify-content: center;
+    align-items: center;
+    gap: 2.1429rem;
+`;
+
+const StyledStepperElement = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+`;
+
+const StyledStepperImage = styled.img`
+    display: flex;
+    height: 7.1429rem;
+    justify-content: center;
+    align-items: flex-end;
+    object-fit: cover;
+`;
+
 export {
     ModalBackground,
     ModalContainer,
@@ -69,4 +99,8 @@ export {
     StyledBox,
     StyledForm,
     StyledIcon,
+    StyledStepperHeader,
+    StyledStepperBody,
+    StyledStepperElement,
+    StyledStepperImage,
 };
