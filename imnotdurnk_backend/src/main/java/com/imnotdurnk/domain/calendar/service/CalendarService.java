@@ -18,7 +18,7 @@ public interface CalendarService {
 
     void addCalendar(String token, CalendarDto calendarDto) throws EntitySaveFailedException;
 
-    List<CalendarDto> getCalendar(Date date, String token);
+    List<CalendarDto> getCalendar( String token, String date);
 
     CalendarStatisticDto getCalendarStatistic(LocalDate date, String token);
 

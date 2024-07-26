@@ -310,9 +310,9 @@ public class UserServiceImpl implements UserService {
     public void logout(String accessToken, String refreshToken) throws BadRequestException {
 
         // access token 무효화
-        if (accessToken != null && jwtUtil.isValidToken(accessToken, TokenType.ACCESS)) {
-            authService.addAccessTokenToBlackListInRedis(accessToken);
-        }
+//        if (accessToken != null && jwtUtil.isValidToken(accessToken, TokenType.ACCESS)) {
+//            authService.addAccessTokenToBlackListInRedis(accessToken);
+//        }
 
         // refresh token 무효화
         if (refreshToken != null && jwtUtil.isValidToken(refreshToken, TokenType.REFRESH)) {
@@ -321,6 +321,12 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    /***
+     * 비밀번호 변경
+     * @param accessToken
+     * @param updatedPasswordDto
+     * @throws BadRequestException 비밀번호가 일치하지 않음
+     */
     @Override
     public void updatePassword(String accessToken, UpdatedPasswordDto updatedPasswordDto) throws BadRequestException {
 
