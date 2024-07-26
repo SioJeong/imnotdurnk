@@ -310,9 +310,9 @@ public class UserServiceImpl implements UserService {
     public void logout(String accessToken, String refreshToken) throws BadRequestException {
 
         // access token 무효화
-        if (accessToken != null && jwtUtil.isValidToken(accessToken, TokenType.ACCESS)) {
-            authService.addAccessTokenToBlackListInRedis(accessToken);
-        }
+//        if (accessToken != null && jwtUtil.isValidToken(accessToken, TokenType.ACCESS)) {
+//            authService.addAccessTokenToBlackListInRedis(accessToken);
+//        }
 
         // refresh token 무효화
         if (refreshToken != null && jwtUtil.isValidToken(refreshToken, TokenType.REFRESH)) {

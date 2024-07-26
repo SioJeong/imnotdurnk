@@ -78,8 +78,8 @@ public class AuthServiceImpl implements AuthService{
         // 토큰이 존재하고, valid하고
         if (token != null && jwtUtil.isValidToken(token, tokenType)) {
 
-            if(tokenType == TokenType.ACCESS && !checkTokenInRedis(token)){
-                //access token의 경우 블랙리스트에 존재하지 않으면 true
+            if(tokenType == TokenType.ACCESS /*&& !checkTokenInRedis(token)*/){
+                //access token
                 return true;
             } else if(tokenType == TokenType.REFRESH && checkTokenInRedis(token)){
                 //refresh token의 경우 redis에 저장되어있으면 true
