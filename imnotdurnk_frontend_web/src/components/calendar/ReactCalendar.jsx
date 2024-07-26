@@ -5,36 +5,38 @@ import './ReactCalendar.css';
 import * as St from './ReactCalendar.style';
 
 const eventList = [
-    { date: new Date(2024, 7, 23), title: 'Meeting' },
-    { date: new Date(2024, 7, 23), title: 'Conference' },
-    { date: new Date(2024, 7, 23), title: 'Conference' },
-    { date: new Date(2024, 7, 23), title: 'Conference' },
-    { date: new Date(2024, 7, 23), title: 'Conference' },
+    { date: new Date(2024, 7, 17), title: 'Test1', alcoholLevel: 0 },
+    { date: new Date(2024, 7, 18), title: 'Test2', alcoholLevel: 1 },
+    { date: new Date(2024, 7, 18), title: 'Test3', alcoholLevel: 1 },
+    { date: new Date(2024, 7, 25), title: 'Test4', alcoholLevel: 2 },
+    { date: new Date(2024, 7, 26), title: 'Test5', alcoholLevel: 3 },
+    { date: new Date(2024, 7, 26), title: 'Test6', alcoholLevel: 2 },
+    { date: new Date(2024, 7, 26), title: 'Test7', alcoholLevel: 1 },
 ];
 
 const ReactCalendar = () => {
     const [selectedDate, setSelectedDate] = useState(new Date());
 
     // 일정 dot 커스텀 및 날짜 텍스트 숫자로 변환
-    // 달력에서 dot은 최대 3개까지만 찍기
     const tileContent = ({ date, view }) => {
         if (view === 'month') {
-            const eventsOnDate = eventList.filter(
-                (e) =>
-                    e.date.getFullYear() === date.getFullYear() &&
-                    e.date.getMonth() === date.getMonth() + 1 &&
-                    e.date.getDate() === date.getDate(),
-            );
+            const statusOnDate = eventList
+                .filter(
+                    (e) =>
+                        e.date.getFullYear() === date.getFullYear() &&
+                        e.date.getMonth() === date.getMonth() + 1 &&
+                        e.date.getDate() === date.getDate(),
+                )
+                .sort((a, b) => b.alcoholLevel - a.alcoholLevel)[0];
+
             return (
                 <St.DateTile>
-                    <St.Date>{date.getDate()}</St.Date>
-                    {eventsOnDate.length > 0 && (
-                        <St.EventList>
-                            {eventsOnDate.map((_, index) => (
-                                <St.EventItem key={index}></St.EventItem>
-                            ))}
-                        </St.EventList>
-                    )}
+                    <St.DateNum>{date.getDate()}</St.DateNum>
+                    {statusOnDate ? (
+                        <St.EventItem
+                            $alcoholLevel={statusOnDate.alcoholLevel}
+                        />
+                    ) : null}
                 </St.DateTile>
             );
         }
