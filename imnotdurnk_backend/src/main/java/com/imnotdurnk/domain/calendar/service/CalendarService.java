@@ -2,6 +2,7 @@ package com.imnotdurnk.domain.calendar.service;
 
 import com.imnotdurnk.domain.calendar.dto.CalendarDto;
 import com.imnotdurnk.domain.calendar.dto.CalendarStatisticDto;
+import com.imnotdurnk.domain.calendar.dto.DiaryDto;
 import com.imnotdurnk.domain.calendar.dto.PlanDetailDto;
 import com.imnotdurnk.domain.calendar.entity.CalendarEntity;
 import com.imnotdurnk.global.exception.EntitySaveFailedException;
@@ -13,6 +14,8 @@ import java.util.Date;
 import java.util.List;
 
 public interface CalendarService {
+
+    List<DiaryDto> getDiary(String token, int year, int month);
 
     void updateFeedback(String accessToken, String date, int planId, CalendarDto calendarDto) throws BadRequestException, ResourceNotFoundException, EntitySaveFailedException;
 
