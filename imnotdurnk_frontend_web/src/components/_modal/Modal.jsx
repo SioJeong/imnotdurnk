@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import * as St from './Modal.style';
 
-import Button from '@/components/_common/Button';
+import Button from '@/components/_button/Button';
 
 const Modal = ({ contents, ButtonText }) => {
     const [isModalOpened, setIsModalOpened] = useState(true);
