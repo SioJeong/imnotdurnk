@@ -1,4 +1,4 @@
-import axios from 'axios';
+import { axios } from 'axios';
 
 const api = axios.create({
     baseURL: 'https://api.example.com', // TODO: 추후 backend 경로로 수정
