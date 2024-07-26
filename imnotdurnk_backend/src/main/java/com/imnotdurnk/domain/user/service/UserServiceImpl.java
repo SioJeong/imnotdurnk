@@ -321,6 +321,12 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    /***
+     * 비밀번호 변경
+     * @param accessToken
+     * @param updatedPasswordDto
+     * @throws BadRequestException 비밀번호가 일치하지 않음
+     */
     @Override
     public void updatePassword(String accessToken, UpdatedPasswordDto updatedPasswordDto) throws BadRequestException {
 
