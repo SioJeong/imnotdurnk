@@ -205,6 +205,14 @@ public class UserController {
         return ResponseEntity.status(response.getHttpStatus()).body(response);
     }
 
+    /***
+     * 비밀번호 변경
+     * @param accessToken
+     * @param updatedPasswordDto
+     * @return 비밀번호 성공 여부를 담은 {@link CommonResponse} 객체
+     * @throws BadRequestException 잘못된 형식의 데이터
+     * @throws RequiredFieldMissingException 입력 값 누락
+     */
     @PostMapping("update-password")
     public ResponseEntity<?> updatePassword(@RequestAttribute(value = "AccessToken", required = true) String accessToken,
                                             @RequestBody UpdatedPasswordDto updatedPasswordDto) throws BadRequestException {

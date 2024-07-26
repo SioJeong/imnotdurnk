@@ -82,7 +82,7 @@ public class CalendarEntity extends BaseEntity {
     public CalendarDto toDto() {
         return CalendarDto.builder()
                 .userId(userEntity.getId())
-                .date(date)
+                .date(date.toString())
                 .title(title)
                 .alcoholLevel(alcoholLevel)
                 .arrivalTime(arrivalTime)
@@ -94,7 +94,7 @@ public class CalendarEntity extends BaseEntity {
 
 
     public void setEntityFromDto(CalendarDto calendarDto){
-        this.date = calendarDto.getDate();
+        this.date = LocalDateTime.parse(calendarDto.getDate());
         this.arrivalTime = calendarDto.getArrivalTime();
         this.sojuAmount = calendarDto.getSojuAmount();
         this.beerAmount = calendarDto.getBeerAmount();

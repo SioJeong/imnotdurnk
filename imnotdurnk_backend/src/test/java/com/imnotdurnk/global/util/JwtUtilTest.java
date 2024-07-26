@@ -35,8 +35,8 @@ public class JwtUtilTest {
     @DisplayName("타입이 누락된 상태로 token 생성을 요청하여 RequiredFieldMissingException이 발생하였다.")
     @Test
     void missingFieldCreateToken(){
-        TokenDto token = jwtUtil.generateToken(email, null);
-        Assertions.shouldHaveThrown(RequiredFieldMissingException.class);
+        Assertions.assertThatThrownBy(() -> jwtUtil.generateToken(email, null))
+                .isInstanceOf(RequiredFieldMissingException.class);
     }
 
     @DisplayName("생성한 access token이 유효한지 판단한다.")
@@ -81,8 +81,8 @@ public class JwtUtilTest {
     @DisplayName("DTO로 변환하기 위해 입력 받은 토큰이 잘못되었을 때 InvalidTokenException을 던진다")
     @Test
     void convertWrongToken(){
-        jwtUtil.convertTokenToTokenDto("token", TokenType.ACCESS);
-        Assertions.shouldHaveThrown(InvalidTokenException.class);
+        Assertions.assertThatThrownBy(() -> jwtUtil.convertTokenToTokenDto("token", TokenType.ACCESS))
+                .isInstanceOf(InvalidTokenException.class);
     }
 
 

@@ -23,7 +23,7 @@ const ModalContainer = styled.div`
 
     margin: 0 auto;
     padding: 0.7143rem 1rem 1rem 1rem;
-    gap: 1.7143rem;
+    gap: 24.0002px;
 
     position: fixed;
     bottom: 0;

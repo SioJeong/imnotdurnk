@@ -1,5 +1,5 @@
 import useNavigationStore from '../../stores/useNavigationStore.js';
-import IconButton from '@/components/button/IconButton.jsx';
+import IconButton from '@/components/_button/IconButton.jsx';
 import * as St from './Navigation.style.js';
 
 const Navigation = ({ isVisible, icon1, title, icon2 }) => {

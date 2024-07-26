@@ -12,8 +12,8 @@ const DropdownHeader = styled.div`
     display: inline-flex;
     justify-content: space-between;
     align-items: center;
-    height: 2.86rem; /* 40px -> 2.86rem */
-    padding: 0px 0.93rem; /* 0px 13px -> 0px 0.93rem */
+    height: 40px; /* 40px -> 2.86rem */
+    padding: 0rem 0.93rem; /* 0px 13px -> 0px 0.93rem */
     gap: 0.36rem; /* 5px -> 0.36rem */
     cursor: pointer;
 `;

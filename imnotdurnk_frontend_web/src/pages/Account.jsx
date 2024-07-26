@@ -1,10 +1,17 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { styled } from 'styled-components';
-import ToggleButton from '@/components/button/ToggleButton';
+import ToggleButton from '@/components/_button/ToggleButton';
 import useNavigationStore from '@/stores/useNavigationStore';
+import Signup from '@/components/signup/Signup';
+import Login from '@/components/login/Login';
 
 const Account = () => {
     const setNavigation = useNavigationStore((state) => state.setNavigation);
+    const [isFirstSelected, setIsFirstSelected] = useState(true);
+
+    const changeToggle = () => {
+        setIsFirstSelected(!isFirstSelected);
+    };
 
     useEffect(() => {
         setNavigation({
@@ -17,7 +24,14 @@ const Account = () => {
 
     return (
         <AccountContainer>
-            <ToggleButton toggle1="Log in" toggle2="Sign up" isMono={true} />
+            <ToggleButton
+                toggle1="Log in"
+                toggle2="Sign up"
+                isMono={true}
+                isFirstSelected={isFirstSelected}
+                changeToggle={changeToggle}
+            />
+            {isFirstSelected ? <Login /> : <Signup />}
         </AccountContainer>
     );
 };

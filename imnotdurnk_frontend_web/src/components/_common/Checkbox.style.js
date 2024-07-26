@@ -7,11 +7,11 @@ const StyledLabel = styled.label`
 `;
 
 const StyledInput = styled.input.attrs({ type: 'checkbox' })`
-    margin: 0;
+    margin: 0rem;
     appearance: none;
     width: 0.7143rem;
     height: 0.7143rem;
-    border: 0.0357rem solid var(--color-green3, #252f2c);
+    border: 0.4998px solid var(--color-green3, #252f2c);
     border-radius: 2px;
     background-color: white;
     cursor: pointer;

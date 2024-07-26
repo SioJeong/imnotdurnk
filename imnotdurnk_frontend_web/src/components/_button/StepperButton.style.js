@@ -6,7 +6,7 @@ const StepperContainer = styled.div`
     align-items: center;
     padding: 0.2143rem 0.9286rem;
     background-color: var(--color-green3, #252f2c);
-    width: 7.1429rem;
+    width: 100.0006px;
 
     border-radius: 45px;
 `;
