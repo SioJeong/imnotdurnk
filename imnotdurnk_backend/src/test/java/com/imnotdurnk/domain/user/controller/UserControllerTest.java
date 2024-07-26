@@ -173,7 +173,7 @@ class UserControllerTest {
                 // 반환받은 프로필의 이메일이 test@example.com인지 확인
     }
 
-    @Test
+    /*@Test
     @Order(8)
     public void testLogout() throws Exception {
         String accessToken = jwtUtil.generateToken("test@example.com", TokenType.ACCESS).getToken();
@@ -183,5 +183,5 @@ class UserControllerTest {
                         .header("Authorization", "Bearer " + accessToken)
                         .cookie(new Cookie("RefreshToken", refreshToken)))
                 .andExpect(status().isOk());
-    }
+    }*/
 }

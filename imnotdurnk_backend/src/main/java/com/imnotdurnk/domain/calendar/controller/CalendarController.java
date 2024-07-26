@@ -223,7 +223,7 @@ public class CalendarController {
      */
     public boolean checkTime(String time) {
         if(time==null) return false;
-        return Pattern.matches("^([01]\\\\d|2[0-3]):([0-5]\\\\d)$", time);
+        return Pattern.matches("^([01]\\d|2[0-3]):([0-5]\\d)$", time);
     }
 
 }

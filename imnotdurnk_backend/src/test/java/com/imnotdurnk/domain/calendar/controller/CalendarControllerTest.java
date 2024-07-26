@@ -9,10 +9,7 @@ import com.imnotdurnk.domain.calendar.service.CalendarServiceImpl;
 import com.imnotdurnk.domain.user.entity.UserEntity;
 import com.imnotdurnk.domain.user.repository.UserRepository;
 import com.imnotdurnk.global.util.JwtUtil;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -87,6 +84,7 @@ class CalendarControllerTest {
     }
 
     @Test
+    @Order(1)
     public void testAddCalendar() throws Exception {
         CalendarDto calendarDto = new CalendarDto();
         calendarDto.setTitle("Test Title");
@@ -101,6 +99,7 @@ class CalendarControllerTest {
     }
 
     @Test
+    @Order(2)
     public void testGetCalendar() throws Exception {
         String dateStr = "2023-07-25";
 
@@ -115,6 +114,7 @@ class CalendarControllerTest {
     }
 
     @Test
+    @Order(3)
     public void testUpdateFeedback() throws Exception {
         CalendarDto calendarDto = CalendarDto.builder()
                 .title("업데이트")
@@ -130,14 +130,16 @@ class CalendarControllerTest {
     }
 
     @Test
+    @Order(4)
     public void testGetPlanDetail() throws Exception {
         mockMvc.perform(get("/calendars/plans/{planId}", planId)
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("일정 조회에 성공하였습니다."));
     }
-/*
+
     @Test
+    @Order(5)
     public void testUpdateArrivalTime() throws Exception {
         String arrivalTime = "11:10";
 
@@ -148,25 +150,4 @@ class CalendarControllerTest {
                 .andExpect(jsonPath("$.message").value("도착 시간이 등록되었습니다."));
     }
 
-
-    @Test
-    public void testGetStatistics() throws Exception {
-        String accessToken = "testAccessToken";
-        LocalDate date = LocalDate.now();
-        CalendarStatisticDto statisticDto = new CalendarStatisticDto();
-        // 필요한 필드 설정
-
-        when(calendarService.getCalendarStatistic(any(LocalDate.class), any(String.class))).thenReturn(statisticDto);
-
-        mockMvc.perform(get("/calendars/statistics")
-                        .requestAttr("AccessToken", accessToken)
-                        .param("date", date.toString()))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("일정 조회에 성공하였습니다."));
-    }
-
-
-
-
-*/
 }

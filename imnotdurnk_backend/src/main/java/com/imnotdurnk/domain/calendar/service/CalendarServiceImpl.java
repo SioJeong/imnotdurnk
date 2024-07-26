@@ -152,7 +152,7 @@ public class CalendarServiceImpl implements CalendarService {
         if(!tokenEmail.equals(userIdFromPlan)) throw new BadRequestException("잘못된 접근입니다.");
 
         // String to LocalTime
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("HH:mm:ss");
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("HH:mm");
         LocalTime updatedTime = LocalTime.parse(arrivalTime, format);
 
         // 저장
