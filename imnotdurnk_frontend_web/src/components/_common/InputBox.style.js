@@ -2,30 +2,32 @@ import { styled } from 'styled-components';
 
 const InputBoxContainer = styled.div`
     display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: ${(props) => (props.$size === 'small' ? '0.2143rem' : '0.3571rem')};
+
     width: ${(props) => (props.$size === 'small' ? '9rem' : '19rem')};
     padding: 0.5rem
         ${(props) => (props.$size === 'small' ? '1.1429rem' : '1.4286rem')};
-    justify-content: space-between;
-    align-items: center;
+
     border-radius: 10.0002px;
-    background: var(----color-white1, #fff);
-    gap: ${(props) => (props.$size === 'small' ? '0.2143rem' : '0.3571rem')};
+    background: var(--color-white1, #fff);
 `;
 
 const TextContainer = styled.div`
     display: flex;
-    width: ${(props) =>
-        props.$size === 'small' ? '56.9996px ' : '189.9996px'};
-
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
-    gap: ${(props) => (props.$size === 'small' ? '3.0002px' : '4.9994px')};
+    gap: ${(props) => (props.$size === 'small' ? '0.2143rem' : '0.3571rem')};
+
+    width: ${(props) =>
+        props.$size === 'small' ? '4.0714rem ' : '13.5714rem'};
 `;
 
 const InputLabel = styled.h6`
-    color: var(----color-green3, #252f2c);
-    font-size: var(---font-title-h6, 7.98px);
+    color: var(--color-green3, #252f2c);
+    font-size: var(--font-title-h6, 7.98px);
 `;
 
 const Input = styled.input`
