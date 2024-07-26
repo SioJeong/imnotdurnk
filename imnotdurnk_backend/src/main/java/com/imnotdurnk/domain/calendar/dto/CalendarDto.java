@@ -22,7 +22,7 @@ public class CalendarDto {
 
     private Integer userId;
 
-    private LocalDateTime date;
+    private String date;
 
     private String title;
 
@@ -41,7 +41,7 @@ public class CalendarDto {
     @Builder
     public CalendarDto(Integer Id,
                        Integer userId,
-                       LocalDateTime date,
+                       String date,
                        String title,
                        Integer alcoholLevel,
                        LocalTime arrivalTime,
@@ -61,7 +61,7 @@ public class CalendarDto {
 
     public CalendarEntity toEntity() {
         return CalendarEntity.builder()
-                .date(date)
+                .date(LocalDateTime.parse(date))
                 .title(title)
                 .alcoholLevel(alcoholLevel)
                 .arrivalTime(arrivalTime)
