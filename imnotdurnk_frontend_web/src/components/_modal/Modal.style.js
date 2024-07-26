@@ -1,4 +1,23 @@
-import { styled } from 'styled-components';
+import { styled, keyframes } from 'styled-components';
+
+const slideUp = keyframes`
+  from {
+    transform: translate(-50%, 100%);
+  }
+  to {
+    transform: translate(-50%, 0%);
+  }
+`;
+
+// 내려가는 모션 (아직 사용 안함)
+const slideDown = keyframes`
+  from {
+    transform: translate(-50%, 0%);
+  }
+  to {
+    transform: translate(-50%, 100%);
+  }
+`;
 
 const ModalBackground = styled.div`
     display: flex;
@@ -33,6 +52,9 @@ const ModalContainer = styled.div`
 
     background-color: var(--color-white1, #fff);
     border-radius: 45px 45px 0px 0px;
+
+    // 애니메이션 적용
+    animation: ${slideUp} 0.5s ease-out;
 `;
 
 const StyledBezel = styled.img`
