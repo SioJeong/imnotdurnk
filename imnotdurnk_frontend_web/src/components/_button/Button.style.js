@@ -31,20 +31,20 @@ const StyledButton = styled.button`
             ? 'var(--color-red, #FF6A5F)'
             : 'var(--color-white1, #fff)'};
     border: none;
-    border-radius: 45px;
+    border-radius: 45.0002px;
 
     box-sizing: border-box;
 `;
 
 const StyledTextP = styled.p`
     color: ${(props) => (props.$isRed ? 'white' : 'inherit')};
-    margin: 0;
+    margin: 0rem;
     font-size: var(--font-body-h4, 0.86rem);
 `;
 
 const StyledTextH4 = styled.h4`
     color: ${(props) => (props.$isRed ? 'white' : 'inherit')};
-    margin: 0;
+    margin: 0rem;
 `;
 
 export { StyledButton, StyledTextH4, StyledTextP };

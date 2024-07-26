@@ -11,7 +11,6 @@ const StyledButton = styled.button`
             : 'var(--color-white1, #fff)'};
 
     border: none;
-    border-radius: 3.2143rem;
 `;
 
 const StyledContainer = styled.div`
@@ -19,7 +18,7 @@ const StyledContainer = styled.div`
     align-items: center;
     justify-content: center;
 
-    gap: 0.2143rem;
+    gap: 3.0002px;
     width: 5.6429rem;
     height: 1.7143rem;
 `;

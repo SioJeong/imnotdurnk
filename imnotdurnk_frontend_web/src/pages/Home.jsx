@@ -1,11 +1,11 @@
-import ToggleButton from '@/components/_common/ToggleButton';
+import ToggleButton from '@/components/_button/ToggleButton';
 import useNavigationStore from '@/stores/useNavigationStore';
 import Pagenation from '@/components/_common/Pagination';
+import DropButton from '@/components/_button/DropButton';
+import InputBox from '@/components/_common/InputBox';
+import MiniButton from '@/components/_button/MiniButton';
+import StepperButton from '@/components/_button/StepperButton';
 import { useEffect } from 'react';
-import DropButton from '../components/_common/DropButton';
-import InputBox from '../components/_common/InputBox';
-import MiniButton from '../components/_common/MiniButton';
-import StepperButton from '../components/_common/StepperButton';
 
 const Home = () => {
     const setNavigation = useNavigationStore((state) => state.setNavigation);
@@ -34,6 +34,12 @@ const Home = () => {
             />
             <MiniButton text="비밀번호 변경" iconname="key" isRed={true} />
             <StepperButton icon1="plus" icon2="minus" />
+            <InputBox
+                labelText="label1"
+                iconName="email"
+                inputType="text"
+                size="small"
+            />
         </>
     );
 };
