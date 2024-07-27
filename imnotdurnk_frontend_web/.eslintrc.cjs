@@ -97,7 +97,7 @@ module.exports = {
 
         // 변수 처리 규칙
         'no-use-before-define': 'error', // 변수를 정의하기 전에 사용하면 오류
-        'no-unused-vars': ['error', { args: 'none', ignoreRestSiblings: true }],
+        'no-unused-vars': ['warn', { args: 'none', ignoreRestSiblings: true }],
         'no-shadow': ['warn'],
 
         // 기타 규칙
