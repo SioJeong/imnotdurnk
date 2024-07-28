@@ -1,23 +1,15 @@
 import { styled } from 'styled-components';
+import useCalendarStore from '../../stores/useCalendarStore';
 
 const CalendarItem = () => {
+    const { eventListOnSelectedDate } = useCalendarStore();
+
     return (
         <CalendarItemBox>
-            <p>CalendarItem</p>
-            <p>CalendarItem</p>
-            <p>CalendarItem</p>
-            <p>CalendarItem</p>
-            <p>CalendarItem</p>
-            <p>CalendarItem</p>
-            <p>CalendarItem</p>
-            <p>CalendarItem</p>
-            <p>CalendarItem</p>
-            <p>CalendarItem</p>
-            <p>CalendarItem</p>
-            <p>CalendarItem</p>
-            <p>CalendarItem</p>
-            <p>CalendarItem</p>
-            <p>CalendarItem</p>
+            {eventListOnSelectedDate.map((e) => {
+                <p>{e.title}</p>;
+                // console.log(e.title);
+            })}
         </CalendarItemBox>
     );
 };
