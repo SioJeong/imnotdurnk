@@ -7,7 +7,7 @@ export const CertificationContainer = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 28px;
+    gap: 2rem;
     flex: 1 0 0;
     border-radius: 20px;
     background: var(--color-white2, #f7f7ec);
