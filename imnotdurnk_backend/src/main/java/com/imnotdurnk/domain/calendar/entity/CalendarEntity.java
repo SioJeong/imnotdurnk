@@ -36,7 +36,7 @@ public class CalendarEntity extends BaseEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime date;
 
-    @Column(name = "title", length = 100)
+    @Column(name = "title", length = 30)
     private String title;
 
     @Column(name = "alcohol_level")
