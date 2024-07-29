@@ -4,6 +4,9 @@ spring:
     title: 나안취햄ㅅ어
   security: ignored=/**   # 일단 비활성화
 
+  config:
+    import: application-secret.yml
+
     # DB Setting
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver

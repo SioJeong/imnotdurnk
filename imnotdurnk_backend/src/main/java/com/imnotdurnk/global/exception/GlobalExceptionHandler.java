@@ -65,6 +65,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(exception.getCode(), exception.getMessage());
     }
 
+    // 음성파일 업로드 중 오류가 발생할 경우
+    @ExceptionHandler(S3FileUploadException.class)
+    public ResponseEntity<?> handleS3FileUploadException(S3FileUploadException exception){
+        return handleExceptionInternal(exception.getCode(), exception.getMessage());
+    }
+
     private ResponseEntity<?> handleExceptionInternal(int code, String message){
 
         //응답 객체
