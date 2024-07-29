@@ -2,21 +2,20 @@ import { styled } from 'styled-components';
 
 export const CheckEmailContainer = styled.div`
     display: flex;
-
-    margin-bottom: 20px;
-    padding: 24px;
+    margin-bottom: 1.4286rem;
+    padding: 1.7143rem;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     gap: 1.4286rem;
     align-self: stretch;
     border-radius: 20px;
-    background: var(----color-green2, #465a54);
+    background: var(--color-green2, #465a54);
 `;
 
 export const StyledH2 = styled.h2`
-    width: 100%;
     align-items: flex-start;
-    color: var(----color-white1, #fff);
+    width: 100%;
+    color: var(--color-white1, #fff);
     line-height: normal;
 `;

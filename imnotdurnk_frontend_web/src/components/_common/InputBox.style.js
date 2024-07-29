@@ -2,6 +2,10 @@ import { styled } from 'styled-components';
 
 const InputBoxContainer = styled.div`
     display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: ${(props) => (props.$size === 'small' ? '0.2143rem' : '0.3571rem')};
+
     width: ${(props) =>
         props.$size === 'small'
             ? '9rem'

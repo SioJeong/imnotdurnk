@@ -6,10 +6,10 @@ export const InformationContainer = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
-    gap: 20px;
+    gap: 1.4286rem;
     align-self: stretch;
     border-radius: 20px;
-    background-color: var(----color-green2, #465a54);
+    background-color: var(--color-green2, #465a54);
 `;
 
 export const StyledH2 = styled.h2`
