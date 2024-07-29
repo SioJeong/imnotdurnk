@@ -12,7 +12,7 @@ const StyledButton = styled.button`
         } else if (props.$size === 'medium') {
             return '7.0714rem';
         } else {
-            return '18.9286rem';
+            return '100%';
         }
     }};
 
