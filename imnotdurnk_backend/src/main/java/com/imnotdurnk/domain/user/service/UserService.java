@@ -31,4 +31,6 @@ public interface UserService {
     void logout(String accessToken, String refreshToken) throws BadRequestException;
 
     void updatePassword(String accessToken, UpdatedPasswordDto updatedPasswordDto) throws BadRequestException;
+
+    void deleteAccount(String refreshToken, String accessToken, String password) throws BadRequestException;
 }
