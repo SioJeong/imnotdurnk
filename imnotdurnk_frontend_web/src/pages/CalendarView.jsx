@@ -1,26 +1,13 @@
 import useNavigationStore from '@/stores/useNavigationStore';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import CalendarItem from '../components/calendar/CalendarItem';
+import CalendarStatusBar from '../components/calendar/CalendarStatusBar';
 import ReactCalendar from '../components/calendar/ReactCalendar';
-import useCalendarStore from '../stores/useCalendarStore';
-
-const eventList = [
-    { date: new Date(2024, 7, 17), title: 'Test1', alcoholLevel: 0 },
-    { date: new Date(2024, 7, 18), title: 'Test2', alcoholLevel: 1 },
-    { date: new Date(2024, 7, 18), title: 'Test3', alcoholLevel: 1 },
-    { date: new Date(2024, 7, 25), title: 'Test4', alcoholLevel: 2 },
-    { date: new Date(2024, 7, 26), title: 'Test5', alcoholLevel: 3 },
-    { date: new Date(2024, 7, 26), title: 'Test6', alcoholLevel: 2 },
-    { date: new Date(2024, 7, 26), title: 'Test7', alcoholLevel: 1 },
-];
 
 const CalendarView = () => {
+    const [view, setView] = useState('month'); // 초기 값 month 뷰
+    const [statusOnDate, setStatusOnDate] = useState(0);
     const setNavigation = useNavigationStore((state) => state.setNavigation);
-    const {
-        setMonthlyEventList,
-        selectedDate,
-        setSelectedDate,
-        getEventListForDate,
-    } = useCalendarStore();
 
     useEffect(() => {
         setNavigation({
@@ -31,20 +18,17 @@ const CalendarView = () => {
         });
     }, [setNavigation]);
 
-    useEffect(() => {
-        setMonthlyEventList(eventList);
-    }, [setMonthlyEventList]);
-
     return (
         <div>
             <ReactCalendar
-                selectedDate={selectedDate}
-                setSelectedDate={setSelectedDate}
-                getEventListForDate={getEventListForDate}
+                onChangeView={setView}
+                onStatusChange={setStatusOnDate}
             />
+
             <br />
+            <CalendarStatusBar />
             <br />
-            {/* <CalendarItem eventListForDate={getEventListForDate} /> */}
+            {view === 'month' && <CalendarItem statusOnDate={statusOnDate} />}
         </div>
     );
 };
