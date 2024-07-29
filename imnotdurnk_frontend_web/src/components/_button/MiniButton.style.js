@@ -5,27 +5,26 @@ const StyledButton = styled.button`
     justify-content: center;
     align-items: center;
 
+    border: none;
     background-color: ${(props) =>
         props.$isRed
             ? 'var(--color-red, #FF6A5F)'
             : 'var(--color-white1, #fff)'};
-
-    border: none;
 `;
 
 const StyledContainer = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 0.2143rem;
 
-    gap: 3.0002px;
     width: 5.6429rem;
     height: 1.7143rem;
 `;
 
 const StyledText = styled.h6`
-    color: ${(props) => (props.$isRed ? 'white' : 'inherit')};
     margin: 0;
+    color: ${(props) => (props.$isRed ? 'var(--color-white1)' : 'inherit')};
 `;
 
 const StyledIcon = styled.img`

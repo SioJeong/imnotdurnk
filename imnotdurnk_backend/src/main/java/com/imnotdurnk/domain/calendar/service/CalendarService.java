@@ -2,6 +2,7 @@ package com.imnotdurnk.domain.calendar.service;
 
 import com.imnotdurnk.domain.calendar.dto.CalendarDto;
 import com.imnotdurnk.domain.calendar.dto.CalendarStatisticDto;
+import com.imnotdurnk.domain.calendar.dto.DiaryDto;
 import com.imnotdurnk.domain.calendar.dto.PlanDetailDto;
 import com.imnotdurnk.domain.calendar.entity.CalendarEntity;
 import com.imnotdurnk.global.exception.EntitySaveFailedException;
@@ -14,11 +15,13 @@ import java.util.List;
 
 public interface CalendarService {
 
+    List<DiaryDto> getDiary(String token, int year, int month);
+
     void updateFeedback(String accessToken, String date, int planId, CalendarDto calendarDto) throws BadRequestException, ResourceNotFoundException, EntitySaveFailedException;
 
     void addCalendar(String token, CalendarDto calendarDto) throws EntitySaveFailedException;
 
-    List<CalendarDto> getCalendar(Date date, String token);
+    List<CalendarDto> getCalendar( String token, String date);
 
     CalendarStatisticDto getCalendarStatistic(LocalDate date, String token);
 

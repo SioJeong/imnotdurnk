@@ -2,6 +2,7 @@ package com.imnotdurnk.domain.calendar.controller;
 
 import com.imnotdurnk.domain.calendar.dto.CalendarDto;
 import com.imnotdurnk.domain.calendar.dto.CalendarStatisticDto;
+import com.imnotdurnk.domain.calendar.dto.DiaryDto;
 import com.imnotdurnk.domain.calendar.dto.PlanDetailDto;
 import com.imnotdurnk.domain.calendar.service.CalendarService;
 import com.imnotdurnk.global.commonClass.CommonResponse;
@@ -29,10 +30,24 @@ public class CalendarController {
 
     private CalendarService calendarService;
 
+
+    //해당 월에 술 마신 날 + 취한 정도 + 제목
+    // day type planId title
+   @GetMapping
+    public ResponseEntity<ListResponse<DiaryDto>> getDiary(@RequestAttribute(value = "AccessToken", required = true) String token,
+                                      @RequestParam(required = true) int year, @RequestParam(required = true) int month) {
+        ListResponse<DiaryDto> response = new ListResponse<DiaryDto>();
+        List<DiaryDto> diaryDtos = calendarService.getDiary(token, year, month);
+        response.setDataList(diaryDtos);
+        return ResponseEntity.status(response.getHttpStatus()).body(response);
+    }
+
+
+
      /***
      * 피드백 등록 API
      * @param accessToken
-     * @param date
+     * @param date "YYYY-MM-DDThh:ss" 형식이어야 함
      * @param planId
      * @param calendarDto
      * @return 수정이 완료된 경우 200, 오류 400 404 500
@@ -44,8 +59,9 @@ public class CalendarController {
                                           @PathVariable int planId,
                                           @RequestBody CalendarDto calendarDto) throws BadRequestException, InvalidDateException {
 
-        if(!checkDate(date)) throw new InvalidDateException("날짜 입력 오류");
-        calendarDto.setDate(LocalDateTime.parse(date));
+        if(!checkDateTime(date)) throw new InvalidDateException("날짜 입력 오류");
+        if(!checkTitle(calendarDto.getTitle())) throw new BadRequestException("제목이 없거나 30자를 초과했습니다.");
+        calendarDto.setDate(date);
 
         //응답 객체
         CommonResponse response = new CommonResponse();
@@ -73,7 +89,8 @@ public class CalendarController {
     @PostMapping
     public ResponseEntity<?> addCalendar(@RequestAttribute(value = "AccessToken", required = true) String token, @RequestBody CalendarDto calendarDto) throws BadRequestException{
 
-        if(!checkTitle(calendarDto.getTitle())) throw new BadRequestException("제목이 없거나 50자를 초과했습니다.");
+        if(!checkTitle(calendarDto.getTitle())) throw new BadRequestException("제목이 없거나 30자를 초과했습니다.");
+        if(!checkDateTime(calendarDto.getDate())) throw new BadRequestException("날짜는 yyyy-MM-ddThh:ss 형식의 문자열이어야 합니다.");
 
         CommonResponse response = new CommonResponse();
 
@@ -81,7 +98,6 @@ public class CalendarController {
 
         response.setStatusCode(HttpStatus.CREATED.value());
         response.setMessage("일정 등록이 완료되었습니다.");
-
 
         return ResponseEntity.status(response.getHttpStatus()).body(response);
 
@@ -91,7 +107,7 @@ public class CalendarController {
      * 특정 날짜의 일정 조회 API
      *
      * @param token 사용자의 액세스 토큰
-     * @param dateStr 조회할 날짜. "yyyy-MM-dd" 형식의 문자열
+     * @param dateStr 조회할 날짜.
      * @return 조회 성공 시 200 OK 상태 코드와 함께 해당 날짜의 일정 목록 반환
      * @throws ParseException 날짜 문자열을 파싱하는 과정에서 발생할 수 있는 예외
      */
@@ -104,8 +120,7 @@ public class CalendarController {
         Date date;
 
         if(!checkDate(dateStr)) throw new InvalidDateException("날짜 입력 오류");
-        date = new SimpleDateFormat("yyyy-MM-dd").parse(dateStr);
-        List<CalendarDto> plans = calendarService.getCalendar(date, token);
+        List<CalendarDto> plans = calendarService.getCalendar(token, dateStr);
 
         response.setStatusCode(HttpStatus.OK.value());
         response.setMessage("일정 조회에 성공하였습니다.");
@@ -168,7 +183,7 @@ public class CalendarController {
      * @param planId
      * @throws BadRequestException
      */
-    @GetMapping("/{date}/plans/{planId}")
+    @GetMapping("/plans/{planId}")
     public ResponseEntity<?> getPlanDetail(@RequestAttribute(value = "AccessToken", required = true) String accessToken,
                                            @PathVariable int planId) throws BadRequestException {
 
@@ -191,7 +206,18 @@ public class CalendarController {
      */
     public boolean checkTitle(String title) {
         if(title==null) return false;
-        return Pattern.matches("^.{0,50}$", title);
+        return Pattern.matches("^.{0,30}$", title);
+    }
+
+    /***
+     * Datetime 유효성 체크
+     *      yyyy-MM-ddThh:ss 형태
+     * @param date
+     * @return 기준에 부합하면 true, 아니면 false
+     */
+    public boolean checkDateTime(String date) {
+        if(date==null) return false;
+        return Pattern.matches("^\\d{4}-\\d{2}-\\d{2}T([01]\\d|2[0-3]):([0-5]\\d)$", date);
     }
 
     /***
@@ -202,7 +228,7 @@ public class CalendarController {
      */
     public boolean checkDate(String date) {
         if(date==null) return false;
-        return Pattern.matches("\\d{4}-\\d{2}-\\d{2}", date);
+        return Pattern.matches("^\\d{4}-\\d{2}-\\d{2}$", date);
     }
 
     /***
@@ -213,7 +239,7 @@ public class CalendarController {
      */
     public boolean checkTime(String time) {
         if(time==null) return false;
-        return Pattern.matches("^([01]\\\\d|2[0-3]):([0-5]\\\\d)$", time);
+        return Pattern.matches("^([01]\\d|2[0-3]):([0-5]\\d)$", time);
     }
 
 }

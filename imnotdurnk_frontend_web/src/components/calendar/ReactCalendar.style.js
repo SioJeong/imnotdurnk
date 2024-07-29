@@ -3,36 +3,36 @@ import { styled } from 'styled-components';
 const DateTile = styled.div`
     display: flex;
     flex-direction: column;
+    align-items: center;
     justify-content: center;
 
-    height: 10rem;
-
-    background-color: yellow;
+    height: 3.1rem;
 `;
 
-const Date = styled.p`
+const DateNum = styled.p`
+    color: var(--color-white1);
+    line-height: 1.5rem;
     font-size: var(--font-title-h3);
     font-weight: 500;
-    color: var(--color-white1);
 `;
 
-const EventList = styled.ul`
-    display: flex;
-    flex-wrap: wrap;
-    gap: 2px;
-    /* flex-direction: column; */
-    /* justify-content: center; */
-    /* align-items: center; */
-
-    /* margin-top: 4px; */
-`;
-
-const EventItem = styled.li`
-    /* display: inline-block; */
-    width: 7px;
-    height: 7px;
+const DateDot = styled.li`
+    width: 0.5rem;
+    height: 0.5rem;
     border-radius: 50%;
-    background-color: var(--color-red);
+
+    background-color: ${({ $alcoholLevel }) => {
+        switch ($alcoholLevel) {
+            case 3:
+                return 'var(--color-red)';
+            case 2:
+                return 'var(--color-green1)';
+            case 1:
+                return 'var(--color-yellow)';
+            default:
+                return 'var(--color-white2)';
+        }
+    }};
 `;
 
-export { Date, DateTile, EventItem, EventList };
+export { DateDot, DateNum, DateTile };

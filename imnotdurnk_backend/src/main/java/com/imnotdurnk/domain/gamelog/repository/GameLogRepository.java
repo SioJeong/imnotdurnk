@@ -1,5 +1,6 @@
 package com.imnotdurnk.domain.gamelog.repository;
 
+import com.imnotdurnk.domain.calendar.entity.CalendarEntity;
 import com.imnotdurnk.domain.gamelog.entity.GameLogEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -48,4 +49,6 @@ public interface GameLogRepository extends JpaRepository<GameLogEntity, Integer>
 
 
     Optional<List<GameLogEntity>> findByCalendarEntity_Id(int planId);
+
+    GameLogEntity findById(int id);
 }
