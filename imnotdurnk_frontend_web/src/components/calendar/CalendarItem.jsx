@@ -2,7 +2,7 @@ import { styled } from 'styled-components';
 import useCalendarStore from '../../stores/useCalendarStore';
 import CalendarItemBody from './CalendarItemBody';
 
-const CalendarItem = ({ statusOnDate }) => {
+const CalendarItem = ({ statusOnDate, onItemClick }) => {
     const { selectedDate, eventListOnSelectedDate } = useCalendarStore();
 
     // 요일 index -> 문자열로 변환하는 함수
@@ -12,7 +12,10 @@ const CalendarItem = ({ statusOnDate }) => {
     };
 
     return (
-        <CalendarItemBox $alcoholLevel={statusOnDate?.alcoholLevel}>
+        <CalendarItemBox
+            $alcoholLevel={statusOnDate?.alcoholLevel}
+            onClick={() => onItemClick(selectedDate)}
+        >
             <CalendarItemDate $isWeekend={selectedDate.getDay()}>
                 <h4>{getDayName(selectedDate)}</h4>
                 <h2>{selectedDate.getDate()}</h2>

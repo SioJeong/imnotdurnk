@@ -12,19 +12,25 @@ const getAllEventList = async ({ token, year, month }) => {
             },
             params: { year, month },
         });
-        const { connect, process, data } = response.data;
+        const data = response.data.dataList;
+        // const { connect, process, data } = response.data;
+
+        // console.log('service 읽어올 떄: ', data);
+        console.log();
+
+        return response;
 
         // 네트워크 연결 확인
-        if (connect.status !== 'success') {
-            throw new Error('네트워크 에러');
-        }
+        // if (connect.status !== 'success') {
+        //     throw new Error('네트워크 에러');
+        // }
 
-        // 처리 결과 확인
-        if (process.errorCode !== 0) {
-            throw new Error(process.message || '처리 중 오류 발생');
-        }
+        // // 처리 결과 확인
+        // if (process.errorCode !== 0) {
+        //     throw new Error(process.message || '처리 중 오류 발생');
+        // }
 
-        return data;
+        // return data;
     } catch (err) {
         throw new Error(err.message || '데이터 가져오는 중 오류 발생');
     }
