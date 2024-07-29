@@ -14,7 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.bind.annotation.RequestAttribute;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,8 +51,8 @@ class CalendarControllerTest {
     private ObjectMapper objectMapper;
 
 
-    private String useremail="test@example.com";
-    private String userpassword="Password123";
+    private String useremail = "test@example.com";
+    private String userpassword = "Password123";
     private String token;
     private Integer planId;
 
@@ -75,19 +79,19 @@ class CalendarControllerTest {
         userRepository.save(user); // 테스트를 위한 유저
 
         List<CalendarEntity> calendarList = calendarRepository.findByUserEntity_Email(user.getEmail());
-        if(calendarList.size()>0) {
+        if (calendarList.size() > 0) {
             CalendarEntity calendar = calendarList.getFirst();
             planId = calendar.getId();
         }
 
-        token=jwtUtil.generateToken( useremail, TokenType.ACCESS).getToken();
+        token = jwtUtil.generateToken(useremail, TokenType.ACCESS).getToken();
     }
 
     @Test
     @Order(1)
     public void testAddCalendar() throws Exception {
         CalendarDto calendarDto = new CalendarDto();
-        calendarDto.setTitle("Test Title");
+        calendarDto.setTitle("Test Title1");
         calendarDto.setDate("2024-10-12T10:10");
 
         mockMvc.perform(post("/calendars")
@@ -96,6 +100,7 @@ class CalendarControllerTest {
                         .content(objectMapper.writeValueAsString(calendarDto)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.message").value("일정 등록이 완료되었습니다."));
+
     }
 
     @Test
@@ -150,4 +155,17 @@ class CalendarControllerTest {
                 .andExpect(jsonPath("$.message").value("도착 시간이 등록되었습니다."));
     }
 
+    @Test
+    @Order(6)
+    public void testGetDiary() throws Exception {
+
+        mockMvc.perform(get("/calendars")
+                        .header("Authorization", "Bearer " + token)
+                        .param("month", "10")
+                        .param("year", "2025"))
+
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.dataList").isArray());
+
+    }
 }

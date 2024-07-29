@@ -1,5 +1,6 @@
 package com.imnotdurnk.domain.calendar.repository;
 
+import com.imnotdurnk.domain.calendar.dto.DiaryDto;
 import com.imnotdurnk.domain.calendar.repository.mapping.AlcoholAmount;
 import com.imnotdurnk.domain.calendar.entity.CalendarEntity;
 import com.imnotdurnk.domain.user.entity.UserEntity;
@@ -15,6 +16,15 @@ import java.util.List;
 public interface CalendarRepository extends JpaRepository<CalendarEntity, Integer> {
 
     List<CalendarEntity> findByUserEntity_Email(String email);
+
+    @Query("""
+            SELECT new com.imnotdurnk.domain.calendar.dto.DiaryDto(c.id, DAY(c.date), c.title, COALESCE(c.alcoholLevel, 0))
+            FROM CalendarEntity c
+            WHERE month(c.date) = :month
+            AND year(c.date) = :year
+            AND c.userEntity.id = :user
+        """)
+    List<DiaryDto> findAllDiary(Integer user, Integer year, Integer month);
 
     @Query("SELECT c FROM CalendarEntity c WHERE c.userEntity.id = :userId AND DATE(c.date) = :date")
     List<CalendarEntity> findByUserEntity_IdAndDate(Integer userId, LocalDate date);

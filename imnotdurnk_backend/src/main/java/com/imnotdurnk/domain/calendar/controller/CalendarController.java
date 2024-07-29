@@ -2,6 +2,7 @@ package com.imnotdurnk.domain.calendar.controller;
 
 import com.imnotdurnk.domain.calendar.dto.CalendarDto;
 import com.imnotdurnk.domain.calendar.dto.CalendarStatisticDto;
+import com.imnotdurnk.domain.calendar.dto.DiaryDto;
 import com.imnotdurnk.domain.calendar.dto.PlanDetailDto;
 import com.imnotdurnk.domain.calendar.service.CalendarService;
 import com.imnotdurnk.global.commonClass.CommonResponse;
@@ -28,6 +29,20 @@ import java.util.regex.Pattern;
 public class CalendarController {
 
     private CalendarService calendarService;
+
+
+    //해당 월에 술 마신 날 + 취한 정도 + 제목
+    // day type planId title
+   @GetMapping
+    public ResponseEntity<ListResponse<DiaryDto>> getDiary(@RequestAttribute(value = "AccessToken", required = true) String token,
+                                      @RequestParam(required = true) int year, @RequestParam(required = true) int month) {
+        ListResponse<DiaryDto> response = new ListResponse<DiaryDto>();
+        List<DiaryDto> diaryDtos = calendarService.getDiary(token, year, month);
+        response.setDataList(diaryDtos);
+        return ResponseEntity.status(response.getHttpStatus()).body(response);
+    }
+
+
 
      /***
      * 피드백 등록 API
