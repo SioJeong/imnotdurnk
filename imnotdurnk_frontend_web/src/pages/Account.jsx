@@ -39,9 +39,9 @@ const Account = () => {
 const AccountContainer = styled.div`
     display: flex;
     min-height: calc(100vh - 3rem);
-    padding: 1.625rem 1.5rem;
     flex-direction: column;
     align-items: center;
+    padding: 26px 24px;
     gap: 1.8125rem;
     border-radius: 1.25rem;
     background: var(----color-white2, #f7f7ec);

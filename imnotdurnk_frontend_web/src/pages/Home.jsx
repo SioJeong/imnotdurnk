@@ -1,10 +1,4 @@
-import ToggleButton from '@/components/_button/ToggleButton';
 import useNavigationStore from '@/stores/useNavigationStore';
-import Pagenation from '@/components/_common/Pagination';
-import DropButton from '@/components/_button/DropButton';
-import InputBox from '@/components/_common/InputBox';
-import MiniButton from '@/components/_button/MiniButton';
-import StepperButton from '@/components/_button/StepperButton';
 import { useEffect } from 'react';
 
 const Home = () => {
@@ -19,29 +13,7 @@ const Home = () => {
         });
     }, [setNavigation]);
 
-    const options = ['Option 1', 'Option 2', 'Option 3'];
-
-    return (
-        <>
-            <Pagenation totalPages="4" />
-            <ToggleButton toggle1="토글1" toggle2="토글2" isMono={true} />
-            <DropButton options={options} />
-            <InputBox
-                labelText="Username"
-                iconName="address"
-                inputType="text"
-                size=""
-            />
-            <MiniButton text="비밀번호 변경" iconname="key" isRed={true} />
-            <StepperButton icon1="plus" icon2="minus" />
-            <InputBox
-                labelText="label1"
-                iconName="email"
-                inputType="text"
-                size="small"
-            />
-        </>
-    );
+    return <p>home screen</p>;
 };
 
 export default Home;

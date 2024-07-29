@@ -2,6 +2,7 @@ package com.imnotdurnk.domain.calendar.controller;
 
 import com.imnotdurnk.domain.calendar.dto.CalendarDto;
 import com.imnotdurnk.domain.calendar.dto.CalendarStatisticDto;
+import com.imnotdurnk.domain.calendar.dto.DiaryDto;
 import com.imnotdurnk.domain.calendar.dto.PlanDetailDto;
 import com.imnotdurnk.domain.calendar.service.CalendarService;
 import com.imnotdurnk.global.commonClass.CommonResponse;
@@ -29,6 +30,20 @@ public class CalendarController {
 
     private CalendarService calendarService;
 
+
+    //해당 월에 술 마신 날 + 취한 정도 + 제목
+    // day type planId title
+   @GetMapping
+    public ResponseEntity<ListResponse<DiaryDto>> getDiary(@RequestAttribute(value = "AccessToken", required = true) String token,
+                                      @RequestParam(required = true) int year, @RequestParam(required = true) int month) {
+        ListResponse<DiaryDto> response = new ListResponse<DiaryDto>();
+        List<DiaryDto> diaryDtos = calendarService.getDiary(token, year, month);
+        response.setDataList(diaryDtos);
+        return ResponseEntity.status(response.getHttpStatus()).body(response);
+    }
+
+
+
      /***
      * 피드백 등록 API
      * @param accessToken
@@ -45,6 +60,7 @@ public class CalendarController {
                                           @RequestBody CalendarDto calendarDto) throws BadRequestException, InvalidDateException {
 
         if(!checkDateTime(date)) throw new InvalidDateException("날짜 입력 오류");
+        if(!checkTitle(calendarDto.getTitle())) throw new BadRequestException("제목이 없거나 30자를 초과했습니다.");
         calendarDto.setDate(date);
 
         //응답 객체
@@ -73,7 +89,7 @@ public class CalendarController {
     @PostMapping
     public ResponseEntity<?> addCalendar(@RequestAttribute(value = "AccessToken", required = true) String token, @RequestBody CalendarDto calendarDto) throws BadRequestException{
 
-        if(!checkTitle(calendarDto.getTitle())) throw new BadRequestException("제목이 없거나 50자를 초과했습니다.");
+        if(!checkTitle(calendarDto.getTitle())) throw new BadRequestException("제목이 없거나 30자를 초과했습니다.");
         if(!checkDateTime(calendarDto.getDate())) throw new BadRequestException("날짜는 yyyy-MM-ddThh:ss 형식의 문자열이어야 합니다.");
 
         CommonResponse response = new CommonResponse();
@@ -190,7 +206,7 @@ public class CalendarController {
      */
     public boolean checkTitle(String title) {
         if(title==null) return false;
-        return Pattern.matches("^.{0,50}$", title);
+        return Pattern.matches("^.{0,30}$", title);
     }
 
     /***

@@ -16,7 +16,7 @@ const DateNum = styled.p`
     font-weight: 500;
 `;
 
-const EventItem = styled.li`
+const DateDot = styled.li`
     width: 0.5rem;
     height: 0.5rem;
     border-radius: 50%;
@@ -35,4 +35,4 @@ const EventItem = styled.li`
     }};
 `;
 
-export { DateNum, DateTile, EventItem };
+export { DateDot, DateNum, DateTile };

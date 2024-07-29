@@ -2,6 +2,9 @@ package com.imnotdurnk.domain.gamelog.service;
 
 import com.imnotdurnk.domain.auth.enums.TokenType;
 import com.imnotdurnk.domain.gamelog.dto.GameStatistic;
+import com.imnotdurnk.domain.gamelog.dto.VoiceDto;
+import com.imnotdurnk.domain.gamelog.entity.GameLogEntity;
+import com.imnotdurnk.domain.gamelog.entity.VoiceEntity;
 import com.imnotdurnk.domain.gamelog.repository.GameLogRepository;
 import com.imnotdurnk.domain.user.entity.UserEntity;
 import com.imnotdurnk.domain.user.repository.UserRepository;
@@ -40,6 +43,11 @@ public class GameLogServiceImpl implements GameLogService {
                 .lowerCount(gameLogRepository.countDaysWithLowScores(
                         gameType, date.getMonthValue(), date.getYear(), monthAverage))
                 .build();
+    }
+
+    @Override
+    public GameLogEntity getGameLog(int logId) {
+        return gameLogRepository.findById(logId);
     }
 
 }

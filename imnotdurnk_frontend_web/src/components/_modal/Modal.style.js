@@ -1,4 +1,23 @@
-import { styled } from 'styled-components';
+import { styled, keyframes } from 'styled-components';
+
+const slideUp = keyframes`
+  from {
+    transform: translate(-50%, 100%);
+  }
+  to {
+    transform: translate(-50%, 0%);
+  }
+`;
+
+// 내려가는 모션 (아직 사용 안함)
+const slideDown = keyframes`
+  from {
+    transform: translate(-50%, 0%);
+  }
+  to {
+    transform: translate(-50%, 100%);
+  }
+`;
 
 const ModalBackground = styled.div`
     display: flex;
@@ -23,7 +42,7 @@ const ModalContainer = styled.div`
 
     margin: 0 auto;
     padding: 0.7143rem 1rem 1rem 1rem;
-    gap: 24.0002px;
+    gap: 1.7143rem;
 
     position: fixed;
     bottom: 0;
@@ -33,6 +52,9 @@ const ModalContainer = styled.div`
 
     background-color: var(--color-white1, #fff);
     border-radius: 45px 45px 0px 0px;
+
+    // 애니메이션 적용
+    animation: ${slideUp} 0.5s ease-out;
 `;
 
 const StyledBezel = styled.img`
@@ -51,4 +73,56 @@ const StyledBox = styled.div`
     border-radius: 20px;
 `;
 
-export { ModalBackground, ModalContainer, StyledBezel, StyledBox };
+const StyledForm = styled.form`
+    display: flex;
+    flex-direction: column;
+    gap: 0.7143rem;
+`;
+
+const StyledIcon = styled.img`
+    width: 11rem;
+    height: 11rem;
+`;
+
+const StyledStepperHeader = styled.div`
+    display: flex;
+    width: 19.9286rem;
+    justify-content: space-between;
+    align-items: center;
+`;
+
+const StyledStepperBody = styled.div`
+    display: flex;
+    width: 17.7857rem;
+    justify-content: center;
+    align-items: center;
+    gap: 2.1429rem;
+`;
+
+const StyledStepperElement = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+`;
+
+const StyledStepperImage = styled.img`
+    display: flex;
+    height: 7.1429rem;
+    justify-content: center;
+    align-items: flex-end;
+    object-fit: cover;
+`;
+
+export {
+    ModalBackground,
+    ModalContainer,
+    StyledBezel,
+    StyledBox,
+    StyledForm,
+    StyledIcon,
+    StyledStepperHeader,
+    StyledStepperBody,
+    StyledStepperElement,
+    StyledStepperImage,
+};

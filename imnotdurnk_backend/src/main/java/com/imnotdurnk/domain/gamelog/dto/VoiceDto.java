@@ -2,6 +2,7 @@ package com.imnotdurnk.domain.gamelog.dto;
 
 import com.imnotdurnk.domain.gamelog.entity.GameLogEntity;
 import com.imnotdurnk.domain.gamelog.entity.VoiceEntity;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,16 +11,19 @@ import lombok.Setter;
 @Setter
 public class VoiceDto {
 
+    private Integer id;
+
     private Integer logId;
 
-    private byte[] record;
+    private String fileUrl;
 
     public VoiceDto() {}
 
     @Builder
-    public VoiceDto(Integer logId, byte[] record) {
+    public VoiceDto(Integer id, Integer logId, String fileUrl) {
+        this.id = id;
         this.logId = logId;
-        this.record = record;
+        this.fileUrl = fileUrl;
     }
 
     /**
@@ -29,8 +33,9 @@ public class VoiceDto {
      */
     public VoiceEntity toEntity(GameLogEntity logEntity) {
         return VoiceEntity.builder()
+                .id(id)
                 .gameLogEntity(logEntity)
-                .record(record)
+                .fileUrl(fileUrl)
                 .build();
     }
 

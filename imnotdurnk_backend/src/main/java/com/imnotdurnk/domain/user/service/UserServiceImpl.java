@@ -310,9 +310,9 @@ public class UserServiceImpl implements UserService {
     public void logout(String accessToken, String refreshToken) throws BadRequestException {
 
         // access token 무효화
-        if (accessToken != null && jwtUtil.isValidToken(accessToken, TokenType.ACCESS)) {
-            authService.addAccessTokenToBlackListInRedis(accessToken);
-        }
+//        if (accessToken != null && jwtUtil.isValidToken(accessToken, TokenType.ACCESS)) {
+//            authService.addAccessTokenToBlackListInRedis(accessToken);
+//        }
 
         // refresh token 무효화
         if (refreshToken != null && jwtUtil.isValidToken(refreshToken, TokenType.REFRESH)) {
@@ -321,6 +321,12 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    /***
+     * 비밀번호 변경
+     * @param accessToken
+     * @param updatedPasswordDto
+     * @throws BadRequestException 비밀번호가 일치하지 않음
+     */
     @Override
     public void updatePassword(String accessToken, UpdatedPasswordDto updatedPasswordDto) throws BadRequestException {
 
@@ -330,13 +336,40 @@ public class UserServiceImpl implements UserService {
         // 기존 비밀번호 확인
         UserEntity userEntity = userRepository.findByEmail(email);
         if (!passwordEncoder.matches(updatedPasswordDto.getPrevPassword(), userEntity.getPassword()))
-            throw new BadRequestException("비밀번호가 일치하지 않습니다.");
+            throw new BadRequestException("비밀번호가 일치하지 않음.");
 
         //새로운 비밀번호로 설정
         userEntity.setPassword(passwordEncoder.encode(updatedPasswordDto.getNewPassword()));
         userEntity = userRepository.save(userEntity);
 
         if(userEntity == null) throw new EntitySaveFailedException("비밀번호가 업데이트 과정 중 오류 발생");
+
+    }
+
+    /***
+     * 회원 탈퇴
+     * @param accessToken
+     * @param password
+     * @throws BadRequestException 비밀번호가 일치하지 않았을 경우
+     * @throws EntitySaveFailedException 탈퇴 정보 갱신에 실패했을 경우
+     */
+    @Override
+    public void deleteAccount(String refreshToken, String accessToken, String password) throws BadRequestException {
+
+        String email = jwtUtil.getUserEmail(accessToken, TokenType.ACCESS);
+
+        UserEntity userEntity = userRepository.findByEmail(email);
+        if(!passwordEncoder.matches(password, userEntity.getPassword()))
+            throw new BadRequestException("비밀번호가 일치하지 않음");
+
+        //탈퇴했음을 표시
+        userEntity.setDeleted(true);
+        userEntity = userRepository.save(userEntity);
+
+        if(userEntity == null) throw new EntitySaveFailedException("탈퇴 정보 갱신 실패");
+
+        //리프레시 토큰 삭제
+        authService.deleteRefreshTokenInRedis(refreshToken);
 
     }
 

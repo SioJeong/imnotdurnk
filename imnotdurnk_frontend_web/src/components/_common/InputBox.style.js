@@ -6,7 +6,11 @@ const InputBoxContainer = styled.div`
     align-items: center;
     gap: ${(props) => (props.$size === 'small' ? '0.2143rem' : '0.3571rem')};
 
-    width: ${(props) => (props.$size === 'small' ? '9rem' : '19rem')};
+    width: ${(props) =>
+        props.$size === 'small'
+            ? '9rem'
+            : '100%'}; /* 'small'이 아닐 때 100%로 설정 */
+
     padding: 0.5rem
         ${(props) => (props.$size === 'small' ? '1.1429rem' : '1.4286rem')};
 

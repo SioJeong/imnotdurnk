@@ -3,6 +3,7 @@ package com.imnotdurnk.domain.calendar.service;
 import com.imnotdurnk.domain.auth.enums.TokenType;
 import com.imnotdurnk.domain.calendar.dto.CalendarDto;
 import com.imnotdurnk.domain.calendar.dto.CalendarStatisticDto;
+import com.imnotdurnk.domain.calendar.dto.DiaryDto;
 import com.imnotdurnk.domain.calendar.dto.PlanDetailDto;
 import com.imnotdurnk.domain.calendar.entity.CalendarEntity;
 import com.imnotdurnk.domain.calendar.repository.CalendarRepository;
@@ -34,6 +35,18 @@ public class CalendarServiceImpl implements CalendarService {
     @Autowired
     private UserRepository userRepository;
     private GameLogRepository gameLogRepository;
+
+
+    @Override
+    public List<DiaryDto> getDiary(String token, int year, int month) {
+
+        String email = jwtUtil.getUserEmail(token, TokenType.ACCESS);
+        int id = userRepository.findByEmail(email).getId();
+
+        List<DiaryDto> diary = calendarRepository.findAllDiary(id, year, month);
+
+        return diary;
+    }
 
     /***
      * 음주 일정(피드백) 등록하기 API
