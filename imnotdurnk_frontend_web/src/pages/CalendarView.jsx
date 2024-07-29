@@ -1,9 +1,11 @@
 import useNavigationStore from '@/stores/useNavigationStore';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import CalendarItem from '../components/calendar/CalendarItem';
 import ReactCalendar from '../components/calendar/ReactCalendar';
 
 const CalendarView = () => {
+    const [view, setView] = useState('month'); // 초기 값 month 뷰
+    const [statusOnDate, setStatusOnDate] = useState(0);
     const setNavigation = useNavigationStore((state) => state.setNavigation);
 
     useEffect(() => {
@@ -17,10 +19,13 @@ const CalendarView = () => {
 
     return (
         <div>
-            <ReactCalendar />
+            <ReactCalendar
+                onChangeView={setView}
+                onStatusChange={setStatusOnDate}
+            />
             <br />
             <br />
-            <CalendarItem />
+            {view === 'month' && <CalendarItem statusOnDate={statusOnDate} />}
         </div>
     );
 };

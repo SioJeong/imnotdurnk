@@ -18,4 +18,13 @@ const createEvent = async (eventData) => {
     return data;
 };
 
+// year, month를 쿼리 파라미터로 사용하여 해당 월의 모든 이벤트 가져오기
+const getAllEventList = async ({ year, month }) => {
+    const response = await AudioParam.get('/calendars', {
+        params: { year, month },
+    });
+    const { connect, process, data } = response.data;
+    return data;
+};
+
 export { createEvent };

@@ -7,16 +7,58 @@ import * as St from './ReactCalendar.style';
 
 // 여기에서 api 요청
 const eventList = [
-    { date: new Date(2024, 7, 17), title: 'Test1', alcoholLevel: 0 },
-    { date: new Date(2024, 7, 18), title: 'Test2', alcoholLevel: 1 },
-    { date: new Date(2024, 7, 18), title: 'Test3', alcoholLevel: 1 },
-    { date: new Date(2024, 7, 25), title: 'Test4', alcoholLevel: 2 },
-    { date: new Date(2024, 7, 26), title: 'Test5', alcoholLevel: 3 },
-    { date: new Date(2024, 7, 26), title: 'Test6', alcoholLevel: 2 },
-    { date: new Date(2024, 7, 26), title: 'Test7', alcoholLevel: 1 },
+    {
+        id: 1,
+        date: new Date(2024, 7, 17),
+        title: '잠실 롯데월드 갔다가 맥주 마시러',
+        alcoholLevel: 0,
+    },
+    {
+        id: 2,
+        date: new Date(2024, 7, 18),
+        title: '야장 삼겹살 친구랑',
+        alcoholLevel: 1,
+    },
+    {
+        id: 3,
+        date: new Date(2024, 7, 18),
+        title: '남자친구랑 오이도 조개 구이',
+        alcoholLevel: 1,
+    },
+    { id: 4, date: new Date(2024, 7, 20), title: '한강 치맥', alcoholLevel: 2 },
+    {
+        id: 5,
+        date: new Date(2024, 7, 26),
+        title: '을지로에서 친구 만나기',
+        alcoholLevel: 1,
+    },
+    {
+        id: 6,
+        date: new Date(2024, 7, 26),
+        title: '남자친구랑 한강 가기',
+        alcoholLevel: 1,
+    },
+    {
+        id: 7,
+        date: new Date(2024, 7, 26),
+        title: '내일 아침 10시에 회사에서 팀 회의가 예정되어 있으며, 이후 점심 식사는 동료들과 함께 근처 식당에서 하기로 했습니다. 오후에는 개인 업무를 처리하고, 저녁에는 운동을 계획하고 있습니다.',
+        alcoholLevel: 1,
+    },
+    {
+        id: 8,
+        date: new Date(2024, 7, 29),
+        title: '친구랑 밥먹기',
+        alcoholLevel: 1,
+    },
+    {
+        id: 8,
+        date: new Date(2024, 7, 26),
+        title: '친구랑 밥먹기',
+        alcoholLevel: 1,
+    },
 ];
 
-const ReactCalendar = () => {
+const ReactCalendar = ({ onChangeView, onStatusChange }) => {
     const {
         monthlyEventList,
         setMonthlyEventList,
@@ -39,8 +81,17 @@ const ReactCalendar = () => {
                 );
             });
             setEventListOnSelectedDate(eventListOnSelectedDate);
+            const statusOnDate = eventListOnSelectedDate.sort(
+                (a, b) => b.alcoholLevel - a.alcoholLevel,
+            )[0];
+            onStatusChange(statusOnDate);
         }
-    }, [selectedDate, monthlyEventList, setEventListOnSelectedDate]);
+    }, [
+        selectedDate,
+        monthlyEventList,
+        setEventListOnSelectedDate,
+        onStatusChange,
+    ]);
 
     // 일정 dot 커스텀 및 날짜 텍스트 숫자로 변환
     const tileContent = ({ date, view }) => {
@@ -71,6 +122,7 @@ const ReactCalendar = () => {
     return (
         <div>
             <Calendar
+                onViewChange={({ view }) => onChangeView(view)} // view 변경 시 호출 (month/year)
                 onChange={setSelectedDate}
                 value={selectedDate}
                 calendarType="gregory" // 일요일부터 시작
@@ -80,7 +132,6 @@ const ReactCalendar = () => {
                 showNeighboringMonth={false} // 이번 달 날짜만 렌더링
                 tileContent={tileContent}
             />
-            <div>{`${selectedDate}`}</div>
         </div>
     );
 };
