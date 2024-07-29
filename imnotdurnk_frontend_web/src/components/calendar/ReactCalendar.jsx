@@ -1,62 +1,64 @@
+import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
+import { getAllEventList } from '../../services/calendar';
 import useCalendarStore from '../../stores/useCalendarStore';
 import './ReactCalendar.css';
 import * as St from './ReactCalendar.style';
 
 // 여기에서 api 요청
-const eventList = [
-    {
-        id: 1,
-        date: new Date(2024, 7, 17),
-        title: '잠실 롯데월드 갔다가 맥주 마시러',
-        alcoholLevel: 0,
-    },
-    {
-        id: 2,
-        date: new Date(2024, 7, 18),
-        title: '야장 삼겹살 친구랑',
-        alcoholLevel: 1,
-    },
-    {
-        id: 3,
-        date: new Date(2024, 7, 18),
-        title: '남자친구랑 오이도 조개 구이',
-        alcoholLevel: 1,
-    },
-    { id: 4, date: new Date(2024, 7, 20), title: '한강 치맥', alcoholLevel: 2 },
-    {
-        id: 5,
-        date: new Date(2024, 7, 26),
-        title: '을지로에서 친구 만나기',
-        alcoholLevel: 1,
-    },
-    {
-        id: 6,
-        date: new Date(2024, 7, 26),
-        title: '남자친구랑 한강 가기',
-        alcoholLevel: 1,
-    },
-    {
-        id: 7,
-        date: new Date(2024, 7, 26),
-        title: '내일 아침 10시에 회사에서 팀 회의가 예정되어 있으며, 이후 점심 식사는 동료들과 함께 근처 식당에서 하기로 했습니다. 오후에는 개인 업무를 처리하고, 저녁에는 운동을 계획하고 있습니다.',
-        alcoholLevel: 1,
-    },
-    {
-        id: 8,
-        date: new Date(2024, 7, 29),
-        title: '친구랑 밥먹기',
-        alcoholLevel: 1,
-    },
-    {
-        id: 8,
-        date: new Date(2024, 7, 26),
-        title: '친구랑 밥먹기',
-        alcoholLevel: 1,
-    },
-];
+// const eventList = [
+//     {
+//         id: 1,
+//         date: new Date(2024, 7, 17),
+//         title: '잠실 롯데월드 갔다가 맥주 마시러',
+//         alcoholLevel: 0,
+//     },
+//     {
+//         id: 2,
+//         date: new Date(2024, 7, 18),
+//         title: '야장 삼겹살 친구랑',
+//         alcoholLevel: 1,
+//     },
+//     {
+//         id: 3,
+//         date: new Date(2024, 7, 18),
+//         title: '남자친구랑 오이도 조개 구이',
+//         alcoholLevel: 1,
+//     },
+//     { id: 4, date: new Date(2024, 7, 20), title: '한강 치맥', alcoholLevel: 2 },
+//     {
+//         id: 5,
+//         date: new Date(2024, 7, 26),
+//         title: '팀 프로젝트 회의 및 점심 식사 후 회의록 정리와 다음 주 계획 수립1',
+//         alcoholLevel: 1,
+//     },
+//     {
+//         id: 6,
+//         date: new Date(2024, 7, 26),
+//         title: '팀 프로젝트 회의 및 점심 식사 후 회의록 정리와 다음 주 계획 수립2',
+//         alcoholLevel: 1,
+//     },
+//     {
+//         id: 7,
+//         date: new Date(2024, 7, 26),
+//         title: '팀 프로젝트 회의 및 점심 식사 후 회의록 정리와 다음 주 계획 수립3',
+//         alcoholLevel: 1,
+//     },
+//     {
+//         id: 8,
+//         date: new Date(2024, 7, 26),
+//         title: '팀 프로젝트 회의 및 점심 식사 후 회의록 정리와 다음 주 계획 수립3',
+//         alcoholLevel: 1,
+//     },
+//     {
+//         id: 9,
+//         date: new Date(2024, 7, 29),
+//         title: '친구랑 밥먹기',
+//         alcoholLevel: 1,
+//     },
+// ];
 
 const ReactCalendar = ({ onChangeView, onStatusChange }) => {
     const {
@@ -67,9 +69,26 @@ const ReactCalendar = ({ onChangeView, onStatusChange }) => {
         setEventListOnSelectedDate,
     } = useCalendarStore();
 
-    useEffect(() => {
-        setMonthlyEventList(eventList);
-    }, [monthlyEventList, setMonthlyEventList]);
+    const year = 2024;
+    const month = 7;
+
+    const token =
+        'eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InNzYWZ5QHNzYWZ5LmNvbSIsImlhdCI6MTcyMjIyNTg3NCwiZXhwIjoxNzIyMjI3Njc0fQ.n9z8UoPFltF0Dwg1PNeJ9tXB-QTb_2wha1xbEklNCHI';
+
+    const { data, error, isLoading } = useQuery({
+        queryKey: ['monthlyEventList', year, month],
+        queryFn: () => getAllEventList({ token, year, month }),
+        onSuccess: (data) => {
+            token, setMonthlyEventList(data);
+        },
+        onError: (err) => {
+            console.error('monthlyEventList 가져오기 오류: ', err);
+        },
+    });
+
+    // useEffect(() => {
+    //     setMonthlyEventList(eventList);
+    // }, [monthlyEventList, setMonthlyEventList]);
 
     useEffect(() => {
         if (selectedDate && monthlyEventList) {

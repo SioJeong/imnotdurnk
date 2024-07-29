@@ -1,6 +1,7 @@
 import useNavigationStore from '@/stores/useNavigationStore';
 import { useEffect, useState } from 'react';
 import CalendarItem from '../components/calendar/CalendarItem';
+import CalendarStatusBar from '../components/calendar/CalendarStatusBar';
 import ReactCalendar from '../components/calendar/ReactCalendar';
 
 const CalendarView = () => {
@@ -23,7 +24,9 @@ const CalendarView = () => {
                 onChangeView={setView}
                 onStatusChange={setStatusOnDate}
             />
+
             <br />
+            <CalendarStatusBar />
             <br />
             {view === 'month' && <CalendarItem statusOnDate={statusOnDate} />}
         </div>

@@ -56,7 +56,7 @@ const App = () => {
             </SafeAreaView>
             <StatusBar
                 style="dark"
-                translucent={true}
+                translucent={false}
                 backgroundColor="transparent"
             />
         </>
