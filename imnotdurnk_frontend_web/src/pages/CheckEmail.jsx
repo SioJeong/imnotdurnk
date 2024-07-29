@@ -1,22 +1,26 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import useNavigationStore from '@/stores/useNavigationStore';
-import CheckEmailContainer from '@/components/checkEmail/CheckEmailContainer';
+import InformationMessage from '@/components/checkemail/InformationMessage';
+import CertificationNumberInputContainer from '@/components/checkemail/CertificationNumberInputContainer.jsx';
 
 const CheckEmail = () => {
     const setNavigation = useNavigationStore((state) => state.setNavigation);
-
+    const [isCertificationNumberWrong] = useState(false);
     useEffect(() => {
         setNavigation({
             isVisible: true,
             icon1: { iconname: 'backarrow' },
-            title: '비밀번호 찾기',
+            title: '이메일 인증하기',
             icon2: { iconname: 'empty' },
         });
     }, [setNavigation]);
 
     return (
         <>
-            <CheckEmailContainer />
+            <InformationMessage email="imnotdurnk@gmail.com" />
+            <CertificationNumberInputContainer
+                isCertificationNumberWrong={isCertificationNumberWrong}
+            />
         </>
     );
 };

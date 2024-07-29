@@ -2,11 +2,13 @@ import { styled } from 'styled-components';
 
 export const CheckEmailContainer = styled.div`
     display: flex;
+
+    margin-bottom: 20px;
     padding: 24px;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 20px;
+    gap: 1.4286rem;
     align-self: stretch;
     border-radius: 20px;
     background: var(----color-green2, #465a54);

@@ -41,6 +41,7 @@ const AccountContainer = styled.div`
     min-height: calc(100vh - 3rem);
     flex-direction: column;
     align-items: center;
+    padding: 26px 24px;
     gap: 1.8125rem;
     border-radius: 1.25rem;
     background: var(----color-white2, #f7f7ec);
