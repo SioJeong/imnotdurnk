@@ -25,7 +25,7 @@ const eventList = [
         id: 3,
         date: new Date(2024, 7, 18),
         title: '남자친구랑 오이도 조개 구이',
-        alcoholLevel: 1,
+        alcoholLevel: 3,
         time: '오후 7시 15분',
     },
     {
@@ -46,7 +46,7 @@ const eventList = [
         id: 6,
         date: new Date(2024, 7, 26),
         title: '팀 프로젝트 회의 및 점심 식사 후 회의록 정리와 다음 주 계획 수립4',
-        alcoholLevel: 1,
+        alcoholLevel: 2,
         time: '오후 3시 30분',
     },
     {
@@ -60,7 +60,7 @@ const eventList = [
         id: 8,
         date: new Date(2024, 7, 26),
         title: '팀 프로젝트 회의 및 점심 식사 후 회의록 정리와 다음 주 계획 수립2',
-        alcoholLevel: 1,
+        alcoholLevel: 0,
         time: '오후 6시 00분',
     },
     {

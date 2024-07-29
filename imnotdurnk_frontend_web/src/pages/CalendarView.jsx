@@ -1,15 +1,16 @@
 import useNavigationStore from '@/stores/useNavigationStore';
 import { useEffect, useState } from 'react';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
-import CalendarItem from '../components/calendar/CalendarItem';
+import CalendarList from '../components/calendar/CalendarList';
 import CalendarStatusBar from '../components/calendar/CalendarStatusBar';
-import EventListOnDate from '../components/calendar/EventListOnDate';
+import EventCard from '../components/calendar/EventCard';
 import ReactCalendar from '../components/calendar/ReactCalendar';
 import useCalendarStore from '../stores/useCalendarStore';
 
 const CalendarView = () => {
     const [view, setView] = useState('month'); // 초기 값 month 뷰
-    const { statusOnDate, setStatusOnDate } = useCalendarStore();
+    const { eventListOnSelectedDate, statusOnDate, setStatusOnDate } =
+        useCalendarStore();
     const setNavigation = useNavigationStore((state) => state.setNavigation);
 
     const navigate = useNavigate();
@@ -46,7 +47,7 @@ const CalendarView = () => {
     };
 
     return (
-        <div>
+        <>
             <Routes>
                 <Route
                     path="/"
@@ -60,44 +61,42 @@ const CalendarView = () => {
                             <CalendarStatusBar />
                             <br />
                             {view === 'month' && (
-                                <CalendarItem
-                                    statusOnDate={statusOnDate}
+                                <EventCard
+                                    alcoholLevel={statusOnDate?.alcoholLevel}
                                     onItemClick={handleItemClick}
-                                />
+                                >
+                                    {eventListOnSelectedDate.length > 0 ? (
+                                        eventListOnSelectedDate
+                                            .slice(0, 3)
+                                            .map((e) => {
+                                                const textColor =
+                                                    statusOnDate.alcoholLevel >=
+                                                    2
+                                                        ? 'var(--color-white1)'
+                                                        : 'var(--color-green3)';
+                                                return (
+                                                    <h3
+                                                        key={e.id}
+                                                        style={{
+                                                            color: textColor,
+                                                        }}
+                                                    >
+                                                        - {e.title}
+                                                    </h3>
+                                                );
+                                            })
+                                    ) : (
+                                        <h3>일정 없음</h3>
+                                    )}
+                                </EventCard>
                             )}
                         </>
                     }
                 />
-                <Route
-                    path="/:date"
-                    element={<EventListOnDate statusOnDate={statusOnDate} />}
-                />
+                <Route path="/:date" element={<CalendarList />} />
             </Routes>
-        </div>
+        </>
     );
-
-    // return (
-    //     <div>
-    //         <ReactCalendar
-    //             onChangeView={setView}
-    //             onStatusChange={setStatusOnDate}
-    //         />
-
-    //         <br />
-    //         <CalendarStatusBar />
-    //         <br />
-    //         {view === 'month' && <CalendarItem statusOnDate={statusOnDate} />}
-
-    //         {/* 하위 라우팅 */}
-    //         <Routes>
-    //             <Route
-    //                 path="/"
-    //                 element={<CalendarItem statusOnDate={statusOnDate} />}
-    //             />
-    //             <Route path=":date" element={<CalendarItem />} />
-    //         </Routes>
-    //     </div>
-    // );
 };
 
 export default CalendarView;

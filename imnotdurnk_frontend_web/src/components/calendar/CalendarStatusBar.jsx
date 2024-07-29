@@ -54,7 +54,7 @@ const StatusDot = styled.span`
             case 3:
                 return 'var(--color-red)';
             default:
-                return 'var(--color-white1)';
+                return 'var(--color-white2)';
         }
     }};
 `;
