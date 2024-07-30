@@ -16,7 +16,6 @@ const Login = () => {
         email: '', //'올바른 이메일 양식이 아닙니다.',
         password: '', // '비밀번호를 입력하세요.',
     });
-    const navigate = useNavigate();
 
     //버튼 동작
     const handleLogin = () => {
@@ -62,10 +61,9 @@ const Login = () => {
         }
     };
 
-    //1. 입력 값 확인 및 에러메세지 출력
+    //1. 입력 값 저장
     const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        console.log(` ${name}: ${value}`); // 입력값을 콘솔에 출력
+        const { name, value } = e.target; // 입력값을 콘솔에 출력
         setInputValues((prevValues) => ({
             ...prevValues,
             [name]: value,
@@ -80,6 +78,8 @@ const Login = () => {
         }));
     };
     //페이지 이동
+    const navigate = useNavigate();
+
     const goToFindPasswordPage = () => {
         navigate('/find-password');
     };
@@ -91,26 +91,27 @@ const Login = () => {
                 <St.MainTitle>Log In</St.MainTitle>
             </St.TitleContainer>
             <St.FormContainer>
-                <InputBox
-                    labelText="Your Email"
-                    iconName="email"
-                    inputType="email"
-                    value={inputValues.email}
-                    onChange={handleInputChange}
-                    name="email"
-                    alertContents={alertMessages.email}
-                />
+                <St.InputBoxWrapper>
+                    <InputBox
+                        labelText="Your Email"
+                        iconName="email"
+                        inputType="email"
+                        value={inputValues.email}
+                        onChange={handleInputChange}
+                        name="email"
+                        alertContents={alertMessages.email}
+                    />
 
-                <InputBox
-                    labelText="Your Password"
-                    iconName="invisible"
-                    inputType="password"
-                    value={inputValues.password}
-                    onChange={handleInputChange}
-                    name="password"
-                    alertContents={alertMessages.password}
-                />
-
+                    <InputBox
+                        labelText="Your Password"
+                        iconName="invisible"
+                        inputType="password"
+                        value={inputValues.password}
+                        onChange={handleInputChange}
+                        name="password"
+                        alertContents={alertMessages.password}
+                    />
+                </St.InputBoxWrapper>
                 <St.LoginSubQuestionContainer>
                     <Checkbox
                         text="내 정보 기억하기"

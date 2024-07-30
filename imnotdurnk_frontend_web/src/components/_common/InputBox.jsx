@@ -14,7 +14,6 @@ const InputBox = ({
     alertContents, // 에러메세지 내용
 }) => {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-
     // 가시성 설정 토글
     const handleToggleVisibility = (event) => {
         event.preventDefault();
