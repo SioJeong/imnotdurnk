@@ -21,6 +21,9 @@ public class VoiceEntity {
     @JoinColumn(name = "log_id", nullable = false)
     private GameLogEntity gameLogEntity;
 
+    @Column(name = "file_name", nullable = false, length = 20)
+    private String fileName;
+
     @Lob
     @Column(name = "file_url", nullable = false)
     private String fileUrl;
@@ -28,9 +31,10 @@ public class VoiceEntity {
     public VoiceEntity() {}
 
     @Builder
-    public VoiceEntity(Integer id, GameLogEntity gameLogEntity, String fileUrl) {
+    public VoiceEntity(Integer id, GameLogEntity gameLogEntity, String fileName, String fileUrl) {
         this.id = id;
         this.gameLogEntity = gameLogEntity;
+        this.fileName = fileName;
         this.fileUrl = fileUrl;
     }
 
@@ -42,6 +46,7 @@ public class VoiceEntity {
         return VoiceDto.builder()
                 .id(id)
                 .logId(gameLogEntity.getId())
+                .filename(fileName)
                 .fileUrl(fileUrl)
                 .build();
     }

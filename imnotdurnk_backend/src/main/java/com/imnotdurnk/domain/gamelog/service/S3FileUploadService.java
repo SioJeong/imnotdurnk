@@ -73,9 +73,9 @@ public class S3FileUploadService {
         }
     }
 
-    public void deleteFile(String file) throws S3FileUploadException {
+    public void deleteFile(String fileName) throws S3FileUploadException {
         try {
-            s3Client.deleteObject(new DeleteObjectRequest(bucketName, file));
+            s3Client.deleteObject(new DeleteObjectRequest(bucketName, fileName));
         } catch (SdkClientException e) {
             throw new S3FileUploadException("파일 삭제 실패");
         }

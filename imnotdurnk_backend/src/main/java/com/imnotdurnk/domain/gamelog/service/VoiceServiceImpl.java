@@ -19,4 +19,15 @@ public class VoiceServiceImpl implements VoiceService {
         return voiceRepository.save(voiceEntity) != null;
     }
 
+    @Override
+    public VoiceDto getVoiceByLogId(int logId) {
+        return voiceRepository.findByLogId(logId).toDto();
+    }
+
+    @Override
+    public boolean removeVoiceByLogId(int logId) {
+        voiceRepository.deleteByLogId(logId);
+        return voiceRepository.findByLogId(logId) == null;
+    }
+
 }
