@@ -1,6 +1,8 @@
+import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
+import { getAllEventList } from '../../services/calendar';
 import useCalendarStore from '../../stores/useCalendarStore';
 import './ReactCalendar.css';
 import * as St from './ReactCalendar.style';
@@ -81,27 +83,27 @@ const ReactCalendar = ({ onChangeView, onStatusChange }) => {
         setEventListOnSelectedDate,
     } = useCalendarStore();
 
-    // const year = 2024;
-    // const month = 6;
+    const year = 2024;
+    const month = 7;
 
-    // const token =
-    //     'eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InNzYWZ5QHNzYWZ5LmNvbSIsImlhdCI6MTcyMjIzNTM0MSwiZXhwIjoxNzIyMjM3MTQxfQ.RUvTHSX6DPM9wF8zppMPRJJknVCXdkzjW73aIhP26tY';
+    const token =
+        'eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InNzYWZ5QHNzYWZ5LmNvbSIsImlhdCI6MTcyMjMwOTM4OCwiZXhwIjoxNzIyMzExMTg4fQ.MKt-yi1DD5TnXY4o18R4aScv2WnxG--VpHK5mK0Pc9U';
 
-    // const { data, error, isLoading } = useQuery({
-    //     queryKey: ['monthlyEventList', year, month],
-    //     queryFn: () => getAllEventList({ token, year, month }),
-    //     onSuccess: (data) => {
-    //         console.log(data);
-    //         token, setMonthlyEventList(data);
-    //     },
-    //     onError: (err) => {
-    //         console.error('monthlyEventList 가져오기 오류: ', err);
-    //     },
-    // });
+    const { data, error, isLoading } = useQuery({
+        queryKey: ['monthlyEventList', year, month],
+        queryFn: () => getAllEventList({ token, year, month }),
+        onSuccess: (data) => {
+            console.log('tanstack에서: ', data);
+            setMonthlyEventList(data);
+        },
+        onError: (err) => {
+            console.error('monthlyEventList 가져오기 오류: ', err);
+        },
+    });
 
-    useEffect(() => {
-        setMonthlyEventList(eventList);
-    }, [monthlyEventList, setMonthlyEventList]);
+    // useEffect(() => {
+    //     setMonthlyEventList(eventList);
+    // }, [monthlyEventList, setMonthlyEventList]);
 
     useEffect(() => {
         if (selectedDate && monthlyEventList) {
