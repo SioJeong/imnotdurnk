@@ -10,16 +10,14 @@ const EventCard = ({ alcoholLevel, onItemClick, children }) => {
         return days[date.getDay()];
     };
 
-    console.log(alcoholLevel);
-
     return (
         <CalendarItemBox
             $alcoholLevel={alcoholLevel}
             onClick={() => onItemClick(selectedDate)}
         >
-            <CalendarItemDate $isWeekend={selectedDate.getDay()}>
+            <CalendarItemDate $isWeekend={selectedDate?.getDay()}>
                 <h4>{getDayName(selectedDate)}</h4>
-                <h2>{selectedDate.getDate()}</h2>
+                <h2>{selectedDate?.getDate()}</h2>
             </CalendarItemDate>
             <CalendarItemBodyBox>{children}</CalendarItemBodyBox>
         </CalendarItemBox>

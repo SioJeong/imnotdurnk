@@ -7,36 +7,41 @@ import EventCard from '../components/calendar/EventCard';
 import ReactCalendar from '../components/calendar/ReactCalendar';
 import useCalendarStore from '../stores/useCalendarStore';
 
-const CalendarView = () => {
+const Calendar = () => {
     const [view, setView] = useState('month'); // 초기 값 month 뷰
-    const { eventListOnSelectedDate, statusOnDate, setStatusOnDate } =
-        useCalendarStore();
+    const {
+        eventListOnSelectedDate,
+        setSelectedDate,
+        statusOnDate,
+        setStatusOnDate,
+    } = useCalendarStore();
     const setNavigation = useNavigationStore((state) => state.setNavigation);
 
     const navigate = useNavigate();
     const location = useLocation();
 
     useEffect(() => {
-        // 경로에 따라 네비게이션 상태 설정
-        if (location.pathname === '/calendar') {
+        if (location.pathname.startsWith('/calendar/')) {
+            const [year, month, day] = location.pathname
+                .split('/')[2]
+                .split('-');
+            const selected = new Date(year, month - 1, day);
+            setSelectedDate(selected);
             setNavigation({
                 isVisible: true,
-                icon1: { iconname: 'address' },
-                title: '캘린더',
+                icon1: { iconname: 'backarrow', path: '/calendar' },
+                title: `${year}년 ${month}월 ${day}일`,
                 icon2: { iconname: 'plus' },
             });
         } else {
             setNavigation({
                 isVisible: true,
-                icon1: {
-                    iconname: 'backarrow',
-                    onClick: () => navigate('/calendar'),
-                },
+                icon1: { iconname: 'address', path: '/' },
                 title: '캘린더',
                 icon2: { iconname: 'plus' },
             });
         }
-    }, [location.pathname, navigate, setNavigation]);
+    }, [location, setSelectedDate, setNavigation]);
 
     const handleItemClick = (date) => {
         const adjustedDate = new Date(date);
@@ -99,4 +104,4 @@ const CalendarView = () => {
     );
 };
 
-export default CalendarView;
+export default Calendar;
