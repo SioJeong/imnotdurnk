@@ -20,6 +20,8 @@ services:
   react:
     image: front
     container_name: front
+    expose:
+      - "3333"
     ports:
       - "3333:3000"
     networks:
@@ -53,6 +55,19 @@ services:
       - redis_data:/var/lib/redis
     networks:
       - network_deploy
+
+  jenkins:
+    image: jenkins/jenkins
+    container_name: jenkins
+    restart: unless-stopped
+    user: root
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    volumes:
+      - /home/groot/jenkins:/var/jenkins_home
+      - /home/groot/.ssh:/root/.ssh
+    
 
 volumes:
   mysql_data:
