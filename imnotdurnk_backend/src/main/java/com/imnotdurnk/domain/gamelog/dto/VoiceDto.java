@@ -11,18 +11,18 @@ import lombok.Setter;
 @Setter
 public class VoiceDto {
 
-    private Integer id;
-
     private Integer logId;
+
+    private String fileName;
 
     private String fileUrl;
 
     public VoiceDto() {}
 
     @Builder
-    public VoiceDto(Integer id, Integer logId, String fileUrl) {
-        this.id = id;
+    public VoiceDto(Integer logId, String filename, String fileUrl) {
         this.logId = logId;
+        this.fileName = filename;
         this.fileUrl = fileUrl;
     }
 
@@ -33,8 +33,8 @@ public class VoiceDto {
      */
     public VoiceEntity toEntity(GameLogEntity logEntity) {
         return VoiceEntity.builder()
-                .id(id)
                 .gameLogEntity(logEntity)
+                .fileName(fileName)
                 .fileUrl(fileUrl)
                 .build();
     }
