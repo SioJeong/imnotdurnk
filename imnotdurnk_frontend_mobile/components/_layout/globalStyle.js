@@ -27,10 +27,16 @@ const NavContainer = styled(View)`
     margin: 0 auto;
 
     /* TODO: 확인용 border - 추후 제거 */
-    border: 1px solid black;
+    /* border: 1px solid black; */
 `;
 
-const Container = styled(ScrollView)`
+const Container = styled(View)`
+    flex: 1;
+    background-color: ${({ theme }) => theme.colors.white1};
+    gap: 10px;
+`;
+
+const ScrollContainer = styled(ScrollView)`
     flex: 1;
     background-color: ${({ theme }) => theme.colors.white1};
 `;
@@ -46,4 +52,11 @@ const GlobalText = styled(Text)`
         theme.colors[color] ? theme.colors[color] : theme.colors.green3};
 `;
 
-export { AppContainer, Container, GlobalText, LayoutContainer, NavContainer };
+export {
+    AppContainer,
+    Container,
+    ScrollContainer,
+    GlobalText,
+    LayoutContainer,
+    NavContainer,
+};
