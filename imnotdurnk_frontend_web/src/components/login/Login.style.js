@@ -9,7 +9,22 @@ export const LoginContainer = styled.div`
     align-items: flex-start;
     gap: 19px;
 `;
-
+export const TitleContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 10px;
+    align-self: stretch;
+`;
+export const FormContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 19px;
+    align-self: stretch;
+`;
 export const SubTitle = styled.h3`
     color: var(----color-green3, #252f2c);
     line-height: normal;

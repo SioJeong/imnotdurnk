@@ -1,4 +1,4 @@
-import ErrorMessage from '@/components/_common/ErrorMessage.jsx';
+import AlertMessage from '@/components/_common/AlertMessage.jsx';
 import * as St from './CertificationNumberInputContainer.style';
 import Button from '@/components/_button/Button.jsx';
 //import { useState } from 'react';
@@ -13,7 +13,7 @@ const CertificationNumberInputContainer = ({ isCertificationNumberWrong }) => {
                     인증코드를 입력하세요.
                 </St.StyledH2>
                 {isCertificationNumberWrong ? (
-                    <ErrorMessage message={'인증번호가 잘못되었습니다.'} />
+                    <AlertMessage message={'인증번호가 잘못되었습니다.'} />
                 ) : null}
             </St.MessageContainer>
             <St.InputContainer>

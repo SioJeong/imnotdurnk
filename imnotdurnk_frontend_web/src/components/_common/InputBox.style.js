@@ -1,5 +1,12 @@
 import { styled } from 'styled-components';
 
+const InputBoxContainerWithAlertMessage = styled.div`
+    display: flex;
+    width: 266px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.2143rem;
+`;
 const InputBoxContainer = styled.div`
     display: flex;
     justify-content: space-between;
@@ -57,4 +64,11 @@ const InputIcon = styled.img`
   `}
 `;
 
-export { Input, InputBoxContainer, InputIcon, InputLabel, TextContainer };
+export {
+    InputBoxContainerWithAlertMessage,
+    Input,
+    InputBoxContainer,
+    InputIcon,
+    InputLabel,
+    TextContainer,
+};
