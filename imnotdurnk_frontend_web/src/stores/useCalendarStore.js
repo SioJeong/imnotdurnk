@@ -13,6 +13,10 @@ const useCalendarStore = create((set, get) => ({
     eventListOnSelectedDate: [],
     setEventListOnSelectedDate: (events) =>
         set({ eventListOnSelectedDate: events }),
+
+    // 4. 선택한 날짜의 상태 (alcoholLevel)
+    statusOnDate: 0,
+    setStatusOnDate: (status) => set({ statusOnDate: status }),
 }));
 
 export default useCalendarStore;

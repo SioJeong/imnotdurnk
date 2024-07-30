@@ -1,9 +1,8 @@
 import { styled } from 'styled-components';
 import useCalendarStore from '../../stores/useCalendarStore';
-import CalendarItemBody from './CalendarItemBody';
 
-const CalendarItem = ({ statusOnDate }) => {
-    const { selectedDate, eventListOnSelectedDate } = useCalendarStore();
+const EventCard = ({ alcoholLevel, onItemClick, children }) => {
+    const { selectedDate } = useCalendarStore();
 
     // 요일 index -> 문자열로 변환하는 함수
     const getDayName = (date) => {
@@ -11,35 +10,23 @@ const CalendarItem = ({ statusOnDate }) => {
         return days[date.getDay()];
     };
 
+    console.log(alcoholLevel);
+
     return (
-        <CalendarItemBox $alcoholLevel={statusOnDate?.alcoholLevel}>
+        <CalendarItemBox
+            $alcoholLevel={alcoholLevel}
+            onClick={() => onItemClick(selectedDate)}
+        >
             <CalendarItemDate $isWeekend={selectedDate.getDay()}>
                 <h4>{getDayName(selectedDate)}</h4>
                 <h2>{selectedDate.getDate()}</h2>
             </CalendarItemDate>
-            <CalendarItemBody
-                eventListOnSelectedDate={eventListOnSelectedDate.slice(0, 3)}
-                statusOnDate={statusOnDate}
-            />
-            {/* <CalendarItemBody>
-                {eventListOnSelectedDate.length > 0 ? (
-                    eventListOnSelectedDate.map((e) => (
-                        <CalendarItemEventList
-                            key={e.id}
-                            $alcoholLevel={statusOnDate?.alcoholLevel}
-                        >
-                            - {e.title}
-                        </CalendarItemEventList>
-                    ))
-                ) : (
-                    <h3>일정 없음</h3>
-                )}
-            </CalendarItemBody> */}
+            <CalendarItemBodyBox>{children}</CalendarItemBodyBox>
         </CalendarItemBox>
     );
 };
 
-export default CalendarItem;
+export default EventCard;
 
 const CalendarItemBox = styled.div`
     display: flex;
@@ -89,14 +76,8 @@ const CalendarItemDate = styled.div`
     }
 `;
 
-// const CalendarItemBody = styled.div`
-//     display: flex;
-//     flex-direction: column;
-//     /* word-wrap: break-word; */
-
-//     width: 15.1429rem;
-// `;
-// const CalendarItemEventList = styled.h3`
-//     color: ${({ $alcoholLevel }) =>
-//         $alcoholLevel >= 2 ? 'var(--color-white1)' : 'var(--color-green3)'};
-// `;
+const CalendarItemBodyBox = styled.div`
+    display: flex;
+    flex-direction: column;
+    width: 15.1429rem;
+`;

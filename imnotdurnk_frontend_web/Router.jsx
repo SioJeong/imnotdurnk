@@ -16,7 +16,7 @@ const Router = () => {
                     <Route path="/" element={<ComponentTest />} />
                     <Route path="/home" element={<Home />} />
                     <Route path="/account" element={<Account />} />
-                    <Route path="/calendar" element={<CalendarView />} />
+                    <Route path="/calendar/*" element={<CalendarView />} />
                     <Route path="/check-email" element={<CheckEmail />} />
                     <Route path="/find-password/" element={<FindPassword />} />
                     <Route path="/modaltest" element={<ModalTest />} />
