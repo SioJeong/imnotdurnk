@@ -44,7 +44,6 @@ public class VoiceEntity {
      */
     public VoiceDto toDto() {
         return VoiceDto.builder()
-                .id(id)
                 .logId(gameLogEntity.getId())
                 .filename(fileName)
                 .fileUrl(fileUrl)
