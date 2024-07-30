@@ -6,8 +6,11 @@ import InformationContainer from '@/components/findpassword/InformationContainer
 
 const FindPassword = () => {
     const setNavigation = useNavigationStore((state) => state.setNavigation);
-    const [isSent] = useState(true);
+    const [isSent, setIsSent] = useState(true);
 
+    const handleIsSent = () => {
+        setIsSent(true);
+    };
     useEffect(() => {
         setNavigation({
             isVisible: true,
@@ -19,7 +22,7 @@ const FindPassword = () => {
 
     return (
         <>
-            <CheckEmailContainer />
+            <CheckEmailContainer handleIsSent={handleIsSent} />
             {isSent ? <InformationContainer /> : null}
         </>
     );

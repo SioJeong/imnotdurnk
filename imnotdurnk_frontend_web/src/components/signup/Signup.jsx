@@ -25,7 +25,12 @@ const Signup = () => {
 
     //버튼 동작
     const handleSignup = () => {
-        console.log('회원가입 성공 ', inputValues);
+        console.log('회원가입 데이터 다 받아오기 성공', inputValues);
+        // 중복 검사
+
+        // 중복일시에
+
+        // 중복이 없을 시에 페이지 이동
     };
     const navigate = useNavigate();
     const goToCheckEmailPage = () => {
