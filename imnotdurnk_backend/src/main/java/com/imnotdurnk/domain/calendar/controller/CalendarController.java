@@ -31,8 +31,15 @@ public class CalendarController {
     private CalendarService calendarService;
 
 
-    //해당 월에 술 마신 날 + 취한 정도 + 제목
-    // day type planId title
+    /**
+     * 월별 일정 조회 API
+     *
+     * @param token
+     * @param year       조회할 연도
+     * @param month      조회할 월
+     * @return ResponseEntity<ListResponse<DiaryDto>>
+     *
+     */
    @GetMapping
     public ResponseEntity<ListResponse<DiaryDto>> getDiary(@RequestAttribute(value = "AccessToken", required = true) String token,
                                       @RequestParam(required = true) int year, @RequestParam(required = true) int month) {
