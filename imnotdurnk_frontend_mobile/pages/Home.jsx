@@ -1,19 +1,23 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import * as St from '../components/_layout/globalStyle';
 import useNavigationStore from '../stores/useNavigationStore';
+import { Pressable, Text } from 'react-native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
 const Home = () => {
     const { setNavigation } = useNavigationStore();
+    const navi = useNavigation();
 
-    useEffect(() => {
-        setNavigation({
-            isVisible: true,
-            icon1: { iconname: 'address', isRed: true },
-            title: '홈 화면',
-            icon2: { iconname: 'check', isRed: false },
-        });
-    }, [setNavigation]);
-
+    useFocusEffect(
+        React.useCallback(() => {
+            setNavigation({
+                isVisible: true,
+                icon1: { iconname: 'address', isRed: false },
+                title: '홈 화면',
+                icon2: { iconname: 'check', isRed: false },
+            });
+        }, [setNavigation]),
+    );
     return (
         <St.Container>
             <St.GlobalText weight="medium" fontSize="H1" color="blue">
@@ -22,6 +26,9 @@ const Home = () => {
             <St.GlobalText fontSize="H3" color="green1">
                 여기는 본문 텍스트입니다.
             </St.GlobalText>
+            <Pressable onPress={() => navi.navigate('Map')}>
+                <Text>go to map</Text>
+            </Pressable>
         </St.Container>
     );
 };
