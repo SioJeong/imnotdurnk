@@ -16,7 +16,6 @@ const getAllEventList = async ({ token, year, month }) => {
         // const { connect, process, data } = response.data;
 
         // console.log('service 읽어올 떄: ', data);
-        console.log();
 
         return response;
 
