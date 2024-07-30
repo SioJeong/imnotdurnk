@@ -14,12 +14,14 @@ import com.imnotdurnk.global.response.SingleResponse;
 import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
 import org.apache.coyote.BadRequestException;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.io.UnsupportedEncodingException;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 @RestController
@@ -234,6 +236,30 @@ public class UserController {
         return ResponseEntity.status(response.getHttpStatus()).body(response);
     }
 
+
+    /***
+     * 회원 탈퇴
+     * @param accessToken
+     * @param passwordMap
+     * @return 탈퇴 성공 여부를 담은 {@link CommonResponse} 객체
+     * @throws BadRequestException
+     */
+    @PostMapping("delete-account")
+    public ResponseEntity<?> deleteAccount(@RequestAttribute(value = "RefreshToken", required = true) String refreshToken,
+                                           @RequestAttribute(value = "AccessToken", required = true) String accessToken,
+                                           @RequestBody Map<String, String> passwordMap) throws BadRequestException {
+
+        //비밀번호 누락
+        if(passwordMap.get("password") == null || passwordMap.get("password").equals(""))
+            throw new RequiredFieldMissingException("비밀번호 누락");
+
+        userService.deleteAccount(refreshToken, accessToken, passwordMap.get("password"));
+
+        CommonResponse response = new CommonResponse();
+        response.setStatusCode(HttpStatus.OK.value());
+        response.setMessage("회원 탈퇴 성공");
+        return ResponseEntity.status(response.getHttpStatus()).body(response);
+    }
 
     //---유효성 체크 메소드------------------------------------------------------------
 

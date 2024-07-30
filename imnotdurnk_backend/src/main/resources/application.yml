@@ -4,17 +4,22 @@ spring:
     title: 나안취햄ㅅ어
   security: ignored=/**   # 일단 비활성화
 
+
+  config:
+    import: application-secrete.yml
+
+
     # DB Setting
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3305/imnotdurnk_db?serverTimezone=UTC&characterEncoding=UTF-8
-    username: root
-    password: ssafy
+    url: ${MYSQL_URL}
+    username: ${MYSQL_USERNAME}
+    password: ${MYSQL_PASSWORD}
   data:
     redis:
-      host: localhost
-      port: 6379
-      password: ssafy
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+
   jpa:
     database: mysql
     database-platform: org.hibernate.dialect.MySQL8Dialect
@@ -25,7 +30,7 @@ spring:
         use_sql_comments: true
         globally_quoted_identifiers: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: validate
     open-in-view: false
     show-sql: true
 

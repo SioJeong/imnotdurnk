@@ -10,13 +10,13 @@ const useCalendarStore = create((set, get) => ({
     setSelectedDate: (date) => set({ selectedDate: date }),
 
     // 3. 선택한 날짜에 해당하는 이벤트 리스트
-    getEventListForDate: (date) => {
-        return get().monthlyEventList.filter((e) => {
-            e.date.getFullYear() === date.getFullYear() &&
-                e.date.getMonth() === date.getMonth() + 1 &&
-                e.date.getDate() === date.getDate();
-        });
-    },
+    eventListOnSelectedDate: [],
+    setEventListOnSelectedDate: (events) =>
+        set({ eventListOnSelectedDate: events }),
+
+    // 4. 선택한 날짜의 상태 (alcoholLevel)
+    statusOnDate: 0,
+    setStatusOnDate: (status) => set({ statusOnDate: status }),
 }));
 
 export default useCalendarStore;
