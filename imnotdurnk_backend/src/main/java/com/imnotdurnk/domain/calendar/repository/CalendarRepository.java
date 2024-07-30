@@ -18,7 +18,7 @@ public interface CalendarRepository extends JpaRepository<CalendarEntity, Intege
     List<CalendarEntity> findByUserEntity_Email(String email);
 
     @Query("""
-            SELECT new com.imnotdurnk.domain.calendar.dto.DiaryDto(c.id, DAY(c.date), c.title, COALESCE(c.alcoholLevel, 0))
+            SELECT new com.imnotdurnk.domain.calendar.dto.DiaryDto(c.id, DAY(c.date), c.date, c.title, COALESCE(c.alcoholLevel, 0))
             FROM CalendarEntity c
             WHERE month(c.date) = :month
             AND year(c.date) = :year
