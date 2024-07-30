@@ -6,7 +6,7 @@ spring:
 
 
   config:
-    import: application-secrete.yml
+    import: application-secret.yml
 
 
     # DB Setting
