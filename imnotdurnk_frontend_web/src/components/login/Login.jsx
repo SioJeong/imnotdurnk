@@ -4,6 +4,7 @@ import * as St from './Login.style';
 import InputBox from '@/components/_common/InputBox.jsx';
 import Checkbox from '@/components/_common/Checkbox.jsx';
 import Button from '@/components/_button/Button.jsx';
+import { login } from '../../services/user';
 
 const Login = () => {
     const [inputValues, setInputValues] = useState({
@@ -17,12 +18,11 @@ const Login = () => {
         password: '', // '비밀번호를 입력하세요.',
     });
 
-    //버튼 동작
     const handleLogin = () => {
-        console.log('로그인 성공 ', inputValues);
+        login(inputValues.email, inputValues.password);
     };
 
-    //유효성 검사
+    //2. 유효성 검사
     const checkValidation = () => {
         let isValid = true;
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -61,7 +61,7 @@ const Login = () => {
         }
     };
 
-    //1. 입력 값 저장
+    //1. 입력 값 state로 저장
     const handleInputChange = (e) => {
         const { name, value } = e.target; // 입력값을 콘솔에 출력
         setInputValues((prevValues) => ({
@@ -70,7 +70,7 @@ const Login = () => {
         }));
     };
 
-    //체크박스 상태값 변경
+    //1. 체크박스 상태값 변경
     const handleCheckboxChange = (e) => {
         setInputValues((prevValues) => ({
             ...prevValues,
