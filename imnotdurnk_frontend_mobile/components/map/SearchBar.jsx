@@ -2,7 +2,6 @@ import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplet
 import { SearchBarContainer } from './SearchBar.style';
 import { useTheme } from 'styled-components/native';
 
-const GOOGLE_PLACES_API_KEY = 'AIzaSyDushsIyoXh3N-MV2gDlhFlvPWYYbASgjg';
 
 const SearchBar = ({ setRegion, setCurrentAddress }) => {
     const theme = useTheme();
