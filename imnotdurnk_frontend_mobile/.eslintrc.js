@@ -78,12 +78,6 @@ module.exports = {
                             'React Native 컴포넌트는 named import 형태로 가져와야 합니다.',
                     },
                     {
-                        name: 'axios',
-                        importNames: ['default'],
-                        message:
-                            'Axios 인스턴스는 named import 형태로 가져와야 합니다.',
-                    },
-                    {
                         name: 'styled-components',
                         importNames: ['default'],
                         message:

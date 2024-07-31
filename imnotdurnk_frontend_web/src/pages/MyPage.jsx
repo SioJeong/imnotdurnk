@@ -1,25 +1,28 @@
-import CertificationNumberInputContainer from '@/components/checkemail/CertificationNumberInputContainer.jsx';
-import InformationMessage from '@/components/checkemail/InformationMessage';
+import Profile from '@/components/mypage/Profile';
+import Statistics from '@/components/mypage/Statistics';
 import useNavigationStore from '@/stores/useNavigationStore';
 import { useEffect } from 'react';
-
-const CheckEmail = () => {
+import { Route, Routes } from 'react-router-dom';
+const MyPage = () => {
     const setNavigation = useNavigationStore((state) => state.setNavigation);
+
     useEffect(() => {
         setNavigation({
             isVisible: true,
             icon1: { iconname: 'backarrow' },
-            title: '이메일 인증하기',
+            title: '비밀번호 찾기',
             icon2: { iconname: 'empty' },
         });
     }, [setNavigation]);
 
     return (
         <>
-            <InformationMessage email="imnotdurnk@gmail.com" />
-            <CertificationNumberInputContainer />
+            <Routes>
+                <Route path="/" element={<Statistics />} />
+                <Route path="/profile/*" element={<Profile />} />
+            </Routes>
         </>
     );
 };
 
-export default CheckEmail;
+export default MyPage;
