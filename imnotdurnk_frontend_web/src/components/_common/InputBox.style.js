@@ -2,7 +2,7 @@ import { styled } from 'styled-components';
 
 const InputBoxContainerWithAlertMessage = styled.div`
     display: flex;
-    width: 266px;
+    // width: 266px;
     flex-direction: column;
     align-items: flex-start;
     gap: 0.2143rem;
