@@ -1,13 +1,16 @@
-import { useEffect, useState } from 'react';
 import useNavigationStore from '@/stores/useNavigationStore';
+import { useEffect, useState } from 'react';
 
 import CheckEmailContainer from '@/components/findpassword/CheckEmailContainer.jsx';
 import InformationContainer from '@/components/findpassword/InformationContainer.jsx';
 
 const FindPassword = () => {
     const setNavigation = useNavigationStore((state) => state.setNavigation);
-    const [isSent] = useState(true);
+    const [isSent, setIsSent] = useState(true);
 
+    const handleIsSent = () => {
+        setIsSent(true);
+    };
     useEffect(() => {
         setNavigation({
             isVisible: true,
@@ -19,7 +22,7 @@ const FindPassword = () => {
 
     return (
         <>
-            <CheckEmailContainer />
+            <CheckEmailContainer handleIsSent={handleIsSent} />
             {isSent ? <InformationContainer /> : null}
         </>
     );
