@@ -32,7 +32,7 @@ CREATE TABLE `calendar` (
   `date` datetime(6) NOT NULL,
   `mod_date` datetime(6) DEFAULT NULL,
   `reg_date` datetime(6) DEFAULT NULL,
-  `title` varchar(255) DEFAULT NULL,
+  `title` varchar(30) DEFAULT NULL,
   `memo` tinytext,
   PRIMARY KEY (`id`),
   KEY `FKmvq5ob3dt7uk7sfcfa0wrd7bb` (`user_id`),
@@ -131,6 +131,7 @@ DROP TABLE IF EXISTS `voice`;
 CREATE TABLE `voice` (
   `id` int NOT NULL AUTO_INCREMENT,
   `log_id` int NOT NULL,
+  `file_name` varchar(20) NOT NULL,
   `file_url` tinytext NOT NULL,
   PRIMARY KEY (`id`),
   KEY `FK8yg5ue84rwdp04hvngah4l567` (`log_id`),
