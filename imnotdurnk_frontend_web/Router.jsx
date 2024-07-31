@@ -19,7 +19,7 @@ const Router = () => {
                     <Route path="/find-password/" element={<FindPassword />} />
                     <Route path="/calendar/*" element={<Calendar />} />
                     <Route path="/modaltest" element={<ModalTest />} />
-                    <Route path="/component-test" element={<ComponentTest />} />
+                    <Route path="/componenttest" element={<ComponentTest />} />
                 </Route>
             </Routes>
         </BrowserRouter>

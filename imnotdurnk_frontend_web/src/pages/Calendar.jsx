@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import CalendarList from '../components/calendar/CalendarList';
 import CalendarStatusBar from '../components/calendar/CalendarStatusBar';
+import CreatePlan from '../components/calendar/CreatePlan';
 import EventCard from '../components/calendar/EventCard';
 import ReactCalendar from '../components/calendar/ReactCalendar';
 import useCalendarNavigation from '../hooks/useCalendarNavigation';
@@ -85,6 +86,7 @@ const Calendar = () => {
             <Routes>
                 <Route path="/" element={calendarMain} />
                 <Route path="/:date" element={<CalendarList />} />
+                <Route path="/create-plan" element={<CreatePlan />} />
             </Routes>
         </>
     );
