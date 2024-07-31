@@ -30,62 +30,60 @@ const Calendar = () => {
             ? 'var(--color-green2)'
             : 'var(--color-green3)';
 
+    const calendarMain = (
+        <div
+            style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '0.7143rem',
+            }}
+        >
+            <ReactCalendar onChangeView={setView} />
+            <CalendarStatusBar />
+            {view === 'month' && (
+                <EventCard
+                    alcoholLevel={statusOnDate?.alcoholLevel}
+                    onItemClick={handleItemClick}
+                >
+                    {eventListOnSelectedDate.length > 0 ? (
+                        <>
+                            {eventListOnSelectedDate.slice(0, 3).map((e) => {
+                                return (
+                                    <h3
+                                        key={e.id}
+                                        style={{
+                                            color: textColor,
+                                            margin: '0.2857rem 0',
+                                        }}
+                                    >
+                                        - {e.title}
+                                    </h3>
+                                );
+                            })}
+                            {eventListOnSelectedDate.length > 3 && (
+                                <p
+                                    style={{
+                                        color: moreTextColor,
+                                        marginTop: '5px',
+                                    }}
+                                >
+                                    (이외 {eventListOnSelectedDate.length - 3}
+                                    개의 일정이 있습니다.)
+                                </p>
+                            )}
+                        </>
+                    ) : (
+                        <h3>일정 없음</h3>
+                    )}
+                </EventCard>
+            )}
+        </div>
+    );
+
     return (
         <>
             <Routes>
-                <Route
-                    path="/"
-                    element={
-                        <>
-                            <ReactCalendar onChangeView={setView} />
-                            <br />
-                            <CalendarStatusBar />
-                            <br />
-                            {view === 'month' && (
-                                <EventCard
-                                    alcoholLevel={statusOnDate?.alcoholLevel}
-                                    onItemClick={handleItemClick}
-                                >
-                                    {eventListOnSelectedDate.length > 0 ? (
-                                        <>
-                                            {eventListOnSelectedDate
-                                                .slice(0, 3)
-                                                .map((e) => {
-                                                    return (
-                                                        <h3
-                                                            key={e.id}
-                                                            style={{
-                                                                color: textColor,
-                                                                margin: '0.2857rem 0',
-                                                            }}
-                                                        >
-                                                            - {e.title}
-                                                        </h3>
-                                                    );
-                                                })}
-                                            {eventListOnSelectedDate.length >
-                                                3 && (
-                                                <p
-                                                    style={{
-                                                        color: moreTextColor,
-                                                        marginTop: '5px',
-                                                    }}
-                                                >
-                                                    (이외{' '}
-                                                    {eventListOnSelectedDate.length -
-                                                        3}
-                                                    개의 일정이 있습니다.)
-                                                </p>
-                                            )}
-                                        </>
-                                    ) : (
-                                        <h3>일정 없음</h3>
-                                    )}
-                                </EventCard>
-                            )}
-                        </>
-                    }
-                />
+                <Route path="/" element={calendarMain} />
                 <Route path="/:date" element={<CalendarList />} />
             </Routes>
         </>

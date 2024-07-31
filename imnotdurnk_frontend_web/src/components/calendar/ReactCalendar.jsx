@@ -101,6 +101,7 @@ const ReactCalendar = ({ onChangeView }) => {
     // });
 
     useEffect(() => {
+        setSelectedDate(new Date());
         setMonthlyEventList(eventList);
     }, [monthlyEventList, setMonthlyEventList]);
 
