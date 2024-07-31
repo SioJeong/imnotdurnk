@@ -1,9 +1,9 @@
+import Button from '@/components/_button/Button.jsx';
+import Checkbox from '@/components/_common/Checkbox';
+import InputBox from '@/components/_common/InputBox';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as St from './Signup.style';
-import InputBox from '@/components/_common/InputBox';
-import Checkbox from '@/components/_common/Checkbox';
-import Button from '@/components/_button/Button.jsx';
 const Signup = () => {
     const [inputValues, setInputValues] = useState({
         username: '',

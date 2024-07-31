@@ -65,9 +65,9 @@ const InputIcon = styled.img`
 `;
 
 export {
-    InputBoxContainerWithAlertMessage,
     Input,
     InputBoxContainer,
+    InputBoxContainerWithAlertMessage,
     InputIcon,
     InputLabel,
     TextContainer,

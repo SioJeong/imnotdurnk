@@ -1,8 +1,8 @@
-import { useState } from 'react';
 import Button from '@/components/_button/Button.jsx';
 import InputBox from '@/components/_common/InputBox.jsx';
-import * as St from './CheckEmailContainer.style';
 import { useSendNewPassword } from '@/hooks/useEmail';
+import { useState } from 'react';
+import * as St from './CheckEmailContainer.style';
 const CheckEmailContainer = () => {
     const [inputValues, setInputValues] = useState({
         email: '',

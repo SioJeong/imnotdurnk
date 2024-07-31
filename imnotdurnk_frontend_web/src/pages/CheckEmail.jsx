@@ -1,11 +1,10 @@
-import { useEffect, useState } from 'react';
-import useNavigationStore from '@/stores/useNavigationStore';
-import InformationMessage from '@/components/checkemail/InformationMessage';
 import CertificationNumberInputContainer from '@/components/checkemail/CertificationNumberInputContainer.jsx';
+import InformationMessage from '@/components/checkemail/InformationMessage';
+import useNavigationStore from '@/stores/useNavigationStore';
+import { useEffect } from 'react';
 
 const CheckEmail = () => {
     const setNavigation = useNavigationStore((state) => state.setNavigation);
-    const [isCertificationNumberWrong] = useState(false);
     useEffect(() => {
         setNavigation({
             isVisible: true,
@@ -18,9 +17,7 @@ const CheckEmail = () => {
     return (
         <>
             <InformationMessage email="imnotdurnk@gmail.com" />
-            <CertificationNumberInputContainer
-                isCertificationNumberWrong={isCertificationNumberWrong}
-            />
+            <CertificationNumberInputContainer />
         </>
     );
 };

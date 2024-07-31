@@ -1,9 +1,9 @@
+import ToggleButton from '@/components/_button/ToggleButton';
+import Login from '@/components/login/Login';
+import Signup from '@/components/signup/Signup';
+import useNavigationStore from '@/stores/useNavigationStore';
 import { useEffect, useState } from 'react';
 import { styled } from 'styled-components';
-import ToggleButton from '@/components/_button/ToggleButton';
-import useNavigationStore from '@/stores/useNavigationStore';
-import Signup from '@/components/signup/Signup';
-import Login from '@/components/login/Login';
 
 const Account = () => {
     const setNavigation = useNavigationStore((state) => state.setNavigation);
@@ -44,7 +44,7 @@ const AccountContainer = styled.div`
     padding: 26px 24px;
     gap: 1.8125rem;
     border-radius: 1.25rem;
-    background: var(----color-white2, #f7f7ec);
+    background: var(--color-white2, #f7f7ec);
 `;
 
 export default Account;

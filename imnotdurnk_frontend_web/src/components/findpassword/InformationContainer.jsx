@@ -1,7 +1,7 @@
-import { useNavigate } from 'react-router-dom';
-import * as St from './InformationContainer.style';
 import Button from '@/components/_button/Button.jsx';
 import { useSendNewPassword } from '@/hooks/useEmail';
+import { useNavigate } from 'react-router-dom';
+import * as St from './InformationContainer.style';
 const InformationContainer = () => {
     const navigate = useNavigate();
 
