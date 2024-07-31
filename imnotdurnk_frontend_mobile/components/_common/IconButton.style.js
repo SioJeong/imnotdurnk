@@ -25,8 +25,8 @@ const StyledButton = styled(Pressable)`
         props.$isEmpty
             ? props.theme.colors.white1
             : props.$isRed
-              ? props.theme.colors.white2
-              : props.theme.colors.red};
+              ? props.theme.colors.red
+              : props.theme.colors.white2};
 `;
 
 export { StyledButton };

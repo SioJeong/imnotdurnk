@@ -4,6 +4,7 @@ import { useFonts } from 'expo-font';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView, StyleSheet, Text } from 'react-native';
 import { ThemeProvider } from 'styled-components/native';
+import { NavigationContainer } from '@react-navigation/native';
 import Layout from './components/_layout/Layout';
 import Router from './Router';
 import theme from './shared/styles/theme';
@@ -48,9 +49,11 @@ const App = () => {
             <SafeAreaView style={styles.safeArea}>
                 <QueryClientProvider client={queryClient}>
                     <ThemeProvider theme={theme}>
-                        <Layout>
-                            <Router />
-                        </Layout>
+                        <NavigationContainer>
+                            <Layout>
+                                <Router />
+                            </Layout>
+                        </NavigationContainer>
                     </ThemeProvider>
                 </QueryClientProvider>
             </SafeAreaView>
