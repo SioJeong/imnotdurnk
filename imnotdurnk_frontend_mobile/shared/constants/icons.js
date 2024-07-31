@@ -9,6 +9,7 @@ import Email from '../../assets/icons/size_24/Icon-email.svg';
 import Health from '../../assets/icons/size_24/Icon-health.svg';
 import Invisible from '../../assets/icons/size_24/Icon-invisible.svg';
 import Keyboard from '../../assets/icons/size_24/Icon-keyboard.svg';
+import Location from '../../assets/icons/size_24/Icon-location.svg';
 import Mailbox from '../../assets/icons/size_24/Icon-mailbox.svg';
 import Memorize from '../../assets/icons/size_24/Icon-memorize.svg';
 import Menu from '../../assets/icons/size_24/Icon-menu.svg';
@@ -31,6 +32,7 @@ const icons = {
     health: Health,
     invisible: Invisible,
     keyboard: Keyboard,
+    location: Location,
     mailbox: Mailbox,
     memorize: Memorize,
     menu: Menu,

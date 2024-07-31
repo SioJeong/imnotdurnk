@@ -1,8 +1,6 @@
-import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import { getAllEventList } from '../../services/calendar';
 import useCalendarStore from '../../stores/useCalendarStore';
 import './ReactCalendar.css';
 import * as St from './ReactCalendar.style';
@@ -40,28 +38,28 @@ const eventList = [
     {
         id: 5,
         date: new Date(2024, 7, 26),
-        title: '팀 프로젝트 회의 및 점심 식사 후 회의록 정리와 다음 주 계획 수립1',
+        title: '팀 프로젝트 회의 및 점심 식사 후 회의록 정리와 다음 주 계획 수립',
         alcoholLevel: 1,
         time: '오후 1시 00분',
     },
     {
         id: 6,
         date: new Date(2024, 7, 26),
-        title: '팀 프로젝트 회의 및 점심 식사 후 회의록 정리와 다음 주 계획 수립4',
+        title: '신촌 카페에서 온라인 강의 수강 후 프로젝트 자료 조사',
         alcoholLevel: 2,
         time: '오후 3시 30분',
     },
     {
         id: 7,
         date: new Date(2024, 7, 26),
-        title: '팀 프로젝트 회의 및 점심 식사 후 회의록 정리와 다음 주 계획 수립3',
+        title: '역삼 헬스장에서 트레이닝 후 한강공원에서 러닝 및 스트레칭',
         alcoholLevel: 1,
         time: '오후 4시 45분',
     },
     {
         id: 8,
         date: new Date(2024, 7, 26),
-        title: '팀 프로젝트 회의 및 점심 식사 후 회의록 정리와 다음 주 계획 수립2',
+        title: '부산 해운대 해변에서 서핑 레슨 및 바비큐 파티',
         alcoholLevel: 0,
         time: '오후 6시 00분',
     },
@@ -74,36 +72,37 @@ const eventList = [
     },
 ];
 
-const ReactCalendar = ({ onChangeView, onStatusChange }) => {
+const ReactCalendar = ({ onChangeView }) => {
     const {
         monthlyEventList,
         setMonthlyEventList,
+        setEventListOnSelectedDate,
         selectedDate,
         setSelectedDate,
-        setEventListOnSelectedDate,
+        setStatusOnDate,
     } = useCalendarStore();
 
-    const year = 2024;
-    const month = 7;
+    // const year = 2024;
+    // const month = 7;
 
-    const token =
-        'eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InNzYWZ5QHNzYWZ5LmNvbSIsImlhdCI6MTcyMjMwOTM4OCwiZXhwIjoxNzIyMzExMTg4fQ.MKt-yi1DD5TnXY4o18R4aScv2WnxG--VpHK5mK0Pc9U';
+    // const token =
+    //     'eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InNzYWZ5QHNzYWZ5LmNvbSIsImlhdCI6MTcyMjMwOTM4OCwiZXhwIjoxNzIyMzExMTg4fQ.MKt-yi1DD5TnXY4o18R4aScv2WnxG--VpHK5mK0Pc9U';
 
-    const { data, error, isLoading } = useQuery({
-        queryKey: ['monthlyEventList', year, month],
-        queryFn: () => getAllEventList({ token, year, month }),
-        onSuccess: (data) => {
-            console.log('tanstack에서: ', data);
-            setMonthlyEventList(data);
-        },
-        onError: (err) => {
-            console.error('monthlyEventList 가져오기 오류: ', err);
-        },
-    });
+    // const { data, error, isLoading } = useQuery({
+    //     queryKey: ['monthlyEventList', year, month],
+    //     queryFn: () => getAllEventList({ token, year, month }),
+    //     onSuccess: (data) => {
+    //         console.log('tanstack에서: ', data);
+    //         setMonthlyEventList(data);
+    //     },
+    //     onError: (err) => {
+    //         console.error('monthlyEventList 가져오기 오류: ', err);
+    //     },
+    // });
 
-    // useEffect(() => {
-    //     setMonthlyEventList(eventList);
-    // }, [monthlyEventList, setMonthlyEventList]);
+    useEffect(() => {
+        setMonthlyEventList(eventList);
+    }, [monthlyEventList, setMonthlyEventList]);
 
     useEffect(() => {
         if (selectedDate && monthlyEventList) {
@@ -118,13 +117,13 @@ const ReactCalendar = ({ onChangeView, onStatusChange }) => {
             const statusOnDate = eventListOnSelectedDate.sort(
                 (a, b) => b.alcoholLevel - a.alcoholLevel,
             )[0];
-            onStatusChange(statusOnDate);
+            setStatusOnDate(statusOnDate);
         }
     }, [
         selectedDate,
         monthlyEventList,
         setEventListOnSelectedDate,
-        onStatusChange,
+        setStatusOnDate,
     ]);
 
     // 일정 dot 커스텀 및 날짜 텍스트 숫자로 변환

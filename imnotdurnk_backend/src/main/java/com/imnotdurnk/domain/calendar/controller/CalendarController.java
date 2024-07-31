@@ -98,7 +98,7 @@ public class CalendarController {
 
         if(!checkTitle(calendarDto.getTitle())) throw new BadRequestException("제목이 없거나 30자를 초과했습니다.");
         if(!checkDateTime(calendarDto.getDate())) throw new BadRequestException("날짜는 yyyy-MM-ddThh:ss 형식의 문자열이어야 합니다.");
-
+        if(!checkMemo(calendarDto.getMemo())) throw new BadRequestException("메모가 200자를 초과했습니다.");
         CommonResponse response = new CommonResponse();
 
         calendarService.addCalendar(token, calendarDto);
@@ -207,7 +207,7 @@ public class CalendarController {
 
     /***
      * 제목 유효성 체크
-     *      50자 제한
+     *      30자 제한
      * @param title
      * @return 기준에 부합하면 true, 아니면 false
      */
@@ -215,6 +215,19 @@ public class CalendarController {
         if(title==null) return false;
         return Pattern.matches("^.{0,30}$", title);
     }
+
+    /***
+     * 메모 유효성 체크
+     *      200자 제한
+     * @param memo
+     * @return 기준에 부합하면 true, 아니면 false
+     */
+    public boolean checkMemo(String memo) {
+        if(memo==null) return true;
+        return Pattern.matches("^.{0,200}$", memo);
+    }
+
+
 
     /***
      * Datetime 유효성 체크
