@@ -20,8 +20,6 @@ const smallStyle = css`
     flex-wrap: wrap;
     color: var(--color-red, #ff6a5f);
     font-size: var(--font-body-h6);
-    font-weight: 300;
-    line-height: normal;
 `;
 
 export const StyledMessage = styled.p`
