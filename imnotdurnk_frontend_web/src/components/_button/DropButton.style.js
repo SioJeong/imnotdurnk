@@ -19,21 +19,50 @@ const DropdownHeader = styled.div`
 `;
 
 const DropdownList = styled.ul`
+    z-index: 1000;
+
     position: absolute;
-    top: 100%;
+    bottom: 120%;
     left: 0;
+
     width: 100%;
+    max-height: 14.2857rem;
+
     margin-top: 0.71rem; /* 10px -> 0.71rem */
+
     border-radius: 10px;
     background: var(--color-white2, #f7f7ec);
-    list-style: none;
-    z-index: 1000;
+
+    overflow: scroll;
+
+    /* 스크롤바 숨기기 (크롬, 사파리, 엣지 등 웹킷 브라우저용) */
+    &::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* 스크롤바 숨기기 (파이어폭스용) */
+    scrollbar-width: none; /* Firefox */
 `;
 
 const DropdownItem = styled.li`
     padding: 0.71rem; /* 10px -> 0.71rem */
     text-align: center;
     cursor: pointer;
+
+    ${({ $isFirst }) =>
+        $isFirst &&
+        `
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+    `}
+
+    ${({ $isLast }) =>
+        $isLast &&
+        `
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+    `}
+
     &:hover {
         background-color: var(--color-white1, #fff);
     }

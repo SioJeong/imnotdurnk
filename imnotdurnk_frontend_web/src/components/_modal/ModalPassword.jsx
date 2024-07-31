@@ -5,7 +5,7 @@ import InputBox from '../_common/InputBox';
 const ModalPassword = () => {
     return (
         <St.StyledBox>
-            <St.StyledForm>
+            <St.StyledFormBox>
                 <InputBox
                     labelText={'Check Your Current Password'}
                     iconName={'invisible'}
@@ -26,7 +26,7 @@ const ModalPassword = () => {
                     inputType={'password'}
                     autocomplete={'new-password'}
                 />
-            </St.StyledForm>
+            </St.StyledFormBox>
         </St.StyledBox>
     );
 };

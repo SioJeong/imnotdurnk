@@ -62,7 +62,7 @@ const ComponentTest = () => {
             <br />
             <hr />
             <br />
-            <StepperButton icon1="plus" icon2="minus" />
+            <StepperButton icon1="minus" icon2="plus" />
         </>
     );
 };
