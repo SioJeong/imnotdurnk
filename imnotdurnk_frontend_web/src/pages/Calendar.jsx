@@ -1,47 +1,16 @@
-import useNavigationStore from '@/stores/useNavigationStore';
-import { useEffect, useState } from 'react';
-import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { Route, Routes } from 'react-router-dom';
 import CalendarList from '../components/calendar/CalendarList';
 import CalendarStatusBar from '../components/calendar/CalendarStatusBar';
 import EventCard from '../components/calendar/EventCard';
 import ReactCalendar from '../components/calendar/ReactCalendar';
+import useCalendarNavigation from '../hooks/useCalendarNavigation';
 import useCalendarStore from '../stores/useCalendarStore';
 
 const Calendar = () => {
     const [view, setView] = useState('month'); // 초기 값 month 뷰
-    const {
-        eventListOnSelectedDate,
-        setSelectedDate,
-        statusOnDate,
-        setStatusOnDate,
-    } = useCalendarStore();
-    const setNavigation = useNavigationStore((state) => state.setNavigation);
-
-    const navigate = useNavigate();
-    const location = useLocation();
-
-    useEffect(() => {
-        if (location.pathname.startsWith('/calendar/')) {
-            const [year, month, day] = location.pathname
-                .split('/')[2]
-                .split('-');
-            const selected = new Date(year, month - 1, day);
-            setSelectedDate(selected);
-            setNavigation({
-                isVisible: true,
-                icon1: { iconname: 'backarrow', path: '/calendar' },
-                title: `${year}년 ${month}월 ${day}일`,
-                icon2: { iconname: 'plus' },
-            });
-        } else {
-            setNavigation({
-                isVisible: true,
-                icon1: { iconname: 'address', path: '/' },
-                title: '캘린더',
-                icon2: { iconname: 'plus' },
-            });
-        }
-    }, [location, setSelectedDate, setNavigation]);
+    const { eventListOnSelectedDate, statusOnDate } = useCalendarStore();
+    const { navigate } = useCalendarNavigation();
 
     const handleItemClick = (date) => {
         const adjustedDate = new Date(date);
@@ -51,6 +20,16 @@ const Calendar = () => {
         navigate(`/calendar/${formattedDate}`);
     };
 
+    const textColor =
+        statusOnDate?.alcoholLevel >= 2
+            ? 'var(--color-white1)'
+            : 'var(--color-green3)';
+
+    const moreTextColor =
+        statusOnDate?.alcoholLevel < 2
+            ? 'var(--color-green2)'
+            : 'var(--color-green3)';
+
     return (
         <>
             <Routes>
@@ -58,10 +37,7 @@ const Calendar = () => {
                     path="/"
                     element={
                         <>
-                            <ReactCalendar
-                                onChangeView={setView}
-                                onStatusChange={setStatusOnDate}
-                            />
+                            <ReactCalendar onChangeView={setView} />
                             <br />
                             <CalendarStatusBar />
                             <br />
@@ -71,25 +47,37 @@ const Calendar = () => {
                                     onItemClick={handleItemClick}
                                 >
                                     {eventListOnSelectedDate.length > 0 ? (
-                                        eventListOnSelectedDate
-                                            .slice(0, 3)
-                                            .map((e) => {
-                                                const textColor =
-                                                    statusOnDate.alcoholLevel >=
-                                                    2
-                                                        ? 'var(--color-white1)'
-                                                        : 'var(--color-green3)';
-                                                return (
-                                                    <h3
-                                                        key={e.id}
-                                                        style={{
-                                                            color: textColor,
-                                                        }}
-                                                    >
-                                                        - {e.title}
-                                                    </h3>
-                                                );
-                                            })
+                                        <>
+                                            {eventListOnSelectedDate
+                                                .slice(0, 3)
+                                                .map((e) => {
+                                                    return (
+                                                        <h3
+                                                            key={e.id}
+                                                            style={{
+                                                                color: textColor,
+                                                                margin: '0.2857rem 0',
+                                                            }}
+                                                        >
+                                                            - {e.title}
+                                                        </h3>
+                                                    );
+                                                })}
+                                            {eventListOnSelectedDate.length >
+                                                3 && (
+                                                <p
+                                                    style={{
+                                                        color: moreTextColor,
+                                                        marginTop: '5px',
+                                                    }}
+                                                >
+                                                    (이외{' '}
+                                                    {eventListOnSelectedDate.length -
+                                                        3}
+                                                    개의 일정이 있습니다.)
+                                                </p>
+                                            )}
+                                        </>
                                     ) : (
                                         <h3>일정 없음</h3>
                                     )}
