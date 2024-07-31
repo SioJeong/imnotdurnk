@@ -17,7 +17,9 @@
     "editor.formatOnSave": true,
     "editor.wordWrap": "on",
     "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": "explicit" // 명시적으로 설정된 규칙에 대해서만 자동 수정 실행
+        "source.fixAll.eslint": "explicit", // 명시적으로 설정된 규칙에 대해서만 자동 수정 실행
+        "source.fixAll.stylelint": "explicit",
+        "source.organizeImports": "explicit"
     },
     "files.autoSave": "onFocusChange",
     "eslint.run": "onSave",

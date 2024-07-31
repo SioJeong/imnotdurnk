@@ -41,6 +41,14 @@ const ScrollContainer = styled(ScrollView)`
     background-color: ${({ theme }) => theme.colors.white1};
 `;
 
+// 지도 우측 하단에 들어가는 버튼
+const FloatingButtonBottomRight = styled.View`
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1;
+`;
+
 const GlobalText = styled(Text)`
     font-family: ${({ weight }) =>
         weight === 'medium' ? 'Pretendard-Medium' : 'Pretendard-Light'};
@@ -55,8 +63,9 @@ const GlobalText = styled(Text)`
 export {
     AppContainer,
     Container,
-    ScrollContainer,
+    FloatingButtonBottomRight,
     GlobalText,
     LayoutContainer,
     NavContainer,
+    ScrollContainer,
 };
