@@ -1,4 +1,4 @@
-import { styled, keyframes } from 'styled-components';
+import { keyframes, styled } from 'styled-components';
 
 const slideUp = keyframes`
   from {
@@ -73,9 +73,11 @@ const StyledBox = styled.div`
     border-radius: 20px;
 `;
 
-const StyledForm = styled.form`
+const StyledFormBox = styled.div`
     display: flex;
-    flex-direction: column;
+    /* flex-direction: column; */
+    flex-direction: ${({ $direction }) =>
+        $direction === 'row' ? 'row' : 'column'};
     gap: 0.7143rem;
 `;
 
@@ -119,10 +121,10 @@ export {
     ModalContainer,
     StyledBezel,
     StyledBox,
-    StyledForm,
+    StyledFormBox,
     StyledIcon,
-    StyledStepperHeader,
     StyledStepperBody,
     StyledStepperElement,
+    StyledStepperHeader,
     StyledStepperImage,
 };

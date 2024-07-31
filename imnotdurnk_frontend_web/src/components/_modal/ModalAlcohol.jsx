@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-import * as St from './Modal.style';
-import Checkbox from '../_common/Checkbox';
 import StepperButton from '../_button/StepperButton';
+import Checkbox from '../_common/Checkbox';
+import * as St from './Modal.style';
 
 const ModalAlcohol = ({ drinkType }) => {
     const [bottleCount, setBottleCount] = useState(0);
@@ -58,10 +58,10 @@ const ModalAlcohol = ({ drinkType }) => {
                         alt={`${drink} bottle image`}
                     />
                     <StepperButton
-                        icon1={'plus'}
-                        icon2={'minus'}
-                        function1={handleBottleIncrement}
-                        function2={handleBottleDecrement}
+                        icon1={'minus'}
+                        icon2={'plus'}
+                        function1={handleBottleDecrement}
+                        function2={handleBottleIncrement}
                     />
                 </St.StyledStepperElement>
                 <St.StyledStepperElement>
@@ -70,10 +70,10 @@ const ModalAlcohol = ({ drinkType }) => {
                         alt={`${drink} glass image`}
                     />
                     <StepperButton
-                        icon1={'plus'}
-                        icon2={'minus'}
-                        function1={handleGlassIncrement}
-                        function2={handleGlassDecrement}
+                        icon1={'minus'}
+                        icon2={'plus'}
+                        function1={handleGlassDecrement}
+                        function2={handleGlassIncrement}
                     />
                 </St.StyledStepperElement>
             </St.StyledStepperBody>

@@ -1,8 +1,8 @@
 import * as St from './Button.style';
 
-const Button = ({ text, size, isRed = false, onClick }) => {
+const Button = ({ text, size, isRed = false, onButtonClick }) => {
     return (
-        <St.StyledButton $size={size} $isRed={isRed} onClick={onClick}>
+        <St.StyledButton $size={size} $isRed={isRed} onClick={onButtonClick}>
             {size === 'small' ? (
                 <St.StyledTextP $isRed={isRed}>{text}</St.StyledTextP>
             ) : (

@@ -1,11 +1,12 @@
 import useNavigationStore from '@/stores/useNavigationStore';
 import { useEffect, useState } from 'react';
+import Button from '../components/_button/Button';
 import Modal from '../components/_modal/Modal';
 import ModalAlcohol from '../components/_modal/ModalAlcohol';
-import ModalVoice from '../components/_modal/ModalVoice';
+import ModalDropdown from '../components/_modal/ModalDropdown';
 import ModalPassword from '../components/_modal/ModalPassword';
 import ModalTextBox from '../components/_modal/ModalTextBox';
-import Button from '../components/_button/Button';
+import ModalVoice from '../components/_modal/ModalVoice';
 
 const Test = () => {
     const setNavigation = useNavigationStore((state) => state.setNavigation);
@@ -65,6 +66,14 @@ const Test = () => {
                             <ModalAlcohol drinkType={'맥주'} />
                         </div>,
                     );
+                }}
+            />
+            <Button
+                text={'드롭다운'}
+                isRed={true}
+                onClick={() => {
+                    setIsModalOpend(true);
+                    setModalContents(<ModalDropdown />);
                 }}
             />
 
