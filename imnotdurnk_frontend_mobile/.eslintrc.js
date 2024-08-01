@@ -36,7 +36,7 @@ module.exports = {
             'warn',
             { allowConstantExport: true },
         ],
-        'react/react-in-jsx-scope': 'off', // React 17 이후 필요 없음
+        'react/react-in-jsx-scope': 'on', // React 17 이후 필요 없음
         'react/prop-types': 'off', // PropTypes 비활성화 (필요 시 활성화)
         'react/jsx-uses-react': 'warn', // React 변수가 JSX에서 사용되었는지 확인
         'react/jsx-uses-vars': 'warn', // 선언된 변수가 JSX에서 사용되었는지 확인

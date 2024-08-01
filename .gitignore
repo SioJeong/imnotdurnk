@@ -15,6 +15,9 @@
 # application-secret.yml
 **/application-secret.yml
 
+# Docker-compose
+/docker-compose.yml
+
 # AWS User-specific
 .idea/**/aws.xml
 
