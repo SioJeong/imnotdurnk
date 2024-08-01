@@ -179,7 +179,7 @@ public class VoiceServiceImpl implements VoiceService {
         }
 
         // 파일 정보 로그
-        log.info("임시 파일 저장: " + file.getAbsolutePath());
+        log.debug("임시 파일 저장: " + file.getAbsolutePath());
         return file;
     }
 
@@ -193,7 +193,7 @@ public class VoiceServiceImpl implements VoiceService {
         if (file.exists() && !file.delete()) {
             log.warn("임시 파일 삭제 실패: " + file.getAbsolutePath());
         }
-        log.info("임시 파일 삭제: " + file.getAbsolutePath());
+        log.debug("임시 파일 삭제: " + file.getAbsolutePath());
     }
 
 

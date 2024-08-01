@@ -99,8 +99,8 @@ public class AudioUtil {
             throws IOException, UnsupportedAudioFileException {
 
         // 인풋 파일 포맷 확인
-        log.info("Original Format: " + AudioSystem.getAudioFileFormat(new ByteArrayInputStream(audioFileContent)).getFormat());
-        log.info("Target Format: " + audioFormat);
+        log.trace("Original Format: " + AudioSystem.getAudioFileFormat(new ByteArrayInputStream(audioFileContent)).getFormat());
+        log.trace("Target Format: " + audioFormat);
 
         try (final AudioInputStream originalAudioStream = AudioSystem
                 .getAudioInputStream(new ByteArrayInputStream(audioFileContent));
