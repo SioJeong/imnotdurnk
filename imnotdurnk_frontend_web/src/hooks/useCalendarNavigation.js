@@ -14,7 +14,7 @@ const useCalendarNavigation = () => {
                 isVisible: true,
                 icon1: { iconname: 'backarrow', path: '-1' },
                 title: '일정 추가',
-                icon2: { iconname: 'check', isRed: 'true' },
+                icon2: { iconname: 'check', isRed: 'true', path: 'submitPlan' },
             });
         } else if (location.pathname.startsWith('/calendar/')) {
             const [year, month, day] = location.pathname

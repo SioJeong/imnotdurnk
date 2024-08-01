@@ -1,5 +1,6 @@
 import { calendarMinmax } from '@/shared/constants/minmaxLength';
 import { useEffect, useRef, useState } from 'react';
+import useCalendarStore from '../../stores/useCalendarStore';
 import useModalStore from '../../stores/useModalStore';
 import Modal from '../_modal/Modal';
 import ModalDateDropdown from '../_modal/ModalDateDropdown';
@@ -7,13 +8,11 @@ import ModalTimeDropdown from '../_modal/ModalTimeDropdown';
 import * as St from './CreatePlan.style';
 
 const CreatePlan = () => {
-    const [date, setDate] = useState('2024년 8월 1일');
     const [selectedDate, setSelectedDate] = useState({
         year: '2024년',
         month: '8월',
         day: '1일',
     });
-    const [time, setTime] = useState('오후 06시 00분'); // 일정 등록 input에 출력되는 시간
     const [selectedTime, setSelectedTime] = useState({
         // 모달에서 선택된 임시 시간
         ampm: '오후',
@@ -30,6 +29,8 @@ const CreatePlan = () => {
     const timeModalId = 'timeModal';
     const dateModalId = 'dateModal';
 
+    const { plan, setPlan, resetPlan } = useCalendarStore();
+
     useEffect(() => {
         if (titleRef.current) {
             titleRef.current.focus();
@@ -45,6 +46,7 @@ const CreatePlan = () => {
         const input = e.target.value;
         if (input.length <= titleMax) {
             setTitle(input);
+            setPlan({ title: input });
         }
     };
 
@@ -52,6 +54,7 @@ const CreatePlan = () => {
         const input = e.target.value;
         if (input.length <= memoMax) {
             setMemo(input);
+            setPlan({ memo: input });
         }
     };
 
@@ -71,9 +74,8 @@ const CreatePlan = () => {
     };
 
     const submitSelectedDate = () => {
-        setDate(
-            `${selectedDate.year} ${selectedDate.month} ${selectedDate.day}`,
-        );
+        const dateStr = `${selectedDate.year} ${selectedDate.month} ${selectedDate.day}`;
+        setPlan({ date: dateStr });
         closeModal(dateModalId);
     };
 
@@ -87,9 +89,8 @@ const CreatePlan = () => {
     };
 
     const submitSelectedTime = () => {
-        setTime(
-            `${selectedTime.ampm} ${selectedTime.hour} ${selectedTime.minute}`,
-        );
+        const timeStr = `${selectedTime.ampm} ${selectedTime.hour} ${selectedTime.minute}`;
+        setPlan({ time: timeStr });
         closeModal(timeModalId);
     };
 
@@ -102,14 +103,14 @@ const CreatePlan = () => {
                         src="/src/assets/icons/size_24/Icon-calendar.svg"
                         alt="date"
                     />
-                    <h4>{date}</h4>
+                    <h4>{plan.date || '날짜를 선택하세요.'}</h4>
                 </St.InputItemBox>
                 <St.InputItemBox onClick={openTimeModal}>
                     <img
                         src="/src/assets/icons/size_24/Icon-clock.svg"
                         alt="time"
                     />
-                    <h4>{time}</h4>
+                    <h4>{plan.time || '시간을 선택하세요'}</h4>
                 </St.InputItemBox>
                 <St.InputItemBox>
                     <img
