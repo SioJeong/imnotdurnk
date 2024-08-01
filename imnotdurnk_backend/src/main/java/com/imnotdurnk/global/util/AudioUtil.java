@@ -132,7 +132,7 @@ public class AudioUtil {
         out.flush();
         audioBytes = out.toByteArray();
 
-        log.info("Audio to Byte: " + file.getName());
+        log.trace("Audio to Byte: " + file.getName());
 
         return audioBytes;
     }
