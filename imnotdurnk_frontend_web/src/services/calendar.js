@@ -16,7 +16,19 @@ const getAllEventList = async ({ token, year, month }) => {
 
         apiErrorHandler(statusCode, httpStatus, message);
 
-        return dataList;
+        // dataList 변환 작업
+        const eventList = dataList.map((e) => ({
+            id: e.planId,
+            title: e.title,
+            date: new Date(e.datetime),
+            alcoholLevel: e.alcoholLevel,
+            time: new Date(e.datetime).toLocaleTimeString('ko-KR', {
+                hour: '2-digit',
+                minute: '2-digit',
+            }),
+        }));
+
+        return eventList;
     } catch (err) {
         throw new Error(err.message || '데이터 가져오는 중 오류 발생');
     }

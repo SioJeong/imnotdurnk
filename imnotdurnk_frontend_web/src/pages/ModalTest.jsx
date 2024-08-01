@@ -3,9 +3,9 @@ import { useEffect, useState } from 'react';
 import Button from '../components/_button/Button';
 import Modal from '../components/_modal/Modal';
 import ModalAlcohol from '../components/_modal/ModalAlcohol';
-import ModalDropdown from '../components/_modal/ModalDropdown';
 import ModalPassword from '../components/_modal/ModalPassword';
 import ModalTextBox from '../components/_modal/ModalTextBox';
+import ModalTimeDropdown from '../components/_modal/ModalTimeDropdown';
 import ModalVoice from '../components/_modal/ModalVoice';
 import useModalStore from '../stores/useModalStore';
 
@@ -104,7 +104,7 @@ const Test = () => {
                 isRed={true}
                 onClick={() => {
                     setModalId('dropdownModal');
-                    setModalContents(<ModalDropdown />);
+                    setModalContents(<ModalTimeDropdown />);
                 }}
             />
 
