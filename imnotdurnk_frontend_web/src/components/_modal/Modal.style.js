@@ -1,4 +1,4 @@
-import { styled, keyframes } from 'styled-components';
+import { keyframes, styled } from 'styled-components';
 
 const slideUp = keyframes`
   from {
@@ -9,7 +9,6 @@ const slideUp = keyframes`
   }
 `;
 
-// 내려가는 모션 (아직 사용 안함)
 const slideDown = keyframes`
   from {
     transform: translate(-50%, 0%);
@@ -53,8 +52,9 @@ const ModalContainer = styled.div`
     background-color: var(--color-white1, #fff);
     border-radius: 45px 45px 0px 0px;
 
-    // 애니메이션 적용
-    animation: ${slideUp} 0.5s ease-out;
+    // TODO: modal 닫힐 때 애니메이션 적용 아직 안됨 (isClosing 함수 처리 필요)
+    animation: ${({ isClosing }) => (isClosing ? slideDown : slideUp)} 0.5s
+        ease-out;
 `;
 
 const StyledBezel = styled.img`
@@ -73,9 +73,11 @@ const StyledBox = styled.div`
     border-radius: 20px;
 `;
 
-const StyledForm = styled.form`
+const StyledFormBox = styled.div`
     display: flex;
-    flex-direction: column;
+    /* flex-direction: column; */
+    flex-direction: ${({ $direction }) =>
+        $direction === 'row' ? 'row' : 'column'};
     gap: 0.7143rem;
 `;
 
@@ -119,10 +121,10 @@ export {
     ModalContainer,
     StyledBezel,
     StyledBox,
-    StyledForm,
+    StyledFormBox,
     StyledIcon,
-    StyledStepperHeader,
     StyledStepperBody,
     StyledStepperElement,
+    StyledStepperHeader,
     StyledStepperImage,
 };

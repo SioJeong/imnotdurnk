@@ -4,12 +4,7 @@ spring:
     title: 나안취햄ㅅ어
   security: ignored=/**   # 일단 비활성화
 
-
-  config:
-    import: application-secret.yml
-
-
-    # DB Setting
+  # DB Setting
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: ${MYSQL_URL}
@@ -38,16 +33,27 @@ spring:
   mail:
     host: smtp.naver.com
     port: 465
-    username:
-    password:
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
     properties:
       mail.smtp.auth: true
       mail.smtp.ssl.enable: true
       mail.smtp.ssl.trust: smtp.naver.com
+
+cloud:
+  aws:
+    credentials:
+      accessKey: ${AWS_ACCESS_KEY_ID}
+      secretKey: ${AWS_SECRET_ACCESS_KEY}
+    region:
+      static: ${AWS_REGION}
+    s3:
+      bucket: ${AWS_S3_BUCKET}
+
 jwt:
   expiretime:
-    accesstoken: 1800000 #30분
-    refreshtoken: 432000000 #5일
+    accesstoken: ${JWT_ACCESS_TOKEN_EXPIRY}
+    refreshtoken: ${JWT_REFRESH_TOKEN_EXPIRY}
   secretkey:
-    accesstoken: adfklasdjhlfakjsdhlfjkashdljkfahlsdkjfasdfasd
-    refreshtoken: eirouqpiwerupqoiweuoiuXZiucxziuizzzxxccxvbdlkjkc
+    accesstoken: ${JWT_ACCESS_TOKEN_SECRET}
+    refreshtoken: ${JWT_REFRESH_TOKEN_SECRET}

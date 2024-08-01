@@ -42,7 +42,7 @@ const ScrollContainer = styled(ScrollView)`
 `;
 
 // 지도 우측 하단에 들어가는 버튼
-const FloatingButtonBottomRight = styled.View`
+const FloatingButtonBottomRight = styled(View)`
     position: absolute;
     bottom: 20px;
     right: 20px;

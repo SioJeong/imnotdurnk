@@ -91,7 +91,7 @@ public class JwtInterceptor implements HandlerInterceptor {
      * @throws Exception
      */
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws InvalidTokenException {
 
         // 원활한 테스트를 위해 Interceptor 무효화
         //return true;
@@ -108,8 +108,9 @@ public class JwtInterceptor implements HandlerInterceptor {
     	 * 토큰 재발급 요청인 경우 Refresh Token 유효성 검증 및 attribute 설정
     	 */
     	else if(request.getServletPath().equals("/auth/refresh")) {
-    		if(checkRefreshToken(request)) {
-    			return true;
+            if(checkRefreshToken(request)) {
+                checkAccessToken(request);
+                return true;
     		}
     	}
 
@@ -122,9 +123,7 @@ public class JwtInterceptor implements HandlerInterceptor {
     		}
     	}
 
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401 상태 코드 설정
-        response.getWriter().write("Unauthorized"); // 응답 메시지 설정
-		return false;
+        throw new InvalidTokenException("Unauthorized");
     }
 
 }

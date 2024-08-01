@@ -8,7 +8,9 @@ const Navigation = () => {
     const navigate = useNavigate();
 
     const handleNavigation = (path) => {
-        if (path) {
+        if (path === '-1') {
+            navigate(-1);
+        } else if (path) {
             navigate(path);
         }
     };

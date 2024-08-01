@@ -10,12 +10,14 @@ import Health from '../../assets/icons/size_24/Icon-health.svg';
 import Invisible from '../../assets/icons/size_24/Icon-invisible.svg';
 import Keyboard from '../../assets/icons/size_24/Icon-keyboard.svg';
 import Mailbox from '../../assets/icons/size_24/Icon-mailbox.svg';
+import Memo from '../../assets/icons/size_24/Icon-memo.svg';
 import Memorize from '../../assets/icons/size_24/Icon-memorize.svg';
 import Menu from '../../assets/icons/size_24/Icon-menu.svg';
 import Minus from '../../assets/icons/size_24/Icon-minus.svg';
 import Modify from '../../assets/icons/size_24/Icon-modify.svg';
 import Phone from '../../assets/icons/size_24/Icon-phone.svg';
 import Plus from '../../assets/icons/size_24/Icon-plus.svg';
+import Title from '../../assets/icons/size_24/Icon-title.svg';
 import Visible from '../../assets/icons/size_24/Icon-visible.svg';
 import Voice from '../../assets/icons/size_24/Icon-voice.svg';
 import Record from '../../assets/images/record.svg';
@@ -41,6 +43,8 @@ const icons = {
     visible: Visible,
     voice: Voice,
     record: Record,
+    memo: Memo,
+    title: Title,
 };
 
 export { icons };

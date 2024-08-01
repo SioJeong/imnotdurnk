@@ -73,10 +73,17 @@ const GlobalStyles = createGlobalStyle`
         color: var(--color-green3);
     }
 
-    body, p, span, div, input {
+    body, p, span, div, input, textarea {
         font-family: 'Pretendard', sans-serif;
         font-weight: 300; /* Light */
         color: var(--color-green3);
+    }
+
+    /* 기본 속성 제거 */
+    input, textarea {
+        border: none;
+        outline: none;
+        resize: none;
     }
 
     h1 {
