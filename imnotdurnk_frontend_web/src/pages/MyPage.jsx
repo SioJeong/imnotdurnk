@@ -10,8 +10,8 @@ const MyPage = () => {
         setNavigation({
             isVisible: true,
             icon1: { iconname: 'backarrow' },
-            title: '비밀번호 찾기',
-            icon2: { iconname: 'empty' },
+            title: '통계',
+            icon2: { iconname: 'profile' },
         });
     }, [setNavigation]);
 

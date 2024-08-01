@@ -53,7 +53,6 @@ const CertificationNumberInputContainer = () => {
     //배열 -> 문자열로 전환 함수
     const compareCertNum = () => {
         setCertNum(certNumList.join(''));
-        console.log(certNum);
         if (certNum.length < 4) {
             // 이거나 api 요청해서 비교하는 함수 조건에 추가해야함
 
