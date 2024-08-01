@@ -18,7 +18,7 @@ import Phone from '../../assets/icons/size_24/Icon-phone.svg';
 import Plus from '../../assets/icons/size_24/Icon-plus.svg';
 import Visible from '../../assets/icons/size_24/Icon-visible.svg';
 import Voice from '../../assets/icons/size_24/Icon-voice.svg';
-
+import Record from '../../assets/images/record.svg';
 const icons = {
     address: Address,
     backarrow: BackArrow,
@@ -40,6 +40,7 @@ const icons = {
     plus: Plus,
     visible: Visible,
     voice: Voice,
+    record: Record,
 };
 
 export { icons };
