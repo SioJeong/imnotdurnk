@@ -2,7 +2,7 @@ import { styled } from 'styled-components';
 
 export const ProfileCreateContainer = styled.form`
     display: flex;
-    padding: 29px 24px;
+    padding: 2.0714rem 1.7143rem;
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -21,7 +21,7 @@ export const MessageWrapper = styled.div`
 `;
 export const InputContainer = styled.div`
     display: flex;
-    height: 278px;
+    height: 19.8571rem;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
@@ -29,7 +29,7 @@ export const InputContainer = styled.div`
 `;
 export const ButtonBox = styled.div`
     display: flex;
-    padding: 24px;
+    padding: 1.7143rem;
     justify-content: space-between;
     align-items: center;
     align-self: stretch;

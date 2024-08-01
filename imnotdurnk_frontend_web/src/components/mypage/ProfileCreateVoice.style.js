@@ -19,7 +19,7 @@ export const InfoContainer = styled.div`
     gap: 0.7143rem;
     align-self: stretch;
     border-radius: 20px;
-    background: var(----color-green2, #465a54);
+    background: var(--color-green2, #465a54);
 `;
 
 export const Title = styled.h2`
@@ -40,7 +40,7 @@ export const RecordContainer = styled.div`
     flex: 1 0 0;
     align-self: stretch;
     border-radius: 20px;
-    background: var(----color-white2, #f7f7ec);
+    background: var(--color-white2, #f7f7ec);
 `;
 export const InputContainer = styled.div`
     display: flex;
