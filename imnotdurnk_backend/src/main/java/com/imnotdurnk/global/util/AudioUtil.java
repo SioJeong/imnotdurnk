@@ -1,7 +1,8 @@
 package com.imnotdurnk.global.util;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedInputStream;
@@ -14,9 +15,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.UUID;
 
 import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioFormat;
@@ -28,6 +29,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 @NoArgsConstructor
 public class AudioUtil {
 
+    private static final Logger log = LoggerFactory.getLogger(AudioUtil.class);
     private FileInputStream fstream = null;
     private byte[] audioBytes = new byte[1024];
     private byte[] buff = new byte[1024];
@@ -53,7 +55,10 @@ public class AudioUtil {
     public String SaveRaw(File file) throws UnsupportedAudioFileException {
         OutputStream output = null;
 
-        String output_title = "output_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMddHHmm")) + "raw";
+        String output_title = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMddHHmmss"))
+                + "_"
+                +  UUID.randomUUID().toString()
+                + ".raw";
 
         try {
             output = new FileOutputStream(output_title);
@@ -92,6 +97,11 @@ public class AudioUtil {
      */
     public byte[] changeFormat(@NotNull final byte[] audioFileContent, @NotNull final AudioFormat audioFormat)
             throws IOException, UnsupportedAudioFileException {
+
+        // 인풋 파일 포맷 확인
+        log.info("Original Format: " + AudioSystem.getAudioFileFormat(new ByteArrayInputStream(audioFileContent)).getFormat());
+        log.info("Target Format: " + audioFormat);
+
         try (final AudioInputStream originalAudioStream = AudioSystem
                 .getAudioInputStream(new ByteArrayInputStream(audioFileContent));
              final AudioInputStream formattedAudioStream = AudioSystem.getAudioInputStream(audioFormat,
@@ -109,25 +119,21 @@ public class AudioUtil {
      * @param file
      * @return
      */
-    public byte[] AudioToByte(File file) {
-        try {
-            File inFile = file;
-            fstream = new FileInputStream(inFile);
+    public byte[] AudioToByte(File file) throws IOException {
+        File inFile = file;
+        fstream = new FileInputStream(inFile);
 
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            BufferedInputStream in = new BufferedInputStream(fstream);
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        BufferedInputStream in = new BufferedInputStream(fstream);
 
-            while ((read = in.read(buff)) > 0) {
-                out.write(buff, 0, read);
-            }
-            out.flush();
-            audioBytes = out.toByteArray();
-
-        } catch (FileNotFoundException ex) {
-
-        } catch (IOException e) {
-            e.printStackTrace();
+        while ((read = in.read(buff)) > 0) {
+            out.write(buff, 0, read);
         }
+        out.flush();
+        audioBytes = out.toByteArray();
+
+        log.info("Audio to Byte: " + file.getName());
+
         return audioBytes;
     }
 

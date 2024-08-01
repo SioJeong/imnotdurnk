@@ -19,4 +19,8 @@ public interface VoiceService {
     int getScoreFromVoice(MultipartFile file) throws IOException, IllegalAccessException, UnsupportedAudioFileException;
 
     File multipartToFile(MultipartFile mfile) throws IOException;
+
+    void deleteTempFile(File file) throws IOException;
+
+    String getScriptFromVoice(MultipartFile file) throws IOException, IllegalAccessException, UnsupportedAudioFileException;
 }
