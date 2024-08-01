@@ -7,12 +7,15 @@ import ModalDropdown from '../components/_modal/ModalDropdown';
 import ModalPassword from '../components/_modal/ModalPassword';
 import ModalTextBox from '../components/_modal/ModalTextBox';
 import ModalVoice from '../components/_modal/ModalVoice';
+import useModalStore from '../stores/useModalStore';
 
 const Test = () => {
     const setNavigation = useNavigationStore((state) => state.setNavigation);
 
-    const [isModalOpend, setIsModalOpend] = useState(false);
+    const [modalId, setModalId] = useState('');
     const [modalContents, setModalContents] = useState('');
+
+    const { openModal, closeModal } = useModalStore();
 
     useEffect(() => {
         setNavigation({
@@ -23,13 +26,37 @@ const Test = () => {
         });
     }, [setNavigation]);
 
+    useEffect(() => {
+        if (modalId) {
+            openModal(modalId);
+        }
+    }, [modalId, openModal]);
+
+    const submitFn = () => {
+        // 버튼 클릭 시 수행할 동작
+        setModalId('');
+        closeModal(modalId);
+    };
+
+    const closeModalByBackground = (targetModalId) => {
+        setModalId('');
+        closeModal(targetModalId);
+    };
+
     return (
-        <>
+        <div
+            style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '2rem',
+                padding: '2rem',
+            }}
+        >
             <Button
                 text={'목소리'}
                 isRed={true}
                 onClick={() => {
-                    setIsModalOpend(true);
+                    setModalId('voiceModal');
                     setModalContents(<ModalVoice />);
                 }}
             />
@@ -37,7 +64,7 @@ const Test = () => {
                 text={'비밀번호'}
                 isRed={true}
                 onClick={() => {
-                    setIsModalOpend(true);
+                    setModalId('passwordModal');
                     setModalContents(<ModalPassword />);
                 }}
             />
@@ -45,15 +72,19 @@ const Test = () => {
                 text={'텍스트'}
                 isRed={true}
                 onClick={() => {
-                    setIsModalOpend(true);
-                    setModalContents(<ModalTextBox text={'테스트 중입니다'} />);
+                    setModalId('textModal');
+                    setModalContents(
+                        <ModalTextBox
+                            text={'텍스트를 입력할 수 있는 모달입니다.'}
+                        />,
+                    );
                 }}
             />
             <Button
                 text={'주량'}
                 isRed={true}
                 onClick={() => {
-                    setIsModalOpend(true);
+                    setModalId('alcoholModal');
                     setModalContents(
                         <div
                             style={{
@@ -72,18 +103,19 @@ const Test = () => {
                 text={'드롭다운'}
                 isRed={true}
                 onClick={() => {
-                    setIsModalOpend(true);
+                    setModalId('dropdownModal');
                     setModalContents(<ModalDropdown />);
                 }}
             />
 
             <Modal
-                isModalOpend={isModalOpend}
-                onClose={() => setIsModalOpend(false)}
+                modalId={modalId}
                 contents={modalContents}
                 buttonText={'저장하기'}
+                onButtonClick={submitFn}
+                customCloseModal={() => closeModalByBackground(modalId)} // 모달 외부 클릭 시 호출
             />
-        </>
+        </div>
     );
 };
 
