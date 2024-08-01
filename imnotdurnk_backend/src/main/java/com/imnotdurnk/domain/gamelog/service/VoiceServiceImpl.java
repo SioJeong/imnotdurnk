@@ -124,18 +124,25 @@ public class VoiceServiceImpl implements VoiceService {
         log.info("[ETRI 발음평가 API 호출] " + fileTitle);
 
         try {
+
             responseCode = con.getResponseCode();
             InputStream is = con.getInputStream();
             byte[] buffer = new byte[is.available()];
             int byteRead = is.read(buffer);
             responBody = new String(buffer);
+
         } catch (SocketTimeoutException e) {
+
             log.error("발음평가 API 응답 시간 초과");
             throw new ApiTimeOutException("API 응답 시간 초과");
+
         } catch (IOException e) {
+
             log.error("발음평가 API 호출 실패");
             throw new ApiRequestFailedException("API 호출 실패");
+
         } finally {
+
             // 파일 삭제
             File rawFile = new File(fileTitle);
             deleteTempFile(rawFile);
@@ -160,12 +167,6 @@ public class VoiceServiceImpl implements VoiceService {
                 score = returnObject.get("score").getAsDouble();
             }
         }
-
-        //작업이 끝나면 raw파일 및 임시파일 삭제
-        File rawFile = new File(fileTitle);
-        deleteTempFile(rawFile);
-        deleteTempFile(wavFile);
-
 
         //1점-5점 -> 0~4점 -> 0~100점으로 보정
         return (int) ((score - 1) * 25);
