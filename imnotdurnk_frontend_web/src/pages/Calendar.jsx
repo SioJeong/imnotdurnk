@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import CalendarList from '../components/calendar/CalendarList';
 import CalendarStatusBar from '../components/calendar/CalendarStatusBar';
@@ -10,8 +10,16 @@ import useCalendarStore from '../stores/useCalendarStore';
 
 const Calendar = () => {
     const [view, setView] = useState('month'); // 초기 값 month 뷰
+    const [selectedDate, setSelectedDate] = useState();
+
     const { eventListOnSelectedDate, statusOnDate } = useCalendarStore();
+
     const { navigate } = useCalendarNavigation();
+
+    // 캘린더 렌더링 시 무조건 오늘 날짜로 돌아오도록
+    useEffect(() => {
+        setSelectedDate(new Date());
+    }, []);
 
     const handleItemClick = (date) => {
         const adjustedDate = new Date(date);
@@ -39,12 +47,18 @@ const Calendar = () => {
                 gap: '0.7143rem',
             }}
         >
-            <ReactCalendar onChangeView={setView} />
+            <ReactCalendar
+                onChangeView={setView}
+                selectedDate={selectedDate}
+                setSelectedDate={setSelectedDate}
+            />
             <CalendarStatusBar />
             {view === 'month' && (
                 <EventCard
                     alcoholLevel={statusOnDate?.alcoholLevel}
                     onItemClick={handleItemClick}
+                    selectedDate={selectedDate}
+                    fromCalendar={true}
                 >
                     {eventListOnSelectedDate.length > 0 ? (
                         <>

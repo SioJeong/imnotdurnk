@@ -13,7 +13,11 @@ const CalendarList = () => {
                 {eventListOnSelectedDate.length > 0 ? (
                     eventListOnSelectedDate.map((e) => {
                         return (
-                            <EventCard key={e.id} alcoholLevel={e.alcoholLevel}>
+                            <EventCard
+                                key={e.id}
+                                alcoholLevel={e.alcoholLevel}
+                                fromCalendar={false}
+                            >
                                 <div>
                                     <St.CalendarItemTitle
                                         $alcoholLevel={e.alcoholLevel}

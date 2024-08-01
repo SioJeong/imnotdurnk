@@ -1,8 +1,31 @@
-import useCalendarStore from '../../stores/useCalendarStore';
+import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import * as St from './EventCard.style';
 
-const EventCard = ({ alcoholLevel, onItemClick, children }) => {
-    const { selectedDate } = useCalendarStore();
+const EventCard = ({
+    alcoholLevel,
+    onItemClick,
+    selectedDate,
+    fromCalendar,
+    children,
+}) => {
+    const location = useLocation();
+
+    const [selectedDateFromPath, setSelectedDateFromPath] = useState(null);
+
+    useEffect(() => {
+        if (location.pathname.startsWith('/calendar/')) {
+            const pathDate = location.pathname.split('/')[2].split('-');
+            if (pathDate.length === 3) {
+                const [year, month, day] = pathDate.map(Number);
+                setSelectedDateFromPath(new Date(year, month - 1, day));
+            }
+        }
+    }, [location.pathname]);
+
+    const selectedDateForDisplay = fromCalendar
+        ? selectedDate
+        : selectedDateFromPath;
 
     // 요일 index -> 문자열로 변환하는 함수
     const getDayName = (date) => {
@@ -18,8 +41,8 @@ const EventCard = ({ alcoholLevel, onItemClick, children }) => {
             <St.CalendarItemDate // TODO: selectedDate 널 체크 사항 -> 이거 뭐야
                 $isWeekend={selectedDate ? selectedDate.getDay() : null}
             >
-                <h4>{getDayName(selectedDate)}</h4>
-                <h2>{selectedDate?.getDate()}</h2>
+                <h4>{getDayName(selectedDateForDisplay)}</h4>
+                <h2>{selectedDateForDisplay?.getDate()}</h2>
             </St.CalendarItemDate>
             <St.CalendarItemBodyBox>{children}</St.CalendarItemBodyBox>
         </St.CalendarItemBox>
