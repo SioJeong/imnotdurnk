@@ -1,4 +1,4 @@
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import * as Location from 'expo-location';
 import React, { useEffect, useState } from 'react';
 import { Pressable, Text } from 'react-native';
@@ -20,7 +20,6 @@ const Map = () => {
         setDeparture,
         destination,
         setDestination,
-        resetDepartureAndDestination,
     } = useLocationStore();
     const [departurePlaceholder, setDeparturePlaceholder] =
         useState('출발지를 입력하세요');
@@ -86,7 +85,7 @@ const Map = () => {
         }
     }, [currentLocation]);
 
-    // departure 또는 destination이 변경될 때 mapCenter 업데이트
+    // departure가 변경될 때 mapCenter 업데이트
     useEffect(() => {
         if (departure) {
             setMapCenter({
@@ -98,6 +97,7 @@ const Map = () => {
         }
     }, [departure, setMapCenter]);
 
+    // destination이 변경될 때 mapCenter 업데이트
     useEffect(() => {
         if (destination) {
             setMapCenter({
@@ -109,15 +109,6 @@ const Map = () => {
         }
     }, [destination, setMapCenter]);
 
-    useFocusEffect(
-        React.useCallback(() => {
-            return () => {
-                // 화면에서 벗어날 때 호출됩니다.
-                resetDepartureAndDestination();
-            };
-        }, [resetDepartureAndDestination]),
-    );
-
     return (
         <St.Container>
             <SearchBar
@@ -128,7 +119,7 @@ const Map = () => {
                 placeholder="목적지를 입력하세요"
                 onPress={setDestination}
             />
-            <Pressable onPress={() => navi.navigate('Route')}>
+            <Pressable onPress={() => navi.navigate('PathFinder')}>
                 <Text>go to map</Text>
             </Pressable>
             <CustomMap />
