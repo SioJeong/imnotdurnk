@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import React from 'react';
+import { Pressable, Text } from 'react-native';
 import * as St from '../components/_layout/globalStyle';
 import useNavigationStore from '../stores/useNavigationStore';
-import { Pressable, Text } from 'react-native';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
 const Home = () => {
     const { setNavigation } = useNavigationStore();
