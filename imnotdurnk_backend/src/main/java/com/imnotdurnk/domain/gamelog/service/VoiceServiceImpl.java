@@ -6,6 +6,8 @@ import com.imnotdurnk.domain.gamelog.dto.VoiceDto;
 import com.imnotdurnk.domain.gamelog.entity.GameLogEntity;
 import com.imnotdurnk.domain.gamelog.entity.VoiceEntity;
 import com.imnotdurnk.domain.gamelog.repository.VoiceRepository;
+import com.imnotdurnk.global.exception.ApiRequestFailedException;
+import com.imnotdurnk.global.exception.ApiTimeOutException;
 import com.imnotdurnk.global.util.AudioUtil;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -20,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -36,7 +39,7 @@ public class VoiceServiceImpl implements VoiceService {
     private static final Logger log = LoggerFactory.getLogger(VoiceServiceImpl.class);
     private final VoiceRepository voiceRepository;
     private final AudioUtil audioUtil;
-    @Value("${etri.accesskey}")
+    @Value("${cloud.aws.credentials.accessKey}")
     private String accessKey;
 
     @Override
@@ -109,6 +112,10 @@ public class VoiceServiceImpl implements VoiceService {
         con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
         con.setRequestProperty("Authorization", accessKey);
 
+        // 타임아웃 설정
+        con.setConnectTimeout(30000); // 30초 연결 타임아웃
+        con.setReadTimeout(30000);    // 30초 읽기 타임아웃
+
         DataOutputStream wr = new DataOutputStream(con.getOutputStream());
         wr.write(gson.toJson(request).getBytes("UTF-8"));
         wr.flush();
@@ -116,11 +123,25 @@ public class VoiceServiceImpl implements VoiceService {
 
         log.info("[ETRI 발음평가 API 호출] " + fileTitle);
 
-        responseCode = con.getResponseCode();
-        InputStream is = con.getInputStream();
-        byte[] buffer = new byte[is.available()];
-        int byteRead = is.read(buffer);
-        responBody = new String(buffer);
+        try {
+            responseCode = con.getResponseCode();
+            InputStream is = con.getInputStream();
+            byte[] buffer = new byte[is.available()];
+            int byteRead = is.read(buffer);
+            responBody = new String(buffer);
+        } catch (SocketTimeoutException e) {
+            log.error("발음평가 API 응답 시간 초과");
+            throw new ApiTimeOutException("API 응답 시간 초과");
+        } catch (IOException e) {
+            log.error("발음평가 API 호출 실패");
+            throw new ApiRequestFailedException("API 호출 실패");
+        } finally {
+            // 파일 삭제
+            File rawFile = new File(fileTitle);
+            deleteTempFile(rawFile);
+            deleteTempFile(wavFile);
+        }
+
         
         log.info("[ETRI 발음평가 API 호출 결과]");
         log.info("응답 코드: " + responseCode );
@@ -237,6 +258,9 @@ public class VoiceServiceImpl implements VoiceService {
         con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
         con.setRequestProperty("Authorization", accessKey);
 
+        con.setConnectTimeout(30000); // 30초 연결 타임아웃
+        con.setReadTimeout(30000);    // 30초 읽기 타임아웃
+
         DataOutputStream wr = new DataOutputStream(con.getOutputStream());
         wr.write(gson.toJson(request).getBytes("UTF-8"));
         wr.flush();
@@ -244,11 +268,24 @@ public class VoiceServiceImpl implements VoiceService {
 
         log.info("[ETRI 음성인식 API 호출] " + fileTitle);
 
-        responseCode = con.getResponseCode();
-        InputStream is = con.getInputStream();
-        byte[] buffer = new byte[is.available()];
-        int byteRead = is.read(buffer);
-        responBody = new String(buffer);
+        try {
+            responseCode = con.getResponseCode();
+            InputStream is = con.getInputStream();
+            byte[] buffer = new byte[is.available()];
+            int byteRead = is.read(buffer);
+            responBody = new String(buffer);
+        } catch (SocketTimeoutException e) {
+            log.error("음성인식 API 응답 시간 초과");
+            throw new ApiTimeOutException("API 응답 시간 초과");
+        } catch (IOException e) {
+            log.error("음성인식 API 호출 실패");
+            throw new ApiRequestFailedException("API 호출 실패");
+        } finally {
+            // 파일 삭제
+            File rawFile = new File(fileTitle);
+            deleteTempFile(rawFile);
+            deleteTempFile(wavFile);
+        }
 
         //결과 로그
         log.info("[ETRI 음성인식 API 호출 결과]");
@@ -268,11 +305,6 @@ public class VoiceServiceImpl implements VoiceService {
                 result = returnObject.get("recognized").getAsString();
             }
         }
-
-        //작업이 끝나면 raw파일 및 임시파일 삭제
-        File rawFile = new File(fileTitle);
-        deleteTempFile(rawFile);
-        deleteTempFile(wavFile);
 
         return result;
 
