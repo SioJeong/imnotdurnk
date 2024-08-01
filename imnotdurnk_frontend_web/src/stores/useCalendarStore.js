@@ -9,7 +9,7 @@ const useCalendarStore = create(
             setMonthlyEventList: (events) => set({ monthlyEventList: events }),
 
             // 2. 선택한 날짜
-            selectedDate: new Date(),
+            selectedDate: new Date(), // TODO: 이거 왜 가끔 자꾸 null 뜨는 지 체크 좀
             setSelectedDate: (date) => set({ selectedDate: date }),
 
             // 3. 선택한 날짜에 해당하는 이벤트 리스트
