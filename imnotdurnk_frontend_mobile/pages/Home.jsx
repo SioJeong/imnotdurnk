@@ -2,10 +2,12 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { Pressable, Text } from 'react-native';
 import * as St from '../components/_layout/globalStyle';
+import useLocationStore from '../stores/useLocationStore';
 import useNavigationStore from '../stores/useNavigationStore';
 
 const Home = () => {
     const { setNavigation } = useNavigationStore();
+    const { resetDepartureAndDestination } = useLocationStore();
     const navi = useNavigation();
 
     useFocusEffect(
@@ -16,7 +18,10 @@ const Home = () => {
                 title: '홈 화면',
                 icon2: { iconname: 'check', isRed: false },
             });
-        }, [setNavigation]),
+
+            // Home 화면으로 오면 전역의 출발지와 목적지 초기화
+            resetDepartureAndDestination();
+        }, [setNavigation, resetDepartureAndDestination]),
     );
     return (
         <St.Container>
