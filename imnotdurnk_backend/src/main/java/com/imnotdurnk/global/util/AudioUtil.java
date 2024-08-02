@@ -52,7 +52,7 @@ public class AudioUtil {
      */
     //바이트 배열을 Raw 파일로 저장
     //Save byte array as Raw file
-    public String SaveRaw(File file) throws UnsupportedAudioFileException {
+    public String SaveRaw(File file) throws UnsupportedAudioFileException, IOException {
         OutputStream output = null;
 
         String output_title = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMddHHmmss"))
@@ -66,14 +66,8 @@ public class AudioUtil {
             e.printStackTrace();
         }
 
-        try {
-            //바이트 변환 -> 포맷 변환 -> wav에서 raw로 변환
-            output.write(formatWavToRaw(changeFormat(AudioToByte(file), FORMAT)));
-            return output_title;
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        //바이트 변환 -> 포맷 변환 -> wav에서 raw로 변환
+        output.write(formatWavToRaw(changeFormat(AudioToByte(file), FORMAT)));
 
         return output_title;
     }

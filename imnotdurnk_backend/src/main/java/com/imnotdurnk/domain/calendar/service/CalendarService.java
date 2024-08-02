@@ -30,4 +30,6 @@ public interface CalendarService {
     PlanDetailDto getPlanDetail(String accessToken, int planId) throws ResourceNotFoundException, BadRequestException;
 
     CalendarEntity isSameUserAndGetCalendarEntity (String accessToken, int planId) throws ResourceNotFoundException, BadRequestException;
+
+    void deletePlan(String accessToken, int planId) throws BadRequestException, ResourceNotFoundException;
 }

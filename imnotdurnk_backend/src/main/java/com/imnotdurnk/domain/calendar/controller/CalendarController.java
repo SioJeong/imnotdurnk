@@ -7,6 +7,7 @@ import com.imnotdurnk.domain.calendar.dto.PlanDetailDto;
 import com.imnotdurnk.domain.calendar.service.CalendarService;
 import com.imnotdurnk.global.commonClass.CommonResponse;
 import com.imnotdurnk.global.exception.InvalidDateException;
+import com.imnotdurnk.global.exception.ResourceNotFoundException;
 import com.imnotdurnk.global.response.ListResponse;
 import com.imnotdurnk.global.response.SingleResponse;
 import lombok.AllArgsConstructor;
@@ -16,9 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -180,6 +179,28 @@ public class CalendarController {
         CommonResponse response = new CommonResponse();
         response.setStatusCode(HttpStatus.OK.value());
         response.setMessage("도착 시간이 등록되었습니다.");
+
+        return ResponseEntity.status(response.getHttpStatus()).body(response);
+    }
+
+    /***
+     * 일정 삭제 API
+     *
+     * @param accessToken
+     * @param planId
+     *
+     * @return
+     */
+    @GetMapping("/{planId}")
+    public ResponseEntity<?> deletePlan(@RequestAttribute(value = "AccessToken", required = true) String accessToken,
+                                               @PathVariable int planId) throws BadRequestException, ResourceNotFoundException {
+
+        calendarService.deletePlan(accessToken, planId);
+
+        //응답 객체
+        CommonResponse response = new CommonResponse();
+        response.setStatusCode(HttpStatus.OK.value());
+        response.setMessage("일정이 삭제되었습니다.");
 
         return ResponseEntity.status(response.getHttpStatus()).body(response);
     }

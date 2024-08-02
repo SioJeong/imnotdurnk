@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import javax.sound.sampled.UnsupportedAudioFileException;
+
 
 /**
  * 예외처리
@@ -86,6 +88,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         headers.add(HttpHeaders.CONNECTION, "close");
 
         return handleExceptionInternalWithHeader(exception.getCode(), exception.getMessage(), headers);
+    }
+
+    // 포맷이 일치하지 않는 음성 파일인 경우
+    @ExceptionHandler(UnsupportedAudioFileException.class)
+    public ResponseEntity<?> handleUnsupportedAudioFileException(UnsupportedAudioFileException exception){
+        return handleExceptionInternal(HttpStatus.BAD_REQUEST.value(), "음성 파일 포맷이 일치하지 않음");
     }
 
     private ResponseEntity<?> handleExceptionInternal(int code, String message){
