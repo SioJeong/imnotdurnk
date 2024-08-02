@@ -17,7 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/api/voice")
+@RequestMapping("/voice")
 @RequiredArgsConstructor
 public class VoiceController {
 

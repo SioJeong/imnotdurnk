@@ -3,6 +3,7 @@ package com.imnotdurnk.global.exception;
 import com.imnotdurnk.global.commonClass.CommonResponse;
 import jakarta.mail.MessagingException;
 import org.apache.coyote.BadRequestException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -71,6 +72,22 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(exception.getCode(), exception.getMessage());
     }
 
+    // 외부 api 호출 실패
+    @ExceptionHandler(ApiRequestFailedException.class)
+    public ResponseEntity<?> handleApiRequestFailedException(ApiRequestFailedException exception){
+        return handleExceptionInternal(exception.getCode(), exception.getMessage());
+    }
+
+    // 외부 api 호출했을 때 시간초과(응답없음)
+    @ExceptionHandler(ApiTimeOutException.class)
+    public ResponseEntity<?> handleApiTimeOutException(ApiTimeOutException exception){
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONNECTION, "close");
+
+        return handleExceptionInternalWithHeader(exception.getCode(), exception.getMessage(), headers);
+    }
+
     private ResponseEntity<?> handleExceptionInternal(int code, String message){
 
         //응답 객체
@@ -79,6 +96,19 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         response.setMessage(message);
 
         return ResponseEntity.status(response.getHttpStatus()).body(response);
+    }
+
+    private ResponseEntity<?> handleExceptionInternalWithHeader(int code, String message, HttpHeaders headers){
+
+        //응답 객체
+        CommonResponse response = new CommonResponse();
+        response.setStatusCode(code);
+        response.setMessage(message);
+
+        return ResponseEntity
+                .status(response.getHttpStatus())
+                .headers(headers)
+                .body(response);
     }
 
 }

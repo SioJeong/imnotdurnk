@@ -1,12 +1,18 @@
 import { calendarMinmax } from '@/shared/constants/minmaxLength';
 import { useEffect, useRef, useState } from 'react';
+import useCalendarStore from '../../stores/useCalendarStore';
 import useModalStore from '../../stores/useModalStore';
 import Modal from '../_modal/Modal';
-import ModalDropdown from '../_modal/ModalDropdown';
+import ModalDateDropdown from '../_modal/ModalDateDropdown';
+import ModalTimeDropdown from '../_modal/ModalTimeDropdown';
 import * as St from './CreatePlan.style';
 
 const CreatePlan = () => {
-    const [time, setTime] = useState('오후 06시 00분'); // 일정 등록 input에 출력되는 시간
+    const [selectedDate, setSelectedDate] = useState({
+        year: '2024년',
+        month: '8월',
+        day: '1일',
+    });
     const [selectedTime, setSelectedTime] = useState({
         // 모달에서 선택된 임시 시간
         ampm: '오후',
@@ -20,7 +26,10 @@ const CreatePlan = () => {
     const titleRef = useRef(null);
 
     const { openModal, closeModal } = useModalStore();
-    const modalId = 'timeModal';
+    const timeModalId = 'timeModal';
+    const dateModalId = 'dateModal';
+
+    const { plan, setPlan, resetPlan } = useCalendarStore();
 
     useEffect(() => {
         if (titleRef.current) {
@@ -37,6 +46,7 @@ const CreatePlan = () => {
         const input = e.target.value;
         if (input.length <= titleMax) {
             setTitle(input);
+            setPlan({ title: input });
         }
     };
 
@@ -44,6 +54,7 @@ const CreatePlan = () => {
         const input = e.target.value;
         if (input.length <= memoMax) {
             setMemo(input);
+            setPlan({ memo: input });
         }
     };
 
@@ -53,9 +64,24 @@ const CreatePlan = () => {
         e.target.style.height = `${e.target.scrollHeight}px`; // 늘어날 때
     };
 
+    // 날짜 선택 모달
+    const openDateModal = () => {
+        openModal(dateModalId);
+    };
+
+    const handleSelectedDate = (year, month, day) => {
+        setSelectedDate({ year, month, day });
+    };
+
+    const submitSelectedDate = () => {
+        const dateStr = `${selectedDate.year} ${selectedDate.month} ${selectedDate.day}`;
+        setPlan({ date: dateStr });
+        closeModal(dateModalId);
+    };
+
     // 시간 선택 모달
     const openTimeModal = () => {
-        openModal(modalId);
+        openModal(timeModalId);
     };
 
     const handleSelectedTime = (ampm, hour, minute) => {
@@ -63,30 +89,28 @@ const CreatePlan = () => {
     };
 
     const submitSelectedTime = () => {
-        setTime(
-            `${selectedTime.ampm} ${selectedTime.hour} ${selectedTime.minute}`,
-        );
-        closeModal(modalId);
+        const timeStr = `${selectedTime.ampm} ${selectedTime.hour} ${selectedTime.minute}`;
+        setPlan({ time: timeStr });
+        closeModal(timeModalId);
     };
 
     return (
         <St.CreatePlanContainer>
             <h3>일정 정보</h3>
             <St.PlanContainer>
-                <St.InputItemBox>
+                <St.InputItemBox onClick={openDateModal}>
                     <img
                         src="/src/assets/icons/size_24/Icon-calendar.svg"
                         alt="date"
                     />
-                    {/* 모달 뜨게 */}
-                    <h4 onClick={() => alert('날짜 입력')}>2024년 7월 28일</h4>
+                    <h4>{plan.date || '날짜를 선택하세요.'}</h4>
                 </St.InputItemBox>
                 <St.InputItemBox onClick={openTimeModal}>
                     <img
                         src="/src/assets/icons/size_24/Icon-clock.svg"
                         alt="time"
                     />
-                    <h4>{time}</h4>
+                    <h4>{plan.time || '시간을 선택하세요'}</h4>
                 </St.InputItemBox>
                 <St.InputItemBox>
                     <img
@@ -119,12 +143,24 @@ const CreatePlan = () => {
                 </St.InputItemBox>
             </St.PlanContainer>
             <Modal
-                modalId={modalId}
+                modalId={timeModalId}
                 contents={
-                    <ModalDropdown handleSelectedTime={handleSelectedTime} />
+                    <ModalTimeDropdown
+                        handleSelectedTime={handleSelectedTime}
+                    />
                 }
                 buttonText={'저장하기'}
                 onButtonClick={submitSelectedTime}
+            />
+            <Modal
+                modalId={dateModalId}
+                contents={
+                    <ModalDateDropdown
+                        handleSelectedDate={handleSelectedDate}
+                    />
+                }
+                buttonText={'저장하기'}
+                onButtonClick={submitSelectedDate}
             />
         </St.CreatePlanContainer>
     );

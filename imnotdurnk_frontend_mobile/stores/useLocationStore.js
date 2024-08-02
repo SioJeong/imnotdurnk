@@ -10,7 +10,7 @@ const useLocationStore = create((set) => ({
     setDeparture: (coords) => set({ departure: coords }),
     setDestination: (coords) => set({ destination: coords }),
     resetDepartureAndDestination: () =>
-        set({ departure: null, destination: null }),
+        set({ mapCenter: null, departure: null, destination: null }),
 }));
 
 export default useLocationStore;

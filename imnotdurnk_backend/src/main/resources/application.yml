@@ -4,6 +4,11 @@ spring:
     title: 나안취햄ㅅ어
   security: ignored=/**   # 일단 비활성화
 
+  # ------이거 있으면 오류나유--------
+#  config:
+#    import: application-secret.yml
+  #---------------------------------
+
   # DB Setting
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -40,6 +45,10 @@ spring:
       mail.smtp.ssl.enable: true
       mail.smtp.ssl.trust: smtp.naver.com
 
+server:
+  servlet:
+    context-path: /api
+
 cloud:
   aws:
     credentials:
@@ -57,3 +66,6 @@ jwt:
   secretkey:
     accesstoken: ${JWT_ACCESS_TOKEN_SECRET}
     refreshtoken: ${JWT_REFRESH_TOKEN_SECRET}
+
+etri:
+  accessKey: ${ETRI_ACCESS_KEY}

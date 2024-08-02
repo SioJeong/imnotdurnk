@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import DropButton from '../../components/_button/DropButton';
+import DropButton from '../_button/DropButton';
 import * as St from './Modal.style';
 
-const ModalDropdown = ({ handleSelectedTime }) => {
+const ModalTimeDropdown = ({ handleSelectedTime }) => {
     const ampm = ['오전', '오후'];
     const hours = Array.from(
         { length: 12 },
@@ -56,4 +56,4 @@ const ModalDropdown = ({ handleSelectedTime }) => {
     );
 };
 
-export default ModalDropdown;
+export default ModalTimeDropdown;
