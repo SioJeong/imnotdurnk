@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import IconButton from '../components/_common/IconButton';
 import * as St from '../components/_layout/globalStyle';
 import CustomMap from '../components/map/CustomMap';
-import { fetchDirections } from '../services/map';
+import { fetchTransitDirections } from '../services/map';
 import useLocationStore from '../stores/useLocationStore';
 import useNavigationStore from '../stores/useNavigationStore';
 
@@ -32,7 +32,7 @@ const PathFinder = () => {
 
         const getDirections = async () => {
             try {
-                const transitData = await fetchDirections(
+                const transitData = await fetchTransitDirections(
                     departure,
                     destination,
                 );
