@@ -20,7 +20,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/api/voice")
+@RequestMapping("/voice")
 @RequiredArgsConstructor
 public class VoiceController {
 
