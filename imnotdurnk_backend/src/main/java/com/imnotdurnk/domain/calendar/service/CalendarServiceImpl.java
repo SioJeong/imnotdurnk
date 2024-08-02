@@ -11,6 +11,8 @@ import com.imnotdurnk.domain.gamelog.repository.GameLogRepository;
 import com.imnotdurnk.domain.user.entity.UserEntity;
 import com.imnotdurnk.domain.user.repository.UserRepository;
 import com.imnotdurnk.global.exception.EntitySaveFailedException;
+import com.imnotdurnk.global.exception.InvalidDateException;
+import com.imnotdurnk.global.exception.InvalidTokenException;
 import com.imnotdurnk.global.exception.ResourceNotFoundException;
 import com.imnotdurnk.global.util.JwtUtil;
 import lombok.AllArgsConstructor;
@@ -207,6 +209,34 @@ public class CalendarServiceImpl implements CalendarService {
                 .build();
     }
 
+    /***
+     * planId를 통해 일정 삭제
+     * @param accessToken
+     * @param planId
+     * @return 상세 일정 CalendarDto 객체
+     * @throws ResourceNotFoundException 존재하지 않는 일정인 경우
+     * @throws BadRequestException 사용자의 일정이 아닌 경우
+     */
+    @Override
+    public void deletePlan(String accessToken, int planId) throws ResourceNotFoundException, BadRequestException {
+
+        //accessToken에 저장된 사용자 정보와 삭제하려는 일정의 사용자가 일치하는지 확인
+        String tokenEmail = jwtUtil.getUserEmail(accessToken, TokenType.ACCESS);
+        Optional<CalendarEntity> calendarEntity = calendarRepository.findById(planId);
+
+        // 존재하지 않는 일정인 경우
+        if (!calendarEntity.isPresent()) throw new ResourceNotFoundException("존재하지 않는 일정입니다.");
+
+        //조회 요청한 일정을 등록한 사람의 이메일을 가져옴
+        String userIdFromPlan = calendarEntity.get().getUserEntity().getEmail();
+
+        //accessToken에 저장된 사용자 이메일과 조회 요청한 일정을 등록한 사용자의 이메일이 일치하지 않는 경우
+        if(!tokenEmail.equals(userIdFromPlan)) throw new BadRequestException("잘못된 접근입니다.");
+
+        // 일정 삭제
+        calendarRepository.deleteById(planId);
+
+    }
 
     @Override
     public CalendarEntity isSameUserAndGetCalendarEntity (String accessToken, int planId) throws ResourceNotFoundException, BadRequestException{
