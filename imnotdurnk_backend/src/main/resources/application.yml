@@ -45,6 +45,10 @@ spring:
       mail.smtp.ssl.enable: true
       mail.smtp.ssl.trust: smtp.naver.com
 
+server:
+  servlet:
+    context-path: /api
+
 cloud:
   aws:
     credentials:
