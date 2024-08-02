@@ -1,9 +1,9 @@
 import { useEffect, useRef } from 'react';
-import { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import { Marker, Polyline, PROVIDER_GOOGLE } from 'react-native-maps';
 import useLocationStore from '../../stores/useLocationStore';
 import { MapContainer, StyledMap } from './CustomMap.style';
 
-const CustomMap = () => {
+const CustomMap = ({ polylineCoordinates }) => {
     const { mapCenter, departure, destination } = useLocationStore();
     const mapRef = useRef(null);
 
@@ -33,6 +33,13 @@ const CustomMap = () => {
                             coordinate={destination}
                             title="목적지"
                             description="선택한 목적지"
+                        />
+                    )}
+                    {polylineCoordinates && polylineCoordinates.length > 0 && (
+                        <Polyline
+                            coordinates={polylineCoordinates}
+                            strokeWidth={3}
+                            strokeColor="black"
                         />
                     )}
                 </StyledMap>
