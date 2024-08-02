@@ -267,6 +267,15 @@ public class VoiceServiceImpl implements VoiceService {
         log.debug("임시 파일 삭제: " + file.getAbsolutePath());
     }
 
+    @Override
+    public void deleteTempFile(String filename) {
+        File file = new File(tempWavFilePath, filename);
+        if (file.exists() && !file.delete()) {
+            log.warn("임시 파일 삭제 실패: " + file.getAbsolutePath());
+        }
+        log.debug("임시 파일 삭제: " + file.getAbsolutePath());
+    }
+
     /***
      * 발음평가 점수 계산
      * @param score
