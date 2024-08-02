@@ -45,7 +45,7 @@ const createEvent = async ({ token, plan }) => {
         const { statusCode, httpStatus, message } = response.data;
         apiErrorHandler(statusCode, httpStatus, message);
 
-        if (statusCode === 'CREATED') {
+        if (statusCode === 201) {
             return true;
         }
     } catch (err) {

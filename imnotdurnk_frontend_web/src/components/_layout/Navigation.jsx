@@ -32,7 +32,8 @@ const Navigation = () => {
                     year,
                     month,
                 ]);
-                // TODO: 일정 등록 완료 alert ?
+                // TODO: 일정 등록 완료 alert 커스텀
+                alert('일정이 등록 되었습니다.');
                 navigate('/calendar');
             }
         } else if (path) {
