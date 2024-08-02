@@ -1,5 +1,9 @@
 import axios from 'axios';
-import { GOOGLE_PLACES_API_KEY, ODSAY_API_KEY } from 'react-native-dotenv';
+import {
+    GOOGLE_PLACES_API_KEY,
+    KAKAO_API_KEY,
+    ODSAY_API_KEY,
+} from 'react-native-dotenv';
 
 // 좌표로 한글 주소 찾기
 const getReverseGeocoding = async (latitude, longitude) => {
@@ -17,8 +21,8 @@ const getReverseGeocoding = async (latitude, longitude) => {
     }
 };
 
-// 대중교통 길찾기
-const fetchDirections = async (departure, destination) => {
+// 대중교통 경로 찾기
+const fetchTransitDirections = async (departure, destination) => {
     const { latitude: depLat, longitude: depLng } = departure;
     const { latitude: destLat, longitude: destLng } = destination;
 
@@ -41,7 +45,38 @@ const fetchDirections = async (departure, destination) => {
                 busTransitCount: firstPath.info.busTransitCount,
                 subwayTransitCount: firstPath.info.subwayTransitCount,
                 totalWalkTime: Math.floor(firstPath.info.totalWalk / 90),
-                coordinates: extractCoordinates(firstPath),
+                coordinates: extractTransitCoordinates(firstPath),
+            };
+        }
+    } catch (error) {
+        console.error('fetch 실패', error);
+        throw error;
+    }
+};
+// 택시 경로 찾기
+const fetchTaxiDirections = async (departure, destination) => {
+    const { latitude: depLat, longitude: depLng } = departure;
+    const { latitude: destLat, longitude: destLng } = destination;
+
+    const directionsUrl = `https://apis-navi.kakaomobility.com/v1/directions?origin=${depLng},${depLat}&destination=${destLng},${destLat}`;
+
+    try {
+        const response = await axios.get(directionsUrl, {
+            headers: {
+                Authorization: `KakaoAK ${KAKAO_API_KEY}`,
+            },
+        });
+        if (response.status === 200) {
+            const data = response.data;
+            // 추천 경로 하나만 사용
+            const route = data.routes[0];
+
+            return {
+                fee: route.summary.fare.taxi + route.summary.fare.toll,
+                totalTime: Math.floor(route.summary.duration / 60),
+                totalDistance:
+                    Math.round((route.summary.distance / 1000) * 10) / 10,
+                coordinates: extractTaxiCoordinates(data),
             };
         }
     } catch (error) {
@@ -50,7 +85,7 @@ const fetchDirections = async (departure, destination) => {
     }
 };
 
-function extractCoordinates(firstPath) {
+function extractTransitCoordinates(firstPath) {
     const coordinates = [];
 
     function addCoordinates(x, y) {
@@ -82,4 +117,23 @@ function extractCoordinates(firstPath) {
     return coordinates;
 }
 
-export { fetchDirections, getReverseGeocoding };
+const extractTaxiCoordinates = (response) => {
+    const coordinates = [];
+
+    const route = response.routes[0]; // 첫 번째 route만 사용
+
+    route.sections.forEach((section) => {
+        section.roads.forEach((road) => {
+            for (let i = 0; i < road.vertexes.length; i += 2) {
+                coordinates.push({
+                    latitude: road.vertexes[i + 1],
+                    longitude: road.vertexes[i],
+                });
+            }
+        });
+    });
+
+    return coordinates;
+};
+
+export { fetchTaxiDirections, fetchTransitDirections, getReverseGeocoding };

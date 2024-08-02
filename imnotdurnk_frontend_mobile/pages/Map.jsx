@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import * as Location from 'expo-location';
 import React, { useEffect, useState } from 'react';
-import { Pressable, Text } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import IconButton from '../components/_common/IconButton';
 import * as St from '../components/_layout/globalStyle';
 import CustomMap from '../components/map/CustomMap';
@@ -119,9 +119,14 @@ const Map = () => {
                 placeholder="목적지를 입력하세요"
                 onPress={setDestination}
             />
-            <Pressable onPress={() => navi.navigate('PathFinder')}>
-                <Text>go to map</Text>
-            </Pressable>
+            <View>
+                <Pressable onPress={() => navi.navigate('PathFinder')}>
+                    <Text>transit</Text>
+                </Pressable>
+                <Pressable onPress={() => navi.navigate('Taxi')}>
+                    <Text>taxi</Text>
+                </Pressable>
+            </View>
             <CustomMap />
             <St.FloatingButtonBottomRight>
                 <IconButton
