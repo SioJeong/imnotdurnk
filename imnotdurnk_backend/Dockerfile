@@ -8,7 +8,7 @@ RUN gradle dependencies --no-daemon
 
 COPY . /app
 
-RUN gradle clean build --no-daemon -x test
+RUN gradle clean build --no-daemon
 
 FROM openjdk:21
 
