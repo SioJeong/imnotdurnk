@@ -238,7 +238,6 @@ public class VoiceServiceImpl implements VoiceService {
 
         // 안전한 임시 파일 경로를 설정
         File file = new File(tempWavFilePath, originalFilename);
-        file.createNewFile();
 
         try {
             // 파일 전송
