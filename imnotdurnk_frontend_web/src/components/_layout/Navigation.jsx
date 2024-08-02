@@ -1,4 +1,5 @@
 import IconButton from '@/components/_button/IconButton.jsx';
+import { useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import useCalendarStore from '../../stores/useCalendarStore.js';
 import useNavigationStore from '../../stores/useNavigationStore.js';
@@ -6,15 +7,34 @@ import * as St from './Navigation.style.js';
 
 const Navigation = () => {
     const { navigation } = useNavigationStore((state) => state);
-    const { submitPlan } = useCalendarStore();
+    const { plan, submitPlan } = useCalendarStore();
 
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
 
-    const handleNavigation = (path) => {
+    const handleNavigation = async (path) => {
         if (path === '-1') {
             navigate(-1);
         } else if (path === 'submitPlan') {
-            submitPlan(); // 일정 제출 함수 호출
+            const [year, month] = plan.date
+                .replace('년', '')
+                .replace('월', '')
+                .replace('일', '')
+                .split(' ')
+                .map((item) => item.trim());
+
+            const success = await submitPlan(); // 일정 제출 함수 호출
+
+            if (success) {
+                // 쿼리 무효화
+                queryClient.invalidateQueries([
+                    'monthlyEventList',
+                    year,
+                    month,
+                ]);
+                // TODO: 일정 등록 완료 alert ?
+                navigate('/calendar');
+            }
         } else if (path) {
             navigate(path);
         }
@@ -34,13 +54,7 @@ const Navigation = () => {
                 <IconButton
                     iconname={navigation.icon2.iconname}
                     isRed={navigation.icon2.isRed}
-                    onClick={() => {
-                        if (navigation.icon2.path === 'submitPlan') {
-                            submitPlan();
-                        } else {
-                            handleNavigation(navigation.icon2.path);
-                        }
-                    }}
+                    onClick={() => handleNavigation(navigation.icon2.path)}
                 />
             )}
         </St.NavContainer>
