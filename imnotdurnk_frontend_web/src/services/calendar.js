@@ -34,4 +34,23 @@ const getAllEventList = async ({ token, year, month }) => {
     }
 };
 
-export { getAllEventList };
+const createEvent = async ({ token, plan }) => {
+    try {
+        const response = await api.post('/calendars', plan, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        const { statusCode, httpStatus, message } = response.data;
+        apiErrorHandler(statusCode, httpStatus, message);
+
+        if (statusCode === 'CREATED') {
+            return true;
+        }
+    } catch (err) {
+        throw new Error(err.message || '이벤트 등록 중 오류 발생');
+    }
+};
+
+export { createEvent, getAllEventList };
