@@ -23,6 +23,8 @@ public interface VoiceService {
 
     void deleteTempFile(File file) throws IOException;
 
+    void deleteTempFile(String filename) throws IOException;
+
     int calculateScore(double score);
 
     void saveVoiceFile(String filename, GameLogEntity gameLogEntity);

@@ -161,8 +161,11 @@ public class VoiceController {
      * @return
      */
     @PostMapping("/pronounce/not-save")
-    public ResponseEntity<?> notSavePronunciationResult(@RequestBody VoiceResultDto voiceResultDto){
+    public ResponseEntity<?> notSavePronunciationResult(@RequestBody VoiceResultDto voiceResultDto) throws IOException {
 
+        if(voiceResultDto == null) throw new RequiredFieldMissingException("정보 누락");
+
+        voiceService.deleteTempFile(voiceResultDto.getFilename());
 
         CommonResponse response = new CommonResponse();
         response.setStatusCode(HttpStatus.OK.value());
