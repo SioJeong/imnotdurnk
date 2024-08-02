@@ -191,7 +191,7 @@ public class CalendarController {
      *
      * @return
      */
-    @GetMapping("/{planId}")
+    @DeleteMapping("/{planId}")
     public ResponseEntity<?> deletePlan(@RequestAttribute(value = "AccessToken", required = true) String accessToken,
                                                @PathVariable int planId) throws BadRequestException, ResourceNotFoundException {
 
