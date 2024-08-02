@@ -36,7 +36,7 @@ public class VoiceServiceImpl implements VoiceService {
     private static final Logger log = LoggerFactory.getLogger(VoiceServiceImpl.class);
     private final VoiceRepository voiceRepository;
     private final AudioUtil audioUtil;
-    @Value("${cloud.aws.credentials.accessKey}")
+    @Value("${etri.accessKey}")
     private String accessKey;
 
     @Override
