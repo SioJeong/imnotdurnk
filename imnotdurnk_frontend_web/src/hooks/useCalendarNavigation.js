@@ -18,6 +18,13 @@ const useCalendarNavigation = () => {
                 title: '일정 추가',
                 icon2: { iconname: 'check', isRed: 'true', path: 'submitPlan' },
             });
+        } else if (path.match('/calendar/\\d{4}-\\d{2}-\\d{2}/item/\\d+')) {
+            setNavigation({
+                isVisible: true,
+                icon1: { iconname: 'backarrow', path: '-1' },
+                title: '일정 상세',
+                icon2: { iconname: 'modify', path: 'editPlan' },
+            });
         } else if (path.startsWith('/calendar/')) {
             const [year, month, day] = path.split('/')[2].split('-');
             setNavigation({

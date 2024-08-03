@@ -17,6 +17,7 @@ const CalendarList = () => {
                                 key={e.id}
                                 alcoholLevel={e.alcoholLevel}
                                 fromCalendar={false}
+                                eventId={e.id}
                             >
                                 <div>
                                     <St.CalendarItemTitle

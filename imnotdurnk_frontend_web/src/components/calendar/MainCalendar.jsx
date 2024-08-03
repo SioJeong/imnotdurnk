@@ -8,6 +8,8 @@ import ReactCalendar from './ReactCalendar';
 
 const MainCalendar = () => {
     const [view, setView] = useState('month'); // 초기 값 month 뷰
+
+    // TODO: 여유 생기면 selectedDate도 전역에 저장하고, '오늘' 버튼 만들기
     const [selectedDate, setSelectedDate] = useState(new Date()); // 초기 값 오늘
 
     const { eventListOnSelectedDate, statusOnDate } = useCalendarStore();
