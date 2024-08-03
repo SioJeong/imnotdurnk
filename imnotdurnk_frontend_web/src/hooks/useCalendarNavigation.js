@@ -9,17 +9,17 @@ const useCalendarNavigation = () => {
     const location = useLocation();
 
     useEffect(() => {
-        if (location.pathname.match('/calendar/create-plan')) {
+        const path = location.pathname;
+
+        if (path.match('/calendar/create-plan')) {
             setNavigation({
                 isVisible: true,
                 icon1: { iconname: 'backarrow', path: '-1' },
                 title: '일정 추가',
                 icon2: { iconname: 'check', isRed: 'true', path: 'submitPlan' },
             });
-        } else if (location.pathname.startsWith('/calendar/')) {
-            const [year, month, day] = location.pathname
-                .split('/')[2]
-                .split('-');
+        } else if (path.startsWith('/calendar/')) {
+            const [year, month, day] = path.split('/')[2].split('-');
             setNavigation({
                 isVisible: true,
                 icon1: { iconname: 'backarrow', path: '/calendar' },
@@ -34,7 +34,7 @@ const useCalendarNavigation = () => {
                 icon2: { iconname: 'plus', path: '/calendar/create-plan' },
             });
         }
-    }, [location, setNavigation]);
+    }, [location.pathname, setNavigation]);
 
     return { navigate };
 };
