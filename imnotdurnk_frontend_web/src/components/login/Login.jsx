@@ -3,7 +3,6 @@ import Checkbox from '@/components/_common/Checkbox.jsx';
 import InputBox from '@/components/_common/InputBox.jsx';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { login } from '../../services/user';
 import * as St from './Login.style';
 
 const Login = () => {
@@ -19,7 +18,7 @@ const Login = () => {
     });
 
     const handleLogin = () => {
-        login(inputValues.email, inputValues.password);
+        Login(inputValues.email, inputValues.password);
     };
 
     //2. 유효성 검사

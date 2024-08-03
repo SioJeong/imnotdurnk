@@ -89,7 +89,7 @@ const StatisticsText = styled.div`
 const ButtonBox = styled.div`
     display: flex;
     align-items: center;
-    gap: 17px;
+    gap: 1.2143rem;
     align-self: stretch;
 `;
 const Analysis = styled.div`

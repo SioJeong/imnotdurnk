@@ -49,7 +49,7 @@ export const InputContainer = styled.div`
     gap: 2.1429rem;
     align-self: stretch;
 `;
-export const RecordButton = styled.img`
+export const StyledIcon = styled.img`
     display: flex;
     width: 11rem;
     height: 11rem;

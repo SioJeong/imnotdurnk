@@ -9,10 +9,7 @@ const ProfileCreateVoice = () => {
             </St.InfoContainer>
             <St.RecordContainer>
                 <St.InputContainer>
-                    <St.RecordButton
-                        src="src/assets/images/record.svg"
-                        alt="record"
-                    />
+                    <St.StyledIcon src="src/assets/icons/size_24/Icon-voice.svg" />
                     <St.RecordMessage>
                         다시 녹음하고 싶으시면 버튼을 다시 눌러주세요
                     </St.RecordMessage>

@@ -1,6 +1,6 @@
+import AlertMessage from '@/components/_common/AlertMessage.jsx';
 import { useState } from 'react';
 import * as St from './InputBox.style';
-import AlertMessage from '@/components/_common/AlertMessage.jsx';
 
 const InputBox = ({
     labelText, // 라벨 이름
@@ -12,6 +12,7 @@ const InputBox = ({
     name, // 전달받은 입력 필드 이름
     value, // 해당 입력 필드에 입력된 값
     alertContents, // 에러메세지 내용
+    readOnly,
 }) => {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     // 가시성 설정 토글
@@ -35,6 +36,7 @@ const InputBox = ({
                         value={value}
                         onChange={onChange}
                         name={name}
+                        readOnly={readOnly}
                     />
                 </St.TextContainer>
 
