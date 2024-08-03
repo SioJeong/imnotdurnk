@@ -44,7 +44,7 @@ public class VoiceServiceImpl implements VoiceService {
     private final S3FileUploadService s3FileUploadService;
     @Value("${etri.accesskey}")
     private String accessKey;
-    private final String tempWavFilePath = "tmp/wav";
+    private final String tempWavFilePath = System.getProperty("java.io.tmpdir");
 
     @Override
     public boolean addVoice(GameLogEntity gameLogEntity, VoiceDto voiceDto) {
@@ -242,11 +242,13 @@ public class VoiceServiceImpl implements VoiceService {
         try {
             // 파일 전송
             mfile.transferTo(file);
+
         } catch (IOException e) {
             // 예외 처리 및 파일 삭제
             if (file.exists()) {
                 file.delete();
             }
+            throw new IOException("파일 전처리 실패");
         }
 
         // 파일 정보 로그
