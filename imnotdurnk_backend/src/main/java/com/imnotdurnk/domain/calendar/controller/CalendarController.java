@@ -245,7 +245,7 @@ public class CalendarController {
      */
     public boolean checkMemo(String memo) {
         if(memo==null) return true;
-        return Pattern.matches("^.{0,200}$", memo);
+        return Pattern.matches("^[\\s\\S]{0,200}$", memo);
     }
 
 
