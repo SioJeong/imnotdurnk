@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { getAllEventList } from '../../services/calendar';
@@ -10,11 +10,13 @@ import * as St from './ReactCalendar.style';
 const ReactCalendar = ({ onChangeView, selectedDate, setSelectedDate }) => {
     const { setEventListOnSelectedDate, setStatusOnDate } = useCalendarStore();
 
-    const year = 2024;
-    const month = 8;
-
+    const [year, setYear] = useState(new Date().getFullYear());
+    const [month, setMonth] = useState(new Date().getMonth() + 1);
+    // 상태 업데이트와 refetch 호출의 타이밍 문제?
+    // refetch가 반복적으로 호출되면서 상태가 제대로 업데이트 되지 않는 경우
+    // const [shouldRefetch, setShouldRefetch]
     const token =
-        'eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InNzYWZ5QHNzYWZ5LmNvbSIsImlhdCI6MTcyMjU4MjkyNSwiZXhwIjoxNzIyNzYyOTI1fQ.a9fG820TL9-iUL_lUzYqxmHyEohUIva9LDvc39G5u4I';
+        'eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InNzYWZ5QHNzYWZ5LmNvbSIsImlhdCI6MTcyMjU5MjM5MywiZXhwIjoxNzIyNzcyMzkzfQ.BWrFkVHHU0ym30BiS0oPSw0WnSn246nAhCy1M1t2SsU';
 
     const {
         data: monthlyEventList,
@@ -51,6 +53,14 @@ const ReactCalendar = ({ onChangeView, selectedDate, setSelectedDate }) => {
         setEventListOnSelectedDate,
         setStatusOnDate,
     ]);
+
+    // 달력 월 변경 감지
+    const handleMonthChanging = useCallback(({ activeStartDate }) => {
+        const newYear = activeStartDate.getFullYear();
+        const newMonth = activeStartDate.getMonth() + 1;
+        setYear(newYear);
+        setMonth(newMonth);
+    }, []);
 
     // 일정 dot 커스텀 및 날짜 텍스트 숫자로 변환
     const tileContent = ({ date, view }) => {
@@ -98,6 +108,7 @@ const ReactCalendar = ({ onChangeView, selectedDate, setSelectedDate }) => {
                 next2Label={null}
                 showNeighboringMonth={false} // 이번 달 날짜만 렌더링
                 tileContent={tileContent}
+                onActiveStartDateChange={handleMonthChanging}
             />
         </div>
     );

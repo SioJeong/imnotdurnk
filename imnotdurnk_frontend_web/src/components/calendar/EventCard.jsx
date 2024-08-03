@@ -39,7 +39,11 @@ const EventCard = ({
             onClick={() => onItemClick(selectedDate)}
         >
             <St.CalendarItemDate // TODO: selectedDate 널 체크 사항 -> 이거 뭐야
-                $isWeekend={selectedDate ? selectedDate.getDay() : null}
+                $isWeekend={
+                    selectedDateForDisplay
+                        ? selectedDateForDisplay.getDay()
+                        : null
+                }
             >
                 <h4>{getDayName(selectedDateForDisplay)}</h4>
                 <h2>{selectedDateForDisplay?.getDate()}</h2>

@@ -8,13 +8,13 @@ import ModalTimeDropdown from '../_modal/ModalTimeDropdown';
 import * as St from './CreatePlan.style';
 
 const CreatePlan = () => {
+    // TODO: 코드로 변경해야 함 (ModalDateDropdown 연동)
     const [selectedDate, setSelectedDate] = useState({
         year: '2024년',
         month: '8월',
-        day: '1일',
+        day: '3일',
     });
     const [selectedTime, setSelectedTime] = useState({
-        // 모달에서 선택된 임시 시간
         ampm: '오후',
         hour: '06시',
         minute: '00분',
@@ -29,7 +29,7 @@ const CreatePlan = () => {
     const timeModalId = 'timeModal';
     const dateModalId = 'dateModal';
 
-    const { plan, setPlan, resetPlan } = useCalendarStore();
+    const { plan, setPlan } = useCalendarStore();
 
     useEffect(() => {
         if (titleRef.current) {
@@ -62,6 +62,18 @@ const CreatePlan = () => {
     const resizeTextarea = (e) => {
         e.target.style.height = 'auto'; // 다시 줄어들 때
         e.target.style.height = `${e.target.scrollHeight}px`; // 늘어날 때
+    };
+
+    // 엔터 키 입력 방지
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
+            e.preventDefault();
+        }
+    };
+
+    // form 제출 방지
+    const handleSubmit = (e) => {
+        e.preventDefault();
     };
 
     // 날짜 선택 모달
@@ -97,7 +109,7 @@ const CreatePlan = () => {
     return (
         <St.CreatePlanContainer>
             <h3>일정 정보</h3>
-            <St.PlanContainer>
+            <St.PlanContainer onSubmit={handleSubmit}>
                 <St.InputItemBox onClick={openDateModal}>
                     <img
                         src="/src/assets/icons/size_24/Icon-calendar.svg"
@@ -121,6 +133,7 @@ const CreatePlan = () => {
                         ref={titleRef}
                         value={title}
                         onChange={handleTitleLength}
+                        onKeyDown={handleKeyDown} // 엔터 키 방지
                         minLength={titleMin}
                         maxLength={titleMax}
                         placeholder={`제목은 최소 ${titleMin} ~ ${titleMax}자 입력해야 합니다.`}
@@ -135,6 +148,7 @@ const CreatePlan = () => {
                         ref={memoRef}
                         value={memo}
                         onChange={handleMemoLength}
+                        onKeyDown={(e) => e.stopPropagation()} // 엔터 키 허용
                         rows="5"
                         onInput={resizeTextarea}
                         maxLength={memoMax}
