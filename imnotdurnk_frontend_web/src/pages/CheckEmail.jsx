@@ -2,8 +2,11 @@ import CertificationNumberInputContainer from '@/components/checkemail/Certifica
 import InformationMessage from '@/components/checkemail/InformationMessage';
 import useNavigationStore from '@/stores/useNavigationStore';
 import { useEffect } from 'react';
-
+import { useLocation } from 'react-router-dom';
 const CheckEmail = () => {
+    const location = useLocation();
+    const { email } = location.state || {}; // 전달된 state에서 email을 추출합니다.
+
     const setNavigation = useNavigationStore((state) => state.setNavigation);
     useEffect(() => {
         setNavigation({
@@ -16,7 +19,7 @@ const CheckEmail = () => {
 
     return (
         <>
-            <InformationMessage email="imnotdurnk@gmail.com" />
+            <InformationMessage email={email} />
             <CertificationNumberInputContainer />
         </>
     );
