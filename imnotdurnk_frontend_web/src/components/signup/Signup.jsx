@@ -27,20 +27,22 @@ const Signup = ({ changeToggle }) => {
     const navigate = useNavigate();
     //버튼 동작
     const handleSignup = async () => {
-        const result = await signup(
+        const signupResult = await signup(
             inputValues.name,
             inputValues.email,
             inputValues.phone,
             inputValues.password,
         );
-        if (result.isSuccess) {
+        if (signupResult.isSuccess) {
             // 성공 시 페이지 이동
             navigate('/check-email', {
                 state: { email: inputValues.email },
             });
         } else {
             // 오류 메시지 처리
-            throw new Error(result.message || '데이터 가져오는 중 오류 발생');
+            throw new Error(
+                signupResult.message || '데이터 가져오는 중 오류 발생',
+            );
         }
     };
     //유효성 검사

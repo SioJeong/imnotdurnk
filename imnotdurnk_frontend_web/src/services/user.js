@@ -23,25 +23,28 @@ const getUser = async (token) => {
 };
 
 //로그인
-
 const login = async (email, password) => {
-    console.log(email, password);
     try {
         const response = await api.post(`/users/login`, {
             email: email,
             password: password,
         });
 
-        console.log('성공', response);
-        // const { statusCode, httpStatus, message, dataList } = response.data;
+        const { statusCode, httpStatus, message, dataList } = response.data;
         // apiErrorHandler(statusCode, httpStatus, message);
-        // return dataList;
+        return {
+            isSuccess: statusCode === 200,
+            message: '로그인 성공',
+        };
     } catch (err) {
-        console.log('실패');
-        throw new Error(err.message || '데이터 가져오는 중 오류 발생');
+        return {
+            isSuccess: false,
+            message: err.message || '데이터 가져오는 중 오류 발생',
+        };
     }
 };
 
+//회원가입 api 연결
 const signup = async (name, email, phone, password) => {
     try {
         const response = await api.post(`/users/signup`, {
@@ -52,13 +55,7 @@ const signup = async (name, email, phone, password) => {
         });
         const { statusCode, httpStatus, message } = response.data;
         // apiErrorHandler(statusCode, httpStatus, message);
-        console.log(
-            'ddd',
-            statusCode,
-            httpStatus,
-            message,
-            statusCode === 201 ? true : false,
-        );
+
         return {
             isSuccess: statusCode === 201,
             message: '회원가입 성공',
@@ -70,4 +67,25 @@ const signup = async (name, email, phone, password) => {
         };
     }
 };
-export { getUser, login, signup };
+
+//인증번호 보내기
+const sendCertificationNumber = async (email) => {
+    try {
+        const response = await api.get(`/users/signup/verify`, {
+            email: email,
+        });
+        const { statusCode, httpStatus, message } = response.data;
+        // apiErrorHandler(statusCode, httpStatus, message);
+        console.log(response.data);
+        return {
+            isSuccess: statusCode === 200,
+            message: '인증번호 보내기 성공',
+        };
+    } catch (err) {
+        return {
+            isSuccess: false,
+            message: err.message || '데이터 가져오는 중 오류 발생',
+        };
+    }
+};
+export { getUser, login, sendCertificationNumber, signup };

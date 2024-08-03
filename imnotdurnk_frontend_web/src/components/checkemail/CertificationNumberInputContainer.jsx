@@ -1,11 +1,12 @@
 import Button from '@/components/_button/Button.jsx';
 import AlertMessage from '@/components/_common/AlertMessage.jsx';
-import { useSendCertificationNumber } from '@/hooks/useEmail';
+
+import { sendCertificationNumber } from '@/services/user';
 import { useRef, useState } from 'react';
 import * as St from './CertificationNumberInputContainer.style';
 
 //import { useState } from 'react';
-const CertificationNumberInputContainer = () => {
+const CertificationNumberInputContainer = ({ email }) => {
     const [certNumList, setCertNumList] = useState(['', '', '', '']);
     const [certNum, setCertNum] = useState('');
     const inputsRef = useRef([]); // input에서 현위치 추적용
@@ -63,6 +64,10 @@ const CertificationNumberInputContainer = () => {
             // 다음 페이지로 이동
         }
     };
+    const onClickResendButton = () => {
+        const result = sendCertificationNumber(email);
+        console.log('유즈이펙트내 콘솔', result);
+    };
     return (
         <St.CertificationContainer>
             <St.MessageContainer>
@@ -82,7 +87,7 @@ const CertificationNumberInputContainer = () => {
                     />
                 ))}
             </St.InputContainer>
-            <St.StyledMessage onClick={useSendCertificationNumber}>
+            <St.StyledMessage onClick={onClickResendButton}>
                 코드가 전송되지 않았나요?
             </St.StyledMessage>
             <Button

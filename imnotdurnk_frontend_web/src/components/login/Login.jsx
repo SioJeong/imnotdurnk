@@ -17,8 +17,16 @@ const Login = () => {
         password: '', // '비밀번호를 입력하세요.',
     });
 
-    const handleLogin = () => {
-        login(inputValues.email, inputValues.password);
+    const navigate = useNavigate();
+    const handleLogin = async () => {
+        const loginResult = await login(
+            inputValues.email,
+            inputValues.password,
+        );
+        if (loginResult.isSuccess) {
+            // 임시로 mypage로 이동 추후에는 /home으로 변경 필요
+            navigate('/mypage');
+        }
     };
 
     //2. 유효성 검사
@@ -76,9 +84,8 @@ const Login = () => {
             isEmailSaved: e.target.checked,
         }));
     };
-    //페이지 이동
-    const navigate = useNavigate();
 
+    //페이지 이동
     const goToFindPasswordPage = () => {
         navigate('/find-password');
     };
