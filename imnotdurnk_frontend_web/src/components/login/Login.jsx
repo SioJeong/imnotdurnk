@@ -2,7 +2,9 @@ import Button from '@/components/_button/Button.jsx';
 import Checkbox from '@/components/_common/Checkbox.jsx';
 import InputBox from '@/components/_common/InputBox.jsx';
 import { login } from '@/services/user.js';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+// eslint-disable-next-line import/no-unresolved
+import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
 import * as St from './Login.style';
 const Login = () => {
@@ -11,6 +13,7 @@ const Login = () => {
         password: '',
         isEmailSaved: false,
     });
+    const [cookies, setCookie, removeCookie] = useCookies(['rememberUserId']);
 
     const [alertMessages, setAlertMessages] = useState({
         email: '', //'올바른 이메일 양식이 아닙니다.',
@@ -24,8 +27,14 @@ const Login = () => {
             inputValues.password,
         );
         if (loginResult.isSuccess) {
+            if (inputValues.isEmailSaved) {
+                setCookie('rememberUserId', inputValues.email, { path: '/' });
+            } else {
+                // 이메일 저장 체크가 해제된 경우 쿠키 제거
+                removeCookie('rememberUserId');
+            }
             // 임시로 mypage로 이동 추후에는 /home으로 변경 필요
-            navigate('/mypage');
+            navigate('/mypage/profile/create/info');
         }
     };
 
@@ -89,7 +98,15 @@ const Login = () => {
     const goToFindPasswordPage = () => {
         navigate('/find-password');
     };
-
+    useEffect(() => {
+        // 페이지가 로드될 때 쿠키에서 값 읽어오기
+        const savedEmail = cookies.rememberUserId || '';
+        setInputValues((prevValues) => ({
+            ...prevValues,
+            email: savedEmail,
+            isEmailSaved: Boolean(savedEmail), // 이메일이 있으면 체크박스를 체크 상태로
+        }));
+    }, [cookies]);
     return (
         <St.LoginContainer>
             <St.TitleContainer>

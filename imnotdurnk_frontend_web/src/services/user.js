@@ -1,6 +1,6 @@
+import useAuthStore from '@/stores/useAuthStore';
 import api from './api';
 import apiErrorHandler from './apiErrorHandler';
-
 // response body 형식 : httpStatus, message, statusCode, dataList
 
 //[예시] 사용자 정보 가져오는 함수
@@ -29,8 +29,15 @@ const login = async (email, password) => {
             email: email,
             password: password,
         });
+        const { accessToken } = response.headers.authorization;
+
+        if (accessToken) {
+            useAuthStore.getState().setAccessToken(accessToken);
+        }
+        console.log(accessToken, '로그인 결과 토큰여기있음', response);
 
         const { statusCode, httpStatus, message, dataList } = response.data;
+
         // apiErrorHandler(statusCode, httpStatus, message);
         return {
             isSuccess: statusCode === 200,
