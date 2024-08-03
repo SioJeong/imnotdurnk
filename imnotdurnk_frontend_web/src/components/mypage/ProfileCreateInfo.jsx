@@ -3,6 +3,9 @@ import InputBox from '@/components/_common/InputBox';
 import { useState } from 'react';
 import * as St from './ProfileCreateInfo.style';
 
+import useModalStore from '../../stores/useModalStore';
+import Modal from '../_modal/Modal';
+import ModalPostalCode from '../_modal/ModalPostalCode';
 const ProfileCreateInfo = () => {
     const [inputValues, setInputValues] = useState({
         nickname: '',
@@ -21,8 +24,29 @@ const ProfileCreateInfo = () => {
         emergencyCall: '',
     });
     const handleInputChange = (e) => {
-        console.log('아직');
+        const { name, value } = e.target;
+        setInputValues((prevValues) => ({
+            ...prevValues,
+            [name]: value,
+        }));
     };
+    //모달
+    const { openModal, closeModal } = useModalStore();
+    const modalId = 'postalCodeModal';
+    //모달 열기
+    const openPostalCodeModal = (e) => {
+        e.preventDefault();
+        openModal(modalId);
+    };
+
+    const handleSearchedPostalCode = (address, zonecode) => {
+        setInputValues((prevValues) => ({
+            ...prevValues,
+            postalCode: zonecode,
+            address: address,
+        }));
+    };
+
     return (
         <St.ProfileCreateContainer>
             <St.MessageWrapper>
@@ -43,47 +67,66 @@ const ProfileCreateInfo = () => {
                     <InputBox
                         labelText="우편번호"
                         iconName="empty"
-                        inputType="Mailbox"
-                        value={inputValues.username}
+                        inputType="text"
+                        value={inputValues.postalCode}
                         onChange={handleInputChange}
-                        name="username"
+                        name="postalCode"
                         size="small"
-                        alertContents={alertMessages.username}
+                        alertContents={alertMessages.postalCode}
+                        readOnly
                     />
-                    <Button text="주소 검색" size="medium" isRed="true" />
+                    <Button
+                        text="주소 검색"
+                        size="medium"
+                        isRed="true"
+                        onClick={openPostalCodeModal}
+                    />
                 </St.PostalCodeSearchBox>
+
                 <InputBox
                     labelText="주소"
                     iconName="empty"
                     inputType="text"
-                    value={inputValues.username}
+                    value={inputValues.address}
                     onChange={handleInputChange}
-                    name="username"
-                    alertContents={alertMessages.username}
+                    name="address"
+                    alertContents={alertMessages.address}
+                    readOnly
                 />
                 <InputBox
                     labelText="상세 주소"
                     iconName="empty"
                     inputType="text"
-                    value={inputValues.username}
+                    value={inputValues.detailedAdddress}
                     onChange={handleInputChange}
-                    name="username"
-                    alertContents={alertMessages.username}
+                    name="detailedAddress"
+                    alertContents={alertMessages.detailedAdddress}
                 />
                 <InputBox
                     labelText="비상 연락망"
                     iconName="empty"
                     inputType="text"
-                    value={inputValues.username}
+                    value={inputValues.emergencyCall}
                     onChange={handleInputChange}
-                    name="username"
-                    alertContents={alertMessages.username}
+                    name="emergencyCall"
+                    alertContents={alertMessages.emergencyCall}
                 />
             </St.InputContainer>
             <St.ButtonBox>
-                <Button text="Skip" size="medium" isRed={'false'} />
-                <Button text="Next" size="medium" isRed={'true'} />
+                <Button text="Skip" size="medium" isRed={false} />
+                <Button text="Next" size="medium" isRed={true} />
             </St.ButtonBox>
+
+            <Modal
+                modalId={modalId}
+                contents={
+                    <ModalPostalCode
+                        handleSearchedPostalCode={handleSearchedPostalCode}
+                    />
+                }
+                buttonText={'닫기'}
+                onButtonClick={closeModal}
+            />
         </St.ProfileCreateContainer>
     );
 };
