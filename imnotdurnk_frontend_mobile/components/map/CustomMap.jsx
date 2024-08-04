@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { Marker, Polyline, PROVIDER_GOOGLE } from 'react-native-maps';
+import MarkerImage from '../../assets/images/Marker.png';
 import useLocationStore from '../../stores/useLocationStore';
 import { MapContainer, StyledMap } from './CustomMap.style';
 
@@ -26,6 +27,7 @@ const CustomMap = ({ polylineCoordinates }) => {
                             coordinate={departure}
                             title="출발지"
                             description="현재 위치"
+                            image={MarkerImage}
                         />
                     )}
                     {destination && (
@@ -33,6 +35,7 @@ const CustomMap = ({ polylineCoordinates }) => {
                             coordinate={destination}
                             title="목적지"
                             description="선택한 목적지"
+                            image={MarkerImage}
                         />
                     )}
                     {polylineCoordinates && polylineCoordinates.length > 0 && (
