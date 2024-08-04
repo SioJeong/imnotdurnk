@@ -2,34 +2,22 @@ import { calendarMinmax } from '@/shared/constants/minmaxLength';
 import { useEffect, useRef, useState } from 'react';
 import useCalendarStore from '../../stores/useCalendarStore';
 import useModalStore from '../../stores/useModalStore';
-import Modal from '../_modal/Modal';
-import ModalDateDropdown from '../_modal/ModalDateDropdown';
-import ModalTimeDropdown from '../_modal/ModalTimeDropdown';
 import * as St from './CreatePlan.style';
+import CreatePlanAlcohol from './CreatePlanAlcohol';
+import CreatePlanModalController from './CreatePlanModalController';
 
 const CreatePlan = () => {
-    // TODO: 코드로 변경해야 함 (ModalDateDropdown 연동)
-    const [selectedDate, setSelectedDate] = useState({
-        year: '2024년',
-        month: '8월',
-        day: '3일',
-    });
-    const [selectedTime, setSelectedTime] = useState({
-        ampm: '오후',
-        hour: '06시',
-        minute: '00분',
-    });
     const [title, setTitle] = useState('');
     const [memo, setMemo] = useState('');
+    const [selectedAlcoholLevel, setSelectedAlcoholLevel] =
+        useState('0: 취하지 않음');
 
     const memoRef = useRef(null);
     const titleRef = useRef(null);
 
-    const { openModal, closeModal } = useModalStore();
-    const timeModalId = 'timeModal';
-    const dateModalId = 'dateModal';
-
     const { plan, setPlan } = useCalendarStore();
+
+    const { openModal } = useModalStore();
 
     useEffect(() => {
         if (titleRef.current) {
@@ -64,119 +52,72 @@ const CreatePlan = () => {
         e.target.style.height = `${e.target.scrollHeight}px`; // 늘어날 때
     };
 
-    // 엔터 키 입력 방지
-    const handleKeyDown = (e) => {
-        if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
-            e.preventDefault();
-        }
-    };
-
-    // form 제출 방지
-    const handleSubmit = (e) => {
-        e.preventDefault();
-    };
-
-    // 날짜 선택 모달
-    const openDateModal = () => {
-        openModal(dateModalId);
-    };
-
-    const handleSelectedDate = (year, month, day) => {
-        setSelectedDate({ year, month, day });
-    };
-
-    const submitSelectedDate = () => {
-        const dateStr = `${selectedDate.year} ${selectedDate.month} ${selectedDate.day}`;
-        setPlan({ date: dateStr });
-        closeModal(dateModalId);
-    };
-
-    // 시간 선택 모달
-    const openTimeModal = () => {
-        openModal(timeModalId);
-    };
-
-    const handleSelectedTime = (ampm, hour, minute) => {
-        setSelectedTime({ ampm, hour, minute });
-    };
-
-    const submitSelectedTime = () => {
-        const timeStr = `${selectedTime.ampm} ${selectedTime.hour} ${selectedTime.minute}`;
-        setPlan({ time: timeStr });
-        closeModal(timeModalId);
-    };
-
     return (
-        <St.CreatePlanContainer>
-            <h3>일정 정보</h3>
-            <St.PlanContainer onSubmit={handleSubmit}>
-                <St.InputItemBox onClick={openDateModal}>
-                    <img
-                        src="/src/assets/icons/size_24/Icon-calendar.svg"
-                        alt="date"
-                    />
-                    <h4>{plan.date || '날짜를 선택하세요.'}</h4>
-                </St.InputItemBox>
-                <St.InputItemBox onClick={openTimeModal}>
-                    <img
-                        src="/src/assets/icons/size_24/Icon-clock.svg"
-                        alt="time"
-                    />
-                    <h4>{plan.time || '시간을 선택하세요'}</h4>
-                </St.InputItemBox>
-                <St.InputItemBox>
-                    <img
-                        src="/src/assets/icons/size_24/Icon-title.svg"
-                        alt="title"
-                    />
-                    <St.InputTitleText
-                        ref={titleRef}
-                        value={title}
-                        onChange={handleTitleLength}
-                        onKeyDown={handleKeyDown} // 엔터 키 방지
-                        minLength={titleMin}
-                        maxLength={titleMax}
-                        placeholder={`제목은 최소 ${titleMin} ~ ${titleMax}자 입력해야 합니다.`}
-                    />
-                </St.InputItemBox>
-                <St.InputItemBox $boxSize="long">
-                    <img
-                        src="/src/assets/icons/size_24/Icon-memo.svg"
-                        alt="memo"
-                    />
-                    <St.InputMemoText
-                        ref={memoRef}
-                        value={memo}
-                        onChange={handleMemoLength}
-                        onKeyDown={(e) => e.stopPropagation()} // 엔터 키 허용
-                        rows="5"
-                        onInput={resizeTextarea}
-                        maxLength={memoMax}
-                        placeholder={`최대 ${memoMax}자 까지 메모할 수 있습니다.`}
-                    />
-                </St.InputItemBox>
-            </St.PlanContainer>
-            <Modal
-                modalId={timeModalId}
-                contents={
-                    <ModalTimeDropdown
-                        handleSelectedTime={handleSelectedTime}
-                    />
-                }
-                buttonText={'저장하기'}
-                onButtonClick={submitSelectedTime}
+        <>
+            <St.Container>
+                <St.ScheduleContainer>
+                    <h3>일정 정보</h3>
+                    <St.InputContainer>
+                        <St.InputItemBox
+                            onClick={() => openModal('dateModal')}
+                            $cursor={true}
+                        >
+                            <img
+                                src="/src/assets/icons/size_24/Icon-calendar.svg"
+                                alt="date"
+                            />
+                            <h4>{plan.date || '날짜를 선택하세요.'}</h4>
+                        </St.InputItemBox>
+                        <St.InputItemBox
+                            onClick={() => openModal('timeModal')}
+                            $cursor={true}
+                        >
+                            <img
+                                src="/src/assets/icons/size_24/Icon-clock.svg"
+                                alt="time"
+                            />
+                            <h4>{plan.time || '시간을 선택하세요'}</h4>
+                        </St.InputItemBox>
+                        <St.InputItemBox>
+                            <img
+                                src="/src/assets/icons/size_24/Icon-title.svg"
+                                alt="title"
+                            />
+                            <St.InputTitleText
+                                ref={titleRef}
+                                value={title}
+                                onChange={handleTitleLength}
+                                minLength={titleMin}
+                                maxLength={titleMax}
+                                placeholder={`제목은 최소 ${titleMin} ~ ${titleMax}자 입력해야 합니다.`}
+                            />
+                        </St.InputItemBox>
+                        <St.InputItemBox $boxSize="long">
+                            <img
+                                src="/src/assets/icons/size_24/Icon-memo.svg"
+                                alt="memo"
+                            />
+                            <St.InputMemoText
+                                ref={memoRef}
+                                value={memo}
+                                onChange={handleMemoLength}
+                                rows="5"
+                                onInput={resizeTextarea}
+                                maxLength={memoMax}
+                                placeholder={`최대 ${memoMax}자 까지 메모할 수 있습니다.`}
+                            />
+                        </St.InputItemBox>
+                    </St.InputContainer>
+                </St.ScheduleContainer>
+                <CreatePlanAlcohol
+                    openAlcoholLevelModal={() => openModal('alcoholLevelModal')}
+                />
+            </St.Container>
+            <CreatePlanModalController
+                selectedAlcoholLevel={selectedAlcoholLevel}
+                setSelectedAlcoholLevel={setSelectedAlcoholLevel}
             />
-            <Modal
-                modalId={dateModalId}
-                contents={
-                    <ModalDateDropdown
-                        handleSelectedDate={handleSelectedDate}
-                    />
-                }
-                buttonText={'저장하기'}
-                onButtonClick={submitSelectedDate}
-            />
-        </St.CreatePlanContainer>
+        </>
     );
 };
 
