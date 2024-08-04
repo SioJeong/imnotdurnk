@@ -21,7 +21,10 @@ const InputBoxContainer = styled.div`
         ${(props) => (props.$size === 'small' ? '1.1429rem' : '1.4286rem')};
 
     border-radius: 10.0002px;
-    background: var(--color-white1, #fff);
+    background: ${(props) =>
+        props.$isProfileViewPage
+            ? 'var(--color-white2)'
+            : 'var(--color-white1, #fff)'};
 `;
 
 const TextContainer = styled.div`
@@ -46,6 +49,10 @@ const Input = styled.input`
     border: none;
     outline: none;
     font-size: var(--font-body-h5, 9.94px);
+    background: ${(props) =>
+        props.$isProfileViewPage
+            ? 'var(--color-white2)'
+            : 'var(--color-white1, #fff)'};
 `;
 
 const InputIcon = styled.img`

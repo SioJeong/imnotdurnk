@@ -13,6 +13,7 @@ const InputBox = ({
     value, // 해당 입력 필드에 입력된 값
     alertContents, // 에러메세지 내용
     readOnly,
+    isProfileViewPage,
 }) => {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     // 가시성 설정 토글
@@ -27,7 +28,10 @@ const InputBox = ({
 
     return (
         <St.InputBoxContainerWithAlertMessage>
-            <St.InputBoxContainer $size={size}>
+            <St.InputBoxContainer
+                $size={size}
+                $isProfileViewPage={isProfileViewPage}
+            >
                 <St.TextContainer>
                     <St.InputLabel>{labelText}</St.InputLabel>
                     <St.Input
@@ -37,6 +41,7 @@ const InputBox = ({
                         onChange={onChange}
                         name={name}
                         readOnly={readOnly}
+                        $isProfileViewPage={isProfileViewPage}
                     />
                 </St.TextContainer>
 

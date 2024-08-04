@@ -4,7 +4,7 @@ const StyledButton = styled.button`
     display: flex;
     justify-content: center;
     align-items: center;
-
+    border-radius: 45px;
     border: none;
     background-color: ${(props) =>
         props.$isRed

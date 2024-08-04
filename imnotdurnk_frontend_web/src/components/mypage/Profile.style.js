@@ -9,10 +9,10 @@ export const ProfileContainer = styled.div`
     border-radius: 20px;
     background: var(--color-white2, #f7f7ec);
 `;
-export const Title = styled.div`
+export const Title = styled.h2`
     display: flex;
+    width: 100%;
     height: 2.2857rem;
-    padding-right: 9.6429rem;
     align-items: center;
     align-self: stretch;
 `;
@@ -39,11 +39,12 @@ export const VoiceBox = styled.div`
     display: flex;
     height: 2.8571rem;
     padding: 0.3571rem 1.7143rem;
-    flex-direction: column;
-    justify-content: center;
-    align-items: flex-start;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
     align-self: stretch;
     border-radius: 10px;
+    gap: 5.9286rem;
     background: var(----color-green2, #465a54);
 `;
 export const StyledH6 = styled.h6`
@@ -55,4 +56,13 @@ export const ButtonContainer = styled.div`
     justify-content: space-between;
     align-items: center;
     align-self: stretch;
+`;
+export const VoiceButton = styled.img`
+    display: flex;
+    width: 24px;
+    height: 24px;
+    padding: 2px;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
 `;

@@ -91,6 +91,28 @@ const sendCertificationNumber = async (email) => {
         };
     }
 };
+
+//이메일 인증, 인증번호 일치 여부 확인 api
+const checkCertificationNumber = async (email, inputCertNum) => {
+    try {
+        const response = await api.post(`/users/signup/verify-code`, {
+            email: email,
+            code: inputCertNum,
+        });
+        const { statusCode, httpStatus, message } = response.data;
+        // apiErrorHandler(statusCode, httpStatus, message);
+
+        return {
+            isSuccess: statusCode === 200,
+            message: '이메일 인증 성공',
+        };
+    } catch (err) {
+        return {
+            isSuccess: false,
+            message: err.message || '데이터 가져오는 중 오류 발생',
+        };
+    }
+};
 //유저 추가 정보 저장
 const putUserDetailedInfo = async (
     nickname,
