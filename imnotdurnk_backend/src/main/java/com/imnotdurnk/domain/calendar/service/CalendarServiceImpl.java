@@ -7,6 +7,8 @@ import com.imnotdurnk.domain.calendar.dto.DiaryDto;
 import com.imnotdurnk.domain.calendar.dto.PlanDetailDto;
 import com.imnotdurnk.domain.calendar.entity.CalendarEntity;
 import com.imnotdurnk.domain.calendar.repository.CalendarRepository;
+import com.imnotdurnk.domain.calendar.repository.mapping.AlcoholAmount;
+import com.imnotdurnk.domain.calendar.repository.mapping.AlcoholAmountImpl;
 import com.imnotdurnk.domain.gamelog.repository.GameLogRepository;
 import com.imnotdurnk.domain.user.entity.UserEntity;
 import com.imnotdurnk.domain.user.repository.UserRepository;
@@ -119,21 +121,33 @@ public class CalendarServiceImpl implements CalendarService {
     }
 
     /**
-     * 게임 통계
+     * 음주 통계
      * 전월, 금월 음주 횟수 및 연간, 월간 총 음주량을 {@link CalendarStatisticDto} 객체에 담아 반환
-     * @param date 기준이 되는 날짜
+     * @param dateStr 기준이 되는 날짜
      * @param token 유저 토큰
      * @return {@link CalendarStatisticDto}
      */
     @Override
-    public CalendarStatisticDto getCalendarStatistic(LocalDate date, String token) {
+    public CalendarStatisticDto getCalendarStatistic(String dateStr, String token) {
         UserEntity user = userRepository.findByEmail(jwtUtil.getUserEmail(token, TokenType.ACCESS));
+        LocalDate date = LocalDate.parse(dateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+        AlcoholAmount
+                yearTotal = calendarRepository.sumAlcoholByYear(user.getId(), date.getYear());
+        if (yearTotal == null) {
+            yearTotal = new AlcoholAmountImpl(0.0, 0.0);
+        }
+
+        AlcoholAmount monthTotal = calendarRepository.sumAlcoholByMonth(user.getId(), date.getMonthValue(), date.getYear());
+        if (monthTotal == null) {
+            monthTotal = new AlcoholAmountImpl(0.0, 0.0);
+        }
 
         return CalendarStatisticDto.builder()
                 .lastMonthCount(calendarRepository.countByMonth(user.getId(), date.getMonthValue()-1, date.getYear()))
                 .thisMonthCount(calendarRepository.countByMonth(user.getId(), date.getMonthValue(), date.getYear()))
-                .yearTotal(calendarRepository.sumAlcoholByYear(user.getId(), date.getMonthValue()))
-                .monthTotal(calendarRepository.sumAlcoholByMonth(user.getId(), date.getMonthValue(), date.getYear()))
+                .yearTotal(yearTotal)
+                .monthTotal(monthTotal)
                 .build();
     }
 
@@ -202,8 +216,9 @@ public class CalendarServiceImpl implements CalendarService {
                 .title(calendarEntity.getTitle())
                 .sojuAmount(calendarEntity.getSojuAmount())
                 .beerAmount(calendarEntity.getBeerAmount())
-                .userId(calendarEntity.getId())
-                .alcoholLevel(calendarEntity.getAlcoholLevel())
+                .id(calendarEntity.getId())
+                .userId(calendarEntity.getUserEntity().getId())
+		.alcoholLevel(calendarEntity.getAlcoholLevel())
                 .gameLogEntities(calendarEntity.getGameLogEntities())
                 .date(calendarEntity.getDate())
                 .build();

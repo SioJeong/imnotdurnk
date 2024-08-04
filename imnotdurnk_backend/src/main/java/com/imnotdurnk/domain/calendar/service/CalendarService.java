@@ -23,7 +23,7 @@ public interface CalendarService {
 
     List<CalendarDto> getCalendar( String token, String date);
 
-    CalendarStatisticDto getCalendarStatistic(LocalDate date, String token);
+    CalendarStatisticDto getCalendarStatistic(String dateStr, String token);
 
     void updateArrivalTime(String accessToken, int planId, String arrivalTime) throws BadRequestException, ResourceNotFoundException, EntitySaveFailedException;
 
