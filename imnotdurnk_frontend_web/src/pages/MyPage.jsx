@@ -9,9 +9,9 @@ const MyPage = () => {
     useEffect(() => {
         setNavigation({
             isVisible: true,
-            icon1: { iconname: 'backarrow' },
+            icon1: { iconname: 'home' },
             title: '통계',
-            icon2: { iconname: 'profile' },
+            icon2: { iconname: 'profile', path: 'mypage/profile' },
         });
     }, [setNavigation]);
 

@@ -66,7 +66,6 @@ const CertificationNumberInputContainer = ({ email }) => {
     };
     const onClickResendButton = () => {
         const result = sendCertificationNumber(email);
-        console.log('유즈이펙트내 콘솔', result);
     };
     return (
         <St.CertificationContainer>

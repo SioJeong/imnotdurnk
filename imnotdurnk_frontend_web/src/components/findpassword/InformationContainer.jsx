@@ -1,5 +1,4 @@
 import Button from '@/components/_button/Button.jsx';
-import { useSendNewPassword } from '@/hooks/useEmail';
 import { useNavigate } from 'react-router-dom';
 import * as St from './InformationContainer.style';
 const InformationContainer = () => {
@@ -24,7 +23,7 @@ const InformationContainer = () => {
                 isRed="true"
                 onClick={goToLoginPage}
             />
-            <St.StyledMessagewhenNotSent onClick={useSendNewPassword}>
+            <St.StyledMessagewhenNotSent>
                 새 비밀번호가 전송되지 않았나요?
             </St.StyledMessagewhenNotSent>
         </St.InformationContainer>

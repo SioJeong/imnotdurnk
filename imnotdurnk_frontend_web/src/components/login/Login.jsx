@@ -3,6 +3,7 @@ import Checkbox from '@/components/_common/Checkbox.jsx';
 import InputBox from '@/components/_common/InputBox.jsx';
 import { login } from '@/services/user.js';
 import { useEffect, useState } from 'react';
+
 // eslint-disable-next-line import/no-unresolved
 import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';

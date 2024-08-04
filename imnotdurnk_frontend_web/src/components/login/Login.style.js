@@ -17,7 +17,7 @@ export const TitleContainer = styled.div`
     gap: 0.7143rem;
     align-self: stretch;
 `;
-export const FormContainer = styled.div`
+export const FormContainer = styled.form`
     display: flex;
     flex-direction: column;
     justify-content: center;

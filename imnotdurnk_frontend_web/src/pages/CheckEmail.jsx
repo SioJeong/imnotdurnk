@@ -10,7 +10,6 @@ const CheckEmail = () => {
     // 인증번호 전송
     useEffect(() => {
         const result = sendCertificationNumber(email);
-        console.log('유즈이펙트내 콘솔', result);
     }, [email]);
     const setNavigation = useNavigationStore((state) => state.setNavigation);
     useEffect(() => {
