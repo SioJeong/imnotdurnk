@@ -202,8 +202,9 @@ public class CalendarServiceImpl implements CalendarService {
                 .title(calendarEntity.getTitle())
                 .sojuAmount(calendarEntity.getSojuAmount())
                 .beerAmount(calendarEntity.getBeerAmount())
-                .userId(calendarEntity.getId())
-                .alcoholLevel(calendarEntity.getAlcoholLevel())
+                .id(calendarEntity.getId())
+                .userId(calendarEntity.getUserEntity().getId())
+		.alcoholLevel(calendarEntity.getAlcoholLevel())
                 .gameLogEntities(calendarEntity.getGameLogEntities())
                 .date(calendarEntity.getDate())
                 .build();
