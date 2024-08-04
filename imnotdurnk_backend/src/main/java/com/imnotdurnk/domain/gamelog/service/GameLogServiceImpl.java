@@ -16,6 +16,7 @@ import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @Service
 @RequiredArgsConstructor
@@ -34,15 +35,18 @@ public class GameLogServiceImpl implements GameLogService {
      * 연평균, 월평균, 월평균대비 점수가 낮은 일수를 {@link GameStatistic}에 담아 반환하는 메서드
      * @param AccessToken 유저 인증 토큰
      * @param gameType
-     * @param date
+     * @param dateStr
      * @return
      */
     @Override
-    public GameStatistic getGameStatistic(String AccessToken, int gameType, LocalDate date) {
+    public GameStatistic getGameStatistic(String AccessToken, int gameType, String dateStr) {
 
         UserEntity user = userRepository.findByEmail(jwtUtil.getUserEmail(AccessToken, TokenType.ACCESS));
+        LocalDate date = LocalDate.parse(dateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
         double monthAverage = gameLogRepository.selectMonthAverage(gameType, date.getMonthValue(), date.getYear());
 
+        System.out.println(monthAverage);
         return GameStatistic.builder()
                 .totalAverage(gameLogRepository.selectTotalAverage(user.getId(), gameType))
                 .monthAverage(monthAverage)
