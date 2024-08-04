@@ -9,7 +9,7 @@ import java.time.LocalDate;
 
 public interface GameLogService {
 
-    GameStatistic getGameStatistic(String token, int gameType, LocalDate date) throws Exception;
+    GameStatistic getGameStatistic(String token, int gameType, String dateStr) throws Exception;
 
     GameLogEntity getGameLog(int logId);
 
