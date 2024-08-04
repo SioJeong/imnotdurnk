@@ -39,41 +39,7 @@ public interface CalendarRepository extends JpaRepository<CalendarEntity, Intege
     int countByMonth(Integer userId, int month, int year);
 
     @Query("""
-        SELECT SUM(sojuAmount)
-        FROM CalendarEntity
-        WHERE userEntity.id = :userId
-        AND FUNCTION('MONTH', date) = :month
-        AND FUNCTION('YEAR', date) = :year
-        """)
-    double sumSojuByMonth(Integer userId, int month, int year);
-
-    @Query("""
-        SELECT SUM(beerAmount)
-        FROM CalendarEntity
-        WHERE userEntity.id = :userId
-        AND FUNCTION('MONTH', date) = :month
-        AND FUNCTION('YEAR', date) = :year
-        """)
-    double sumBeerByMonth(Integer userId, int month, int year);
-
-    @Query("""
-        SELECT SUM(sojuAmount)
-        FROM CalendarEntity
-        WHERE userEntity.id = :userId
-        AND FUNCTION('YEAR', date) = :year
-        """)
-    double sumSojuByYear(Integer userId, int year);
-
-    @Query("""
-        SELECT SUM(beerAmount)
-        FROM CalendarEntity
-        WHERE userEntity.id = :userId
-        AND FUNCTION('YEAR', date) = :year
-        """)
-    double sumBeerByYear(Integer userId, int year);
-
-    @Query("""
-        SELECT SUM(sojuAmount), SUM(beerAmount)
+        SELECT SUM(sojuAmount) as sojuAmount, SUM(beerAmount) as beerAmount
         FROM CalendarEntity
         WHERE userEntity.id = :userId
         AND FUNCTION('MONTH', date) = :month
@@ -82,7 +48,7 @@ public interface CalendarRepository extends JpaRepository<CalendarEntity, Intege
     AlcoholAmount sumAlcoholByMonth(Integer userId, int month, int year);
 
     @Query("""
-        SELECT SUM(sojuAmount), SUM(beerAmount)
+        SELECT SUM(sojuAmount) as sojuAmount, SUM(beerAmount) as beerAmount
         FROM CalendarEntity
         WHERE userEntity.id = :userId
         AND FUNCTION('YEAR', date) = :year

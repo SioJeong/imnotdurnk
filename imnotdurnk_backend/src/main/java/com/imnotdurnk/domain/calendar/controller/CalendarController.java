@@ -138,17 +138,19 @@ public class CalendarController {
     /**
      *
      * @param token
-     * @param date
+     * @param dateStr
      * @return
      */
     @GetMapping("/statistics")
     public ResponseEntity<?> getStatistics(@RequestAttribute(value = "AccessToken", required = true) String token,
-                                           @RequestParam(required = true) LocalDate date) {
+                                           @RequestParam(required = true) String dateStr) {
+
+        if (!checkDate(dateStr)) throw new InvalidDateException("날짜 입력 오류");
 
         // 응답 객체
         SingleResponse<CalendarStatisticDto> response = new SingleResponse<>();
 
-        CalendarStatisticDto calendarStatisticDto = calendarService.getCalendarStatistic(date, token);
+        CalendarStatisticDto calendarStatisticDto = calendarService.getCalendarStatistic(dateStr, token);
 
         response.setStatusCode(HttpStatus.OK.value());
         response.setMessage("일정 조회에 성공하였습니다.");
