@@ -31,7 +31,7 @@ const useNonPersistentStore = create((set, get) => ({
         memo: '',
         // beerAmount: 0,
         // sojuAmount: 0,
-        // alcoholLevel: 0,
+        alcoholLevel: '0: 취하지 않음',
         // arrivalTime: '',
     },
     setPlan: (newPlan) =>
@@ -45,14 +45,14 @@ const useNonPersistentStore = create((set, get) => ({
                 memo: '',
                 // beerAmount: 0,
                 // sojuAmount: 0,
-                // alcoholLevel: 0,
+                alcoholLevel: '0: 취하지 않음',
                 // arrivalTime: '',
             },
         }),
     submitPlan: async () => {
         const { plan } = get();
         const token =
-            'eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InNzYWZ5QHNzYWZ5LmNvbSIsImlhdCI6MTcyMjU5MjM5MywiZXhwIjoxNzIyNzcyMzkzfQ.BWrFkVHHU0ym30BiS0oPSw0WnSn246nAhCy1M1t2SsU';
+            'eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InNzYWZ5QHNzYWZ5LmNvbSIsImlhdCI6MTcyMjcyNTQ3MSwiZXhwIjoxNzIyOTA1NDcxfQ.C6TFHL-axEEUWjFTpXv6zxFEaBoRjLY4OtEczLvS3Nc';
 
         // backend 요청 형식에 따라 변환 (yyyy-MM-ddThh:ss 형식의 문자열)
         const parseDateTime = (dateString, timeString) => {
@@ -82,6 +82,7 @@ const useNonPersistentStore = create((set, get) => ({
             date: formattedDateTime,
             title: plan.title,
             memo: plan.memo,
+            alcoholLevel: parseInt(plan.alcoholLevel.split(':')[0]),
         };
 
         try {
