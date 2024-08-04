@@ -1,6 +1,6 @@
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import * as Location from 'expo-location';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Button from '../components/_common/Button';
 import IconButton from '../components/_common/IconButton';
 import * as St from '../components/_layout/globalStyle';
@@ -26,14 +26,22 @@ const Map = () => {
 
     const navi = useNavigation();
 
-    useEffect(() => {
-        setNavigation({
-            isVisible: true,
-            icon1: { iconname: 'address', isRed: false },
-            title: '지도',
-            icon2: { iconname: 'empty', isRed: false },
-        });
+    useFocusEffect(
+        useCallback(() => {
+            setNavigation({
+                isVisible: true,
+                icon1: { iconname: 'address', isRed: false },
+                title: '지도',
+                icon2: { iconname: 'empty', isRed: false },
+            });
 
+            return () => {
+                // Cleanup function if needed
+            };
+        }, [setNavigation]),
+    );
+
+    useEffect(() => {
         // 위치 정보 수집 권한 요청 및 초기 위치 설정
         const getLocationPermission = async () => {
             try {
@@ -64,7 +72,7 @@ const Map = () => {
         };
 
         getLocationPermission();
-    }, [setMapCenter, setNavigation, setCurrentLocation, setDeparture]);
+    }, [setMapCenter, setCurrentLocation, setDeparture]);
 
     useEffect(() => {
         if (currentLocation) {
