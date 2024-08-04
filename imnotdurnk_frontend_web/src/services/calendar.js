@@ -29,8 +29,10 @@ const getAllEventList = async ({ token, year, month }) => {
         }));
 
         return eventList;
-    } catch (err) {
-        throw new Error(err.message || '데이터 가져오는 중 오류 발생');
+    } catch (error) {
+        throw new Error(
+            error.message || '월별 전체 일정 가져오는 중 오류 발생',
+        );
     }
 };
 
@@ -48,9 +50,29 @@ const createEvent = async ({ token, plan }) => {
         if (statusCode === 201) {
             return true;
         }
-    } catch (err) {
-        throw new Error(err.message || '이벤트 등록 중 오류 발생');
+    } catch (error) {
+        throw new Error(error.message || '일정 등록 중 오류 발생');
     }
 };
 
-export { createEvent, getAllEventList };
+const getEventDetail = async ({ token, planId }) => {
+    try {
+        const response = await api.get(`/calendars/plans/${planId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        const { statusCode, httpStatus, message, data } = response.data;
+        apiErrorHandler(statusCode, httpStatus, message);
+
+        if (statusCode === 200) {
+            console.log(data);
+            return data;
+        }
+    } catch (error) {
+        throw new Error(error.message || '일정 상세 가져오는 중 오류 발생');
+    }
+};
+
+export { createEvent, getAllEventList, getEventDetail };
