@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -35,6 +36,25 @@ public class S3FileUploadService {
 
         try {
             s3Client.putObject(bucketName, originalFilename, file.getInputStream(), getObjectMetadata(file));
+            return defaultUrl + "/" + originalFilename;
+        } catch (SdkClientException e) {
+            throw new S3FileUploadException("파일 업로드 실패");
+        }
+    }
+
+    /***
+     * File 객체를 S3에 저장
+     * @param file
+     * @return
+     */
+    public String uploadFileObj(File file){
+        String originalFilename = file.getName();
+        try {
+            /**
+             * PutObjectResult	putObject(String bucketName, String key, File file)
+             * Uploads the specified file to Amazon S3 under the specified bucket and key name.
+             */
+            s3Client.putObject(bucketName, originalFilename, file);
             return defaultUrl + "/" + originalFilename;
         } catch (SdkClientException e) {
             throw new S3FileUploadException("파일 업로드 실패");

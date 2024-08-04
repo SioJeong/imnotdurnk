@@ -22,6 +22,8 @@ const CalendarItemBox = styled.div`
                 return 'var(--color-white2)';
         }
     }};
+
+    cursor: pointer;
 `;
 
 const CalendarItemDate = styled.div`

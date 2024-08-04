@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import * as St from './EventCard.style';
 
 const EventCard = ({
@@ -7,8 +7,10 @@ const EventCard = ({
     onItemClick,
     selectedDate,
     fromCalendar,
+    eventId,
     children,
 }) => {
+    const navigate = useNavigate();
     const location = useLocation();
 
     const [selectedDateFromPath, setSelectedDateFromPath] = useState(null);
@@ -33,13 +35,27 @@ const EventCard = ({
         return date ? days[date.getDay()] : null; // TODO: selectedDate 널 체크 사항 -> 이거 뭐야
     };
 
+    // 카드 클릭 시 페이지 이동 동작
+    const handleOnClick = () => {
+        if (fromCalendar) {
+            onItemClick(selectedDate);
+        } else {
+            const currentPath = location.pathname;
+            navigate(`${currentPath}/item/${eventId}`);
+        }
+    };
+
     return (
         <St.CalendarItemBox
             $alcoholLevel={alcoholLevel}
-            onClick={() => onItemClick(selectedDate)}
+            onClick={handleOnClick}
         >
             <St.CalendarItemDate // TODO: selectedDate 널 체크 사항 -> 이거 뭐야
-                $isWeekend={selectedDate ? selectedDate.getDay() : null}
+                $isWeekend={
+                    selectedDateForDisplay
+                        ? selectedDateForDisplay.getDay()
+                        : null
+                }
             >
                 <h4>{getDayName(selectedDateForDisplay)}</h4>
                 <h2>{selectedDateForDisplay?.getDate()}</h2>
