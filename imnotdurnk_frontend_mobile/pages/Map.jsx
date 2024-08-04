@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import * as Location from 'expo-location';
 import React, { useEffect, useState } from 'react';
-import { Pressable, Text, View } from 'react-native';
+import Button from '../components/_common/Button';
 import IconButton from '../components/_common/IconButton';
 import * as St from '../components/_layout/globalStyle';
 import CustomMap from '../components/map/CustomMap';
@@ -111,22 +111,29 @@ const Map = () => {
 
     return (
         <St.Container>
-            <SearchBar
-                placeholder={departurePlaceholder}
-                onPress={setDeparture}
-            />
-            <SearchBar
-                placeholder="목적지를 입력하세요"
-                onPress={setDestination}
-            />
-            <View>
-                <Pressable onPress={() => navi.navigate('PathFinder')}>
-                    <Text>transit</Text>
-                </Pressable>
-                <Pressable onPress={() => navi.navigate('Taxi')}>
-                    <Text>taxi</Text>
-                </Pressable>
-            </View>
+            <St.MapSearchContainer>
+                <SearchBar
+                    placeholder={departurePlaceholder}
+                    onPress={setDeparture}
+                />
+                <SearchBar
+                    placeholder="목적지를 입력하세요"
+                    onPress={setDestination}
+                />
+                <Button
+                    text={'경로 검색하기'}
+                    color={'white1'}
+                    fontSize={'H4'}
+                    weight={'medium'}
+                    isRed={true}
+                    onPress={() => {
+                        if (destination) {
+                            navi.navigate('PathFinder');
+                        }
+                    }}
+                />
+            </St.MapSearchContainer>
+
             <CustomMap />
             <St.FloatingButtonBottomRight>
                 <IconButton
