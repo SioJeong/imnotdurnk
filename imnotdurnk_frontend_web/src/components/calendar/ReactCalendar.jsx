@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { getAllEventList } from '../../services/calendar';
@@ -10,11 +10,11 @@ import * as St from './ReactCalendar.style';
 const ReactCalendar = ({ onChangeView, selectedDate, setSelectedDate }) => {
     const { setEventListOnSelectedDate, setStatusOnDate } = useCalendarStore();
 
-    const year = 2024;
-    const month = 8;
+    const [year, setYear] = useState(new Date().getFullYear());
+    const [month, setMonth] = useState(new Date().getMonth() + 1);
 
     const token =
-        'eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InNzYWZ5QHNzYWZ5LmNvbSIsImlhdCI6MTcyMjU1OTQ1MywiZXhwIjoxNzIyNzM5NDUzfQ.HspCbdJAQh6x1L5Z25Vlf8zNGNdjrUjwOXq9gL8X4Yk';
+        'eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InNzYWZ5QHNzYWZ5LmNvbSIsImlhdCI6MTcyMjY4NzUzNCwiZXhwIjoxNzIyODY3NTM0fQ.81Bg1dTH6u-HMIEQ_MBCF8d3yFRiFvm7Njj0wKk7rEc';
 
     const {
         data: monthlyEventList,
@@ -24,6 +24,7 @@ const ReactCalendar = ({ onChangeView, selectedDate, setSelectedDate }) => {
     } = useQuery({
         queryKey: ['monthlyEventList', year, month],
         queryFn: () => getAllEventList({ token, year, month }),
+        keepPreviousData: true, // 새 데이터 가져오는 동안 이전 데이터 유지
     });
 
     useEffect(() => {
@@ -52,40 +53,52 @@ const ReactCalendar = ({ onChangeView, selectedDate, setSelectedDate }) => {
         setStatusOnDate,
     ]);
 
-    // 일정 dot 커스텀 및 날짜 텍스트 숫자로 변환
-    const tileContent = ({ date, view }) => {
-        if (view === 'month') {
-            const statusOnDate =
-                monthlyEventList &&
-                monthlyEventList
-                    .filter((e) => {
-                        return (
-                            e.date.getFullYear() === date.getFullYear() &&
-                            e.date.getMonth() === date.getMonth() &&
-                            e.date.getDate() === date.getDate()
-                        );
-                    })
-                    .sort((a, b) => b.alcoholLevel - a.alcoholLevel)[0];
+    // 달력 월 변경 감지
+    const handleMonthChange = ({ activeStartDate }) => {
+        const newYear = activeStartDate.getFullYear();
+        const newMonth = activeStartDate.getMonth() + 1;
 
-            return (
-                <St.DateTile>
-                    <St.DateNum>{date.getDate()}</St.DateNum>
-                    {statusOnDate && (
-                        <St.DateDot $alcoholLevel={statusOnDate.alcoholLevel} />
-                    )}
-                </St.DateTile>
-            );
+        if (newYear !== year || newMonth !== month) {
+            setYear(newYear);
+            setMonth(newMonth);
         }
     };
 
-    if (isLoading) {
-        return <p>달력 데이터 가져오는 중</p>;
-    }
+    // 일정 dot 커스텀 및 날짜 텍스트 숫자로 변환
+    const tileContent = useCallback(
+        ({ date, view }) => {
+            if (view === 'month') {
+                const statusOnDate =
+                    monthlyEventList &&
+                    monthlyEventList
+                        .filter((e) => {
+                            const eventDate = new Date(e.date);
+                            return (
+                                eventDate.getFullYear() ===
+                                    date.getFullYear() &&
+                                eventDate.getMonth() === date.getMonth() &&
+                                eventDate.getDate() === date.getDate()
+                            );
+                        })
+                        .sort((a, b) => b.alcoholLevel - a.alcoholLevel)[0];
 
-    if (isError) {
-        return <p>오류 발생: {error.message}</p>;
-    }
+                return (
+                    <St.DateTile>
+                        <St.DateNum>{date.getDate()}</St.DateNum>
+                        {statusOnDate && (
+                            <St.DateDot
+                                $alcoholLevel={statusOnDate.alcoholLevel}
+                            />
+                        )}
+                    </St.DateTile>
+                );
+            }
+        },
+        [monthlyEventList],
+    );
 
+    // NOTE: [하루종일 못찾은 새로고침 문제 해결 하..]
+    // 달력 컴포넌트를 항상 렌더링하고, 로딩 상태나 오류 메시지를 별도로 표시
     return (
         <div>
             <Calendar
@@ -93,12 +106,15 @@ const ReactCalendar = ({ onChangeView, selectedDate, setSelectedDate }) => {
                 onChange={setSelectedDate}
                 value={selectedDate}
                 calendarType="gregory" // 일요일부터 시작
-                minDetail="year" // 월/년도 보기 까지만 지원
+                minDetail="year" // 월, 년도 보기 까지만 지원
                 prev2Label={null}
                 next2Label={null}
                 showNeighboringMonth={false} // 이번 달 날짜만 렌더링
                 tileContent={tileContent}
+                onActiveStartDateChange={handleMonthChange} // 월 변경 시 호출
             />
+            {isLoading && <p>달력 데이터 가져오는 중</p>}
+            {isError && <p>오류 발생: {error.message}</p>}
         </div>
     );
 };

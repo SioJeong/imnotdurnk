@@ -26,7 +26,7 @@ const useNonPersistentStore = create((set, get) => ({
     // 1. 일정 등록
     plan: {
         date: '',
-        time: '',
+        time: '오후 06시 00분',
         title: '',
         memo: '',
         // beerAmount: 0,
@@ -40,7 +40,7 @@ const useNonPersistentStore = create((set, get) => ({
         set({
             plan: {
                 date: '',
-                time: '',
+                time: '오후 06시 00분',
                 title: '',
                 memo: '',
                 // beerAmount: 0,
@@ -52,7 +52,7 @@ const useNonPersistentStore = create((set, get) => ({
     submitPlan: async () => {
         const { plan } = get();
         const token =
-            'eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InNzYWZ5QHNzYWZ5LmNvbSIsImlhdCI6MTcyMjU1OTQ1MywiZXhwIjoxNzIyNzM5NDUzfQ.HspCbdJAQh6x1L5Z25Vlf8zNGNdjrUjwOXq9gL8X4Yk';
+            'eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InNzYWZ5QHNzYWZ5LmNvbSIsImlhdCI6MTcyMjU5MjM5MywiZXhwIjoxNzIyNzcyMzkzfQ.BWrFkVHHU0ym30BiS0oPSw0WnSn246nAhCy1M1t2SsU';
 
         // backend 요청 형식에 따라 변환 (yyyy-MM-ddThh:ss 형식의 문자열)
         const parseDateTime = (dateString, timeString) => {

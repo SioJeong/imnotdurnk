@@ -7,9 +7,10 @@ const ModalDateDropdown = ({ handleSelectedDate }) => {
     const months = Array.from({ length: 12 }, (_, i) => `${i + 1}월`);
     const days = Array.from({ length: 31 }, (_, i) => `${i + 1}일`);
 
+    // TODO: 코드로 변경해야 함 (CreatePlan 연동)
     const [selectedYear, setSelectedYear] = useState(years[4]);
-    const [selectedMonth, setSelectedMonth] = useState(months[0]);
-    const [selectedDay, setSelectedDay] = useState(days[0]);
+    const [selectedMonth, setSelectedMonth] = useState(months[7]);
+    const [selectedDay, setSelectedDay] = useState(days[2]);
 
     // 드롭다운에서 선택된 값을 콜백 함수로 전달
     const handleSelectYear = (option) => {
@@ -33,17 +34,17 @@ const ModalDateDropdown = ({ handleSelectedDate }) => {
                 <DropButton
                     options={years}
                     onSelect={handleSelectYear}
-                    originValue={years[0]}
+                    originValue={selectedYear}
                 />
                 <DropButton
                     options={months}
                     onSelect={handleSelectMonth}
-                    originValue={months[0]}
+                    originValue={selectedMonth}
                 />
                 <DropButton
                     options={days}
                     onSelect={handleSelectDay}
-                    originValue={days[0]}
+                    originValue={selectedDay}
                 />
             </St.StyledFormBox>
         </St.StyledBox>

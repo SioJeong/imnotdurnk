@@ -7,7 +7,7 @@ import * as St from './Navigation.style.js';
 
 const Navigation = () => {
     const { navigation } = useNavigationStore((state) => state);
-    const { plan, submitPlan } = useCalendarStore();
+    const { plan, resetPlan, submitPlan } = useCalendarStore();
 
     const navigate = useNavigate();
     const queryClient = useQueryClient();
@@ -32,7 +32,9 @@ const Navigation = () => {
                     year,
                     month,
                 ]);
-                // TODO: 일정 등록 완료 alert ?
+                // TODO: 일정 등록 완료 alert 커스텀
+                alert('일정이 등록 되었습니다.');
+                resetPlan();
                 navigate('/calendar');
             }
         } else if (path) {
