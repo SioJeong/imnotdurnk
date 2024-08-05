@@ -80,7 +80,6 @@ const getEventDetail = async ({ planId }) => {
         apiErrorHandler(statusCode, httpStatus, message);
 
         if (statusCode === 200) {
-            console.log(data);
             return data;
         }
     } catch (error) {
