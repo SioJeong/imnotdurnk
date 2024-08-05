@@ -47,10 +47,12 @@ public class UserController {
     public ResponseEntity<?> verifyEmail(@RequestParam String email) throws BadRequestException, MessagingException, UnsupportedEncodingException {
 
         if(email == null || email.equals("")) throw new RequiredFieldMissingException("이메일 누락");
+        if(userService.existsByEmail(email)) throw new BadRequestException("중복된 이메일 입니다.");
 
         userService.sendVerificationCode(email);
         CommonResponse response = new CommonResponse(200,"이메일 인증 요청");
         return ResponseEntity.status(response.getHttpStatus()).body(response);
+
     }
 
     /**
@@ -88,7 +90,6 @@ public class UserController {
         if (userDto.getName() == null || !checkName(userDto.getName())) throw new BadRequestException("이름이 누락되었거나 형식에 맞지 않습니다.");
         if (userDto.getPhone() == null || !checkphone(userDto.getPhone())) throw new BadRequestException("전화번호가 누락되었거나 형식에 맞지 않습니다.");
 
-        if(userService.existsByEmail(userDto.getEmail())) throw new BadRequestException("중복된 이메일 입니다.");
         userService.signUp(userDto);
         CommonResponse response = new CommonResponse(201,"회원가입 성공");
         return ResponseEntity.status(response.getHttpStatus()).body(response);
