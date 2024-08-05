@@ -64,8 +64,8 @@ const CertificationNumberInputContainer = ({ email }) => {
             // 다음 페이지로 이동
         }
     };
-    const onClickResendButton = () => {
-        const result = sendCertificationNumber(email);
+    const onClickResendButton = async () => {
+        const result = await sendCertificationNumber(email);
     };
     return (
         <St.CertificationContainer>

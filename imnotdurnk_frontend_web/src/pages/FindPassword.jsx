@@ -14,7 +14,7 @@ const FindPassword = () => {
     useEffect(() => {
         setNavigation({
             isVisible: true,
-            icon1: { iconname: 'backarrow' },
+            icon1: { iconname: 'backarrow', path: '-1' },
             title: '비밀번호 찾기',
             icon2: { iconname: 'empty' },
         });

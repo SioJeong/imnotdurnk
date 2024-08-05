@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { styled } from 'styled-components';
 import AlcoholStatistics from './AlcoholStatistics';
 import GameStatistics from './GameStatistics';
+
 const Statistics = () => {
     const [isFirstSelected, setIsFirstSelected] = useState(true);
     const [inputValues, setInputValues] = useState({

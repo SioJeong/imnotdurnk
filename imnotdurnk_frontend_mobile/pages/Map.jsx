@@ -1,7 +1,7 @@
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import * as Location from 'expo-location';
-import React, { useEffect, useState } from 'react';
-import { Pressable, Text, View } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import Button from '../components/_common/Button';
 import IconButton from '../components/_common/IconButton';
 import * as St from '../components/_layout/globalStyle';
 import CustomMap from '../components/map/CustomMap';
@@ -26,14 +26,22 @@ const Map = () => {
 
     const navi = useNavigation();
 
-    useEffect(() => {
-        setNavigation({
-            isVisible: true,
-            icon1: { iconname: 'address', isRed: false },
-            title: '지도',
-            icon2: { iconname: 'empty', isRed: false },
-        });
+    useFocusEffect(
+        useCallback(() => {
+            setNavigation({
+                isVisible: true,
+                icon1: { iconname: 'address', isRed: false },
+                title: '지도',
+                icon2: { iconname: 'empty', isRed: false },
+            });
 
+            return () => {
+                // Cleanup function if needed
+            };
+        }, [setNavigation]),
+    );
+
+    useEffect(() => {
         // 위치 정보 수집 권한 요청 및 초기 위치 설정
         const getLocationPermission = async () => {
             try {
@@ -64,7 +72,7 @@ const Map = () => {
         };
 
         getLocationPermission();
-    }, [setMapCenter, setNavigation, setCurrentLocation, setDeparture]);
+    }, [setMapCenter, setCurrentLocation, setDeparture]);
 
     useEffect(() => {
         if (currentLocation) {
@@ -111,22 +119,29 @@ const Map = () => {
 
     return (
         <St.Container>
-            <SearchBar
-                placeholder={departurePlaceholder}
-                onPress={setDeparture}
-            />
-            <SearchBar
-                placeholder="목적지를 입력하세요"
-                onPress={setDestination}
-            />
-            <View>
-                <Pressable onPress={() => navi.navigate('PathFinder')}>
-                    <Text>transit</Text>
-                </Pressable>
-                <Pressable onPress={() => navi.navigate('Taxi')}>
-                    <Text>taxi</Text>
-                </Pressable>
-            </View>
+            <St.MapSearchContainer>
+                <SearchBar
+                    placeholder={departurePlaceholder}
+                    onPress={setDeparture}
+                />
+                <SearchBar
+                    placeholder="목적지를 입력하세요"
+                    onPress={setDestination}
+                />
+                <Button
+                    text={'경로 검색하기'}
+                    color={'white1'}
+                    fontSize={'H4'}
+                    weight={'medium'}
+                    isRed={true}
+                    onPress={() => {
+                        if (destination) {
+                            navi.navigate('PathFinder');
+                        }
+                    }}
+                />
+            </St.MapSearchContainer>
+
             <CustomMap />
             <St.FloatingButtonBottomRight>
                 <IconButton

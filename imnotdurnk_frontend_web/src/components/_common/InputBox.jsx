@@ -14,6 +14,7 @@ const InputBox = ({
     alertContents, // 에러메세지 내용
     readOnly,
     isProfileViewPage,
+    onClick,
 }) => {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     // 가시성 설정 토글

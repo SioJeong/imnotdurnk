@@ -1,7 +1,7 @@
+import useAuthStore from '../stores/useAuthStore';
 import api from './api';
 import apiErrorHandler from './apiErrorHandler';
 // response body 형식 : httpStatus, message, statusCode, dataList
-
 //[예시] 사용자 정보 가져오는 함수
 const getUser = async (token) => {
     try {
@@ -31,7 +31,7 @@ const login = async (email, password) => {
         const accessToken = response.headers['authorization'];
         if (accessToken) {
             console.log('accessToken:', accessToken);
-            localStorage.setItem('accessToken', accessToken);
+            useAuthStore.getState().setAccessToken(accessToken);
         }
         const { statusCode, httpStatus, message, dataList } = response.data;
 
@@ -74,17 +74,22 @@ const signup = async (name, email, phone, password) => {
 
 //인증번호 보내기
 const sendCertificationNumber = async (email) => {
+    console.log('이메일1');
     try {
         const response = await api.get(`/users/signup/verify`, {
             email: email,
         });
+        console.log('이메일1.5');
         const { statusCode, httpStatus, message } = response.data;
         // apiErrorHandler(statusCode, httpStatus, message);
+        console.log('인증번호 보내기', response);
+        console.log('이메일2');
         return {
             isSuccess: statusCode === 200,
             message: '인증번호 보내기 성공',
         };
     } catch (err) {
+        console.log('이메일3');
         return {
             isSuccess: false,
             message: err.message || '데이터 가져오는 중 오류 발생',
@@ -148,7 +153,7 @@ const getUserProfile = async () => {
     try {
         const response = await api.get(`/users/profile`);
         const { statusCode, httpStatus, message, data } = response.data;
-        // apiErrorHandler(statusCode, httpStatus, message);
+        apiErrorHandler(statusCode, httpStatus, message);
         console.log('겟프로필 response:', response);
         return {
             isSuccess: statusCode === 200,

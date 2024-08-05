@@ -5,6 +5,10 @@ const InputBoxContainerWithAlertMessage = styled.div`
     flex-direction: column;
     align-items: flex-start;
     gap: 0.2143rem;
+    width: ${(props) =>
+        props.$size === 'small'
+            ? '9rem'
+            : '100%'}; /* 'small'이 아닐 때 100%로 설정 */
 `;
 const InputBoxContainer = styled.div`
     display: flex;

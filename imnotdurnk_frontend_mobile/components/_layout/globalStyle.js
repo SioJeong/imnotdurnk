@@ -60,12 +60,27 @@ const GlobalText = styled(Text)`
         theme.colors[color] ? theme.colors[color] : theme.colors.green3};
 `;
 
+const MapSearchContainer = styled(View)`
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    width: 100%;
+    margin: 0 auto;
+    gap: 10px;
+    padding: 24px;
+    background-color: ${({ theme }) => theme.colors.green2};
+
+    border-radius: 20px;
+`;
+
 export {
     AppContainer,
     Container,
     FloatingButtonBottomRight,
     GlobalText,
     LayoutContainer,
+    MapSearchContainer,
     NavContainer,
     ScrollContainer,
 };

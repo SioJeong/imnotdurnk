@@ -35,7 +35,7 @@ const Login = () => {
                 removeCookie('rememberUserId');
             }
             // 임시로 mypage로 이동 추후에는 /home으로 변경 필요
-            navigate('/mypage/profile/create/info');
+            navigate('/');
         }
     };
 

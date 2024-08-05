@@ -164,7 +164,7 @@ public class UserController {
         if(token == null) throw new InvalidDateException("사용자 인증 정보가 존재하지 않습니다.");
         //수정된 정보 유효성 검사
         if(userDto.getPhone() != null && !checkphone(userDto.getPhone())) throw new BadRequestException("형식이 잘못된 전화번호입니다.");
-        if(userDto.getNickname() != null && !checkName(userDto.getNickname())) throw new BadRequestException("형식이 잘못된 닉네임입니다.");
+//        if(userDto.getNickname() != null && !checkName(userDto.getNickname())) throw new BadRequestException("형식이 잘못된 닉네임입니다.");
 
         userService.updateProfile(token,userDto);
         CommonResponse response = new CommonResponse(200,"사용자 프로필 정보 업데이트 성공");

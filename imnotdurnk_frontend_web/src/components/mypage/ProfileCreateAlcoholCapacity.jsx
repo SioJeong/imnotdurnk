@@ -1,8 +1,9 @@
 import Button from '@/components/_button/Button';
 import { useState } from 'react';
+import useMyPageNavigation from '../../hooks/useMyPageNavigation';
 import * as St from './ProfileCreateAlcoholCapacity.style';
-
 const ProfileCreateAlcoholCapacity = () => {
+    useMyPageNavigation();
     const [inputValues, setInputValues] = useState({
         nickname: '',
         postalCode: '',

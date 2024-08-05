@@ -1,25 +1,20 @@
+import beerBottleImage from '@/assets/images/beerbottle.webp';
+import sojuBottleImage from '@/assets/images/sojubottle.webp';
 import InputBox from '@/components/_common/InputBox';
+import useMyPageNavigation from '@/hooks/useMyPageNavigation';
 import { useEffect, useState } from 'react';
 import { Outlet, Route, Routes, useNavigate } from 'react-router-dom';
 import { getUserProfile } from '../../services/user';
+import useAuthStore from '../../stores/useAuthStore';
 import MiniButton from '../_button/MiniButton';
 import * as St from './Profile.style';
 import ProfileCreateAlcoholCapacity from './ProfileCreateAlcoholCapacity';
 import ProfileCreateInfo from './ProfileCreateInfo';
 import ProfileCreateVoice from './ProfileCreateVoice';
 import ProfileUpdate from './ProfileUpdate';
-
-import useNavigationStore from '@/stores/useNavigationStore';
 const Profile = () => {
-    const setNavigation = useNavigationStore((state) => state.setNavigation);
-    useEffect(() => {
-        setNavigation({
-            isVisible: true,
-            icon1: { iconname: 'backarrow', path: -1 },
-            title: '프로필 보기',
-            icon2: { iconname: 'modify', path: 'mypage/profile/update' },
-        });
-    }, [setNavigation]);
+    useMyPageNavigation();
+
     const [inputValues, setInputValues] = useState({
         name: '',
         nickname: '',
@@ -35,35 +30,25 @@ const Profile = () => {
     const onClickPasswordChangeButton = () => {
         navigate('/find-password');
     };
+
+    const { accessToken } = useAuthStore();
     useEffect(() => {
-        const fetchUserProfile = async () => {
-            try {
-                const getProfileResult = await getUserProfile(); // getUserProfile 함수 비동기 호출
-
-                if (getProfileResult.isSuccess) {
-                    // 사용자 정보를 inputValues에 업데이트
-                    setInputValues({
-                        name: getProfileResult.data.name,
-                        nickname: getProfileResult.data.nickname,
-                        email: getProfileResult.data.email,
-                        phone: getProfileResult.data.phone,
-                        address: getProfileResult.data.address,
-                        detailedAddress: getProfileResult.data.detailedAddress,
-                        postalCode: getProfileResult.data.postalCode,
-                        emergencyCall: getProfileResult.data.emergencyCall,
-                    });
-                    console.log('프로필 가져옴', getProfileResult.data);
-                } else {
-                    console.log('프로필 가져오기 실패');
-                    // 프로필 가져오기 실패 시 처리할 로직 추가 가능
-                }
-            } catch (error) {
-                console.error('프로필 가져오기 중 오류 발생', error);
-                // 오류 처리 로직 추가
-            }
-        };
-
-        fetchUserProfile(); // useEffect에서 호출
+        console.log('at', accessToken);
+        const getProfileResult = getUserProfile(); // getUserProfile 함수
+        // if (getProfileResult.isSuccess) {
+        //     // 사용자 정보를 inputValues에 업데이트
+        //     setInputValues({
+        //         name: getProfileResult.data.name,
+        //         nickname: getProfileResult.data.nickname,
+        //         email: getProfileResult.data.email,
+        //         phone: getProfileResult.data.phone,
+        //         address: getProfileResult.data.address,
+        //         detailedAddress: getProfileResult.data.detailedAddress,
+        //         postalCode: getProfileResult.data.postalCode,
+        //         emergencyCall: getProfileResult.data.emergencyCall,
+        //     });
+        //     console.log('프로필 가져옴', getProfileResult.data);
+        // }
     }, []);
     return (
         <>
@@ -108,6 +93,22 @@ const Profile = () => {
                     />
                     <St.AlcoholCapacityBox>
                         <St.StyledH6>주량</St.StyledH6>
+                        <St.AlcolBox>
+                            <St.SojuBox>
+                                <St.StyledStepperImage
+                                    src={sojuBottleImage}
+                                    alt={`so`}
+                                />
+                                <St.Text>2병</St.Text>
+                            </St.SojuBox>
+                            <St.BeerBox>
+                                <St.StyledStepperImage
+                                    src={beerBottleImage}
+                                    alt={`be`}
+                                />
+                                <St.Text>2병</St.Text>
+                            </St.BeerBox>
+                        </St.AlcolBox>
                     </St.AlcoholCapacityBox>
                     <InputBox
                         labelText="주소"
@@ -147,10 +148,7 @@ const Profile = () => {
                     />
                     <St.VoiceBox>
                         <St.StyledH6>목소리</St.StyledH6>
-                        <St.VoiceButton
-                            src="/src/assets/icons/size_24/Icon-voice.svg"
-                            alt="Voice"
-                        />
+                        <St.VoiceButton />
                     </St.VoiceBox>
                 </St.InfoContainer>
                 <St.ButtonContainer>
