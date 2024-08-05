@@ -58,7 +58,6 @@ const getStaticsticsData = async ({ formattedDate }) => {
     //     };
     // }
 };
-export { getAllEventList, getStaticsticsData };
 const createEvent = async ({ token, plan }) => {
     try {
         const response = await api.post('/calendars', plan, {
@@ -78,4 +77,4 @@ const createEvent = async ({ token, plan }) => {
     }
 };
 
-export { createEvent, getAllEventList };
+export { createEvent, getAllEventList, getStaticsticsData };

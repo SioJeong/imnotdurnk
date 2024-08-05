@@ -73,7 +73,7 @@ const Container = styled.div`
     width: 332px;
     flex-direction: column;
     align-items: center;
-    gap: 30px;
+    gap: 2.1429rem;
 `;
 
 export default Statistics;
