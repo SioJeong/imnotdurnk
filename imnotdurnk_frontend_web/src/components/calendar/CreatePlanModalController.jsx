@@ -1,6 +1,7 @@
 import useCalendarStore from '../../stores/useCalendarStore';
 import useModalStore from '../../stores/useModalStore';
 import Modal from '../_modal/Modal';
+import ModalAlcohol from '../_modal/ModalAlcohol';
 import ModalAlcoholLevelDropdown from '../_modal/ModalAlcoholLevelDropdown';
 import ModalArrivalTimeDropdown from '../_modal/ModalArrivalTimeDropdown';
 import ModalDateDropdown from '../_modal/ModalDateDropdown';
@@ -11,6 +12,10 @@ const CreatePlanModalController = ({
     setSelectedDate,
     selectedTime,
     setSelectedTime,
+    selectedSojuCount,
+    setSelectedSojuCount,
+    selectedBeerCount,
+    setSelectedBeerCount,
     selectedAlcoholLevel,
     setSelectedAlcoholLevel,
     selectedArrivalTime,
@@ -39,6 +44,23 @@ const CreatePlanModalController = ({
         const timeStr = `${selectedTime.ampm} ${selectedTime.hour} ${selectedTime.minute}`;
         setPlan({ time: timeStr });
         closeModal('timeModal');
+    };
+
+    // 소주, 맥주 마신 양 선택 모달
+    const handleSelectedSojuCount = (sojuCount) => {
+        setSelectedSojuCount(sojuCount);
+    };
+
+    const handleSelectedBeerCount = (beerCount) => {
+        setSelectedBeerCount(beerCount);
+    };
+
+    const submitSelectedAlcohol = () => {
+        setPlan({
+            sojuAmount: selectedSojuCount,
+            beerAmount: selectedBeerCount,
+        });
+        closeModal('alcoholModal');
     };
 
     // 만취 정도 선택 모달
@@ -85,6 +107,31 @@ const CreatePlanModalController = ({
                 }
                 buttonText={'저장하기'}
                 onButtonClick={submitSelectedTime}
+            />
+            <Modal
+                modalId="alcoholModal"
+                contents={
+                    <div
+                        style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '1.7143rem',
+                        }}
+                    >
+                        <ModalAlcohol
+                            drinkType={'소주'}
+                            selectedSojuCount={selectedSojuCount}
+                            handleSelectedSojuCount={handleSelectedSojuCount}
+                        />
+                        <ModalAlcohol
+                            drinkType={'맥주'}
+                            selectedBeerCount={selectedBeerCount}
+                            handleSelectedBeerCount={handleSelectedBeerCount}
+                        />
+                    </div>
+                }
+                buttonText={'저장하기'}
+                onButtonClick={submitSelectedAlcohol}
             />
             <Modal
                 modalId="alcoholLevelModal"

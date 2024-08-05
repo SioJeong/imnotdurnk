@@ -28,6 +28,8 @@ const CreatePlan = () => {
     });
     const [title, setTitle] = useState('');
     const [memo, setMemo] = useState('');
+    const [selectedSojuCount, setSelectedSojuCount] = useState(plan.sojuAmount);
+    const [selectedBeerCount, setSelectedBeerCount] = useState(plan.beerAmount);
     const [selectedAlcoholLevel, setSelectedAlcoholLevel] =
         useState('0: 취하지 않음');
     const [selectedArrivalTime, setSelectedArrivalTime] = useState({
@@ -130,6 +132,7 @@ const CreatePlan = () => {
                     </St.InputContainer>
                 </St.ScheduleContainer>
                 <CreatePlanAlcohol
+                    openAlcoholModal={() => openModal('alcoholModal')}
                     openAlcoholLevelModal={() => openModal('alcoholLevelModal')}
                     openArrivalTimeModal={() => openModal('arrivalTimeModal')}
                 />
@@ -139,6 +142,10 @@ const CreatePlan = () => {
                 setSelectedDate={setSelectedDate}
                 selectedTime={selectedTime}
                 setSelectedTime={setSelectedTime}
+                selectedSojuCount={selectedSojuCount}
+                setSelectedSojuCount={setSelectedSojuCount}
+                selectedBeerCount={selectedBeerCount}
+                setSelectedBeerCount={setSelectedBeerCount}
                 selectedAlcoholLevel={selectedAlcoholLevel}
                 setSelectedAlcoholLevel={setSelectedAlcoholLevel}
                 selectedArrivalTime={selectedArrivalTime}

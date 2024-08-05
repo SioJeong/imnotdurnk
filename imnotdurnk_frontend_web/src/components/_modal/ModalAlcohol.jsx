@@ -4,11 +4,27 @@ import StepperButton from '../_button/StepperButton';
 import Checkbox from '../_common/Checkbox';
 import * as St from './Modal.style';
 
-const ModalAlcohol = ({ drinkType }) => {
+const ModalAlcohol = ({
+    drinkType,
+    selectedSojuCount,
+    handleSelectedSojuCount,
+    selectedBeerCount,
+    handleSelectedBeerCount,
+}) => {
     const [bottleCount, setBottleCount] = useState(0);
     const [glassCount, setGlassCount] = useState(0);
     const [capacity, setCapacity] = useState('모름');
     const [isUnknown, setIsUnknown] = useState(false); // "모르겠어요" 체크박스 상태
+
+    const drink = drinkType === '소주' ? 'soju' : 'beer';
+
+    useEffect(() => {
+        if (drinkType === '소주') {
+            setBottleCount(selectedSojuCount);
+        } else {
+            setBottleCount(selectedBeerCount);
+        }
+    }, []);
 
     useEffect(() => {
         if (isUnknown) {
@@ -17,6 +33,19 @@ const ModalAlcohol = ({ drinkType }) => {
             setCapacity(`${bottleCount}병 ${glassCount}잔`);
         }
     }, [bottleCount, glassCount, isUnknown]);
+
+    useEffect(() => {
+        if (drinkType === '소주') {
+            handleSelectedSojuCount(bottleCount);
+        } else {
+            handleSelectedBeerCount(bottleCount);
+        }
+    }, [
+        bottleCount,
+        drinkType,
+        handleSelectedSojuCount,
+        handleSelectedBeerCount,
+    ]);
 
     // 주량 변경 함수
     const handleBottleIncrement = () => setBottleCount(bottleCount + 1);
@@ -37,8 +66,6 @@ const ModalAlcohol = ({ drinkType }) => {
         setGlassCount(0);
     };
 
-    const drink = drinkType === '소주' ? 'soju' : 'beer';
-
     return (
         <St.StyledBox>
             <St.StyledStepperHeader>
@@ -54,7 +81,7 @@ const ModalAlcohol = ({ drinkType }) => {
             <St.StyledStepperBody>
                 <St.StyledStepperElement>
                     <St.StyledStepperImage
-                        src={`src/assets/images/${drink}bottle.webp`}
+                        src={`/src/assets/images/${drink}bottle.webp`}
                         alt={`${drink} bottle image`}
                     />
                     <StepperButton
@@ -66,7 +93,7 @@ const ModalAlcohol = ({ drinkType }) => {
                 </St.StyledStepperElement>
                 <St.StyledStepperElement>
                     <St.StyledStepperImage
-                        src={`src/assets/images/${drink}glass.webp`}
+                        src={`/src/assets/images/${drink}glass.webp`}
                         alt={`${drink} glass image`}
                     />
                     <StepperButton

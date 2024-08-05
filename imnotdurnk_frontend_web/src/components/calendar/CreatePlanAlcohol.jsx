@@ -1,31 +1,54 @@
 import useCalendarStore from '../../stores/useCalendarStore';
 import * as St from './CreatePlanAlcohol.style';
 
-const CreatePlanAlcohol = ({ openArrivalTimeModal, openAlcoholLevelModal }) => {
+const CreatePlanAlcohol = ({
+    openAlcoholModal,
+    openAlcoholLevelModal,
+    openArrivalTimeModal,
+}) => {
     const { plan } = useCalendarStore();
 
     return (
         <St.AlcoholContainer>
             <St.AlcoholTitle>음주 기록</St.AlcoholTitle>
             <St.InputContainer>
+                <St.DrinkInputBox onClick={openAlcoholModal}>
+                    <St.InputItemBox $alcoholCount={true}>
+                        <St.AlcoholCountImage
+                            src="/src/assets/images/mini-soju-bottle.webp"
+                            alt="soju"
+                            $isSoju={true}
+                        />
+                        <h4>{plan.sojuAmount}병</h4>
+                    </St.InputItemBox>
+                    <St.InputItemBox $alcoholCount={true}>
+                        <St.AlcoholCountImage
+                            src="/src/assets/images/mini-beer-bottle.webp"
+                            alt="beer"
+                            $isSoju={false}
+                        />
+                        <h4>{plan.beerAmount}병</h4>
+                    </St.InputItemBox>
+                </St.DrinkInputBox>
+
                 <St.InputItemBox onClick={openAlcoholLevelModal}>
-                    <St.AlcoholLevel>
+                    <St.InputItemBoxTitle>
                         <img
                             src="/src/assets/icons/size_24/Icon-health.svg"
                             alt="alcohol-level"
                         />
                         <h4>만취 정도</h4>
-                    </St.AlcoholLevel>
+                    </St.InputItemBoxTitle>
                     <h4>{plan.alcoholLevel}</h4>
                 </St.InputItemBox>
                 <St.InputItemBox onClick={openArrivalTimeModal}>
-                    <St.AlcoholLevel>
+                    <St.InputItemBoxTitle>
                         <img
                             src="/src/assets/icons/size_24/Icon-clock.svg"
                             alt="arrival-time"
                         />
                         <h4>귀가 시간</h4>
-                    </St.AlcoholLevel>
+                    </St.InputItemBoxTitle>
                     <h4>{plan.arrivalTime}</h4>
                 </St.InputItemBox>
             </St.InputContainer>
