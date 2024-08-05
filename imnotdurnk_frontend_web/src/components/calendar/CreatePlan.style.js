@@ -1,6 +1,12 @@
 import { styled } from 'styled-components';
 
-const CreatePlanContainer = styled.div`
+const Container = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 1.7857rem;
+`;
+
+const ScheduleContainer = styled.div`
     display: flex;
     flex-direction: column;
     gap: 0.8571rem;
@@ -11,7 +17,7 @@ const CreatePlanContainer = styled.div`
     background-color: var(--color-white2);
 `;
 
-const PlanContainer = styled.form`
+const InputContainer = styled.div`
     display: flex;
     flex-direction: column;
     gap: 0.7143rem;
@@ -29,7 +35,7 @@ const InputItemBox = styled.div`
     border-radius: 10px;
     background: var(--color-white1, #fff);
 
-    cursor: pointer;
+    ${({ $cursor }) => $cursor === true && 'cursor: pointer;'}
 `;
 
 const InputTitleText = styled.input`
@@ -55,9 +61,10 @@ const InputMemoText = styled.textarea`
 `;
 
 export {
-    CreatePlanContainer,
+    Container,
+    InputContainer,
     InputItemBox,
     InputMemoText,
     InputTitleText,
-    PlanContainer,
+    ScheduleContainer,
 };

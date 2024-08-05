@@ -14,7 +14,7 @@ const ReactCalendar = ({ onChangeView, selectedDate, setSelectedDate }) => {
     const [month, setMonth] = useState(new Date().getMonth() + 1);
 
     const token =
-        'eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InNzYWZ5QHNzYWZ5LmNvbSIsImlhdCI6MTcyMjY4NzUzNCwiZXhwIjoxNzIyODY3NTM0fQ.81Bg1dTH6u-HMIEQ_MBCF8d3yFRiFvm7Njj0wKk7rEc';
+        'eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InNzYWZ5QHNzYWZ5LmNvbSIsImlhdCI6MTcyMjcyNTQ3MSwiZXhwIjoxNzIyOTA1NDcxfQ.C6TFHL-axEEUWjFTpXv6zxFEaBoRjLY4OtEczLvS3Nc';
 
     const {
         data: monthlyEventList,

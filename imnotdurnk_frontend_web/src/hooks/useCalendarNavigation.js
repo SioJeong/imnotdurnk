@@ -18,7 +18,7 @@ const useCalendarNavigation = () => {
                 title: '일정 추가',
                 icon2: { iconname: 'check', isRed: 'true', path: 'submitPlan' },
             });
-        } else if (path.match('/calendar/\\d{4}-\\d{2}-\\d{2}/item/\\d+')) {
+        } else if (path.match('/calendar/\\d{4}-\\d{2}-\\d{2}/plan/\\d+')) {
             setNavigation({
                 isVisible: true,
                 icon1: { iconname: 'backarrow', path: '-1' },
