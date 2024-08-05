@@ -6,11 +6,15 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import java.time.LocalTime;
 
 @Getter
 @Setter
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "game_log")
 public class GameLogEntity {
 
@@ -29,6 +33,7 @@ public class GameLogEntity {
     @Column(name = "score")
     private Integer score;
 
+    @CreatedDate
     @Column(name = "time_log")
     @Temporal(TemporalType.TIME)
     private LocalTime timeLog;
