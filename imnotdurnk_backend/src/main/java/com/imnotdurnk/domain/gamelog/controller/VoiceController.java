@@ -8,6 +8,7 @@ import com.imnotdurnk.domain.gamelog.service.S3FileUploadService;
 import com.imnotdurnk.domain.gamelog.service.VoiceService;
 import com.imnotdurnk.global.commonClass.CommonResponse;
 import com.imnotdurnk.global.exception.RequiredFieldMissingException;
+import com.imnotdurnk.global.exception.ResourceNotFoundException;
 import com.imnotdurnk.global.response.SingleResponse;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
@@ -34,9 +35,11 @@ public class VoiceController {
             @RequestPart("voice") VoiceDto voice,
             @RequestPart MultipartFile file) throws IOException {
 
+        if(voice == null) throw new RequiredFieldMissingException("필드 누락");
+
         GameLogEntity gameLogEntity = gameLogService.getGameLog(voice.getLogId());
         if (gameLogEntity == null) {
-            throw new BadRequestException("해당하는 게임 로그가 없음");
+            throw new ResourceNotFoundException("해당하는 게임 로그가 없음");
         }
 
         if (file.isEmpty()) {
@@ -65,7 +68,7 @@ public class VoiceController {
         VoiceDto voiceDto = voiceService.getVoiceByLogId(logId);
 
         if (voiceDto == null) {
-            throw new BadRequestException("해당하는 음성파일 없음");
+            throw new ResourceNotFoundException("해당하는 음성파일 없음");
         }
 
         SingleResponse<VoiceDto> response = new SingleResponse<>();
@@ -83,7 +86,7 @@ public class VoiceController {
         String fileName = voiceService.getVoiceByLogId(logId).getFileName();
 
         if (fileName == null) {
-            throw new BadRequestException("존재하지 않는 파일");
+            throw new ResourceNotFoundException("존재하지 않는 파일");
         }
 
         s3FileUploadService.deleteFile(fileName);

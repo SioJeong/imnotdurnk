@@ -41,7 +41,7 @@ public class AuthController {
             @RequestParam String type) throws BadRequestException {
 
         if (type == null || type.equals("")) {
-            throw new BadRequestException();
+            throw new BadRequestException("타입이 명시되지 않음");
         }
 
         CommonResponse response = new CommonResponse();
