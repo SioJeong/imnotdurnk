@@ -49,7 +49,7 @@ const App = () => {
             <SafeAreaView style={styles.safeArea}>
                 <QueryClientProvider client={queryClient}>
                     <ThemeProvider theme={theme}>
-                        <NavigationContainer>
+                        <NavigationContainer theme={theme}>
                             <Layout>
                                 <Router />
                             </Layout>
