@@ -47,7 +47,7 @@ public class GameLogController {
         if(!checkDate(dateStr)) throw new InvalidDateException("날짜 입력 오류");
 
         if (gameType <= 0 || gameType > GAME_TYPE_COUNT) {
-            throw new ResourceNotFoundException("게임 타입 오류");
+            throw new BadRequestException("게임 타입 오류");
         }
 
         GameStatistic gameStatistic = gameLogService.getGameStatistic(token, gameType, dateStr);
