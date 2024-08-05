@@ -7,17 +7,32 @@ import CreatePlanAlcohol from './CreatePlanAlcohol';
 import CreatePlanModalController from './CreatePlanModalController';
 
 const CreatePlan = () => {
+    const { plan, setPlan } = useCalendarStore();
+    const { openModal } = useModalStore();
+
+    const [year, month, day] = plan.date.split(' ');
+    const [ampm, hour, minute] = plan.time.split(' ');
+
     const [title, setTitle] = useState('');
     const [memo, setMemo] = useState('');
+
+    const [selectedDate, setSelectedDate] = useState({
+        year,
+        month,
+        day,
+    });
+
+    const [selectedTime, setSelectedTime] = useState({
+        ampm,
+        hour,
+        minute,
+    });
+
     const [selectedAlcoholLevel, setSelectedAlcoholLevel] =
         useState('0: 취하지 않음');
 
     const memoRef = useRef(null);
     const titleRef = useRef(null);
-
-    const { plan, setPlan } = useCalendarStore();
-
-    const { openModal } = useModalStore();
 
     useEffect(() => {
         if (titleRef.current) {
@@ -66,7 +81,7 @@ const CreatePlan = () => {
                                 src="/src/assets/icons/size_24/Icon-calendar.svg"
                                 alt="date"
                             />
-                            <h4>{plan.date || '날짜를 선택하세요.'}</h4>
+                            <h4>{plan.date}</h4>
                         </St.InputItemBox>
                         <St.InputItemBox
                             onClick={() => openModal('timeModal')}
@@ -76,7 +91,7 @@ const CreatePlan = () => {
                                 src="/src/assets/icons/size_24/Icon-clock.svg"
                                 alt="time"
                             />
-                            <h4>{plan.time || '시간을 선택하세요'}</h4>
+                            <h4>{plan.time}</h4>
                         </St.InputItemBox>
                         <St.InputItemBox>
                             <img
@@ -114,6 +129,10 @@ const CreatePlan = () => {
                 />
             </St.Container>
             <CreatePlanModalController
+                selectedDate={selectedDate}
+                setSelectedDate={setSelectedDate}
+                selectedTime={selectedTime}
+                setSelectedTime={setSelectedTime}
                 selectedAlcoholLevel={selectedAlcoholLevel}
                 setSelectedAlcoholLevel={setSelectedAlcoholLevel}
             />

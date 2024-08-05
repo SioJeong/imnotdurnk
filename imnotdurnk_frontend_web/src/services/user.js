@@ -3,16 +3,11 @@ import apiErrorHandler from './apiErrorHandler';
 // response body 형식 : httpStatus, message, statusCode, dataList
 
 //[예시] 사용자 정보 가져오는 함수
-const getUser = async (token) => {
+const getUser = async () => {
     try {
-        const response = await api.get(`/users`, {
-            headers: {
-                Authorization: { token },
-            },
-        });
+        const response = await api.get(`/users`, {});
 
         const { statusCode, httpStatus, message, dataList } = response.data;
-
         apiErrorHandler(statusCode, httpStatus, message);
 
         return dataList;

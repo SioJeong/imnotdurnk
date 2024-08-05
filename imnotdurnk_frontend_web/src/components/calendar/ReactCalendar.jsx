@@ -13,9 +13,6 @@ const ReactCalendar = ({ onChangeView, selectedDate, setSelectedDate }) => {
     const [year, setYear] = useState(new Date().getFullYear());
     const [month, setMonth] = useState(new Date().getMonth() + 1);
 
-    const token =
-        'eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InNzYWZ5QHNzYWZ5LmNvbSIsImlhdCI6MTcyMjcyNTQ3MSwiZXhwIjoxNzIyOTA1NDcxfQ.C6TFHL-axEEUWjFTpXv6zxFEaBoRjLY4OtEczLvS3Nc';
-
     const {
         data: monthlyEventList,
         error,
@@ -23,7 +20,7 @@ const ReactCalendar = ({ onChangeView, selectedDate, setSelectedDate }) => {
         isLoading,
     } = useQuery({
         queryKey: ['monthlyEventList', year, month],
-        queryFn: () => getAllEventList({ token, year, month }),
+        queryFn: () => getAllEventList({ year, month }),
         keepPreviousData: true, // 새 데이터 가져오는 동안 이전 데이터 유지
     });
 

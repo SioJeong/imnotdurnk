@@ -1,5 +1,10 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import {
+    convertDateToString,
+    convertTimeToString,
+    parseDateTime,
+} from '../hooks/useDateTimeFormatter';
 import { createEvent } from '../services/calendar';
 
 // 로컬 스토리지에 저장 O
@@ -25,8 +30,8 @@ const usePersistentStore = create(
 const useNonPersistentStore = create((set, get) => ({
     // 1. 일정 등록
     plan: {
-        date: '',
-        time: '오후 06시 00분',
+        date: convertDateToString(new Date()),
+        time: convertTimeToString(new Date()),
         title: '',
         memo: '',
         // beerAmount: 0,
@@ -39,8 +44,8 @@ const useNonPersistentStore = create((set, get) => ({
     resetPlan: () =>
         set({
             plan: {
-                date: '',
-                time: '오후 06시 00분',
+                date: convertDateToString(new Date()),
+                time: convertTimeToString(new Date()),
                 title: '',
                 memo: '',
                 // beerAmount: 0,
@@ -51,31 +56,6 @@ const useNonPersistentStore = create((set, get) => ({
         }),
     submitPlan: async () => {
         const { plan } = get();
-        const token =
-            'eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InNzYWZ5QHNzYWZ5LmNvbSIsImlhdCI6MTcyMjcyNTQ3MSwiZXhwIjoxNzIyOTA1NDcxfQ.C6TFHL-axEEUWjFTpXv6zxFEaBoRjLY4OtEczLvS3Nc';
-
-        // backend 요청 형식에 따라 변환 (yyyy-MM-ddThh:ss 형식의 문자열)
-        const parseDateTime = (dateString, timeString) => {
-            const [year, month, day] = dateString
-                .replace('년', '')
-                .replace('월', '')
-                .replace('일', '')
-                .split(' ')
-                .map((item) => item.trim());
-
-            const [ampm, hourStr, minuteStr] = timeString.split(' ');
-            let hour = parseInt(hourStr.split('시')[0], 10);
-            const minute = minuteStr.split('분')[0];
-
-            if (ampm === '오후' && hour !== 12) {
-                hour += 12;
-            } else if (ampm === '오전' && hour === 12) {
-                hour = 0;
-            }
-
-            return `${year}-${month.padStart(2, '0')}-${String(day).padStart(2, '0')}T${String(hour).padStart(2, '0')}:${minute.padStart(2, '0')}`;
-        };
-
         const formattedDateTime = parseDateTime(plan.date, plan.time);
 
         const formattedPlan = {
@@ -86,7 +66,7 @@ const useNonPersistentStore = create((set, get) => ({
         };
 
         try {
-            const success = await createEvent({ token, plan: formattedPlan });
+            const success = await createEvent({ plan: formattedPlan });
             if (success) {
                 return true;
             }

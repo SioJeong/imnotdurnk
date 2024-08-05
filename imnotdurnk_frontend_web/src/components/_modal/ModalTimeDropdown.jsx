@@ -2,7 +2,7 @@ import { useState } from 'react';
 import DropButton from '../_button/DropButton';
 import * as St from './Modal.style';
 
-const ModalTimeDropdown = ({ handleSelectedTime }) => {
+const ModalTimeDropdown = ({ selectedTime, handleSelectedTime }) => {
     const ampm = ['오전', '오후'];
     const hours = Array.from(
         { length: 12 },
@@ -13,9 +13,9 @@ const ModalTimeDropdown = ({ handleSelectedTime }) => {
         (_, i) => `${String(i).padStart(2, '0')}분`,
     );
 
-    const [selectedAmpm, setSelectedAmpm] = useState(ampm[0]);
-    const [selectedHour, setSelectedHour] = useState(hours[0]);
-    const [selectedMinute, setSelectedMinute] = useState(minutes[0]);
+    const [selectedAmpm, setSelectedAmpm] = useState(selectedTime.ampm);
+    const [selectedHour, setSelectedHour] = useState(selectedTime.hour);
+    const [selectedMinute, setSelectedMinute] = useState(selectedTime.minute);
 
     // 드롭다운에서 선택된 값을 콜백 함수로 전달
     const handleSelectAmpm = (option) => {
@@ -39,17 +39,17 @@ const ModalTimeDropdown = ({ handleSelectedTime }) => {
                 <DropButton
                     options={ampm}
                     onSelect={handleSelectAmpm}
-                    originValue="오후"
+                    originValue={selectedTime.ampm}
                 />
                 <DropButton
                     options={hours}
                     onSelect={handleSelectHour}
-                    originValue="6시"
+                    originValue={selectedTime.hour}
                 />
                 <DropButton
                     options={minutes}
                     onSelect={handleSelectMinute}
-                    originValue="00분"
+                    originValue={selectedTime.minute}
                 />
             </St.StyledFormBox>
         </St.StyledBox>
