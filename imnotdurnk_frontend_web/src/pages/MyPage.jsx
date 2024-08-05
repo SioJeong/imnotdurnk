@@ -1,5 +1,5 @@
 import Profile from '@/components/mypage/Profile';
-import Statistics from '@/components/mypage/Statistics';
+import Statistics from '@/components/statistics/Statistics';
 import useNavigationStore from '@/stores/useNavigationStore';
 import { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
@@ -9,9 +9,9 @@ const MyPage = () => {
     useEffect(() => {
         setNavigation({
             isVisible: true,
-            icon1: { iconname: 'backarrow' },
+            icon1: { iconname: 'address', path: '/' },
             title: '통계',
-            icon2: { iconname: 'profile' },
+            icon2: { iconname: 'profile', path: 'mypage/profile' },
         });
     }, [setNavigation]);
 

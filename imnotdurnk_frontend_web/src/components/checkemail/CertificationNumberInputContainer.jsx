@@ -1,11 +1,12 @@
 import Button from '@/components/_button/Button.jsx';
 import AlertMessage from '@/components/_common/AlertMessage.jsx';
-import { useSendCertificationNumber } from '@/hooks/useEmail';
+
+import { sendCertificationNumber } from '@/services/user';
 import { useRef, useState } from 'react';
 import * as St from './CertificationNumberInputContainer.style';
 
 //import { useState } from 'react';
-const CertificationNumberInputContainer = () => {
+const CertificationNumberInputContainer = ({ email }) => {
     const [certNumList, setCertNumList] = useState(['', '', '', '']);
     const [certNum, setCertNum] = useState('');
     const inputsRef = useRef([]); // input에서 현위치 추적용
@@ -51,7 +52,7 @@ const CertificationNumberInputContainer = () => {
     };
 
     //배열 -> 문자열로 전환 함수
-    const compareCertNum = () => {
+    const convertCertNum = () => {
         setCertNum(certNumList.join(''));
         if (certNum.length < 4) {
             // 이거나 api 요청해서 비교하는 함수 조건에 추가해야함
@@ -62,6 +63,9 @@ const CertificationNumberInputContainer = () => {
             // 인증 성공창 뜨기
             // 다음 페이지로 이동
         }
+    };
+    const onClickResendButton = () => {
+        const result = sendCertificationNumber(email);
     };
     return (
         <St.CertificationContainer>
@@ -82,7 +86,7 @@ const CertificationNumberInputContainer = () => {
                     />
                 ))}
             </St.InputContainer>
-            <St.StyledMessage onClick={useSendCertificationNumber}>
+            <St.StyledMessage onClick={onClickResendButton}>
                 코드가 전송되지 않았나요?
             </St.StyledMessage>
             <Button
@@ -91,7 +95,7 @@ const CertificationNumberInputContainer = () => {
                 isRed="true"
                 onClick={(e) => {
                     e.preventDefault();
-                    compareCertNum();
+                    convertCertNum();
                 }}
             />
         </St.CertificationContainer>

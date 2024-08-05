@@ -1,6 +1,5 @@
 import Button from '@/components/_button/Button.jsx';
 import InputBox from '@/components/_common/InputBox.jsx';
-import { useSendNewPassword } from '@/hooks/useEmail';
 import { useState } from 'react';
 import * as St from './CheckEmailContainer.style';
 const CheckEmailContainer = () => {
@@ -38,7 +37,7 @@ const CheckEmailContainer = () => {
     };
     const handleSendNewPassword = () => {
         if (checkValidation()) {
-            useSendNewPassword;
+            console.log('새로운 비밀번호 만들기 아직');
         }
     };
     return (

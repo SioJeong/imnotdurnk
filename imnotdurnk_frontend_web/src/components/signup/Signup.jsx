@@ -1,42 +1,49 @@
 import Button from '@/components/_button/Button.jsx';
 import Checkbox from '@/components/_common/Checkbox';
 import InputBox from '@/components/_common/InputBox';
+import { signup } from '@/services/user.js';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as St from './Signup.style';
-const Signup = () => {
+const Signup = ({ changeToggle }) => {
     const [inputValues, setInputValues] = useState({
-        username: '',
+        name: '',
         email: '',
-        mobilephone: '',
+        phone: '',
         password: '',
         passwordCheck: '',
         agreeCheckBox: false,
     });
 
     const [alertMessages, setAlertMessages] = useState({
-        username: '',
+        name: '',
         email: '',
-        mobilephone: '',
+        phone: '',
         password: '',
         passwordCheck: '',
         agreeCheckBox: false,
     });
 
-    //버튼 동작
-    const handleSignup = () => {
-        console.log('회원가입 데이터 다 받아오기 성공', inputValues);
-        // 중복 검사
-
-        // 중복일시에
-
-        // 중복이 없을 시에 페이지 이동
-    };
     const navigate = useNavigate();
-    const goToCheckEmailPage = () => {
-        navigate('/check-email', {
-            state: { inputValues },
-        });
+    //버튼 동작
+    const handleSignup = async () => {
+        const signupResult = await signup(
+            inputValues.name,
+            inputValues.email,
+            inputValues.phone,
+            inputValues.password,
+        );
+        if (signupResult.isSuccess) {
+            // 성공 시 페이지 이동
+            navigate('/check-email', {
+                state: { email: inputValues.email },
+            });
+        } else {
+            // 오류 메시지 처리
+            throw new Error(
+                signupResult.message || '데이터 가져오는 중 오류 발생',
+            );
+        }
     };
     //유효성 검사
     const checkValidation = () => {
@@ -48,16 +55,16 @@ const Signup = () => {
         const phoneRegex = /^010-\d{4}-\d{4}$/;
 
         //이름 유효성 검사
-        if (!nameRegex.test(inputValues.username)) {
+        if (!nameRegex.test(inputValues.name)) {
             isValid = false;
             setAlertMessages((prev) => ({
                 ...prev,
-                username: '2 ~ 10자 내 한국어로  입력해야 합니다.',
+                name: '2 ~ 10자 내 한국어로  입력해야 합니다.',
             }));
         } else {
             setAlertMessages((prev) => ({
                 ...prev,
-                username: '',
+                name: '',
             }));
         }
 
@@ -76,16 +83,16 @@ const Signup = () => {
         }
 
         //전화번호
-        if (!phoneRegex.test(inputValues.mobilephone)) {
+        if (!phoneRegex.test(inputValues.phone)) {
             isValid = false;
             setAlertMessages((prev) => ({
                 ...prev,
-                mobilephone: '올바른 이메일 양식이 아닙니다.',
+                phone: '올바른 이메일 양식이 아닙니다.',
             }));
         } else {
             setAlertMessages((prev) => ({
                 ...prev,
-                mobilephone: '',
+                phone: '',
             }));
         }
 
@@ -137,7 +144,6 @@ const Signup = () => {
         if (!inputValues.agreeCheckBox) {
             isValid = false;
         }
-
         if (isValid) {
             handleSignup();
         }
@@ -157,7 +163,7 @@ const Signup = () => {
     const handleInputChange = (e) => {
         const { name, value } = e.target;
 
-        if (name === 'mobilephone') {
+        if (name === 'phone') {
             const formattedValue = formatPhoneNumber(value);
             setInputValues((prevValues) => ({
                 ...prevValues,
@@ -192,10 +198,10 @@ const Signup = () => {
                         labelText="Your Name"
                         iconName="empty"
                         inputType="text"
-                        value={inputValues.username}
+                        value={inputValues.name}
                         onChange={handleInputChange}
-                        name="username"
-                        alertContents={alertMessages.username}
+                        name="name"
+                        alertContents={alertMessages.name}
                     />
                     <InputBox
                         labelText="Your Email"
@@ -210,10 +216,10 @@ const Signup = () => {
                         labelText="Your Mobile Phone"
                         iconName="phone"
                         inputType="text"
-                        value={inputValues.mobilephone}
+                        value={inputValues.phone}
                         onChange={handleInputChange}
-                        name="mobilephone"
-                        alertContents={alertMessages.mobilephone}
+                        name="phone"
+                        alertContents={alertMessages.phone}
                     />
                     <InputBox
                         labelText="Your Password"

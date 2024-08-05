@@ -1,7 +1,17 @@
 import SelectButton from '@/components/_button/SelectButton';
+import { useState } from 'react';
 import { styled } from 'styled-components';
 
 const AlcoholStatistics = () => {
+    const [activeIndex, setActiveIndex] = useState(2);
+    const tabContentsList = [
+        { text: 'Day', unit: '일' },
+        { text: 'Month', unit: '월' },
+        { text: 'Year', unit: '연' },
+    ];
+    const handleButtonClick = (index) => {
+        setActiveIndex(index);
+    };
     return (
         <StatisticsBox>
             <StatisticsVisualization>
@@ -11,12 +21,18 @@ const AlcoholStatistics = () => {
             </StatisticsVisualization>
             <StatisticsText>
                 <ButtonBox>
-                    <SelectButton text="Day" isRed="true" />
-                    <SelectButton text="Month" isRed="true" />
-                    <SelectButton text="Year" isRed="true" />
+                    {tabContentsList.map((item, index) => (
+                        <SelectButton
+                            key={index}
+                            text={item.text}
+                            isRed={activeIndex === index} // 활성화된 버튼에만 isRed를 true로 설정
+                            onClick={() => handleButtonClick(index)}
+                        />
+                    ))}
                 </ButtonBox>
                 <Analysis>
-                    지난 1년간 일별 평균 음주량은 <br />
+                    지난 1년간 {tabContentsList[activeIndex].unit}별 평균
+                    음주량은 <br />
                     소주 0.4병 맥주 0.3병입니다.
                 </Analysis>
             </StatisticsText>
