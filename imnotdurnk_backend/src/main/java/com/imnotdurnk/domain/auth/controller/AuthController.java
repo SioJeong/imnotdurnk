@@ -6,6 +6,8 @@ import com.imnotdurnk.domain.auth.service.AuthService;
 import com.imnotdurnk.global.commonClass.CommonResponse;
 import lombok.AllArgsConstructor;
 import org.apache.coyote.BadRequestException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/auth")
 @AllArgsConstructor
 public class AuthController {
+    private static final Logger log = LoggerFactory.getLogger(AuthController.class);
     private final AuthService authService;
 
 
@@ -77,6 +80,8 @@ public class AuthController {
             TokenDto accessTokenDto = authService.reissueToken(refreshToken, accessToken, tokenType);
             response.setStatusCode(HttpStatus.OK.value());
             response.setMessage("Access token 발급 완료");
+            log.info("기존 access token: " + accessToken);
+            log.info("재발급된 access token: " + accessTokenDto.getToken());
             return ResponseEntity.status(response.getHttpStatus())
                     .header("Authorization", "Bearer " + accessTokenDto.getToken())
                     .body(response);

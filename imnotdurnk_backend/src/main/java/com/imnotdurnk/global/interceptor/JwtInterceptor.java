@@ -73,7 +73,7 @@ public class JwtInterceptor implements HandlerInterceptor {
 
             // 가져온 access Token의 검증이 완료된 경우
             if(authService.isTokenValid(accessToken, TokenType.ACCESS)) {
-                log.info("access token 검증 완료: " + accessToken);
+//                log.info("access token 검증 완료: " + accessToken);
                 request.setAttribute("AccessToken", accessToken);
                 return true;
             }
