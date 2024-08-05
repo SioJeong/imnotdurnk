@@ -41,7 +41,7 @@ const EventCard = ({
             onItemClick(selectedDate);
         } else {
             const currentPath = location.pathname;
-            navigate(`${currentPath}/item/${eventId}`);
+            navigate(`${currentPath}/plan/${eventId}`);
         }
     };
 

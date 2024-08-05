@@ -2,6 +2,8 @@
 const apiErrorHandler = (statusCode, httpStatus, message) => {
     if (statusCode !== 0) {
         switch (httpStatus) {
+            case 'OK':
+                return; // 예외 던지지 않고 함수 종료
             case 'CREATED':
                 return; // 예외 던지지 않고 함수 종료
             case 'UNAUTHORIZED':

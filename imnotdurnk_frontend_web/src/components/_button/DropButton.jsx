@@ -2,7 +2,7 @@ import IconDown from '@/assets/icons/size_24/Icon-down.svg';
 import { useEffect, useRef, useState } from 'react';
 import * as St from './DropButton.style';
 
-const DropButton = ({ options, onSelect, originValue }) => {
+const DropButton = ({ options, onSelect, originValue, size }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [selectedOption, setSelectedOption] = useState(originValue);
     const dropdownRef = useRef(null);
@@ -36,9 +36,9 @@ const DropButton = ({ options, onSelect, originValue }) => {
     }, [dropdownRef]);
 
     return (
-        <St.DropButton ref={dropdownRef}>
+        <St.DropButton ref={dropdownRef} $full={size === 'long'}>
             <St.DropdownHeader onClick={handleDropdownList}>
-                {selectedOption}
+                <h3>{selectedOption}</h3>
                 <img src={IconDown} alt="Dropdown icon" />
             </St.DropdownHeader>
             {isOpen && (

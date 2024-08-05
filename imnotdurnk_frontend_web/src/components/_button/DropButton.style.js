@@ -3,6 +3,8 @@ import { styled } from 'styled-components';
 const DropButton = styled.div`
     position: relative;
     display: inline-flex;
+    justify-content: center;
+    width: ${({ $full }) => ($full ? '17rem' : 'auto')};
     border-radius: 10px;
     background: var(--color-white1, #fff);
     // border: 1px solid #ccc; */ 배경이 흰색일 때 테스트 용입니다*/
