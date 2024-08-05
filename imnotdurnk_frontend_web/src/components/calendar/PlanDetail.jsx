@@ -6,9 +6,6 @@ const PlanDetail = () => {
 
     console.log(planId);
 
-    const token =
-        'eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InNzYWZ5QHNzYWZ5LmNvbSIsImlhdCI6MTcyMjcyNTQ3MSwiZXhwIjoxNzIyOTA1NDcxfQ.C6TFHL-axEEUWjFTpXv6zxFEaBoRjLY4OtEczLvS3Nc';
-
     // const {
     //     data: planDetail,
     //     error,
@@ -16,7 +13,7 @@ const PlanDetail = () => {
     //     isLoading,
     // } = useQuery({
     //     queryKey: ['planDetail', planId],
-    //     queryFn: () => getEventDetail({ token, planId }),
+    //     queryFn: () => getEventDetail({ planId }),
     //     enabled: !!planId, // planId 있을 때만 쿼리 실행
     //     // keepPreviousData: true, // 새 데이터 가져오는 동안 이전 데이터 유지
     // });

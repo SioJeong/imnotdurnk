@@ -51,8 +51,6 @@ const useNonPersistentStore = create((set, get) => ({
         }),
     submitPlan: async () => {
         const { plan } = get();
-        const token =
-            'eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InNzYWZ5QHNzYWZ5LmNvbSIsImlhdCI6MTcyMjcyNTQ3MSwiZXhwIjoxNzIyOTA1NDcxfQ.C6TFHL-axEEUWjFTpXv6zxFEaBoRjLY4OtEczLvS3Nc';
 
         // backend 요청 형식에 따라 변환 (yyyy-MM-ddThh:ss 형식의 문자열)
         const parseDateTime = (dateString, timeString) => {
@@ -86,7 +84,7 @@ const useNonPersistentStore = create((set, get) => ({
         };
 
         try {
-            const success = await createEvent({ token, plan: formattedPlan });
+            const success = await createEvent({ plan: formattedPlan });
             if (success) {
                 return true;
             }

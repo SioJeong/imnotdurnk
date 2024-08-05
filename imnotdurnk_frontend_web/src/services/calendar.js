@@ -3,12 +3,9 @@ import apiErrorHandler from './apiErrorHandler';
 
 // response body 형식 : httpStatus, message, statusCode, dataList
 // year, month를 쿼리 파라미터로 사용하여 해당 월의 모든 이벤트 가져오기
-const getAllEventList = async ({ token, year, month }) => {
+const getAllEventList = async ({ year, month }) => {
     try {
         const response = await api.get('/calendars', {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
             params: { year, month },
         });
 
@@ -60,13 +57,9 @@ const getStaticsticsData = async ({ formattedDate }) => {
     //     };
     // }
 };
-const createEvent = async ({ token, plan }) => {
+const createEvent = async ({ plan }) => {
     try {
-        const response = await api.post('/calendars', plan, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
+        const response = await api.post('/calendars', plan, {});
 
         const { statusCode, httpStatus, message } = response.data;
         apiErrorHandler(statusCode, httpStatus, message);
@@ -79,13 +72,9 @@ const createEvent = async ({ token, plan }) => {
     }
 };
 
-const getEventDetail = async ({ token, planId }) => {
+const getEventDetail = async ({ planId }) => {
     try {
-        const response = await api.get(`/calendars/plans/${planId}`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
+        const response = await api.get(`/calendars/plans/${planId}`, {});
 
         const { statusCode, httpStatus, message, data } = response.data;
         apiErrorHandler(statusCode, httpStatus, message);
