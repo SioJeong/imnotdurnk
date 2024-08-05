@@ -9,6 +9,8 @@ import com.imnotdurnk.domain.calendar.entity.CalendarEntity;
 import com.imnotdurnk.domain.calendar.repository.CalendarRepository;
 import com.imnotdurnk.domain.calendar.repository.mapping.AlcoholAmount;
 import com.imnotdurnk.domain.calendar.repository.mapping.AlcoholAmountImpl;
+import com.imnotdurnk.domain.calendar.repository.mapping.PlanForMonth;
+import com.imnotdurnk.domain.calendar.repository.mapping.PlanForMonthImpl;
 import com.imnotdurnk.domain.gamelog.repository.GameLogRepository;
 import com.imnotdurnk.domain.user.entity.UserEntity;
 import com.imnotdurnk.domain.user.repository.UserRepository;
@@ -23,11 +25,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -132,6 +134,8 @@ public class CalendarServiceImpl implements CalendarService {
         UserEntity user = userRepository.findByEmail(jwtUtil.getUserEmail(token, TokenType.ACCESS));
         LocalDate date = LocalDate.parse(dateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
+        List<PlanForMonthImpl> planForMonths = getMonthlyPlanList(date);
+
         AlcoholAmount
                 yearTotal = calendarRepository.sumAlcoholByYear(user.getId(), date.getYear());
         if (yearTotal == null) {
@@ -144,11 +148,43 @@ public class CalendarServiceImpl implements CalendarService {
         }
 
         return CalendarStatisticDto.builder()
-                .lastMonthCount(calendarRepository.countByMonth(user.getId(), date.getMonthValue()-1, date.getYear()))
-                .thisMonthCount(calendarRepository.countByMonth(user.getId(), date.getMonthValue(), date.getYear()))
+                .planForMonths(planForMonths)
                 .yearTotal(yearTotal)
                 .monthTotal(monthTotal)
                 .build();
+    }
+
+    /**
+     * 현재 날짜 기준 최근 12개월의 음주 일정 횟수
+     * @param today
+     * @return 년, 월, 일정횟수를 필드로 갖는 {@link PlanForMonthImpl} 객체를 순서대로 리스트화 하여 반환
+     */
+    private List<PlanForMonthImpl> getMonthlyPlanList(LocalDate today) {
+
+        LocalDateTime endDate = today.withDayOfMonth(today.lengthOfMonth()).atStartOfDay(); // 현재 월의 마지막 날
+        LocalDateTime startDate = today.minusMonths(11).withDayOfMonth(1).atTime(LocalTime.MAX); // 11개월 전의 첫 번째 날
+
+        List<PlanForMonth> planList = calendarRepository.findRecent12MonthsPlanCount(startDate, endDate);
+
+        // 결과를 월, 연도별로 매핑
+        Map<YearMonth, Integer> planMap = new HashMap<>();
+        for (PlanForMonth plan : planList) {
+            YearMonth yearMonth = YearMonth.of(plan.getYear(), plan.getMonth());
+            planMap.put(yearMonth, plan.getCount());
+        }
+
+        // 12개월 동안의 데이터를 채우기
+        List<PlanForMonthImpl> resultList = new ArrayList<>();
+        for (int i = 11; i >= 0; i--) {
+            YearMonth yearMonth = YearMonth.from(today).minusMonths(i);
+            int count = planMap.getOrDefault(yearMonth, 0);
+            PlanForMonthImpl plan = new PlanForMonthImpl(yearMonth.getMonthValue(), yearMonth.getYear(), count);
+            resultList.add(plan);
+
+            System.out.println(plan);
+        }
+
+        return resultList;
     }
 
     /***
