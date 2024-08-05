@@ -7,6 +7,8 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -14,6 +16,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 @AllArgsConstructor
 public class JwtInterceptor implements HandlerInterceptor {
 
+    private static final Logger log = LoggerFactory.getLogger(JwtInterceptor.class);
     private final AuthService authService;
 
 
@@ -70,6 +73,7 @@ public class JwtInterceptor implements HandlerInterceptor {
 
             // 가져온 access Token의 검증이 완료된 경우
             if(authService.isTokenValid(accessToken, TokenType.ACCESS)) {
+                log.info("access token 검증 완료: " + accessToken);
                 request.setAttribute("AccessToken", accessToken);
                 return true;
             }
