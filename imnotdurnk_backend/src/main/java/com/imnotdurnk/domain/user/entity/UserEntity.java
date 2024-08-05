@@ -68,10 +68,6 @@ public class UserEntity extends BaseEntity {
     @Column(nullable = true)
     private Boolean unsure;
 
-    @Column(nullable = true)
-    @ColumnDefault("0")
-    private Boolean verified;
-
     @Column(nullable = false)
     @ColumnDefault("0")
     private Boolean deleted;
@@ -79,7 +75,7 @@ public class UserEntity extends BaseEntity {
     public UserEntity() {}
 
     @Builder
-    public UserEntity(Integer id, String email, String password, String name, String phone, String nickname, String address, String detailedAddress, Double latitude, Double longitude, String postalCode, String voice, String emergencyCall, Integer beerCapacity, Integer sojuCapacity, Boolean unsure, Boolean verified) {
+    public UserEntity(Integer id, String email, String password, String name, String phone, String nickname, String address, String detailedAddress, Double latitude, Double longitude, String postalCode, String voice, String emergencyCall, Integer beerCapacity, Integer sojuCapacity, Boolean unsure) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -96,7 +92,6 @@ public class UserEntity extends BaseEntity {
         this.beerCapacity = beerCapacity;
         this.sojuCapacity = sojuCapacity;
         this.unsure = unsure;
-        this.verified = verified;
     }
 
     /**
@@ -121,7 +116,6 @@ public class UserEntity extends BaseEntity {
                 .beerCapacity(beerCapacity)
                 .sojuCapacity(sojuCapacity)
                 .unsure(unsure)
-                .verified(verified)
                 .build();
     }
 
