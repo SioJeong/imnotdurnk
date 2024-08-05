@@ -45,7 +45,7 @@ export const VoiceBox = styled.div`
     align-self: stretch;
     border-radius: 10px;
     gap: 5.9286rem;
-    background: var(----color-green2, #465a54);
+    background: var(--color-green2, #465a54);
 `;
 export const StyledH6 = styled.h6`
     color: var(--color-white1, #fff);
@@ -59,9 +59,9 @@ export const ButtonContainer = styled.div`
 `;
 export const VoiceButton = styled.img`
     display: flex;
-    width: 24px;
-    height: 24px;
-    padding: 2px;
+    width: 1.7143rem;
+    height: 1.7143rem;
+    padding: 0.1429rem;
     justify-content: center;
     align-items: center;
     flex-shrink: 0;
