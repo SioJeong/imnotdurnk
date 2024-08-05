@@ -22,9 +22,9 @@ const getReverseGeocoding = async (latitude, longitude) => {
 };
 
 // 대중교통 경로 찾기
-const fetchTransitDirections = async (departure, destination) => {
+const fetchTransitDirections = async (departure, stopover) => {
     const { latitude: depLat, longitude: depLng } = departure;
-    const { latitude: destLat, longitude: destLng } = destination;
+    const { latitude: destLat, longitude: destLng } = stopover;
 
     const directionsUrl = `https://api.odsay.com/v1/api/searchPubTransPathT?SX=${depLng}&SY=${depLat}&EX=${destLng}&EY=${destLat}&apiKey=${ODSAY_API_KEY}`;
 
@@ -34,7 +34,15 @@ const fetchTransitDirections = async (departure, destination) => {
             const data = response.data;
             const firstPath = data.result.path[0];
 
-            return {
+            const transitCoordinates = extractTransitCoordinates(firstPath);
+            const summaryCoordinates = transitCoordinates.reduce(
+                (acc, route) => acc.concat(route.coordinates),
+                [],
+            );
+
+            const transitData = {
+                firstStation: firstPath.info.firstStartStation,
+                lastStation: firstPath.info.lastEndStation,
                 totalTime: firstPath.info.totalTime,
                 pathType:
                     firstPath.pathType === 1
@@ -45,17 +53,22 @@ const fetchTransitDirections = async (departure, destination) => {
                 busTransitCount: firstPath.info.busTransitCount,
                 subwayTransitCount: firstPath.info.subwayTransitCount,
                 totalWalkTime: Math.floor(firstPath.info.totalWalk / 90),
-                coordinates: extractTransitCoordinates(firstPath),
+                transitCoordinates: extractTransitCoordinates(firstPath),
+                transitCoordinates,
+                summaryCoordinates,
             };
+
+            return transitData;
         }
     } catch (error) {
         console.error('fetch 실패', error);
         throw error;
     }
 };
+
 // 택시 경로 찾기
-const fetchTaxiDirections = async (departure, destination) => {
-    const { latitude: depLat, longitude: depLng } = departure;
+const fetchTaxiDirections = async (stopover, destination) => {
+    const { latitude: depLat, longitude: depLng } = stopover;
     const { latitude: destLat, longitude: destLng } = destination;
 
     const directionsUrl = `https://apis-navi.kakaomobility.com/v1/directions?origin=${depLng},${depLat}&destination=${destLng},${destLat}`;
@@ -76,7 +89,7 @@ const fetchTaxiDirections = async (departure, destination) => {
                 totalTime: Math.floor(route.summary.duration / 60),
                 totalDistance:
                     Math.round((route.summary.distance / 1000) * 10) / 10,
-                coordinates: extractTaxiCoordinates(data),
+                taxiCoordinates: extractTaxiCoordinates(data),
             };
         }
     } catch (error) {
@@ -86,46 +99,51 @@ const fetchTaxiDirections = async (departure, destination) => {
 };
 
 function extractTransitCoordinates(firstPath) {
-    const coordinates = [];
+    const routes = [];
 
-    function addCoordinates(x, y) {
-        if (x && y) {
-            coordinates.push({
-                latitude: parseFloat(y),
-                longitude: parseFloat(x),
-            });
-        }
-    }
-
-    // path[i] 파라미터로 사용
-    // path[i].subPath.passStopList.stations 배열 안을 순회하면서 x, y를 쌍으로 가져와야 함
-    function addCoordinatesFromPassStopList(passStopList) {
-        if (passStopList && passStopList.stations) {
-            passStopList.stations.forEach((station) => {
-                addCoordinates(station.x, station.y);
-            });
-        }
-    }
-
-    firstPath.subPath.forEach((subPath) => {
-        // 지하철이나 버스 경로만 사용
+    firstPath.subPath.forEach((subPath, index) => {
         if (subPath.trafficType === 1 || subPath.trafficType === 2) {
-            addCoordinatesFromPassStopList(subPath.passStopList);
+            const newRoute = {
+                trafficType: subPath.trafficType,
+                name:
+                    subPath.lane && subPath.lane[0]
+                        ? subPath.lane[0].name || subPath.lane[0].busNo
+                        : 'Unknown',
+                stationCount: subPath.stationCount,
+                sectionTime: subPath.sectionTime,
+                startName: subPath.startName,
+                endName: subPath.endName,
+                coordinates: [],
+            };
+
+            if (subPath.passStopList && subPath.passStopList.stations) {
+                subPath.passStopList.stations.forEach((station) => {
+                    if (station.x && station.y) {
+                        newRoute.coordinates.push({
+                            latitude: parseFloat(station.y),
+                            longitude: parseFloat(station.x),
+                        });
+                    }
+                });
+            }
+
+            routes.push(newRoute);
+        } else if (subPath.trafficType === 3) {
         }
     });
 
-    return coordinates;
+    return routes;
 }
 
 const extractTaxiCoordinates = (response) => {
-    const coordinates = [];
+    const taxiCoordinates = [];
 
     const route = response.routes[0]; // 첫 번째 route만 사용
 
     route.sections.forEach((section) => {
         section.roads.forEach((road) => {
             for (let i = 0; i < road.vertexes.length; i += 2) {
-                coordinates.push({
+                taxiCoordinates.push({
                     latitude: road.vertexes[i + 1],
                     longitude: road.vertexes[i],
                 });
@@ -133,7 +151,7 @@ const extractTaxiCoordinates = (response) => {
         });
     });
 
-    return coordinates;
+    return taxiCoordinates;
 };
 
 export { fetchTaxiDirections, fetchTransitDirections, getReverseGeocoding };
