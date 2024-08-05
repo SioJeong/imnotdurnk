@@ -22,6 +22,7 @@ public class AuthConfig implements WebMvcConfigurer {
          * 2. 로그아웃
          * 3. 회원가입
          * 4. Swagger UI
+         * 5. 발음 평가 요청 API
          */
         registry.addInterceptor(jwtTokenInterceptor)
                 .excludePathPatterns("/users/login", "/users/signup/**",
