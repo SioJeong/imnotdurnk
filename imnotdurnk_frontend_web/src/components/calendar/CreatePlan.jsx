@@ -12,24 +12,31 @@ const CreatePlan = () => {
 
     const [year, month, day] = plan.date.split(' ');
     const [ampm, hour, minute] = plan.time.split(' ');
+    const [arrivalAmpm, arrivalHour, arrivalMinute] =
+        plan.arrivalTime.split(' ');
 
-    const [title, setTitle] = useState('');
-    const [memo, setMemo] = useState('');
-
+    // input 영역 상태 관리
     const [selectedDate, setSelectedDate] = useState({
         year,
         month,
         day,
     });
-
     const [selectedTime, setSelectedTime] = useState({
         ampm,
         hour,
         minute,
     });
-
+    const [title, setTitle] = useState('');
+    const [memo, setMemo] = useState('');
+    const [selectedSojuCount, setSelectedSojuCount] = useState(plan.sojuAmount);
+    const [selectedBeerCount, setSelectedBeerCount] = useState(plan.beerAmount);
     const [selectedAlcoholLevel, setSelectedAlcoholLevel] =
         useState('0: 취하지 않음');
+    const [selectedArrivalTime, setSelectedArrivalTime] = useState({
+        ampm: arrivalAmpm,
+        hour: arrivalHour,
+        minute: arrivalMinute,
+    });
 
     const memoRef = useRef(null);
     const titleRef = useRef(null);
@@ -125,7 +132,9 @@ const CreatePlan = () => {
                     </St.InputContainer>
                 </St.ScheduleContainer>
                 <CreatePlanAlcohol
+                    openAlcoholModal={() => openModal('alcoholModal')}
                     openAlcoholLevelModal={() => openModal('alcoholLevelModal')}
+                    openArrivalTimeModal={() => openModal('arrivalTimeModal')}
                 />
             </St.Container>
             <CreatePlanModalController
@@ -133,8 +142,14 @@ const CreatePlan = () => {
                 setSelectedDate={setSelectedDate}
                 selectedTime={selectedTime}
                 setSelectedTime={setSelectedTime}
+                selectedSojuCount={selectedSojuCount}
+                setSelectedSojuCount={setSelectedSojuCount}
+                selectedBeerCount={selectedBeerCount}
+                setSelectedBeerCount={setSelectedBeerCount}
                 selectedAlcoholLevel={selectedAlcoholLevel}
                 setSelectedAlcoholLevel={setSelectedAlcoholLevel}
+                selectedArrivalTime={selectedArrivalTime}
+                setSelectedArrivalTime={setSelectedArrivalTime}
             />
         </>
     );
