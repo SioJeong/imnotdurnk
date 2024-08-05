@@ -1,5 +1,6 @@
 package com.imnotdurnk.domain.gamelog.service;
 
+import com.imnotdurnk.domain.gamelog.dto.GameLogDto;
 import com.imnotdurnk.domain.gamelog.dto.GameStatistic;
 import com.imnotdurnk.domain.gamelog.dto.VoiceResultDto;
 import com.imnotdurnk.domain.gamelog.entity.GameLogEntity;
@@ -15,4 +16,5 @@ public interface GameLogService {
 
     GameLogEntity savePronounceGameLog(String accessToken, VoiceResultDto voiceResultDto) throws BadRequestException;
 
+    void saveGameResult(String accessToken, GameLogDto gameResult) throws BadRequestException;
 }
