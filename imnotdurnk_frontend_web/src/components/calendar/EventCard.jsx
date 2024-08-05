@@ -17,9 +17,9 @@ const EventCard = ({
 
     useEffect(() => {
         if (location.pathname.startsWith('/calendar/')) {
-            const pathDate = location.pathname.split('/')[2].split('-');
-            if (pathDate.length === 3) {
-                const [year, month, day] = pathDate.map(Number);
+            const pathDate = location.pathname.split('/')[2];
+            const [year, month, day] = pathDate.split('-').map(Number);
+            if (year && month && day) {
                 setSelectedDateFromPath(new Date(year, month - 1, day));
             }
         }

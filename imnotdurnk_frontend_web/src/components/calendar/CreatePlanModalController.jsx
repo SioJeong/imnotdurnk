@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import useCalendarStore from '../../stores/useCalendarStore';
 import useModalStore from '../../stores/useModalStore';
 import Modal from '../_modal/Modal';
@@ -7,21 +6,13 @@ import ModalDateDropdown from '../_modal/ModalDateDropdown';
 import ModalTimeDropdown from '../_modal/ModalTimeDropdown';
 
 const CreatePlanModalController = ({
+    selectedDate,
+    setSelectedDate,
+    selectedTime,
+    setSelectedTime,
     selectedAlcoholLevel,
     setSelectedAlcoholLevel,
 }) => {
-    // TODO: 코드로 변경해야 함 (ModalDateDropdown 연동)
-    const [selectedDate, setSelectedDate] = useState({
-        year: '2024년',
-        month: '8월',
-        day: '3일',
-    });
-    const [selectedTime, setSelectedTime] = useState({
-        ampm: '오후',
-        hour: '06시',
-        minute: '00분',
-    });
-
     const { closeModal } = useModalStore();
     const { setPlan } = useCalendarStore();
 
@@ -60,25 +51,28 @@ const CreatePlanModalController = ({
     return (
         <>
             <Modal
-                modalId="timeModal"
-                contents={
-                    <ModalTimeDropdown
-                        handleSelectedTime={handleSelectedTime}
-                    />
-                }
-                buttonText={'저장하기'}
-                onButtonClick={submitSelectedTime}
-            />
-            <Modal
                 modalId="dateModal"
                 contents={
                     <ModalDateDropdown
+                        selectedDate={selectedDate}
                         handleSelectedDate={handleSelectedDate}
                     />
                 }
                 buttonText={'저장하기'}
                 onButtonClick={submitSelectedDate}
             />
+            <Modal
+                modalId="timeModal"
+                contents={
+                    <ModalTimeDropdown
+                        selectedTime={selectedTime}
+                        handleSelectedTime={handleSelectedTime}
+                    />
+                }
+                buttonText={'저장하기'}
+                onButtonClick={submitSelectedTime}
+            />
+
             <Modal
                 modalId="alcoholLevelModal"
                 contents={
