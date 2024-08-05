@@ -36,9 +36,22 @@ const Container = styled(View)`
     gap: 10px;
 `;
 
+const Container2 = styled(View)`
+    flex: 1;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    background-color: ${({ theme }) => theme.colors.white2};
+    gap: 10px;
+
+    padding: 24px;
+    border-radius: 20px;
+    overflow: hidden;
+`;
+
 const ScrollContainer = styled(ScrollView)`
     flex: 1;
-    background-color: ${({ theme }) => theme.colors.white1};
 `;
 
 // 지도 우측 하단에 들어가는 버튼
@@ -77,6 +90,7 @@ const MapSearchContainer = styled(View)`
 export {
     AppContainer,
     Container,
+    Container2,
     FloatingButtonBottomRight,
     GlobalText,
     LayoutContainer,

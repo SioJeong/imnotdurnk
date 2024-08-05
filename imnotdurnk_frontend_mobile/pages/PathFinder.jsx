@@ -1,32 +1,14 @@
-import { useEffect, useState } from 'react';
-import IconButton from '../components/_common/IconButton';
+import React, { useEffect, useState } from 'react';
 import * as St from '../components/_layout/globalStyle';
-import CustomMap from '../components/map/CustomMap';
+import PathOption from '../components/map/PathOption';
 import { fetchTaxiDirections, fetchTransitDirections } from '../services/map';
 import useLocationStore from '../stores/useLocationStore';
 import useNavigationStore from '../stores/useNavigationStore';
 
 const PathFinder = () => {
     const { setNavigation } = useNavigationStore();
-    const { setMapCenter, setStopover, departure, stopover, destination } =
-        useLocationStore();
-    const [transitInfo, setTransitInfo] = useState({
-        firstStation: '',
-        lastStation: '',
-        totalTime: 0,
-        pathType: '',
-        busTransitCount: 0,
-        subwayTransitCount: 0,
-        totalWalkTime: 0,
-        transitCoordinates: [],
-        summaryCoordinates: [],
-    });
-    const [taxiPathInfo, setTaxiPathInfo] = useState({
-        fee: 0,
-        totalTime: 0,
-        totalDistance: 0,
-        taxiCoordinates: [],
-    });
+    const { departure, stopover, destination } = useLocationStore();
+    const [pathInfos, setPathInfos] = useState([]);
 
     useEffect(() => {
         if (!departure || !destination) {
@@ -39,85 +21,93 @@ const PathFinder = () => {
             title: '길 찾기',
             icon2: { iconname: 'empty', isRed: false },
         });
-
-        const tempStopoverPosition = {
-            latitude: 37.565355308413714,
-            longitude: 126.97720386719465,
-        };
-
-        // setStopover를 먼저 호출
-        setStopover(tempStopoverPosition);
-    }, [departure, destination, setNavigation, setStopover]);
+    }, [departure, destination, setNavigation]);
 
     useEffect(() => {
         const getDirections = async () => {
-            if (!departure || !destination || !stopover) {
+            if (
+                !departure ||
+                !destination ||
+                !stopover ||
+                stopover.length < 1 ||
+                stopover.length > 3
+            ) {
                 return;
             }
 
             try {
-                const transitData = await fetchTransitDirections(
-                    departure,
-                    stopover,
+                const newPathInfos = await Promise.all(
+                    stopover.map(async (stop) => {
+                        const transitInfo = await fetchTransitDirections(
+                            departure,
+                            stop,
+                        );
+                        const taxiPathInfo = await fetchTaxiDirections(
+                            departure,
+                            stop,
+                            destination,
+                        );
+                        return { transitInfo, taxiPathInfo, chipdata: [] };
+                    }),
                 );
-                setTransitInfo(transitData);
 
-                const taxiData = await fetchTaxiDirections(
-                    stopover,
-                    destination,
+                // 택시비 가장 적은 곳에 최저 비용 chipdata 추가
+                newPathInfos.sort(
+                    (a, b) => a.taxiPathInfo.fee - b.taxiPathInfo.fee,
                 );
-                setTaxiPathInfo(taxiData);
+                if (newPathInfos.length > 0) {
+                    newPathInfos[0].chipdata.push('최저 비용');
+                }
+
+                // 대중교통 도보 시간 가장 적은 곳에 최소 도보 chipdata 추가
+                const minWalkTime = Math.min(
+                    ...newPathInfos.map(
+                        (path) => path.transitInfo.totalWalkTime,
+                    ),
+                );
+
+                // 대중교통 탑승 시간 + 택시 탑승 시간 가장 적은 곳에 최단 시간 chipdata 추가
+                newPathInfos.forEach((path) => {
+                    if (path.transitInfo.totalWalkTime === minWalkTime) {
+                        path.chipdata.push('최소 도보');
+                    }
+                });
+
+                const minTotalTime = Math.min(
+                    ...newPathInfos.map(
+                        (path) =>
+                            path.transitInfo.totalTime +
+                            path.taxiPathInfo.totalTime,
+                    ),
+                );
+                newPathInfos.forEach((path) => {
+                    if (
+                        path.transitInfo.totalTime +
+                            path.taxiPathInfo.totalTime ===
+                        minTotalTime
+                    ) {
+                        path.chipdata.push('최단 시간');
+                    }
+                });
+
+                setPathInfos(newPathInfos);
             } catch (error) {
                 console.error('Failed to fetch directions', error);
             }
         };
 
         getDirections();
-    }, [departure, destination, stopover]); // stopover 상태가 변경될 때 getDirections 호출
+    }, [departure, destination, stopover]);
 
     return (
-        <St.Container>
-            <St.GlobalText>
-                {transitInfo.lastStation}까지 대중교통{' '}
-                {transitInfo.busTransitCount + transitInfo.subwayTransitCount}회
-                이용 후 택시 탑승
+        <St.Container2>
+            <St.GlobalText fontSize={'H3'} weight={'medium'}>
+                마음에 드는 옵션을 선택하세요
             </St.GlobalText>
-            <St.GlobalText>
-                총 소요시간 : {transitInfo.totalTime + taxiPathInfo.totalTime}분
-            </St.GlobalText>
-            <St.GlobalText>
-                총 도보 시간 : {transitInfo.totalWalkTime}분
-            </St.GlobalText>
-            <St.GlobalText>총 이용 요금 {taxiPathInfo.fee}원</St.GlobalText>
-
-            {transitInfo.transitCoordinates.map((route, index) => (
-                <St.GlobalText key={index}>
-                    {route.trafficType === 1 || route.trafficType === 2
-                        ? `${route.name} (${route.startName} - ${route.endName}) 총 ${route.stationCount} 정거장 총 ${route.sectionTime}분 소요`
-                        : `도보 (${route.startName} - ${route.endName}) 총 ${route.sectionTime}분 소요`}
-                </St.GlobalText>
+            {pathInfos.map((pathInfo, index) => (
+                <PathOption key={index} pathInfo={pathInfo} index={index} />
             ))}
-
-            <CustomMap
-                transitPolylineCoordinates={transitInfo.summaryCoordinates}
-                taxiPolylineCoorinates={taxiPathInfo.taxiCoordinates}
-            />
-
-            <St.FloatingButtonBottomRight>
-                <IconButton
-                    iconname={'location'}
-                    isRed={true}
-                    onPress={() => {
-                        setMapCenter({
-                            latitude: 37.50127843458193,
-                            longitude: 127.0396046598167,
-                            latitudeDelta: 0.005,
-                            longitudeDelta: 0.005,
-                        });
-                    }}
-                />
-            </St.FloatingButtonBottomRight>
-        </St.Container>
+        </St.Container2>
     );
 };
 

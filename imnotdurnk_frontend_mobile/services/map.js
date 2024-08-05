@@ -2,7 +2,7 @@ import axios from 'axios';
 import {
     GOOGLE_PLACES_API_KEY,
     KAKAO_API_KEY,
-    ODSAY_API_KEY,
+    NEW_ODSAY_KEY,
 } from 'react-native-dotenv';
 
 // 좌표로 한글 주소 찾기
@@ -26,12 +26,13 @@ const fetchTransitDirections = async (departure, stopover) => {
     const { latitude: depLat, longitude: depLng } = departure;
     const { latitude: destLat, longitude: destLng } = stopover;
 
-    const directionsUrl = `https://api.odsay.com/v1/api/searchPubTransPathT?SX=${depLng}&SY=${depLat}&EX=${destLng}&EY=${destLat}&apiKey=${ODSAY_API_KEY}`;
+    const directionsUrl = `https://api.odsay.com/v1/api/searchPubTransPathT?SX=${depLng}&SY=${depLat}&EX=${destLng}&EY=${destLat}&apiKey=${NEW_ODSAY_KEY}`;
 
     try {
         const response = await axios.get(directionsUrl);
         if (response.status === 200) {
             const data = response.data;
+
             const firstPath = data.result.path[0];
 
             const transitCoordinates = extractTransitCoordinates(firstPath);
@@ -67,13 +68,30 @@ const fetchTransitDirections = async (departure, stopover) => {
 };
 
 // 택시 경로 찾기
-const fetchTaxiDirections = async (stopover, destination) => {
-    const { latitude: depLat, longitude: depLng } = stopover;
+const fetchTaxiDirections = async (departure, stopover, destination) => {
+    const { latitude: depLat, longitude: depLng } = departure;
+    const { latitude: stopLat, longitude: stopLng } = stopover;
     const { latitude: destLat, longitude: destLng } = destination;
 
-    const directionsUrl = `https://apis-navi.kakaomobility.com/v1/directions?origin=${depLng},${depLat}&destination=${destLng},${destLat}`;
+    const originDirectionsUrl = `https://apis-navi.kakaomobility.com/v1/directions?origin=${depLng},${depLat}&destination=${destLng},${destLat}`;
+    const directionsUrl = `https://apis-navi.kakaomobility.com/v1/directions?origin=${stopLng},${stopLat}&destination=${destLng},${destLat}`;
 
     try {
+        // 원래 출발지에서 목적지까지의 택시비
+        const originResponse = await axios.get(originDirectionsUrl, {
+            headers: {
+                Authorization: `KakaoAK ${KAKAO_API_KEY}`,
+            },
+        });
+        let originFare = 0;
+        if (originResponse.status === 200) {
+            const originData = originResponse.data;
+            const originRoute = originData.routes[0];
+            originFare =
+                originRoute.summary.fare.taxi + originRoute.summary.fare.toll;
+        }
+
+        // 알고리즘으로 도출된 최적 경유지부터 목적지까지의 택시비
         const response = await axios.get(directionsUrl, {
             headers: {
                 Authorization: `KakaoAK ${KAKAO_API_KEY}`,
@@ -85,6 +103,7 @@ const fetchTaxiDirections = async (stopover, destination) => {
             const route = data.routes[0];
 
             return {
+                originFee: originFare,
                 fee: route.summary.fare.taxi + route.summary.fare.toll,
                 totalTime: Math.floor(route.summary.duration / 60),
                 totalDistance:
