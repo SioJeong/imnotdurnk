@@ -37,7 +37,7 @@ const useNonPersistentStore = create((set, get) => ({
         // beerAmount: 0,
         // sojuAmount: 0,
         alcoholLevel: '0: 취하지 않음',
-        // arrivalTime: '',
+        arrivalTime: '오후 10시 00분',
     },
     setPlan: (newPlan) =>
         set((state) => ({ plan: { ...state.plan, ...newPlan } })),
@@ -51,7 +51,7 @@ const useNonPersistentStore = create((set, get) => ({
                 // beerAmount: 0,
                 // sojuAmount: 0,
                 alcoholLevel: '0: 취하지 않음',
-                // arrivalTime: '',
+                arrivalTime: '오후 10시 00분',
             },
         }),
     submitPlan: async () => {

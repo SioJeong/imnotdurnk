@@ -12,24 +12,29 @@ const CreatePlan = () => {
 
     const [year, month, day] = plan.date.split(' ');
     const [ampm, hour, minute] = plan.time.split(' ');
+    const [arrivalAmpm, arrivalHour, arrivalMinute] =
+        plan.arrivalTime.split(' ');
 
-    const [title, setTitle] = useState('');
-    const [memo, setMemo] = useState('');
-
+    // input 영역 상태 관리
     const [selectedDate, setSelectedDate] = useState({
         year,
         month,
         day,
     });
-
     const [selectedTime, setSelectedTime] = useState({
         ampm,
         hour,
         minute,
     });
-
+    const [title, setTitle] = useState('');
+    const [memo, setMemo] = useState('');
     const [selectedAlcoholLevel, setSelectedAlcoholLevel] =
         useState('0: 취하지 않음');
+    const [selectedArrivalTime, setSelectedArrivalTime] = useState({
+        ampm: arrivalAmpm,
+        hour: arrivalHour,
+        minute: arrivalMinute,
+    });
 
     const memoRef = useRef(null);
     const titleRef = useRef(null);
@@ -126,6 +131,7 @@ const CreatePlan = () => {
                 </St.ScheduleContainer>
                 <CreatePlanAlcohol
                     openAlcoholLevelModal={() => openModal('alcoholLevelModal')}
+                    openArrivalTimeModal={() => openModal('arrivalTimeModal')}
                 />
             </St.Container>
             <CreatePlanModalController
@@ -135,6 +141,8 @@ const CreatePlan = () => {
                 setSelectedTime={setSelectedTime}
                 selectedAlcoholLevel={selectedAlcoholLevel}
                 setSelectedAlcoholLevel={setSelectedAlcoholLevel}
+                selectedArrivalTime={selectedArrivalTime}
+                setSelectedArrivalTime={setSelectedArrivalTime}
             />
         </>
     );
