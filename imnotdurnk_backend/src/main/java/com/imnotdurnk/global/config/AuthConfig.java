@@ -26,7 +26,8 @@ public class AuthConfig implements WebMvcConfigurer {
         registry.addInterceptor(jwtTokenInterceptor)
                 .excludePathPatterns("/users/login", "/users/signup/**",
                         "/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**",
-		       	"/webjars/**",
-                        "/users/login/find-password");
+		       	        "/webjars/**",
+                        "/users/login/find-password",
+                        "/voice/pronounce");
     }
 }
