@@ -5,12 +5,10 @@ import { styled } from 'styled-components/native';
 const Container = styled.View`
     border-radius: 20px;
     overflow: hidden;
-
-    min-height: 300px;
 `;
 
 const StyledMap = styled(MapView)`
-    height: 100%;
+    min-height: 300px;
     width: 100%;
 `;
 

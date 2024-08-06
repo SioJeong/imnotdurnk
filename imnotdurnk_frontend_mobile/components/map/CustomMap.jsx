@@ -1,4 +1,5 @@
-import { useEffect, useRef } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback, useEffect, useRef } from 'react';
 import { Marker, Polyline, PROVIDER_GOOGLE } from 'react-native-maps';
 import { useTheme } from 'styled-components/native';
 import MarkerImage from '../../assets/images/Marker.png';
@@ -18,6 +19,52 @@ const CustomMap = ({ transitPolylineCoordinates, taxiPolylineCoordinates }) => {
             mapRef.current.animateToRegion(mapCenter, 500);
         }
     }, [mapCenter]);
+
+    // 폴리라인 그려질 때 한 눈에 보여지게 시점 변경
+    useFocusEffect(
+        useCallback(() => {
+            if (
+                departure &&
+                destination &&
+                (transitPolylineCoordinates || taxiPolylineCoordinates)
+            ) {
+                const allCoordinates = [departure, destination];
+
+                if (transitPolylineCoordinates) {
+                    allCoordinates.push(...transitPolylineCoordinates);
+                }
+                if (taxiPolylineCoordinates) {
+                    allCoordinates.push(...taxiPolylineCoordinates);
+                }
+
+                const latitudes = allCoordinates.map((coord) => coord.latitude);
+                const longitudes = allCoordinates.map(
+                    (coord) => coord.longitude,
+                );
+
+                const minLat = Math.min(...latitudes);
+                const maxLat = Math.max(...latitudes);
+                const minLon = Math.min(...longitudes);
+                const maxLon = Math.max(...longitudes);
+
+                const latitudeDelta = maxLat - minLat + 0.03;
+                const longitudeDelta = maxLon - minLon + 0.03;
+
+                setMapCenter({
+                    latitude: (minLat + maxLat) / 2,
+                    longitude: (minLon + maxLon) / 2,
+                    latitudeDelta,
+                    longitudeDelta,
+                });
+            }
+        }, [
+            departure,
+            destination,
+            transitPolylineCoordinates,
+            taxiPolylineCoordinates,
+            setMapCenter,
+        ]),
+    );
 
     return (
         <Map.Container>
