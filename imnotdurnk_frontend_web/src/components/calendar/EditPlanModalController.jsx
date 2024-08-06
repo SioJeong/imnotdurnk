@@ -26,7 +26,7 @@ const EditPlanModalController = ({
     setSelectedArrivalTime,
 }) => {
     const { closeModal } = useModalStore();
-    const { setPlan, setPlanDetail } = useCalendarStore();
+    const { setPlanDetail } = useCalendarStore();
 
     // 날짜 선택 모달
     const handleSelectedDate = (year, month, day) => {
@@ -68,7 +68,7 @@ const EditPlanModalController = ({
     };
 
     const submitSelectedAlcohol = () => {
-        setPlan({
+        setPlanDetail({
             sojuAmount: selectedSojuBottleCount * 8 + selectedSojuGlassCount,
             beerAmount:
                 selectedBeerBottleCount * 500 + selectedBeerGlassCount * 355,
@@ -95,7 +95,7 @@ const EditPlanModalController = ({
 
     const submitSelectedArrivalTime = () => {
         const timeStr = `${selectedArrivalTime.ampm} ${selectedArrivalTime.hour} ${selectedArrivalTime.minute}`;
-        setPlan({ arrivalTime: timeStr });
+        setPlanDetail({ arrivalTime: timeStr });
         closeModal('arrivalTimeModal');
     };
 

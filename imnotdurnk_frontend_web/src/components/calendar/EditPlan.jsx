@@ -8,29 +8,42 @@ import EditPlanAlcohol from './EditPlanAlcohol';
 import EditPlanModalController from './EditPlanModalController';
 
 const EditPlan = () => {
-    const { plan, planDetail, setPlanDetail } = useCalendarStore();
+    const { planDetail, setPlanDetail } = useCalendarStore();
     const { openModal } = useModalStore();
 
+    const [year, month, day] = planDetail.date.split(' ');
+    const [ampm, hour, minute] = planDetail.time.split(' ');
+
     // input 영역 상태 관리
-    const [selectedDate, setSelectedDate] = useState({});
-    const [selectedTime, setSelectedTime] = useState({});
-    const [title, setTitle] = useState('');
-    const [memo, setMemo] = useState('');
+    const [selectedDate, setSelectedDate] = useState({
+        year,
+        month,
+        day,
+    });
+    const [selectedTime, setSelectedTime] = useState({
+        ampm,
+        hour,
+        minute,
+    });
+    const [title, setTitle] = useState(planDetail.title);
+    const [memo, setMemo] = useState(planDetail.memo);
 
     const [selectedSojuBottleCount, setSelectedSojuBottleCount] = useState(
-        Math.floor(plan.sojuAmount / 8),
+        Math.floor(planDetail.sojuAmount / 8),
     );
     const [selectedSojuGlassCount, setSelectedSojuGlassCount] = useState(
-        plan.sojuAmount % 8,
+        planDetail.sojuAmount % 8,
     );
     const [selectedBeerBottleCount, setSelectedBeerBottleCount] = useState(
-        Math.floor(plan.beerAmount / 500),
+        Math.floor(planDetail.beerAmount / 500),
     );
     const [selectedBeerGlassCount, setSelectedBeerGlassCount] = useState(
-        Math.round((plan.beerAmount % 500) / 355),
+        Math.round((planDetail.beerAmount % 500) / 355),
     );
 
-    const [selectedAlcoholLevel, setSelectedAlcoholLevel] = useState('');
+    const [selectedAlcoholLevel, setSelectedAlcoholLevel] = useState(
+        alcoholLevelToString(planDetail.alcoholLevel),
+    );
 
     const [selectedArrivalTime, setSelectedArrivalTime] = useState({
         ampm: '오후',
@@ -40,32 +53,6 @@ const EditPlan = () => {
 
     const memoRef = useRef(null);
     const titleRef = useRef(null);
-
-    useEffect(() => {
-        console.log(planDetail);
-
-        if (planDetail.date) {
-            const [year, month, day] = planDetail.date.split(' ');
-            setSelectedDate({
-                year,
-                month,
-                day,
-            });
-        }
-
-        if (planDetail.time) {
-            const [ampm, hour, minute] = planDetail.time.split(' ');
-            setSelectedTime({
-                ampm,
-                hour,
-                minute,
-            });
-        }
-
-        setTitle(planDetail.title);
-        setMemo(planDetail.memo);
-        setSelectedAlcoholLevel(alcoholLevelToString(planDetail.alcoholLevel));
-    }, [planDetail]);
 
     useEffect(() => {
         if (titleRef.current) {
