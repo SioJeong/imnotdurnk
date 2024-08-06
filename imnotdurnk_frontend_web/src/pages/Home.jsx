@@ -16,9 +16,6 @@ const Home = () => {
         });
     }, [setNavigation]);
 
-    useEffect(() => {
-        console.log(accessToken);
-    }, []);
     const goToCalender = () => navigate('/calendar');
     const goToAccount = () => navigate('/account');
     const goToMyPage = () => navigate('/mypage');

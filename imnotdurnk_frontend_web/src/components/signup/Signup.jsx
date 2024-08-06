@@ -51,7 +51,6 @@ const Signup = () => {
             passwordCheck: inputValues.passwordCheck,
             agreeCheckBox: inputValues.agreeCheckBox,
         });
-        console.log(user);
         navigate('/check-email');
         // const signupResult = await signup(
         //     inputValues.name,

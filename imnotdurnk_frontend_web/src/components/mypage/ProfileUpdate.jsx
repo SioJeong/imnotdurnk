@@ -59,9 +59,6 @@ const ProfileUpdate = () => {
                         emergencyCall: getProfileResult.data.emergencyCall,
                     });
                     console.log('프로필 가져옴', getProfileResult.data);
-                } else {
-                    console.log('프로필 가져오기 실패');
-                    // 프로필 가져오기 실패 시 처리할 로직 추가 가능
                 }
             } catch (error) {
                 console.error('프로필 가져오기 중 오류 발생', error);
@@ -196,19 +193,16 @@ const ProfileUpdate = () => {
                 modalId="alcoholLevelModal"
                 contents={<ModalAlcoholLevelDropdown />}
                 buttonText={'저장하기'}
-                onButtonClick={console.log('아작')}
             />
             <Modal
                 modalId="postalCodeModal"
                 contents={<ModalPostalCode />}
                 buttonText={'저장하기'}
-                onButtonClick={console.log('아작')}
             />
             <Modal
                 modalId="voiceModal"
                 contents={<ModalVoice />}
                 buttonText={'저장하기'}
-                onButtonClick={console.log('아작')}
             />
         </>
     );

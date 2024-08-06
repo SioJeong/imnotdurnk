@@ -38,9 +38,6 @@ const Statistics = () => {
                     // 사용자 정보를 inputValues에 업데이트
 
                     console.log('통계 가져옴', getStatisticsResult.data);
-                } else {
-                    console.log('통계 가져오기 실패');
-                    // 프로필 가져오기 실패 시 처리할 로직 추가 가능
                 }
             } catch (error) {
                 console.error('통계 가져오기 중 오류 발생', error);

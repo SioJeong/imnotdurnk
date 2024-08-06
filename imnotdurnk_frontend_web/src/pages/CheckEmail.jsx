@@ -14,7 +14,6 @@ const CheckEmail = () => {
 
     // 인증번호 전송
     useEffect(() => {
-        console.log(user);
         const result = sendCertificationNumber(user.email);
     }, []);
 

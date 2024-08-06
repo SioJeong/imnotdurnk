@@ -20,9 +20,7 @@ const ProfileCreateAlcoholCapacity = () => {
         passwordCheck: '',
         emergencyCall: '',
     });
-    const handleInputChange = (e) => {
-        console.log('아직');
-    };
+    const handleInputChange = (e) => {};
     return (
         <St.ProfileCreateContainer>
             <St.MessageWrapper>
