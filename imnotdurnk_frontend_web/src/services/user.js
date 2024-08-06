@@ -23,7 +23,6 @@ const login = async (email, password) => {
             password: password,
         });
         const accessToken = response.headers['authorization'];
-        console.log('res : ', response.headers);
 
         const { statusCode, httpStatus } = response.data;
 
@@ -51,7 +50,6 @@ const signup = async (name, email, phone, password) => {
         });
         const { statusCode, httpStatus, message } = response.data;
         // apiErrorHandler(statusCode, httpStatus, message);
-        console.log('성공');
         return {
             isSuccess: statusCode === 201,
             message: '회원가입 성공',
@@ -66,22 +64,18 @@ const signup = async (name, email, phone, password) => {
 
 //인증번호 보내기
 const sendCertificationNumber = async (email) => {
-    console.log('이메일1');
     try {
         const response = await api.get(`/users/signup/verify`, {
             email: email,
         });
-        console.log('이메일1.5');
         const { statusCode, httpStatus, message } = response.data;
         // apiErrorHandler(statusCode, httpStatus, message);
-        console.log('인증번호 보내기', response);
-        console.log('이메일2');
+
         return {
             isSuccess: statusCode === 200,
             message: '인증번호 보내기 성공',
         };
     } catch (err) {
-        console.log('이메일3');
         return {
             isSuccess: false,
             message: err.message || '데이터 가져오는 중 오류 발생',
@@ -142,10 +136,8 @@ const putUserDetailedInfo = async (
 };
 
 const getUserProfile = async () => {
-    console.log('유저 프로필 api 요청1');
     try {
         const response = await api.get(`/users/profile`);
-        console.log('유저 프로필 api 요청2', response);
         const { statusCode, httpStatus, message, data } = response.data;
         //apiErrorHandler(statusCode, httpStatus, message);
         return {
@@ -154,7 +146,6 @@ const getUserProfile = async () => {
             message: '프로필 정보 가져오기 성공',
         };
     } catch (err) {
-        console.log('유저 프로필 api 요청3 error');
         return {
             isSuccess: false,
             message: err.message || '데이터 보내는 중 오류 발생',

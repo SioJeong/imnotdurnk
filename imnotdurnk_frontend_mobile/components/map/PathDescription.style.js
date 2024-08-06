@@ -8,6 +8,7 @@ const DescriptionContainer = styled(View)`
     width: 100%;
     padding: 14px 24px;
     gap: 16px;
+    margin-top: 14px;
 
     border-radius: 20px;
     background-color: ${({ theme }) => theme.colors.white2};

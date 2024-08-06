@@ -2,7 +2,6 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import * as Location from 'expo-location';
 import React, { useCallback, useEffect, useState } from 'react';
 import Button from '../components/_common/Button';
-import IconButton from '../components/_common/IconButton';
 import * as St from '../components/_layout/globalStyle';
 import CustomMap from '../components/map/CustomMap';
 import SearchBar from '../components/map/SearchBar';
@@ -159,20 +158,6 @@ const Map = () => {
             </St.MapSearchContainer>
 
             <CustomMap />
-            <St.FloatingButtonBottomRight>
-                <IconButton
-                    iconname={'location'}
-                    isRed={true}
-                    onPress={() => {
-                        setMapCenter({
-                            latitude: 37.50127843458193,
-                            longitude: 127.0396046598167,
-                            latitudeDelta: 0.005,
-                            longitudeDelta: 0.005,
-                        });
-                    }}
-                />
-            </St.FloatingButtonBottomRight>
         </St.Container>
     );
 };

@@ -57,7 +57,6 @@ const ProfileUpdate = () => {
                         postalCode: getProfileResult.data.postalCode,
                         emergencyCall: getProfileResult.data.emergencyCall,
                     });
-                    console.log('프로필 가져옴', getProfileResult.data);
                 }
             } catch (error) {
                 console.error('프로필 가져오기 중 오류 발생', error);

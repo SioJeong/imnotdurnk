@@ -1,5 +1,6 @@
 import { useFocusEffect } from '@react-navigation/native';
 import React from 'react';
+import { View } from 'react-native';
 import * as St from '../components/_layout/globalStyle';
 import CustomMap from '../components/map/CustomMap';
 import PathDescription from '../components/map/PathDescription';
@@ -22,13 +23,15 @@ const PathDetail = ({ route }) => {
     );
 
     return (
-        <St.Container>
-            <CustomMap
-                transitPolylineCoordinates={transitInfo.summaryCoordinates}
-                taxiPolylineCoorinates={taxiPathInfo.taxiCoordinates}
-            />
+        <St.ScrollContainer>
+            <View style={{ Height: 300, width: '100%' }}>
+                <CustomMap
+                    transitPolylineCoordinates={transitInfo.summaryCoordinates}
+                    taxiPolylineCoordinates={taxiPathInfo.taxiCoordinates}
+                />
+            </View>
             <PathDescription pathInfo={pathInfo} />
-        </St.Container>
+        </St.ScrollContainer>
     );
 };
 
