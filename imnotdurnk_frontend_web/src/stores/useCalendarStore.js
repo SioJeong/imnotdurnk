@@ -82,6 +82,23 @@ const useNonPersistentStore = create((set, get) => ({
 
         return false;
     },
+    planDetail: {
+        id: null,
+        userId: null,
+        date: '',
+        title: '',
+        memo: '',
+        sojuAmount: 0,
+        beerAmount: 0,
+        alcoholLevel: 0,
+        arrivalTime: null,
+        gameLogEntities: [],
+    },
+    setPlanDetail: (newPlanDetail) =>
+        set((state) => ({
+            planDetail: { ...state.planDetail, ...newPlanDetail },
+        })),
+    setFullPlanDetail: (newPlanDetail) => set({ planDetail: newPlanDetail }),
 }));
 
 const useCalendarStore = () => {

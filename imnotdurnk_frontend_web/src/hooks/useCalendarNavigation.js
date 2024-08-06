@@ -23,7 +23,14 @@ const useCalendarNavigation = () => {
                 isVisible: true,
                 icon1: { iconname: 'backarrow', path: '-1' },
                 title: '일정 상세',
-                icon2: { iconname: 'modify', path: 'editPlan' },
+                icon2: { iconname: 'modify', path: 'goEditPlan' },
+            });
+        } else if (path.startsWith('/calendar/edit-plan/')) {
+            setNavigation({
+                isVisible: true,
+                icon1: { iconname: 'backarrow', path: '-1' },
+                title: '일정 수정',
+                icon2: { iconname: 'check', isRed: 'true', path: 'editPlan' },
             });
         } else if (path.startsWith('/calendar/')) {
             const [year, month, day] = path.split('/')[2].split('-');

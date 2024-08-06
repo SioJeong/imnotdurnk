@@ -1,15 +1,16 @@
 import IconButton from '@/components/_button/IconButton.jsx';
 import { useQueryClient } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import useCalendarStore from '../../stores/useCalendarStore.js';
 import useNavigationStore from '../../stores/useNavigationStore.js';
 import * as St from './Navigation.style.js';
 
 const Navigation = () => {
     const { navigation } = useNavigationStore((state) => state);
-    const { plan, resetPlan, submitPlan } = useCalendarStore();
+    const { plan, resetPlan, submitPlan, planDetail } = useCalendarStore();
 
     const navigate = useNavigate();
+    const location = useLocation();
     const queryClient = useQueryClient();
 
     const handleNavigation = async (path) => {
@@ -43,6 +44,11 @@ const Navigation = () => {
                 resetPlan();
                 navigate('/calendar');
             }
+        } else if (path === 'goEditPlan') {
+            const planId = location.pathname.split('/')[4];
+            navigate(`/calendar/edit-plan/${planId}`);
+        } else if (path === 'editPlan') {
+            console.log('수정할 때 보낼 데이터: ', planDetail);
         } else if (path) {
             navigate(path);
         }

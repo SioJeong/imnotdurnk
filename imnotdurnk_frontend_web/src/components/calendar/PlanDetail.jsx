@@ -1,12 +1,14 @@
 import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { alcoholLevelToString } from '../../hooks/useAlcoholLevelFormatter';
 import {
     convertDateToString,
     convertTimeToString,
     formatTime,
 } from '../../hooks/useDateTimeFormatter';
 import { getEventDetail } from '../../services/calendar';
+import useCalendarStore from '../../stores/useCalendarStore';
 import useNavigationStore from '../../stores/useNavigationStore';
 import * as St from './PlanDetail.style';
 
@@ -15,6 +17,7 @@ const PlanDetail = () => {
     const planId = location.pathname.split('/')[4];
 
     const setNavigation = useNavigationStore((state) => state.setNavigation);
+    const { setFullPlanDetail } = useCalendarStore();
 
     const {
         data: planDetail,
@@ -31,11 +34,12 @@ const PlanDetail = () => {
     // PlanDetail 컴포넌트 렌더링 후에 Navigation 컴포넌트 상태 업데이트 해야 함
     useEffect(() => {
         if (planDetail) {
+            setFullPlanDetail(planDetail); // 전역에 저장해서 수정 시 데이터 사용..
             setNavigation({
                 isVisible: true,
                 icon1: { iconname: 'backarrow', path: '-1' },
                 title: `${planDetail.title}`,
-                icon2: { iconname: 'modify', path: 'editPlan' },
+                icon2: { iconname: 'modify', path: 'goEditPlan' },
             });
         }
     }, [planDetail, setNavigation]);
@@ -44,19 +48,6 @@ const PlanDetail = () => {
     const sojuGlass = planDetail?.sojuAmount % 8;
     const beerBottle = Math.floor(planDetail?.beerAmount / 500);
     const beerGlass = Math.round((planDetail?.beerAmount % 500) / 355);
-
-    const alcoholLevelToString = (alcoholLevel) => {
-        switch (alcoholLevel) {
-            case 1:
-                return '1: 살짝 취함';
-            case 2:
-                return '2: 기분 좋게 취함';
-            case 3:
-                return '3: 만취';
-            default:
-                return '0: 취하지 않음';
-        }
-    };
 
     const arrivalTimeString = planDetail?.arrivalTime;
 
