@@ -59,7 +59,7 @@ public class AuthController {
 
             ResponseCookie responseCookie = ResponseCookie
                     .from("RefreshToken", refreshTokenDto.getToken())
-                    .domain("localhost")
+                    .domain("i11a609.p.ssafy.io")
                     .path("/")
                     .httpOnly(true)
                     .secure(true)
