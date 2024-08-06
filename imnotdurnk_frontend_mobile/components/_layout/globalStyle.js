@@ -25,15 +25,13 @@ const NavContainer = styled(View)`
 
     padding: 8px 10px;
     margin: 0 auto;
-
-    /* TODO: 확인용 border - 추후 제거 */
-    /* border: 1px solid black; */
 `;
 
 const Container = styled(View)`
     flex: 1;
-    background-color: ${({ theme }) => theme.colors.white1};
+
     gap: 10px;
+    background-color: ${({ theme }) => theme.colors.white1};
 `;
 
 const Container2 = styled(View)`
@@ -42,8 +40,8 @@ const Container2 = styled(View)`
     justify-content: center;
     align-items: center;
 
-    background-color: ${({ theme }) => theme.colors.white2};
     gap: 10px;
+    background-color: ${({ theme }) => theme.colors.white2};
 
     padding: 24px;
     border-radius: 20px;
@@ -52,6 +50,9 @@ const Container2 = styled(View)`
 
 const ScrollContainer = styled(ScrollView)`
     flex: 1;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 `;
 
 // 지도 우측 하단에 들어가는 버튼

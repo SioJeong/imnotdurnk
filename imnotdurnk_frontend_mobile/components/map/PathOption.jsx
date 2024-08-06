@@ -1,24 +1,11 @@
+import { useNavigation } from '@react-navigation/native';
+import { Pressable } from 'react-native';
 import { useTheme } from 'styled-components';
+import { formatCurrency } from '../../hooks/useCurrencyFormatter';
+import { formatMinutes } from '../../hooks/useMinutesConverter';
 import * as St from '../_layout/globalStyle';
-import {
-    ChipDataView,
-    ChipDataWrapper,
-    InfoTitle,
-    InfoView,
-    PathOptionView,
-    Spacer,
-} from './PathOption.style';
+import * as Map from './PathOption.style';
 import PathProgressBar from './PathProgressBar';
-
-const formatNumber = (number) => {
-    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-};
-
-const formatTime = (totalMinutes) => {
-    const hours = Math.floor(totalMinutes / 60);
-    const minutes = totalMinutes % 60;
-    return `${hours}시간 ${minutes}분`;
-};
 
 const getChipDataStyle = (chipdata, theme) => {
     switch (chipdata) {
@@ -39,78 +26,87 @@ const getChipDataStyle = (chipdata, theme) => {
             };
         default:
             return {
-                backgroundColor: 'transparant', // 기본 값 설정
-                textColor: 'transparant', // 기본 값 설정
+                backgroundColor: 'transparent', // 기본 값 설정
+                textColor: 'transparent', // 기본 값 설정
             };
     }
 };
 
 const PathOption = ({ pathInfo, index }) => {
     const theme = useTheme();
+    const navi = useNavigation();
     const isFirstOption = index === 0;
 
     const { transitInfo, taxiPathInfo } = pathInfo;
     const totalTime = transitInfo.totalTime + taxiPathInfo.totalTime;
 
     return (
-        <PathOptionView isFirstOption={isFirstOption}>
-            <ChipDataView>
-                {pathInfo.chipdata.map((chip, index) => {
-                    const { backgroundColor, textColor } = getChipDataStyle(
-                        chip,
-                        theme,
-                    );
-                    return (
-                        <ChipDataWrapper
-                            key={index}
-                            backgroundColor={backgroundColor}
+        <Pressable onPress={() => navi.navigate('PathDetail', { pathInfo })}>
+            <Map.PathOptionView isFirstOption={isFirstOption}>
+                <Map.ChipDataView>
+                    {pathInfo.chipdata.map((chip, index) => {
+                        const { backgroundColor, textColor } = getChipDataStyle(
+                            chip,
+                            theme,
+                        );
+                        return (
+                            <Map.ChipDataWrapper
+                                key={index}
+                                backgroundColor={backgroundColor}
+                            >
+                                <St.GlobalText
+                                    color={textColor}
+                                    fontSize={'H6'}
+                                >
+                                    {chip}
+                                </St.GlobalText>
+                            </Map.ChipDataWrapper>
+                        );
+                    })}
+                </Map.ChipDataView>
+                <Map.Spacer height={8} />
+                <Map.InfoView>
+                    <Map.InfoTitle>
+                        <St.GlobalText
+                            fontSize={'H2'}
+                            weight={'medium'}
+                            color={isFirstOption ? 'white1' : 'green3'}
                         >
-                            <St.GlobalText color={textColor} fontSize={'H6'}>
-                                {chip}
-                            </St.GlobalText>
-                        </ChipDataWrapper>
-                    );
-                })}
-            </ChipDataView>
-            <Spacer height={8} />
-            <InfoView>
-                <InfoTitle>
+                            {formatCurrency(taxiPathInfo.fee)}원
+                        </St.GlobalText>
+                        <St.GlobalText
+                            fontSize={'H4'}
+                            weight={'medium'}
+                            color={isFirstOption ? 'white1' : 'green3'}
+                        >
+                            총 {formatMinutes(totalTime)} 소요
+                        </St.GlobalText>
+                    </Map.InfoTitle>
                     <St.GlobalText
-                        fontSize={'H2'}
-                        weight={'medium'}
+                        fontSize={'H6'}
                         color={isFirstOption ? 'white1' : 'green3'}
                     >
-                        {formatNumber(taxiPathInfo.fee)}원
+                        택시비를{' '}
+                        {formatCurrency(
+                            taxiPathInfo.originFee - taxiPathInfo.fee,
+                        )}
+                        원 절약하는 경로입니다
                     </St.GlobalText>
-                    <St.GlobalText
-                        fontSize={'H4'}
-                        weight={'medium'}
-                        color={isFirstOption ? 'white1' : 'green3'}
-                    >
-                        총 {formatTime(totalTime)} 소요
-                    </St.GlobalText>
-                </InfoTitle>
-                <St.GlobalText
-                    fontSize={'H6'}
-                    color={isFirstOption ? 'white1' : 'green3'}
-                >
-                    택시비를{' '}
-                    {formatNumber(taxiPathInfo.originFee - taxiPathInfo.fee)}원
-                    절약하는 경로입니다
-                </St.GlobalText>
-            </InfoView>
-            <Spacer height={30} />
-            <PathProgressBar
-                transitTime={transitInfo.totalTime}
-                taxiTime={taxiPathInfo.totalTime}
-                totalTime={totalTime}
-                lastStation={transitInfo.lastStation}
-                transitCount={
-                    transitInfo.busTransitCount + transitInfo.subwayTransitCount
-                }
-                isFirstOption={isFirstOption}
-            />
-        </PathOptionView>
+                </Map.InfoView>
+                <Map.Spacer height={30} />
+                <PathProgressBar
+                    transitTime={transitInfo.totalTime}
+                    taxiTime={taxiPathInfo.totalTime}
+                    totalTime={totalTime}
+                    lastStation={transitInfo.lastStation}
+                    transitCount={
+                        transitInfo.busTransitCount +
+                        transitInfo.subwayTransitCount
+                    }
+                    isFirstOption={isFirstOption}
+                />
+            </Map.PathOptionView>
+        </Pressable>
     );
 };
 
