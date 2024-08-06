@@ -1,11 +1,13 @@
 import axios from 'axios';
 import useAuthStore from '../stores/useAuthStore';
 const apiNoToken = axios.create({
-    baseURL: 'http://i11a609.p.ssafy.io:8080', // 원격에 올릴 때 'https://i11a609.p.ssafy.io/api' 로 바꿔야함(아래도 있음)
+    //baseURL: 'http://i11a609.p.ssafy.io:8080',
+    baseURL: 'https://i11a609.p.ssafy.io/api', // 원격에 올릴 때 위에 주석하고 이걸로
     timeout: 5000, // 5초 내 서버 응답 없으면 요청 취소
 });
 const api = axios.create({
-    baseURL: 'http://i11a609.p.ssafy.io:8080', // 원격에 올릴 때 'https://i11a609.p.ssafy.io/api' 로 바꿔야함(위에도 있음)
+    //baseURL: 'http://i11a609.p.ssafy.io:8080',
+    baseURL: 'https://i11a609.p.ssafy.io/api', // 원격에 올릴 때 위에 주석하고 이걸로
     timeout: 5000, // 5초 내 서버 응답 없으면 요청 취소
     withCredentials: true, // 이게 있어야 refresh Token받을 수 있음
     //zustand로 저장된 accessToken 불러와서 매 요청의 헤더에 넣기
