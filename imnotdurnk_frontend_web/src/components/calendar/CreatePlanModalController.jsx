@@ -12,10 +12,14 @@ const CreatePlanModalController = ({
     setSelectedDate,
     selectedTime,
     setSelectedTime,
-    selectedSojuCount,
-    setSelectedSojuCount,
-    selectedBeerCount,
-    setSelectedBeerCount,
+    selectedSojuBottleCount,
+    setSelectedSojuBottleCount,
+    selectedSojuGlassCount,
+    setSelectedSojuGlassCount,
+    selectedBeerBottleCount,
+    setSelectedBeerBottleCount,
+    selectedBeerGlassCount,
+    setSelectedBeerGlassCount,
     selectedAlcoholLevel,
     setSelectedAlcoholLevel,
     selectedArrivalTime,
@@ -47,18 +51,27 @@ const CreatePlanModalController = ({
     };
 
     // 소주, 맥주 마신 양 선택 모달
-    const handleSelectedSojuCount = (sojuCount) => {
-        setSelectedSojuCount(sojuCount);
+    const handleSelectedSojuBottleCount = (sojuBottleCount) => {
+        setSelectedSojuBottleCount(sojuBottleCount);
     };
 
-    const handleSelectedBeerCount = (beerCount) => {
-        setSelectedBeerCount(beerCount);
+    const handleSelectedSojuGlassCount = (sojuGlassCount) => {
+        setSelectedSojuGlassCount(sojuGlassCount);
+    };
+
+    const handleSelectedBeerBottleCount = (beerBottleCount) => {
+        setSelectedBeerBottleCount(beerBottleCount);
+    };
+
+    const handleSelectedBeerGlassCount = (beerGlassCount) => {
+        setSelectedBeerGlassCount(beerGlassCount);
     };
 
     const submitSelectedAlcohol = () => {
         setPlan({
-            sojuAmount: selectedSojuCount,
-            beerAmount: selectedBeerCount,
+            sojuAmount: selectedSojuBottleCount * 8 + selectedSojuGlassCount,
+            beerAmount:
+                selectedBeerBottleCount * 500 + selectedBeerGlassCount * 355,
         });
         closeModal('alcoholModal');
     };
@@ -120,13 +133,25 @@ const CreatePlanModalController = ({
                     >
                         <ModalAlcohol
                             drinkType={'소주'}
-                            selectedSojuCount={selectedSojuCount}
-                            handleSelectedSojuCount={handleSelectedSojuCount}
+                            selectedSojuBottleCount={selectedSojuBottleCount}
+                            handleSelectedSojuBottleCount={
+                                handleSelectedSojuBottleCount
+                            }
+                            selectedSojuGlassCount={selectedSojuGlassCount}
+                            handleSelectedSojuGlassCount={
+                                handleSelectedSojuGlassCount
+                            }
                         />
                         <ModalAlcohol
                             drinkType={'맥주'}
-                            selectedBeerCount={selectedBeerCount}
-                            handleSelectedBeerCount={handleSelectedBeerCount}
+                            selectedBeerBottleCount={selectedBeerBottleCount}
+                            handleSelectedBeerBottleCount={
+                                handleSelectedBeerBottleCount
+                            }
+                            selectedBeerGlassCount={selectedBeerGlassCount}
+                            handleSelectedBeerGlassCount={
+                                handleSelectedBeerGlassCount
+                            }
                         />
                     </div>
                 }

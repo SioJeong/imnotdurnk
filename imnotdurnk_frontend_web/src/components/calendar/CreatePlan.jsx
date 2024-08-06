@@ -28,8 +28,20 @@ const CreatePlan = () => {
     });
     const [title, setTitle] = useState('');
     const [memo, setMemo] = useState('');
-    const [selectedSojuCount, setSelectedSojuCount] = useState(plan.sojuAmount);
-    const [selectedBeerCount, setSelectedBeerCount] = useState(plan.beerAmount);
+
+    const [selectedSojuBottleCount, setSelectedSojuBottleCount] = useState(
+        Math.floor(plan.sojuAmount / 8),
+    );
+    const [selectedSojuGlassCount, setSelectedSojuGlassCount] = useState(
+        plan.sojuAmount % 8,
+    );
+    const [selectedBeerBottleCount, setSelectedBeerBottleCount] = useState(
+        Math.floor(plan.beerAmount / 500),
+    );
+    const [selectedBeerGlassCount, setSelectedBeerGlassCount] = useState(
+        Math.round((plan.beerAmount % 500) / 355),
+    );
+
     const [selectedAlcoholLevel, setSelectedAlcoholLevel] =
         useState('0: 취하지 않음');
     const [selectedArrivalTime, setSelectedArrivalTime] = useState({
@@ -135,6 +147,10 @@ const CreatePlan = () => {
                     openAlcoholModal={() => openModal('alcoholModal')}
                     openAlcoholLevelModal={() => openModal('alcoholLevelModal')}
                     openArrivalTimeModal={() => openModal('arrivalTimeModal')}
+                    selectedSojuBottleCount={selectedSojuBottleCount}
+                    selectedSojuGlassCount={selectedSojuGlassCount}
+                    selectedBeerBottleCount={selectedBeerBottleCount}
+                    selectedBeerGlassCount={selectedBeerGlassCount}
                 />
             </St.Container>
             <CreatePlanModalController
@@ -142,10 +158,14 @@ const CreatePlan = () => {
                 setSelectedDate={setSelectedDate}
                 selectedTime={selectedTime}
                 setSelectedTime={setSelectedTime}
-                selectedSojuCount={selectedSojuCount}
-                setSelectedSojuCount={setSelectedSojuCount}
-                selectedBeerCount={selectedBeerCount}
-                setSelectedBeerCount={setSelectedBeerCount}
+                selectedSojuBottleCount={selectedSojuBottleCount}
+                setSelectedSojuBottleCount={setSelectedSojuBottleCount}
+                selectedSojuGlassCount={selectedSojuGlassCount}
+                setSelectedSojuGlassCount={setSelectedSojuGlassCount}
+                selectedBeerBottleCount={selectedBeerBottleCount}
+                setSelectedBeerBottleCount={setSelectedBeerBottleCount}
+                selectedBeerGlassCount={selectedBeerGlassCount}
+                setSelectedBeerGlassCount={setSelectedBeerGlassCount}
                 selectedAlcoholLevel={selectedAlcoholLevel}
                 setSelectedAlcoholLevel={setSelectedAlcoholLevel}
                 selectedArrivalTime={selectedArrivalTime}
