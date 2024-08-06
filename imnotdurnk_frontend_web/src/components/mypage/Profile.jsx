@@ -13,8 +13,6 @@ import ProfileCreateInfo from './ProfileCreateInfo';
 import ProfileCreateVoice from './ProfileCreateVoice';
 import ProfileUpdate from './ProfileUpdate';
 const Profile = () => {
-    useMyPageNavigation();
-
     const [inputValues, setInputValues] = useState({
         name: '',
         nickname: '',

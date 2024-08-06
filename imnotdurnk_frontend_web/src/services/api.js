@@ -1,11 +1,11 @@
 import axios from 'axios';
 import useAuthStore from '../stores/useAuthStore';
 const apiNoToken = axios.create({
-    baseURL: 'http://i11a609.p.ssafy.io:8080',
+    baseURL: 'http://i11a609.p.ssafy.io:8080', // 원격에 올릴 때 'https://i11a609.p.ssafy.io/api' 로 바꿔야함(아래도 있음)
     timeout: 5000, // 5초 내 서버 응답 없으면 요청 취소
 });
 const api = axios.create({
-    baseURL: 'https://i11a609.p.ssafy.io/api',
+    baseURL: 'http://i11a609.p.ssafy.io:8080', // 원격에 올릴 때 'https://i11a609.p.ssafy.io/api' 로 바꿔야함(위에도 있음)
     timeout: 5000, // 5초 내 서버 응답 없으면 요청 취소
     withCredentials: true, // 이게 있어야 refresh Token받을 수 있음
     //zustand로 저장된 accessToken 불러와서 매 요청의 헤더에 넣기
@@ -57,13 +57,16 @@ api.interceptors.response.use(
             //AT 없어?
             //기존 요청 우선 저장(추후에 재요청을 위해)
             const originalRequest = config;
-            console.log('인터셉터 어싱크 에러 3 401 뜸');
+            console.log('인터셉터 어싱크 에러 3 401 뜸', isTokenRefreshing);
 
             //AT 재발급 시도
             if (!isTokenRefreshing) {
                 isTokenRefreshing = true;
 
-                console.log('인터셉터 어싱크 에러 4 이프 토큰 리프레싱');
+                console.log(
+                    '인터셉터 어싱크 에러 4 이프 토큰 리프레싱',
+                    isTokenRefreshing,
+                );
                 try {
                     const refreshResponse = await api.get('/auth/refresh', {
                         params: {

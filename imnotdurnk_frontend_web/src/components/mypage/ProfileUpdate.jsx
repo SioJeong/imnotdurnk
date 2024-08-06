@@ -13,7 +13,6 @@ import MiniButton from '../_button/MiniButton';
 import Modal from '../_modal/Modal';
 import * as St from './Profile.style';
 const ProfileUpdate = () => {
-    useMyPageNavigation();
     const { openModal, closeModal } = useModalStore();
     //모달 열기
     const openProfileEditModal = (e, modalId) => {
