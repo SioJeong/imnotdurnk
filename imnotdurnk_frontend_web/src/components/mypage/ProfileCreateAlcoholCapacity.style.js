@@ -12,19 +12,23 @@ export const ProfileCreateContainer = styled.form`
     background: var(--color-white2, #f7f7ec);
     gap: 20px;
 `;
+export const Title = styled.h2``;
+export const SubTitle = styled.p`
+    font-size: var(--font-body-h3, 1rem);
+`;
 
 export const MessageWrapper = styled.div`
     align-self: stretch;
     color: var(--color-green3, #252f2c);
-
+    gap: 0.7143rem;
     font-size: var(--font-body-h2);
 `;
-export const InputContainer = styled.div`
+export const AlcoholCapacityBox = styled.div`
     display: flex;
-    height: 19.8571rem;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
+    gap: 10px;
     align-self: stretch;
 `;
 export const ButtonBox = styled.div`
@@ -32,12 +36,5 @@ export const ButtonBox = styled.div`
     padding: 1.7143rem;
     justify-content: space-between;
     align-items: center;
-    align-self: stretch;
-`;
-
-export const PostalCodeSearchBox = styled.div`
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
     align-self: stretch;
 `;

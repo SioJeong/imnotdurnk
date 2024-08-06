@@ -31,13 +31,12 @@ const ProfileCreateAlcoholCapacity = () => {
                     알려주신 주량으로 음주 습관을 알려드릴게요.
                 </St.SubTitle>
             </St.MessageWrapper>
-            <St.RecordContainer>
-                <St.InputContainer></St.InputContainer>
-                <St.ButtonBox>
-                    <Button text="Skip" size="" isRed="true" />
-                    <Button text="Next" size="medium" isRed={'true'} />
-                </St.ButtonBox>
-            </St.RecordContainer>
+
+            <St.AlcoholCapacityBox></St.AlcoholCapacityBox>
+            <St.ButtonBox>
+                <Button text="Skip" size="medium" isRed={false} />
+                <Button text="Next" size="medium" isRed={true} />
+            </St.ButtonBox>
         </St.ProfileCreateContainer>
     );
 };

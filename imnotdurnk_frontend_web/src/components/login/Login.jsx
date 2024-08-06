@@ -3,7 +3,7 @@ import Checkbox from '@/components/_common/Checkbox.jsx';
 import InputBox from '@/components/_common/InputBox.jsx';
 import { login } from '@/services/user.js';
 import { useEffect, useState } from 'react';
-
+import useAuthStore from '../../stores/useAuthStore';
 // eslint-disable-next-line import/no-unresolved
 import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
@@ -22,19 +22,23 @@ const Login = () => {
     });
 
     const navigate = useNavigate();
+    const { accessToken, setAccessToken } = useAuthStore();
     const handleLogin = async () => {
         const loginResult = await login(
             inputValues.email,
             inputValues.password,
         );
+        console.log(inputValues, loginResult);
         if (loginResult.isSuccess) {
             if (inputValues.isEmailSaved) {
+                setAccessToken(loginResult.accessToken);
                 setCookie('rememberUserId', inputValues.email, { path: '/' });
             } else {
                 // 이메일 저장 체크가 해제된 경우 쿠키 제거
                 removeCookie('rememberUserId');
             }
             // 임시로 mypage로 이동 추후에는 /home으로 변경 필요
+
             navigate('/');
         }
     };
