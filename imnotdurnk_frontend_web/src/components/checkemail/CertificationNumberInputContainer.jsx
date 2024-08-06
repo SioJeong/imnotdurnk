@@ -11,6 +11,7 @@ const CertificationNumberInputContainer = ({ email }) => {
     const [certNum, setCertNum] = useState('');
     const inputsRef = useRef([]); // input에서 현위치 추적용
     const [alertContents, setAlertContents] = useState('');
+    const [isWrong, setIsWrong] = useState(false);
     //하나의 input의 유효성 판별
     const validateInput = (value) => {
         // 0-9 사이의 숫자만 허용
@@ -49,6 +50,7 @@ const CertificationNumberInputContainer = ({ email }) => {
 
         // 포커스를 첫 번째 입력 필드로 이동
         inputsRef.current[0].focus();
+        setIsWrong(false);
     };
 
     //배열 -> 문자열로 전환 함수
@@ -65,7 +67,19 @@ const CertificationNumberInputContainer = ({ email }) => {
         }
     };
     const onClickResendButton = async () => {
-        const result = await sendCertificationNumber(email);
+        const resendResult = await sendCertificationNumber(email);
+    };
+    const handleCertification = (e) => {
+        e.preventDefault();
+        convertCertNum();
+        //todo 인증번호 받아오는 api 필요
+        //const comparedCertNum = checkCertificationNumber(email);
+
+        // if (certNum === comparedCertNum) {
+        //     //signup api 불러오기
+        // } else {
+        //     setIsWrong(true);
+        // }
     };
     return (
         <St.CertificationContainer>
@@ -83,6 +97,7 @@ const CertificationNumberInputContainer = ({ email }) => {
                         ref={(el) => (inputsRef.current[index] = el)}
                         onChange={(e) => handleChange(e, index)}
                         onKeyDown={(e) => handleKeyDown(e, index)}
+                        $isWrong={isWrong}
                     />
                 ))}
             </St.InputContainer>
@@ -94,8 +109,7 @@ const CertificationNumberInputContainer = ({ email }) => {
                 size="big"
                 isRed="true"
                 onClick={(e) => {
-                    e.preventDefault();
-                    convertCertNum();
+                    handleCertification(e);
                 }}
             />
         </St.CertificationContainer>
