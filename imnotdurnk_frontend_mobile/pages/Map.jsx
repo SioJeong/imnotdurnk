@@ -20,6 +20,7 @@ const Map = () => {
         setDeparture,
         destination,
         setDestination,
+        setStopover,
     } = useLocationStore();
     const [departurePlaceholder, setDeparturePlaceholder] =
         useState('출발지를 입력하세요');
@@ -135,7 +136,23 @@ const Map = () => {
                     weight={'medium'}
                     isRed={true}
                     onPress={() => {
+                        // To-do: 나중에 알고리즘 나오면 수정해야 함
                         if (destination) {
+                            const tempStopoverPositions = [
+                                {
+                                    latitude: 37.565355308413714,
+                                    longitude: 126.97720386719465,
+                                },
+                                {
+                                    latitude: 37.56595081896419,
+                                    longitude: 126.98216137468052,
+                                },
+                                {
+                                    latitude: 37.56342793924698,
+                                    longitude: 126.9815734120233,
+                                },
+                            ];
+                            setStopover(tempStopoverPositions);
                             navi.navigate('PathFinder');
                         }
                     }}
