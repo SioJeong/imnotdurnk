@@ -24,7 +24,7 @@ const PathDetail = ({ route }) => {
 
     return (
         <St.ScrollContainer>
-            <View style={{ height: 300, width: '100%' }}>
+            <View style={{ Height: 300, width: '100%' }}>
                 <CustomMap
                     transitPolylineCoordinates={transitInfo.summaryCoordinates}
                     taxiPolylineCoordinates={taxiPathInfo.taxiCoordinates}
