@@ -77,7 +77,7 @@ api.interceptors.response.use(
                     });
                     console.log('인터셉터 어싱크 에러 5');
                     const newAccessToken =
-                        refreshResponse.headers['Authorization'];
+                        refreshResponse.headers['authorization'];
 
                     console.log('인터셉터 어싱크 에러 6', refreshResponse);
                     console.log(
@@ -90,7 +90,7 @@ api.interceptors.response.use(
                     );
                     console.log(newAccessToken, '새로 발급');
                     useAuthStore.getState().setAccessToken(newAccessToken);
-                    originalRequest.headers['authorization'] = newAccessToken;
+                    originalRequest.headers['Authorization'] = newAccessToken;
 
                     console.log('인터셉터 어싱크 에러 7');
                     isTokenRefreshing = false;
