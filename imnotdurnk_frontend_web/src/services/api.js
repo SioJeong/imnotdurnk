@@ -79,7 +79,7 @@ api.interceptors.response.use(
                     const newAccessToken =
                         refreshResponse.headers['Authorization'];
 
-                    console.log('인터셉터 어싱크 에러 6');
+                    console.log('인터셉터 어싱크 에러 6', refreshResponse);
                     console.log('refreshResponse', refreshResponse);
                     console.log(newAccessToken, '새로 발급');
                     useAuthStore.getState().setAccessToken(newAccessToken);
