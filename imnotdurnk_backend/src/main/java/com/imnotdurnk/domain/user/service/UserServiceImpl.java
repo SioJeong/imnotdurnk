@@ -104,6 +104,7 @@ public class UserServiceImpl implements UserService {
     public void signUp(UserDto userDto) throws BadRequestException{
 
         if(redisUtil.getData(userDto.getEmail())==null||!redisUtil.getData(userDto.getEmail()).equals("1")) throw new BadRequestException("인증되지 않은 사용자입니다.");
+        if(existsByEmail(userDto.getEmail())) throw new BadRequestException("중복된 이메일 입니다.");
 
         //비밀번호 암호화
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
