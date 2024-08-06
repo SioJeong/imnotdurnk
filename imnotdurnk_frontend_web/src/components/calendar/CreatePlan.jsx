@@ -7,17 +7,51 @@ import CreatePlanAlcohol from './CreatePlanAlcohol';
 import CreatePlanModalController from './CreatePlanModalController';
 
 const CreatePlan = () => {
+    const { plan, setPlan } = useCalendarStore();
+    const { openModal } = useModalStore();
+
+    const [year, month, day] = plan.date.split(' ');
+    const [ampm, hour, minute] = plan.time.split(' ');
+    const [arrivalAmpm, arrivalHour, arrivalMinute] =
+        plan.arrivalTime.split(' ');
+
+    // input 영역 상태 관리
+    const [selectedDate, setSelectedDate] = useState({
+        year,
+        month,
+        day,
+    });
+    const [selectedTime, setSelectedTime] = useState({
+        ampm,
+        hour,
+        minute,
+    });
     const [title, setTitle] = useState('');
     const [memo, setMemo] = useState('');
+
+    const [selectedSojuBottleCount, setSelectedSojuBottleCount] = useState(
+        Math.floor(plan.sojuAmount / 8),
+    );
+    const [selectedSojuGlassCount, setSelectedSojuGlassCount] = useState(
+        plan.sojuAmount % 8,
+    );
+    const [selectedBeerBottleCount, setSelectedBeerBottleCount] = useState(
+        Math.floor(plan.beerAmount / 500),
+    );
+    const [selectedBeerGlassCount, setSelectedBeerGlassCount] = useState(
+        Math.round((plan.beerAmount % 500) / 355),
+    );
+
     const [selectedAlcoholLevel, setSelectedAlcoholLevel] =
         useState('0: 취하지 않음');
+    const [selectedArrivalTime, setSelectedArrivalTime] = useState({
+        ampm: arrivalAmpm,
+        hour: arrivalHour,
+        minute: arrivalMinute,
+    });
 
     const memoRef = useRef(null);
     const titleRef = useRef(null);
-
-    const { plan, setPlan } = useCalendarStore();
-
-    const { openModal } = useModalStore();
 
     useEffect(() => {
         if (titleRef.current) {
@@ -66,7 +100,7 @@ const CreatePlan = () => {
                                 src="/src/assets/icons/size_24/Icon-calendar.svg"
                                 alt="date"
                             />
-                            <h4>{plan.date || '날짜를 선택하세요.'}</h4>
+                            <h4>{plan.date}</h4>
                         </St.InputItemBox>
                         <St.InputItemBox
                             onClick={() => openModal('timeModal')}
@@ -76,7 +110,7 @@ const CreatePlan = () => {
                                 src="/src/assets/icons/size_24/Icon-clock.svg"
                                 alt="time"
                             />
-                            <h4>{plan.time || '시간을 선택하세요'}</h4>
+                            <h4>{plan.time}</h4>
                         </St.InputItemBox>
                         <St.InputItemBox>
                             <img
@@ -110,12 +144,32 @@ const CreatePlan = () => {
                     </St.InputContainer>
                 </St.ScheduleContainer>
                 <CreatePlanAlcohol
+                    openAlcoholModal={() => openModal('alcoholModal')}
                     openAlcoholLevelModal={() => openModal('alcoholLevelModal')}
+                    openArrivalTimeModal={() => openModal('arrivalTimeModal')}
+                    selectedSojuBottleCount={selectedSojuBottleCount}
+                    selectedSojuGlassCount={selectedSojuGlassCount}
+                    selectedBeerBottleCount={selectedBeerBottleCount}
+                    selectedBeerGlassCount={selectedBeerGlassCount}
                 />
             </St.Container>
             <CreatePlanModalController
+                selectedDate={selectedDate}
+                setSelectedDate={setSelectedDate}
+                selectedTime={selectedTime}
+                setSelectedTime={setSelectedTime}
+                selectedSojuBottleCount={selectedSojuBottleCount}
+                setSelectedSojuBottleCount={setSelectedSojuBottleCount}
+                selectedSojuGlassCount={selectedSojuGlassCount}
+                setSelectedSojuGlassCount={setSelectedSojuGlassCount}
+                selectedBeerBottleCount={selectedBeerBottleCount}
+                setSelectedBeerBottleCount={setSelectedBeerBottleCount}
+                selectedBeerGlassCount={selectedBeerGlassCount}
+                setSelectedBeerGlassCount={setSelectedBeerGlassCount}
                 selectedAlcoholLevel={selectedAlcoholLevel}
                 setSelectedAlcoholLevel={setSelectedAlcoholLevel}
+                selectedArrivalTime={selectedArrivalTime}
+                setSelectedArrivalTime={setSelectedArrivalTime}
             />
         </>
     );

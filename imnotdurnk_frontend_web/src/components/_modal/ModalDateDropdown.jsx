@@ -2,15 +2,14 @@ import { useState } from 'react';
 import DropButton from '../_button/DropButton';
 import * as St from './Modal.style';
 
-const ModalDateDropdown = ({ handleSelectedDate }) => {
+const ModalDateDropdown = ({ selectedDate, handleSelectedDate }) => {
     const years = Array.from({ length: 10 }, (_, i) => `${2020 + i}년`);
     const months = Array.from({ length: 12 }, (_, i) => `${i + 1}월`);
     const days = Array.from({ length: 31 }, (_, i) => `${i + 1}일`);
 
-    // TODO: 코드로 변경해야 함 (CreatePlan 연동)
-    const [selectedYear, setSelectedYear] = useState(years[4]);
-    const [selectedMonth, setSelectedMonth] = useState(months[7]);
-    const [selectedDay, setSelectedDay] = useState(days[2]);
+    const [selectedYear, setSelectedYear] = useState(selectedDate.year);
+    const [selectedMonth, setSelectedMonth] = useState(selectedDate.month);
+    const [selectedDay, setSelectedDay] = useState(selectedDate.day);
 
     // 드롭다운에서 선택된 값을 콜백 함수로 전달
     const handleSelectYear = (option) => {
@@ -34,17 +33,17 @@ const ModalDateDropdown = ({ handleSelectedDate }) => {
                 <DropButton
                     options={years}
                     onSelect={handleSelectYear}
-                    originValue={selectedYear}
+                    originValue={selectedDate.year}
                 />
                 <DropButton
                     options={months}
                     onSelect={handleSelectMonth}
-                    originValue={selectedMonth}
+                    originValue={selectedDate.month}
                 />
                 <DropButton
                     options={days}
                     onSelect={handleSelectDay}
-                    originValue={selectedDay}
+                    originValue={selectedDate.day}
                 />
             </St.StyledFormBox>
         </St.StyledBox>

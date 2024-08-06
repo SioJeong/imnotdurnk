@@ -22,11 +22,13 @@ public class AuthConfig implements WebMvcConfigurer {
          * 2. 로그아웃
          * 3. 회원가입
          * 4. Swagger UI
+         * 5. 발음 평가 요청 API
          */
         registry.addInterceptor(jwtTokenInterceptor)
-                .excludePathPatterns("/users/login", "/users/signup/**",
+                .excludePathPatterns("/users/login", "/users/signup/**","/users/signup/verify","/users/signup",
                         "/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**",
-		       	"/webjars/**",
-                        "/users/login/find-password");
+		       	        "/webjars/**",
+                        "/users/login/find-password",
+                        "/voice/pronounce");
     }
 }

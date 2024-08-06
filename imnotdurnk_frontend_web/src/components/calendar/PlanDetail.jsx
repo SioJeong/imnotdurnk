@@ -1,26 +1,27 @@
+import { getEventDetail } from '@/services/calendar';
+import { useQuery } from '@tanstack/react-query';
 import { useLocation } from 'react-router-dom';
 import { styled } from 'styled-components';
+import {
+    convertDateToString,
+    convertTimeToString,
+} from '../../hooks/useDateTimeFormatter';
+
 const PlanDetail = () => {
     const location = useLocation();
     const planId = location.pathname.split('/')[4];
 
-    console.log(planId);
-
-    const token =
-        'eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InNzYWZ5QHNzYWZ5LmNvbSIsImlhdCI6MTcyMjcyNTQ3MSwiZXhwIjoxNzIyOTA1NDcxfQ.C6TFHL-axEEUWjFTpXv6zxFEaBoRjLY4OtEczLvS3Nc';
-
-    // const {
-    //     data: planDetail,
-    //     error,
-    //     isError,
-    //     isLoading,
-    // } = useQuery({
-    //     queryKey: ['planDetail', planId],
-    //     queryFn: () => getEventDetail({ token, planId }),
-    //     enabled: !!planId, // planId 있을 때만 쿼리 실행
-    //     // keepPreviousData: true, // 새 데이터 가져오는 동안 이전 데이터 유지
-    // });
-
+    const {
+        data: planDetail,
+        error,
+        isError,
+        isLoading,
+    } = useQuery({
+        queryKey: ['planDetail', planId],
+        queryFn: () => getEventDetail({ planId }),
+        enabled: !!planId, // planId 있을 때만 쿼리 실행
+        keepPreviousData: true, // 새 데이터 가져오는 동안 이전 데이터 유지
+    });
     return (
         <CreatePlanContainer>
             <h3>일정 정보</h3>
@@ -30,33 +31,28 @@ const PlanDetail = () => {
                         src="/src/assets/icons/size_24/Icon-calendar.svg"
                         alt="date"
                     />
-                    <h4>2024년 8월 1일</h4>
+                    <h4>{convertDateToString(new Date(planDetail?.date))}</h4>
                 </InputItemBox>
                 <InputItemBox>
                     <img
                         src="/src/assets/icons/size_24/Icon-clock.svg"
                         alt="time"
                     />
-                    <h4>오후 06시 00분</h4>
+                    <h4>{convertTimeToString(new Date(planDetail?.date))}</h4>
                 </InputItemBox>
                 <InputItemBox>
                     <img
                         src="/src/assets/icons/size_24/Icon-title.svg"
                         alt="title"
                     />
-                    <TitleAndMemo>
-                        제목제목제목제목제목제목제목제목제목제목제목제목제목제목제목
-                    </TitleAndMemo>
+                    <TitleAndMemo>{planDetail?.title}</TitleAndMemo>
                 </InputItemBox>
                 <InputItemBox $boxSize="long">
                     <img
                         src="/src/assets/icons/size_24/Icon-memo.svg"
                         alt="memo"
                     />
-                    <TitleAndMemo>
-                        메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메\n모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모
-                        메모메모메모메모메모메모메모메모메모메모
-                    </TitleAndMemo>
+                    <TitleAndMemo>{planDetail?.memo}</TitleAndMemo>
                 </InputItemBox>
             </PlanContainer>
         </CreatePlanContainer>
@@ -97,4 +93,5 @@ const InputItemBox = styled.div`
 
 const TitleAndMemo = styled.h4`
     width: 13.7143rem;
+    white-space: pre-wrap;
 `;

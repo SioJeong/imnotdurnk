@@ -15,6 +15,8 @@ import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.apache.coyote.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -29,6 +31,7 @@ import java.util.regex.Pattern;
 @AllArgsConstructor
 public class UserController {
 
+    private static final Logger log = LoggerFactory.getLogger(UserController.class);
     private UserServiceImpl userService;
 
     /**
@@ -47,10 +50,12 @@ public class UserController {
     public ResponseEntity<?> verifyEmail(@RequestParam String email) throws BadRequestException, MessagingException, UnsupportedEncodingException {
 
         if(email == null || email.equals("")) throw new RequiredFieldMissingException("이메일 누락");
+        if(userService.existsByEmail(email)) throw new BadRequestException("중복된 이메일 입니다.");
 
         userService.sendVerificationCode(email);
         CommonResponse response = new CommonResponse(200,"이메일 인증 요청");
         return ResponseEntity.status(response.getHttpStatus()).body(response);
+
     }
 
     /**
@@ -87,8 +92,8 @@ public class UserController {
         if (userDto.getPassword() == null || !checkpassword(userDto.getPassword())) throw new BadRequestException("비밀번호가 누락되었거나 형식에 맞지 않습니다.");
         if (userDto.getName() == null || !checkName(userDto.getName())) throw new BadRequestException("이름이 누락되었거나 형식에 맞지 않습니다.");
         if (userDto.getPhone() == null || !checkphone(userDto.getPhone())) throw new BadRequestException("전화번호가 누락되었거나 형식에 맞지 않습니다.");
-
         if(userService.existsByEmail(userDto.getEmail())) throw new BadRequestException("중복된 이메일 입니다.");
+
         userService.signUp(userDto);
         CommonResponse response = new CommonResponse(201,"회원가입 성공");
         return ResponseEntity.status(response.getHttpStatus()).body(response);
@@ -125,6 +130,7 @@ public class UserController {
                 .sameSite("None") // 동일한 사이트에서 사용할 수 있도록 설정 None: 동일한 사이트가 아니어도 된다.
                 .build();
 
+        log.trace("로그인 완료");
         CommonResponse response = new CommonResponse(HttpStatus.OK.value(), "로그인 성공");
 
         return ResponseEntity.status(response.getHttpStatus())

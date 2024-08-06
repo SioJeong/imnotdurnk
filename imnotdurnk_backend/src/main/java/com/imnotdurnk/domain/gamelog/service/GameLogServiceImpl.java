@@ -1,7 +1,9 @@
 package com.imnotdurnk.domain.gamelog.service;
 
 import com.imnotdurnk.domain.auth.enums.TokenType;
+import com.imnotdurnk.domain.calendar.entity.CalendarEntity;
 import com.imnotdurnk.domain.calendar.service.CalendarService;
+import com.imnotdurnk.domain.gamelog.dto.GameLogDto;
 import com.imnotdurnk.domain.gamelog.dto.GameStatistic;
 import com.imnotdurnk.domain.gamelog.dto.VoiceDto;
 import com.imnotdurnk.domain.gamelog.dto.VoiceResultDto;
@@ -81,6 +83,29 @@ public class GameLogServiceImpl implements GameLogService {
         return gameLogEntity;
     }
 
+    /**
+     * 발음 평가를 제외한 게임 결과를 DB에 저장
+     * @param accessToken
+     * @param gameResult
+     */
+    @Override
+    public void saveGameResult(String accessToken, GameLogDto gameResult) throws BadRequestException {
+        //request로 받은 plan id를 등록한 사용자가 현재 로그인한 사용자와 일치하는지 확인
+        //일치한다면 캘린더 엔티티(일정 객체)를 가져옴
+        CalendarEntity calendarEntity = calendarService.isSameUserAndGetCalendarEntity(accessToken, gameResult.getPlanId());
+
+        System.out.println(calendarEntity.getId() + " " + calendarEntity.getDate());
+
+        GameLogEntity gameLogEntity = GameLogEntity.builder()
+                                        .gameType(gameResult.getGameType())
+                                        .score(gameResult.getScore())
+                                        .calendarEntity(calendarEntity)
+                                        .build();
+
+        gameLogEntity = gameLogRepository.save(gameLogEntity);
+
+        if(gameLogEntity == null) throw new EntitySaveFailedException("DB에 게임 결과 저장 실패");
+    }
 
 
 }

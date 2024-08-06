@@ -1,12 +1,15 @@
 package com.imnotdurnk.domain.gamelog.controller;
 
+import com.imnotdurnk.domain.gamelog.dto.GameLogDto;
 import com.imnotdurnk.domain.gamelog.dto.GameStatistic;
 import com.imnotdurnk.domain.gamelog.service.GameLogService;
+import com.imnotdurnk.global.commonClass.CommonResponse;
 import com.imnotdurnk.global.exception.InvalidDateException;
 import com.imnotdurnk.global.exception.ResourceNotFoundException;
 import com.imnotdurnk.global.response.SingleResponse;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
+import org.apache.http.protocol.HTTP;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -47,7 +50,7 @@ public class GameLogController {
         if(!checkDate(dateStr)) throw new InvalidDateException("날짜 입력 오류");
 
         if (gameType <= 0 || gameType > GAME_TYPE_COUNT) {
-            throw new ResourceNotFoundException("게임 타입 오류");
+            throw new BadRequestException("게임 타입 오류");
         }
 
         GameStatistic gameStatistic = gameLogService.getGameStatistic(token, gameType, dateStr);
@@ -56,6 +59,31 @@ public class GameLogController {
         response.setStatusCode(HttpStatus.OK.value());
         response.setMessage("게임 통계 응답 완료");
         response.setData(gameStatistic);
+
+        return ResponseEntity.status(response.getHttpStatus()).body(response);
+    }
+
+    /**
+     * 발음 평가를 제외한 게임 결과 저장 API
+     * @param accessToken
+     * @param gameResult
+     * @return
+     */
+    @PostMapping("/save")
+    public ResponseEntity<?> saveGameResult(@RequestAttribute(value = "AccessToken", required = true) String accessToken,
+                                            @RequestBody GameLogDto gameResult) throws BadRequestException {
+
+        //유효성 검사 (plan id, 게임 점수(0-100), 게임 타입)
+        if(gameResult.getPlanId() == null) throw new BadRequestException("필드 누락");
+        if(gameResult.getScore() == null ) throw new BadRequestException("필드 누락");
+        if(gameResult.getScore() < 0 || gameResult.getScore() > 100) throw new BadRequestException("범위를 벗어난 점수");
+        if(gameResult.getGameType() < 1 || gameResult.getGameType() > GAME_TYPE_COUNT) throw new BadRequestException("올바르지 않은 게임 타입");
+
+        gameLogService.saveGameResult(accessToken, gameResult);
+
+        CommonResponse response = new CommonResponse();
+        response.setMessage("저장 완료");
+        response.setStatusCode(HttpStatus.OK.value());
 
         return ResponseEntity.status(response.getHttpStatus()).body(response);
     }

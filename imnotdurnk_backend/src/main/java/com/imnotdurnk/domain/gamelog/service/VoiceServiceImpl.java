@@ -7,10 +7,7 @@ import com.imnotdurnk.domain.gamelog.dto.VoiceResultDto;
 import com.imnotdurnk.domain.gamelog.entity.GameLogEntity;
 import com.imnotdurnk.domain.gamelog.entity.VoiceEntity;
 import com.imnotdurnk.domain.gamelog.repository.VoiceRepository;
-import com.imnotdurnk.global.exception.ApiRequestFailedException;
-import com.imnotdurnk.global.exception.ApiTimeOutException;
-import com.imnotdurnk.global.exception.EntitySaveFailedException;
-import com.imnotdurnk.global.exception.ResourceNotFoundException;
+import com.imnotdurnk.global.exception.*;
 import com.imnotdurnk.global.util.AudioUtil;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -73,11 +70,17 @@ public class VoiceServiceImpl implements VoiceService {
      */
     @Override
     public VoiceResultDto getScoreFromVoice(MultipartFile file)
-            throws IOException, IllegalAccessException, UnsupportedAudioFileException {
+            throws UnsupportedAudioFileException {
 
         Double score = null;
         File wavFile = multipartToFile(file);
-        String fileTitle = audioUtil.SaveRaw(wavFile);
+        String fileTitle = null;
+        try {
+            fileTitle = audioUtil.SaveRaw(wavFile);
+        }
+        catch(IOException e){
+            throw new FailToConvertVoiceFile("음성 파일 전처리 실패");
+        }
 
         //ETRI 발음평가 API 호출
         String openApiURL = "http://aiopen.etri.re.kr:8000/WiseASR/PronunciationKor";   //한국어
@@ -96,7 +99,7 @@ public class VoiceServiceImpl implements VoiceService {
             byte[] audioBytes = Files.readAllBytes(path);
             audioContents = Base64.getEncoder().encodeToString(audioBytes);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new FailToConvertVoiceFile("음성 파일을 Base64로 변환 실패");
         }
 
         argument.put("language_code", languageCode);
@@ -109,25 +112,25 @@ public class VoiceServiceImpl implements VoiceService {
         Integer responseCode = null;
         String responBody = null;
 
-        url = new URL(openApiURL);
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod("POST");
-        con.setDoOutput(true);
-        con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-        con.setRequestProperty("Authorization", accessKey);
-
-        // 타임아웃 설정
-        con.setConnectTimeout(30000); // 30초 연결 타임아웃
-        con.setReadTimeout(30000);    // 30초 읽기 타임아웃
-
-        DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-        wr.write(gson.toJson(request).getBytes("UTF-8"));
-        wr.flush();
-        wr.close();
-
-        log.info("[ETRI 발음평가 API 호출] " + fileTitle);
-
         try {
+            url = new URL(openApiURL);
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("POST");
+            con.setDoOutput(true);
+            con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+            con.setRequestProperty("Authorization", accessKey);
+
+            // 타임아웃 설정
+            con.setConnectTimeout(30000); // 30초 연결 타임아웃
+            con.setReadTimeout(30000);    // 30초 읽기 타임아웃
+
+            DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+            wr.write(gson.toJson(request).getBytes("UTF-8"));
+            wr.flush();
+            wr.close();
+
+            log.info("[ETRI 발음평가 API 호출] " + fileTitle);
+
 
             responseCode = con.getResponseCode();
             InputStream is = con.getInputStream();
@@ -224,16 +227,16 @@ public class VoiceServiceImpl implements VoiceService {
      * @param mfile
      * @return 변환된 {@link File} 객체
      * @throws IllegalAccessException
-     * @throws IOException
+     * @throws FailToConvertVoiceFile
      */
     @Override
-    public File multipartToFile(MultipartFile mfile) throws IOException {
+    public File multipartToFile(MultipartFile mfile) {
         // 현재시간_UUID.wav
         String originalFilename = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMddHHmmss"))
                 + "_"
                 + UUID.randomUUID().toString() + ".wav";
         if (originalFilename == null || originalFilename.isEmpty()) {
-            throw new IOException("File name is invalid.");
+            throw new FailToConvertVoiceFile("File name is invalid.");
         }
 
         // 안전한 임시 파일 경로를 설정
@@ -248,7 +251,7 @@ public class VoiceServiceImpl implements VoiceService {
             if (file.exists()) {
                 file.delete();
             }
-            throw new IOException("파일 전처리 실패");
+            throw new FailToConvertVoiceFile("파일 전처리 실패");
         }
 
         // 파일 정보 로그
@@ -259,7 +262,6 @@ public class VoiceServiceImpl implements VoiceService {
     /**
      * 임시 파일을 삭제하는 메소드
      * @param file 삭제할 파일
-     * @throws IOException 파일 삭제 중 오류 발생 시
      */
     @Override
     public void deleteTempFile(File file) {
@@ -293,13 +295,11 @@ public class VoiceServiceImpl implements VoiceService {
      * 음성 인식 API 호출
      * @param file
      * @return
-     * @throws IOException
-     * @throws IllegalAccessException
      * @throws UnsupportedAudioFileException
      */
     @Override
     public String getScriptFromVoice(MultipartFile file)
-            throws IOException, IllegalAccessException, UnsupportedAudioFileException {
+            throws UnsupportedAudioFileException, IOException {
 
         String result = null;
 

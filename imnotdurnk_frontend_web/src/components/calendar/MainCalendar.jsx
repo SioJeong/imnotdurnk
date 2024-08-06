@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import useCalendarNavigation from '../../hooks/useCalendarNavigation';
 import useCalendarStore from '../../stores/useCalendarStore';
 import CalendarStatusBar from './CalendarStatusBar';
@@ -16,16 +16,14 @@ const MainCalendar = () => {
 
     const { navigate } = useCalendarNavigation();
 
-    const handleItemClick = useCallback(
-        (date) => {
-            const adjustedDate = new Date(date);
-            adjustedDate.setDate(date.getDate() + 1); // 일자 +1 조정
-
-            const formattedDate = adjustedDate.toISOString().split('T')[0]; // 날짜를 YYYY-MM-DD 형식으로 변환
-            navigate(`/calendar/${formattedDate}`);
-        },
-        [navigate],
-    );
+    const handleItemClick = (date) => {
+        // date를 UTC로 변환
+        const utcDate = new Date(
+            Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()),
+        );
+        const formattedDate = utcDate.toISOString().split('T')[0]; // 날짜를 YYYY-MM-DD 형식으로 변환
+        navigate(`/calendar/${formattedDate}`);
+    };
 
     return (
         <St.MainContainer>
