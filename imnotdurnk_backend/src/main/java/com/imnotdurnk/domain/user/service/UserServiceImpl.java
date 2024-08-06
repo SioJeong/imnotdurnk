@@ -19,6 +19,8 @@ import jakarta.mail.Message;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +37,7 @@ import java.util.Random;
 @Service
 public class UserServiceImpl implements UserService {
 
+    private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
     @Autowired
     private UserRepository userRepository;
 
@@ -104,6 +107,7 @@ public class UserServiceImpl implements UserService {
     public void signUp(UserDto userDto) throws BadRequestException{
 
         if(redisUtil.getData(userDto.getEmail())==null||!redisUtil.getData(userDto.getEmail()).equals("1")) throw new BadRequestException("인증되지 않은 사용자입니다.");
+        if(existsByEmail(userDto.getEmail())) throw new BadRequestException("중복된 이메일 입니다.");
 
         //비밀번호 암호화
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
@@ -224,6 +228,11 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void sendMail(String email, String title, String code, String codeName) throws MessagingException, UnsupportedEncodingException {
+        log.info("이메일: " + email);
+        log.info("제목: " + title);
+        log.info("코드: " + code);
+        log.info("코드네임: " + codeName);
+
         MimeMessage message = emailsender.createMimeMessage();
         message.addRecipients(Message.RecipientType.TO, email);
         message.setSubject(title);// 제목
