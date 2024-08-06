@@ -15,6 +15,8 @@ import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.apache.coyote.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -29,6 +31,7 @@ import java.util.regex.Pattern;
 @AllArgsConstructor
 public class UserController {
 
+    private static final Logger log = LoggerFactory.getLogger(UserController.class);
     private UserServiceImpl userService;
 
     /**
@@ -126,6 +129,7 @@ public class UserController {
                 .sameSite("None") // 동일한 사이트에서 사용할 수 있도록 설정 None: 동일한 사이트가 아니어도 된다.
                 .build();
 
+        log.trace("로그인 완료");
         CommonResponse response = new CommonResponse(HttpStatus.OK.value(), "로그인 성공");
 
         return ResponseEntity.status(response.getHttpStatus())
