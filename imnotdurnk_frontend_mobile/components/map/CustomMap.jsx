@@ -3,10 +3,12 @@ import { Marker, Polyline, PROVIDER_GOOGLE } from 'react-native-maps';
 import { useTheme } from 'styled-components/native';
 import MarkerImage from '../../assets/images/Marker.png';
 import useLocationStore from '../../stores/useLocationStore';
-import { MapContainer, StyledMap } from './CustomMap.style';
+import IconButton from '../_common/IconButton';
+import * as Map from './CustomMap.style';
 
-const CustomMap = ({ transitPolylineCoordinates, taxiPolylineCoorinates }) => {
-    const { mapCenter, departure, destination } = useLocationStore();
+const CustomMap = ({ transitPolylineCoordinates, taxiPolylineCoordinates }) => {
+    const { mapCenter, departure, destination, setMapCenter } =
+        useLocationStore();
     const mapRef = useRef(null);
 
     const theme = useTheme();
@@ -18,9 +20,9 @@ const CustomMap = ({ transitPolylineCoordinates, taxiPolylineCoorinates }) => {
     }, [mapCenter]);
 
     return (
-        <MapContainer>
+        <Map.Container>
             {mapCenter && (
-                <StyledMap
+                <Map.StyledMap
                     ref={mapRef}
                     provider={PROVIDER_GOOGLE}
                     initialRegion={mapCenter}
@@ -49,17 +51,31 @@ const CustomMap = ({ transitPolylineCoordinates, taxiPolylineCoorinates }) => {
                                 strokeColor={theme.colors.green3}
                             />
                         )}
-                    {taxiPolylineCoorinates &&
-                        taxiPolylineCoorinates.length > 0 && (
+                    {taxiPolylineCoordinates &&
+                        taxiPolylineCoordinates.length > 0 && (
                             <Polyline
-                                coordinates={taxiPolylineCoorinates}
+                                coordinates={taxiPolylineCoordinates}
                                 strokeWidth={3}
                                 strokeColor={theme.colors.red}
                             />
                         )}
-                </StyledMap>
+                </Map.StyledMap>
             )}
-        </MapContainer>
+            <Map.FloatingButtonBottomRight>
+                <IconButton
+                    iconname={'location'}
+                    isRed={true}
+                    onPress={() => {
+                        setMapCenter({
+                            latitude: 37.50127843458193,
+                            longitude: 127.0396046598167,
+                            latitudeDelta: 0.005,
+                            longitudeDelta: 0.005,
+                        });
+                    }}
+                />
+            </Map.FloatingButtonBottomRight>
+        </Map.Container>
     );
 };
 
