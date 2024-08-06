@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "stop_times")
+@Table(name = "stop_time")
 public class StopTimeEntity {
 
     @Id
