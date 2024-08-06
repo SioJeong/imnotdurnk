@@ -2,7 +2,6 @@ import Button from '@/components/_button/Button';
 import useMyPageNavigation from '../../hooks/useMyPageNavigation';
 import * as St from './ProfileCreateVoice.style';
 const ProfileCreateVoice = () => {
-    useMyPageNavigation();
     return (
         <St.ProfileCreateContainer>
             <St.InfoContainer>

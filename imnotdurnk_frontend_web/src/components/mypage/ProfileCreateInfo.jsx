@@ -9,7 +9,6 @@ import Modal from '../_modal/Modal';
 import ModalPostalCode from '../_modal/ModalPostalCode';
 import * as St from './ProfileCreateInfo.style';
 const ProfileCreateInfo = () => {
-    useMyPageNavigation();
     const [inputValues, setInputValues] = useState({
         nickname: '',
         postalCode: '',
