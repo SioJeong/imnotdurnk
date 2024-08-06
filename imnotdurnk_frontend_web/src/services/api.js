@@ -80,10 +80,17 @@ api.interceptors.response.use(
                         refreshResponse.headers['Authorization'];
 
                     console.log('인터셉터 어싱크 에러 6', refreshResponse);
-                    console.log('refreshResponse', refreshResponse);
+                    console.log(
+                        'refreshResponse.headers[Authorization]:',
+                        refreshResponse.headers['Authorization'],
+                        '2 a소문자 버전',
+                        refreshResponse.headers['authorization'],
+                        '해더만',
+                        refreshResponse.headers,
+                    );
                     console.log(newAccessToken, '새로 발급');
                     useAuthStore.getState().setAccessToken(newAccessToken);
-                    originalRequest.headers['Authorization'] = newAccessToken;
+                    originalRequest.headers['authorization'] = newAccessToken;
 
                     console.log('인터셉터 어싱크 에러 7');
                     isTokenRefreshing = false;
