@@ -36,8 +36,6 @@ const Statistics = () => {
 
                 if (getStatisticsResult.isSuccess) {
                     // 사용자 정보를 inputValues에 업데이트
-
-                    console.log('통계 가져옴', getStatisticsResult.data);
                 }
             } catch (error) {
                 console.error('통계 가져오기 중 오류 발생', error);
