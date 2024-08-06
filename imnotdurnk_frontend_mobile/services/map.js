@@ -35,8 +35,8 @@ const fetchTransitDirections = async (departure, stopover) => {
 
             const firstPath = data.result.path[0];
 
-            const transitCoordinates = extractTransitCoordinates(firstPath);
-            const summaryCoordinates = transitCoordinates.reduce(
+            const transitPathInfo = extractTransitCoordinates(firstPath);
+            const summaryCoordinates = transitPathInfo.reduce(
                 (acc, route) => acc.concat(route.coordinates),
                 [],
             );
@@ -54,8 +54,7 @@ const fetchTransitDirections = async (departure, stopover) => {
                 busTransitCount: firstPath.info.busTransitCount,
                 subwayTransitCount: firstPath.info.subwayTransitCount,
                 totalWalkTime: Math.floor(firstPath.info.totalWalk / 90),
-                transitCoordinates: extractTransitCoordinates(firstPath),
-                transitCoordinates,
+                transitPathInfo,
                 summaryCoordinates,
             };
 
