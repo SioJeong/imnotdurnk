@@ -8,7 +8,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-@Table(name = "stops")
+@Table(name = "stop")
 public class StopEntity {
 
     @Id
