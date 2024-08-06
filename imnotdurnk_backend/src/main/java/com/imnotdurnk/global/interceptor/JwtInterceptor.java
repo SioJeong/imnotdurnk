@@ -30,7 +30,7 @@ public class JwtInterceptor implements HandlerInterceptor {
     private boolean checkRefreshToken(HttpServletRequest request) throws InvalidTokenException {
 
         Cookie[] cookies = request.getCookies();
-        log.info("리프레시 토큰 체크: " + request.toString());
+        log.info("리프레시 토큰 체크: " + request.getCookies() == null ? "null" : request.getCookies()[0].getValue());
 
         // 쿠키에서 Refresh Token 탐색 후 존재하면 유효성 검증
         for(Cookie cookie : cookies) {
