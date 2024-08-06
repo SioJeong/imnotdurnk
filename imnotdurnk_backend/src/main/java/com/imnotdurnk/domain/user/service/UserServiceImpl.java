@@ -19,6 +19,8 @@ import jakarta.mail.Message;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +37,7 @@ import java.util.Random;
 @Service
 public class UserServiceImpl implements UserService {
 
+    private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
     @Autowired
     private UserRepository userRepository;
 
@@ -225,6 +228,11 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void sendMail(String email, String title, String code, String codeName) throws MessagingException, UnsupportedEncodingException {
+        log.info("이메일: " + email);
+        log.info("제목: " + title);
+        log.info("코드: " + code);
+        log.info("코드네임: " + codeName);
+
         MimeMessage message = emailsender.createMimeMessage();
         message.addRecipients(Message.RecipientType.TO, email);
         message.setSubject(title);// 제목
