@@ -214,11 +214,12 @@ public class CalendarServiceImpl implements CalendarService {
         return PlanDetailDto.builder()
                 .memo(calendarEntity.getMemo())
                 .title(calendarEntity.getTitle())
+                .arrivalTime(calendarEntity.getArrivalTime())
                 .sojuAmount(calendarEntity.getSojuAmount())
                 .beerAmount(calendarEntity.getBeerAmount())
                 .id(calendarEntity.getId())
                 .userId(calendarEntity.getUserEntity().getId())
-		.alcoholLevel(calendarEntity.getAlcoholLevel())
+		        .alcoholLevel(calendarEntity.getAlcoholLevel())
                 .gameLogEntities(calendarEntity.getGameLogEntities())
                 .date(calendarEntity.getDate())
                 .build();

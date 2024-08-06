@@ -72,7 +72,6 @@ class CalendarControllerTest {
                     .password(userpassword)
                     .phone("010-123-1234")
                     .name("test")
-                    .verified(true)
                     .build();
         }
         user.setDeleted(false);
