@@ -12,8 +12,7 @@ const CreatePlan = () => {
 
     const [year, month, day] = plan.date.split(' ');
     const [ampm, hour, minute] = plan.time.split(' ');
-    const [arrivalAmpm, arrivalHour, arrivalMinute] =
-        plan.arrivalTime.split(' ');
+    const [arrivalAmpm, arrivalHour, arrivalMinute] = ['오후', '10시', '00분'];
 
     // input 영역 상태 관리
     const [selectedDate, setSelectedDate] = useState({

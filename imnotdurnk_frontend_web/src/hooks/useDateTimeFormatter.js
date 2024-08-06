@@ -42,24 +42,51 @@ const parseDateTime = (dateString, timeString) => {
     return `${year}-${month.padStart(2, '0')}-${String(day).padStart(2, '0')}T${String(hour).padStart(2, '0')}:${minute.padStart(2, '0')}`;
 };
 
-// backend 요청 형식에 따라 전송할 데이터 변환 (hour, minute, second, nano로 이루어진 객체)
+// backend 요청 형식에 따라 전송할 데이터 변환 (00:00:00 형식의 문자열)
 // timeString 형식: 오후 10시 00분
 const parseTime = (timeString) => {
     const [ampm, hourStr, minuteStr] = timeString.split(' ');
     let hour = parseInt(hourStr.split('시')[0], 10);
-    const minute = parseInt(minuteStr.split('분')[0]);
+    const minute = minuteStr.split('분')[0];
 
     if (ampm === '오후' && hour !== 12) {
         hour += 12;
     } else if (ampm === '오전' && hour === 12) {
         hour = 0;
     }
-    return {
-        hour,
-        minute,
-        second: 0,
-        nano: 0,
-    };
+
+    const formattedHour = hour.toString().padStart(2, '0');
+    const formattedMinute = minute.padStart(2, '0');
+
+    return `${formattedHour}:${formattedMinute}:00`;
 };
 
-export { convertDateToString, convertTimeToString, parseDateTime, parseTime };
+// backend에서 받아온 데이터 frontend 형식으로 변환 (오후 10시 00분)
+// timeString 형식: 00:00:00 형식의 문자열
+const formatTime = (timeString) => {
+    const [hourStr, minuteStr] = timeString.split(':');
+    let hour = parseInt(hourStr, 10);
+    let ampm = '오전';
+
+    if (hour >= 12) {
+        ampm = '오후';
+        if (hour > 12) {
+            hour -= 12;
+        }
+    } else if (hour === 0) {
+        hour = 12;
+    }
+
+    const formattedHour = hour.toString();
+    const formattedMinute = minuteStr.padStart(2, '0');
+
+    return `${ampm} ${formattedHour}시 ${formattedMinute}분`;
+};
+
+export {
+    convertDateToString,
+    convertTimeToString,
+    formatTime,
+    parseDateTime,
+    parseTime,
+};
