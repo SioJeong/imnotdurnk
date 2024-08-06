@@ -27,12 +27,18 @@ const PathProgressBar = ({
         <GraphContainer>
             <BarContainer>
                 <BarSegment
-                    style={{ flex: transitRatio, backgroundColor: barColor }}
+                    style={{
+                        width: `${transitRatio}%`,
+                        backgroundColor: barColor,
+                    }}
                 >
                     <Circle color={barColor} style={{ left: 0 }} />
                 </BarSegment>
                 <BarSegment
-                    style={{ flex: taxiRatio, backgroundColor: barColor }}
+                    style={{
+                        width: `${taxiRatio}%`,
+                        backgroundColor: 'red',
+                    }}
                 >
                     <CircleWrapper style={{ left: 0 }}>
                         <Circle color={theme.colors.red} />
