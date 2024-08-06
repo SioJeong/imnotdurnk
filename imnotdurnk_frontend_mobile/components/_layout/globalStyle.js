@@ -48,19 +48,16 @@ const Container2 = styled(View)`
     overflow: hidden;
 `;
 
-const ScrollContainer = styled(ScrollView)`
+const ScrollContainer = styled(ScrollView).attrs(() => ({
+    contentContainerStyle: {
+        flexGrow: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+}))`
+    overscrollmode: 'never';
     flex: 1;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-`;
-
-// 지도 우측 하단에 들어가는 버튼
-const FloatingButtonBottomRight = styled(View)`
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
-    z-index: 1;
 `;
 
 const GlobalText = styled(Text)`
@@ -92,7 +89,6 @@ export {
     AppContainer,
     Container,
     Container2,
-    FloatingButtonBottomRight,
     GlobalText,
     LayoutContainer,
     MapSearchContainer,
