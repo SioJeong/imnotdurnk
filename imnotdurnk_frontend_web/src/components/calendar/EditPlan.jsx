@@ -1,7 +1,6 @@
 import { calendarMinmax } from '@/shared/constants/minmaxLength';
 import { useEffect, useRef, useState } from 'react';
 import { alcoholLevelToString } from '../../hooks/useAlcoholLevelFormatter';
-import { formatDateTime } from '../../hooks/useDateTimeFormatter';
 import useCalendarStore from '../../stores/useCalendarStore';
 import useModalStore from '../../stores/useModalStore';
 import * as St from './CreatePlan.style';
@@ -44,21 +43,25 @@ const EditPlan = () => {
 
     useEffect(() => {
         console.log(planDetail);
-        const { formattedDate, formattedTime } = formatDateTime(
-            planDetail.date,
-        );
-        const [year, month, day] = formattedDate.split(' ');
-        setSelectedDate({
-            year,
-            month,
-            day,
-        });
-        const [ampm, hour, minute] = formattedTime.split(' ');
-        setSelectedTime({
-            ampm,
-            hour,
-            minute,
-        });
+
+        if (planDetail.date) {
+            const [year, month, day] = planDetail.date.split(' ');
+            setSelectedDate({
+                year,
+                month,
+                day,
+            });
+        }
+
+        if (planDetail.time) {
+            const [ampm, hour, minute] = planDetail.time.split(' ');
+            setSelectedTime({
+                ampm,
+                hour,
+                minute,
+            });
+        }
+
         setTitle(planDetail.title);
         setMemo(planDetail.memo);
         setSelectedAlcoholLevel(alcoholLevelToString(planDetail.alcoholLevel));
@@ -111,7 +114,7 @@ const EditPlan = () => {
                                 src="/src/assets/icons/size_24/Icon-calendar.svg"
                                 alt="date"
                             />
-                            <h4>{plan.date}</h4>
+                            <h4>{planDetail.date}</h4>
                         </St.InputItemBox>
                         <St.InputItemBox
                             onClick={() => openModal('timeModal')}
@@ -121,7 +124,7 @@ const EditPlan = () => {
                                 src="/src/assets/icons/size_24/Icon-clock.svg"
                                 alt="time"
                             />
-                            <h4>{plan.time}</h4>
+                            <h4>{planDetail.time}</h4>
                         </St.InputItemBox>
                         <St.InputItemBox>
                             <img

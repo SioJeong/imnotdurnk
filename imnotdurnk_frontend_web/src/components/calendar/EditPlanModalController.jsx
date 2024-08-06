@@ -35,7 +35,7 @@ const EditPlanModalController = ({
 
     const submitSelectedDate = () => {
         const dateStr = `${selectedDate.year} ${selectedDate.month} ${selectedDate.day}`;
-        setPlan({ date: dateStr });
+        setPlanDetail({ date: dateStr });
         closeModal('dateModal');
     };
 
@@ -46,7 +46,7 @@ const EditPlanModalController = ({
 
     const submitSelectedTime = () => {
         const timeStr = `${selectedTime.ampm} ${selectedTime.hour} ${selectedTime.minute}`;
-        setPlan({ time: timeStr });
+        setPlanDetail({ time: timeStr });
         closeModal('timeModal');
     };
 

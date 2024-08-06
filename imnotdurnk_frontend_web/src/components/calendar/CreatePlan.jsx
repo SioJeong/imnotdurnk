@@ -12,7 +12,6 @@ const CreatePlan = () => {
 
     const [year, month, day] = plan.date.split(' ');
     const [ampm, hour, minute] = plan.time.split(' ');
-    const [arrivalAmpm, arrivalHour, arrivalMinute] = ['오후', '10시', '00분'];
 
     // input 영역 상태 관리
     const [selectedDate, setSelectedDate] = useState({
@@ -43,10 +42,11 @@ const CreatePlan = () => {
 
     const [selectedAlcoholLevel, setSelectedAlcoholLevel] =
         useState('0: 취하지 않음');
+
     const [selectedArrivalTime, setSelectedArrivalTime] = useState({
-        ampm: arrivalAmpm,
-        hour: arrivalHour,
-        minute: arrivalMinute,
+        ampm: '오후',
+        hour: '10시',
+        minute: '00분',
     });
 
     const memoRef = useRef(null);

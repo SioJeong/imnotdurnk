@@ -85,7 +85,8 @@ const useNonPersistentStore = create((set, get) => ({
     planDetail: {
         id: null,
         userId: null,
-        date: '',
+        date: convertDateToString(new Date()), // 오류 방지 위한 new Date 처리
+        time: convertTimeToString(new Date()), // 오류 방지 위한 new Date 처리
         title: '',
         memo: '',
         sojuAmount: 0,
