@@ -1,7 +1,7 @@
 import AlertMessage from '@/components/_common/AlertMessage.jsx';
+import { icons } from '@/shared/constants/icons';
 import { useState } from 'react';
 import * as St from './InputBox.style';
-
 const InputBox = ({
     labelText, // 라벨 이름
     iconName, // 사용 아이콘 이름, 없으면 'empty'
@@ -16,6 +16,7 @@ const InputBox = ({
     isProfileViewPage,
     onClick,
 }) => {
+    const iconSrc = icons[iconName];
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     // 가시성 설정 토글
     const handleToggleVisibility = (event) => {
@@ -51,7 +52,7 @@ const InputBox = ({
                         as="button" // 버튼처럼 사용
                         onClick={handleToggleVisibility}
                     >
-                        <img
+                        <St.InputIcon
                             src={`src/assets/icons/size_24/Icon-${isPasswordVisible ? 'visible' : 'invisible'}.svg`}
                             alt={
                                 isPasswordVisible
@@ -62,9 +63,8 @@ const InputBox = ({
                     </St.InputIcon>
                 ) : (
                     <St.InputIcon
-                        src={`src/assets/icons/size_24/Icon-${iconName}.svg`}
-                        alt={`${iconName} icon`}
-                        $isEmpty={iconName === 'empty'}
+                        src={iconSrc}
+                        $isEmpty={iconSrc === 'empty'}
                     />
                 )}
             </St.InputBoxContainer>
