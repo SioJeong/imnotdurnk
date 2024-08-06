@@ -4,18 +4,24 @@ import useNavigationStore from '@/stores/useNavigationStore';
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { sendCertificationNumber } from '../services/user';
+import useUserStore from '../stores/useUserStore';
 const CheckEmail = () => {
+    const { user, setUser } = useUserStore((state) => ({
+        user: state.user,
+        setUser: state.setUser,
+    }));
     const location = useLocation();
-    const { email } = location.state || {}; // 전달된 state에서 email을 추출합니다.
+
     // 인증번호 전송
     useEffect(() => {
-        const result = sendCertificationNumber(email);
-    }, [email]);
+        const result = sendCertificationNumber(user.email);
+    }, []);
+
     const setNavigation = useNavigationStore((state) => state.setNavigation);
     useEffect(() => {
         setNavigation({
             isVisible: true,
-            icon1: { iconname: 'backarrow' },
+            icon1: { iconname: 'backarrow', path: '-1' },
             title: '이메일 인증하기',
             icon2: { iconname: 'empty' },
         });
@@ -23,8 +29,8 @@ const CheckEmail = () => {
 
     return (
         <>
-            <InformationMessage email={email} />
-            <CertificationNumberInputContainer email={email} />
+            <InformationMessage email={user.email} />
+            <CertificationNumberInputContainer email={user.email} />
         </>
     );
 };

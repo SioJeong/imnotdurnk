@@ -1,20 +1,24 @@
+import beerBottleImage from '@/assets/images/beerbottle.webp';
+import sojuBottleImage from '@/assets/images/sojubottle.webp';
 import InputBox from '@/components/_common/InputBox';
-import useNavigationStore from '@/stores/useNavigationStore';
+import ModalAlcoholLevelDropdown from '@/components/_modal/ModalAlcoholLevelDropdown';
+import ModalPostalCode from '@/components/_modal/ModalPostalCode';
+import ModalVoice from '@/components/_modal/ModalVoice';
+import useMyPageNavigation from '@/hooks/useMyPageNavigation';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getUserProfile } from '../../services/user';
+import useModalStore from '../../stores/useModalStore';
 import MiniButton from '../_button/MiniButton';
+import Modal from '../_modal/Modal';
 import * as St from './Profile.style';
 const ProfileUpdate = () => {
-    const setNavigation = useNavigationStore((state) => state.setNavigation);
-    useEffect(() => {
-        setNavigation({
-            isVisible: true,
-            icon1: { iconname: 'backarrow', path: -1 },
-            title: '프로필 수정',
-            icon2: { iconname: 'check', path: '/update' },
-        });
-    }, [setNavigation]);
+    const { openModal, closeModal } = useModalStore();
+    //모달 열기
+    const openProfileEditModal = (e, modalId) => {
+        e.preventDefault();
+        openModal(modalId);
+    };
     const [inputValues, setInputValues] = useState({
         name: '',
         nickname: '',
@@ -54,9 +58,6 @@ const ProfileUpdate = () => {
                         emergencyCall: getProfileResult.data.emergencyCall,
                     });
                     console.log('프로필 가져옴', getProfileResult.data);
-                } else {
-                    console.log('프로필 가져오기 실패');
-                    // 프로필 가져오기 실패 시 처리할 로직 추가 가능
                 }
             } catch (error) {
                 console.error('프로필 가져오기 중 오류 발생', error);
@@ -105,8 +106,28 @@ const ProfileUpdate = () => {
                         onChange={handleInputChange}
                         name="phone"
                     />
-                    <St.AlcoholCapacityBox>
+                    <St.AlcoholCapacityBox
+                        onClick={(e) => {
+                            openProfileEditModal(e, 'alcoholLevelModal');
+                        }}
+                    >
                         <St.StyledH6>주량</St.StyledH6>
+                        <St.AlcolBox>
+                            <St.SojuBox>
+                                <St.StyledStepperImage
+                                    src={sojuBottleImage}
+                                    alt={`so`}
+                                />
+                                <St.Text>2병</St.Text>
+                            </St.SojuBox>
+                            <St.BeerBox>
+                                <St.StyledStepperImage
+                                    src={beerBottleImage}
+                                    alt={`be`}
+                                />
+                                <St.Text>2병</St.Text>
+                            </St.BeerBox>
+                        </St.AlcolBox>
                     </St.AlcoholCapacityBox>
                     <InputBox
                         labelText="주소"
@@ -131,6 +152,9 @@ const ProfileUpdate = () => {
                         value={inputValues.postalCode}
                         name="postalCode"
                         readOnly
+                        onClick={(e) => {
+                            openProfileEditModal(e, 'postalCodeModal');
+                        }}
                     />
                     <InputBox
                         labelText="비상 연락망"
@@ -140,12 +164,13 @@ const ProfileUpdate = () => {
                         onChange={handleInputChange}
                         name="emergencyCall"
                     />
-                    <St.VoiceBox>
+                    <St.VoiceBox
+                        onClick={(e) => {
+                            openProfileEditModal(e, 'voiceModal');
+                        }}
+                    >
                         <St.StyledH6>목소리</St.StyledH6>
-                        <St.VoiceButton
-                            src="/src/assets/icons/size_24/Icon-voice.svg"
-                            alt="Voice"
-                        />
+                        <St.VoiceButton />
                     </St.VoiceBox>
                 </St.InfoContainer>
                 <St.ButtonContainer>
@@ -163,6 +188,21 @@ const ProfileUpdate = () => {
                     />
                 </St.ButtonContainer>
             </St.ProfileContainer>
+            <Modal
+                modalId="alcoholLevelModal"
+                contents={<ModalAlcoholLevelDropdown />}
+                buttonText={'저장하기'}
+            />
+            <Modal
+                modalId="postalCodeModal"
+                contents={<ModalPostalCode />}
+                buttonText={'저장하기'}
+            />
+            <Modal
+                modalId="voiceModal"
+                contents={<ModalVoice />}
+                buttonText={'저장하기'}
+            />
         </>
     );
 };

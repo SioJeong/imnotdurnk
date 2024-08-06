@@ -1,11 +1,12 @@
 import useNavigationStore from '@/stores/useNavigationStore';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import useAuthStore from '../stores/useAuthStore';
 
 const Home = () => {
     const setNavigation = useNavigationStore((state) => state.setNavigation);
     const navigate = useNavigate();
-
+    const { accessToken } = useAuthStore();
     useEffect(() => {
         setNavigation({
             isVisible: true,

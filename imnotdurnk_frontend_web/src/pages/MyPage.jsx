@@ -1,25 +1,32 @@
 import Profile from '@/components/mypage/Profile';
+import ProfileCreateAlcoholCapacity from '@/components/mypage/ProfileCreateAlcoholCapacity';
+import ProfileCreateInfo from '@/components/mypage/ProfileCreateInfo';
+import ProfileCreateVoice from '@/components/mypage/ProfileCreateVoice';
+import ProfileUpdate from '@/components/mypage/ProfileUpdate';
 import Statistics from '@/components/statistics/Statistics';
-import useNavigationStore from '@/stores/useNavigationStore';
-import { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
+import useMyPageNavigation from '../hooks/useMyPageNavigation';
 const MyPage = () => {
-    const setNavigation = useNavigationStore((state) => state.setNavigation);
-
-    useEffect(() => {
-        setNavigation({
-            isVisible: true,
-            icon1: { iconname: 'address', path: '/' },
-            title: '통계',
-            icon2: { iconname: 'profile', path: 'mypage/profile' },
-        });
-    }, [setNavigation]);
+    useMyPageNavigation();
 
     return (
         <>
             <Routes>
                 <Route path="/" element={<Statistics />} />
-                <Route path="/profile/*" element={<Profile />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route
+                    path="/profile/create/info"
+                    element={<ProfileCreateInfo />}
+                />
+                <Route
+                    path="/profile/create/alcohol-capacity"
+                    element={<ProfileCreateAlcoholCapacity />}
+                />
+                <Route
+                    path="/profile/create/voice"
+                    element={<ProfileCreateVoice />}
+                />
+                <Route path="/profile/update" element={<ProfileUpdate />} />
             </Routes>
         </>
     );

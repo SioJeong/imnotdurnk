@@ -48,7 +48,8 @@ export const Input = styled.input`
         border-color: var(--color-green2); /* 클릭 시 보더 색상 */
     }
 
-    color: var(--color-green3, #252f2c);
+    color: ${(props) =>
+        props.$isWrong ? 'var(--color-red)' : 'var(--color-green3, #252f2c)'};
     font-size: var(--font-title-h1);
     font-style: normal;
     font-weight: 500;
