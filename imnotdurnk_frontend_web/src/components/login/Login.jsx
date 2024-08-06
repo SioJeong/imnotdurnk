@@ -28,7 +28,6 @@ const Login = () => {
             inputValues.email,
             inputValues.password,
         );
-        console.log(inputValues, loginResult);
         if (loginResult.isSuccess) {
             if (inputValues.isEmailSaved) {
                 setAccessToken(loginResult.accessToken);

@@ -1,7 +1,6 @@
 import beerBottleImage from '@/assets/images/beerbottle.webp';
 import sojuBottleImage from '@/assets/images/sojubottle.webp';
 import InputBox from '@/components/_common/InputBox';
-import useMyPageNavigation from '@/hooks/useMyPageNavigation';
 import { useEffect, useState } from 'react';
 import { Outlet, Route, Routes, useNavigate } from 'react-router-dom';
 import { getUserProfile } from '../../services/user';
@@ -31,7 +30,6 @@ const Profile = () => {
 
     const { accessToken } = useAuthStore();
     useEffect(() => {
-        console.log('at', accessToken);
         const getProfileResult = getUserProfile(); // getUserProfile 함수
         // if (getProfileResult.isSuccess) {
         //     // 사용자 정보를 inputValues에 업데이트
@@ -45,7 +43,7 @@ const Profile = () => {
         //         postalCode: getProfileResult.data.postalCode,
         //         emergencyCall: getProfileResult.data.emergencyCall,
         //     });
-        //     console.log('프로필 가져옴', getProfileResult.data);
+        //
         // }
     }, []);
     return (
