@@ -4,6 +4,7 @@ import {
     convertDateToString,
     convertTimeToString,
     parseDateTime,
+    parseTime,
 } from '../hooks/useDateTimeFormatter';
 import { createEvent } from '../services/calendar';
 
@@ -56,13 +57,18 @@ const useNonPersistentStore = create((set, get) => ({
         }),
     submitPlan: async () => {
         const { plan } = get();
+
         const formattedDateTime = parseDateTime(plan.date, plan.time);
+        const formattedTime = parseTime(plan.arrivalTime);
 
         const formattedPlan = {
             date: formattedDateTime,
             title: plan.title,
             memo: plan.memo,
+            sojuAmount: plan.sojuAmount,
+            beerAmount: plan.beerAmount,
             alcoholLevel: parseInt(plan.alcoholLevel.split(':')[0]),
+            arrivalTime: formattedTime,
         };
 
         try {

@@ -6,10 +6,14 @@ import * as St from './Modal.style';
 
 const ModalAlcohol = ({
     drinkType,
-    selectedSojuCount,
-    handleSelectedSojuCount,
-    selectedBeerCount,
-    handleSelectedBeerCount,
+    selectedSojuBottleCount,
+    handleSelectedSojuBottleCount,
+    selectedSojuGlassCount,
+    handleSelectedSojuGlassCount,
+    selectedBeerBottleCount,
+    handleSelectedBeerBottleCount,
+    selectedBeerGlassCount,
+    handleSelectedBeerGlassCount,
 }) => {
     const [bottleCount, setBottleCount] = useState(0);
     const [glassCount, setGlassCount] = useState(0);
@@ -20,9 +24,11 @@ const ModalAlcohol = ({
 
     useEffect(() => {
         if (drinkType === '소주') {
-            setBottleCount(selectedSojuCount);
+            setBottleCount(selectedSojuBottleCount);
+            setGlassCount(selectedSojuGlassCount);
         } else {
-            setBottleCount(selectedBeerCount);
+            setBottleCount(selectedBeerBottleCount);
+            setGlassCount(selectedBeerGlassCount);
         }
     }, []);
 
@@ -36,15 +42,20 @@ const ModalAlcohol = ({
 
     useEffect(() => {
         if (drinkType === '소주') {
-            handleSelectedSojuCount(bottleCount);
+            handleSelectedSojuBottleCount(bottleCount);
+            handleSelectedSojuGlassCount(glassCount);
         } else {
-            handleSelectedBeerCount(bottleCount);
+            handleSelectedBeerBottleCount(bottleCount);
+            handleSelectedBeerGlassCount(glassCount);
         }
     }, [
         bottleCount,
+        glassCount,
         drinkType,
-        handleSelectedSojuCount,
-        handleSelectedBeerCount,
+        handleSelectedSojuBottleCount,
+        handleSelectedSojuGlassCount,
+        handleSelectedBeerBottleCount,
+        handleSelectedBeerGlassCount,
     ]);
 
     // 주량 변경 함수
@@ -80,10 +91,14 @@ const ModalAlcohol = ({
             </St.StyledStepperHeader>
             <St.StyledStepperBody>
                 <St.StyledStepperElement>
-                    <St.StyledStepperImage
-                        src={`/src/assets/images/${drink}bottle.webp`}
-                        alt={`${drink} bottle image`}
-                    />
+                    <St.StyledImageAndAmount>
+                        <St.StyledStepperImage
+                            src={`/src/assets/images/${drink}bottle.webp`}
+                            alt={`${drink} bottle image`}
+                        />
+                        {drinkType === '맥주' ? <h5>500ml</h5> : <></>}
+                        {drinkType === '소주' ? <h5>1병 = 8잔</h5> : <></>}
+                    </St.StyledImageAndAmount>
                     <StepperButton
                         icon1={'minus'}
                         icon2={'plus'}
@@ -92,10 +107,15 @@ const ModalAlcohol = ({
                     />
                 </St.StyledStepperElement>
                 <St.StyledStepperElement>
-                    <St.StyledStepperImage
-                        src={`/src/assets/images/${drink}glass.webp`}
-                        alt={`${drink} glass image`}
-                    />
+                    <St.StyledImageAndAmount>
+                        <St.StyledStepperImage
+                            src={`/src/assets/images/${drink}glass.webp`}
+                            alt={`${drink} glass image`}
+                        />
+                        {drinkType === '맥주' ? <h5>355ml</h5> : <></>}
+                        {drinkType === '소주' ? <h5>1잔 = 1/8병</h5> : <></>}
+                    </St.StyledImageAndAmount>
+
                     <StepperButton
                         icon1={'minus'}
                         icon2={'plus'}

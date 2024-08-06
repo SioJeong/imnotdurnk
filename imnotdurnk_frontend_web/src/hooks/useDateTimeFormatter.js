@@ -42,4 +42,24 @@ const parseDateTime = (dateString, timeString) => {
     return `${year}-${month.padStart(2, '0')}-${String(day).padStart(2, '0')}T${String(hour).padStart(2, '0')}:${minute.padStart(2, '0')}`;
 };
 
-export { convertDateToString, convertTimeToString, parseDateTime };
+// backend 요청 형식에 따라 전송할 데이터 변환 (hour, minute, second, nano로 이루어진 객체)
+// timeString 형식: 오후 10시 00분
+const parseTime = (timeString) => {
+    const [ampm, hourStr, minuteStr] = timeString.split(' ');
+    let hour = parseInt(hourStr.split('시')[0], 10);
+    const minute = parseInt(minuteStr.split('분')[0]);
+
+    if (ampm === '오후' && hour !== 12) {
+        hour += 12;
+    } else if (ampm === '오전' && hour === 12) {
+        hour = 0;
+    }
+    return {
+        hour,
+        minute,
+        second: 0,
+        nano: 0,
+    };
+};
+
+export { convertDateToString, convertTimeToString, parseDateTime, parseTime };

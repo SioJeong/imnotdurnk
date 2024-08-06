@@ -5,6 +5,10 @@ const CreatePlanAlcohol = ({
     openAlcoholModal,
     openAlcoholLevelModal,
     openArrivalTimeModal,
+    selectedSojuBottleCount,
+    selectedSojuGlassCount,
+    selectedBeerBottleCount,
+    selectedBeerGlassCount,
 }) => {
     const { plan } = useCalendarStore();
 
@@ -19,7 +23,10 @@ const CreatePlanAlcohol = ({
                             alt="soju"
                             $isSoju={true}
                         />
-                        <h4>{plan.sojuAmount}병</h4>
+                        <h4>
+                            {selectedSojuBottleCount}병 {selectedSojuGlassCount}
+                            잔
+                        </h4>
                     </St.InputItemBox>
                     <St.InputItemBox $alcoholCount={true}>
                         <St.AlcoholCountImage
@@ -27,7 +34,10 @@ const CreatePlanAlcohol = ({
                             alt="beer"
                             $isSoju={false}
                         />
-                        <h4>{plan.beerAmount}병</h4>
+                        <h4>
+                            {selectedBeerBottleCount}병 {selectedBeerGlassCount}
+                            잔
+                        </h4>
                     </St.InputItemBox>
                 </St.DrinkInputBox>
 

@@ -108,6 +108,13 @@ const StyledStepperElement = styled.div`
     align-items: center;
 `;
 
+const StyledImageAndAmount = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 1rem;
+`;
+
 const StyledStepperImage = styled.img`
     display: flex;
     height: 7.1429rem;
@@ -123,6 +130,7 @@ export {
     StyledBox,
     StyledFormBox,
     StyledIcon,
+    StyledImageAndAmount,
     StyledStepperBody,
     StyledStepperElement,
     StyledStepperHeader,
