@@ -35,10 +35,6 @@ const Map = () => {
                 title: '지도',
                 icon2: { iconname: 'empty', isRed: false },
             });
-
-            return () => {
-                // Cleanup function if needed
-            };
         }, [setNavigation]),
     );
 
@@ -140,16 +136,19 @@ const Map = () => {
                         if (destination) {
                             const tempStopoverPositions = [
                                 {
+                                    // 시청역
                                     latitude: 37.565355308413714,
                                     longitude: 126.97720386719465,
                                 },
                                 {
-                                    latitude: 37.56595081896419,
-                                    longitude: 126.98216137468052,
+                                    // 잠실역
+                                    latitude: 37.513812282356945,
+                                    longitude: 127.10202562031904,
                                 },
                                 {
-                                    latitude: 37.56342793924698,
-                                    longitude: 126.9815734120233,
+                                    // 도봉산역
+                                    latitude: 37.689900823978476,
+                                    longitude: 127.04625796639714,
                                 },
                             ];
                             setStopover(tempStopoverPositions);

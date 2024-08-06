@@ -46,7 +46,7 @@ const CustomMap = ({ transitPolylineCoordinates, taxiPolylineCoorinates }) => {
                             <Polyline
                                 coordinates={transitPolylineCoordinates}
                                 strokeWidth={3}
-                                strokeColor={theme.colors.red}
+                                strokeColor={theme.colors.green3}
                             />
                         )}
                     {taxiPolylineCoorinates &&
@@ -54,7 +54,7 @@ const CustomMap = ({ transitPolylineCoordinates, taxiPolylineCoorinates }) => {
                             <Polyline
                                 coordinates={taxiPolylineCoorinates}
                                 strokeWidth={3}
-                                strokeColor={theme.colors.green3}
+                                strokeColor={theme.colors.red}
                             />
                         )}
                 </StyledMap>
