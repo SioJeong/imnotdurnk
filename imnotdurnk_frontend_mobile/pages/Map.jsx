@@ -35,10 +35,6 @@ const Map = () => {
                 title: '지도',
                 icon2: { iconname: 'empty', isRed: false },
             });
-
-            return () => {
-                // Cleanup function if needed
-            };
         }, [setNavigation]),
     );
 

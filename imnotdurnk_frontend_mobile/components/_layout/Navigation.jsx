@@ -1,10 +1,10 @@
-import useNavigationStore from '../../stores/useNavigationStore';
 import { useNavigation } from '@react-navigation/native';
+import useNavigationStore from '../../stores/useNavigationStore';
 import IconButton from '../_common/IconButton';
 import * as St from './globalStyle';
 
 // 네비게이션의 아이콘 별 Path 경로 (상수처리)
-const onPressPath = { address: 'Home' };
+const onPressPath = { address: 'Home', x: 'Home' };
 
 const Navigation = () => {
     const { navigation } = useNavigationStore((state) => state);

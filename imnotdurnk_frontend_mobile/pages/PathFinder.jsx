@@ -1,3 +1,4 @@
+import { useFocusEffect } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import * as St from '../components/_layout/globalStyle';
 import PathOption from '../components/map/PathOption';
@@ -10,18 +11,16 @@ const PathFinder = () => {
     const { departure, stopover, destination } = useLocationStore();
     const [pathInfos, setPathInfos] = useState([]);
 
-    useEffect(() => {
-        if (!departure || !destination) {
-            return;
-        }
-
-        setNavigation({
-            isVisible: true,
-            icon1: { iconname: 'backarrow', isRed: false },
-            title: '길 찾기',
-            icon2: { iconname: 'empty', isRed: false },
-        });
-    }, [departure, destination, setNavigation]);
+    useFocusEffect(
+        React.useCallback(() => {
+            setNavigation({
+                isVisible: true,
+                icon1: { iconname: 'backarrow', isRed: false },
+                title: '길 찾기',
+                icon2: { iconname: 'empty', isRed: false },
+            });
+        }, [setNavigation]),
+    );
 
     useEffect(() => {
         const getDirections = async () => {
