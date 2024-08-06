@@ -1,4 +1,4 @@
-import api from './api';
+import { api } from './api';
 import apiErrorHandler from './apiErrorHandler';
 
 // response body 형식 : httpStatus, message, statusCode, dataList

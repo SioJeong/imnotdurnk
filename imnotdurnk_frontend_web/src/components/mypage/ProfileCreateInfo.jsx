@@ -2,13 +2,14 @@ import Button from '@/components/_button/Button';
 import InputBox from '@/components/_common/InputBox';
 import { putUserDetailedInfo } from '@/services/user.js';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import useMyPageNavigation from '../../hooks/useMyPageNavigation';
 import useModalStore from '../../stores/useModalStore';
 import Modal from '../_modal/Modal';
 import ModalPostalCode from '../_modal/ModalPostalCode';
 import * as St from './ProfileCreateInfo.style';
-
-import { useNavigate } from 'react-router-dom';
 const ProfileCreateInfo = () => {
+    useMyPageNavigation();
     const [inputValues, setInputValues] = useState({
         nickname: '',
         postalCode: '',

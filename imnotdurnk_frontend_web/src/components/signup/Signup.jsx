@@ -1,11 +1,16 @@
 import Button from '@/components/_button/Button.jsx';
 import Checkbox from '@/components/_common/Checkbox';
 import InputBox from '@/components/_common/InputBox';
-import { signup } from '@/services/user.js';
-import { useState } from 'react';
+import useUserStore from '@/stores/useUserStore';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as St from './Signup.style';
-const Signup = ({ changeToggle }) => {
+const Signup = () => {
+    const { user, setUser } = useUserStore((state) => ({
+        user: state.user,
+        setUser: state.setUser,
+    }));
+
     const [inputValues, setInputValues] = useState({
         name: '',
         email: '',
@@ -24,26 +29,46 @@ const Signup = ({ changeToggle }) => {
         agreeCheckBox: false,
     });
 
+    useEffect(() => {
+        setInputValues({
+            name: user.name || '',
+            email: user.email || '',
+            phone: user.phone || '',
+            password: '',
+            passwordCheck: '',
+            agreeCheckBox: user.agreeCheckBox || false,
+        });
+    }, [user]);
     const navigate = useNavigate();
-    //버튼 동작
+
+    //전역상태로 저장
     const handleSignup = async () => {
-        const signupResult = await signup(
-            inputValues.name,
-            inputValues.email,
-            inputValues.phone,
-            inputValues.password,
-        );
-        if (signupResult.isSuccess) {
-            // 성공 시 페이지 이동
-            navigate('/check-email', {
-                state: { email: inputValues.email },
-            });
-        } else {
-            // 오류 메시지 처리
-            throw new Error(
-                signupResult.message || '데이터 가져오는 중 오류 발생',
-            );
-        }
+        setUser({
+            name: inputValues.name,
+            email: inputValues.email,
+            phone: inputValues.phone,
+            password: inputValues.password,
+            passwordCheck: inputValues.passwordCheck,
+            agreeCheckBox: inputValues.agreeCheckBox,
+        });
+        navigate('/check-email');
+        // const signupResult = await signup(
+        //     inputValues.name,
+        //     inputValues.email,
+        //     inputValues.phone,
+        //     inputValues.password,
+        // );
+        // if (signupResult.isSuccess) {
+        //     // 성공 시 페이지 이동
+        //     navigate('/check-email', {
+        //         state: { email: inputValues.email },
+        //     });
+        // } else {
+        //     // 오류 메시지 처리
+        //     throw new Error(
+        //         signupResult.message || '데이터 가져오는 중 오류 발생',
+        //     );
+        // }
     };
     //유효성 검사
     const checkValidation = () => {

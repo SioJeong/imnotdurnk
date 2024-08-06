@@ -19,7 +19,6 @@ const ModalPostalCode = ({ handleSearchedPostalCode }) => {
 
     const completeHandler = (data) => {
         const { address, zonecode } = data;
-        console.log('data', data);
         //받은 데이터 위로 보내기
         handleSearchedPostalCode(address, zonecode);
     };

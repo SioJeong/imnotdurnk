@@ -1,4 +1,20 @@
+import RecordButton from '@/assets/icons/size_24/Icon-voice.svg';
 import { styled } from 'styled-components';
+
+export const VoiceButton = styled.img.attrs({
+    src: RecordButton,
+    alt: 'Record Button',
+})`
+    display: flex;
+    width: 1.7143rem;
+    height: 1.7143rem;
+    padding: 0.1429rem;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+    filter: brightness(0) invert(1); /* 흰색으로 보이도록 조정 */
+`;
+
 export const ProfileContainer = styled.div`
     display: flex;
     width: 23.7143rem;
@@ -26,14 +42,47 @@ export const InfoContainer = styled.div`
 `;
 export const AlcoholCapacityBox = styled.div`
     display: flex;
+    justify-content: space-between;
+    align-items: center;
+    align-self: stretch;
     height: 5.7143rem;
     padding: 0rem 1.7143rem;
-    flex-direction: column;
-    justify-content: center;
-    align-items: flex-start;
+
     align-self: stretch;
     border-radius: 10px;
     background: var(--color-green2, #465a54);
+`;
+export const AlcolBox = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.0714rem;
+`;
+export const StyledStepperImage = styled.img`
+    height: 2.4286rem;
+    flex-shrink: 0;
+`;
+export const Text = styled.h5``;
+
+export const SojuBox = styled.div`
+    display: flex;
+    width: 5.7143rem;
+    padding: 0.2857rem 0rem;
+    justify-content: center;
+    align-items: center;
+    gap: 0.7143rem;
+    border-radius: 10px;
+    background: var(--color-white1, #fff);
+`;
+export const BeerBox = styled.div`
+    display: flex;
+    width: 5.7143rem;
+    padding: 0.2857rem 0rem;
+    justify-content: center;
+    align-items: center;
+    gap: 0.7143rem;
+    border-radius: 10px;
+    background: var(--color-white1, #fff);
 `;
 export const VoiceBox = styled.div`
     display: flex;
@@ -56,13 +105,4 @@ export const ButtonContainer = styled.div`
     justify-content: space-between;
     align-items: center;
     align-self: stretch;
-`;
-export const VoiceButton = styled.img`
-    display: flex;
-    width: 1.7143rem;
-    height: 1.7143rem;
-    padding: 0.1429rem;
-    justify-content: center;
-    align-items: center;
-    flex-shrink: 0;
 `;
