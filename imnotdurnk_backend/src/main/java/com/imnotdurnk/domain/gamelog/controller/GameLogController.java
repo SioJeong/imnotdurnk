@@ -7,6 +7,7 @@ import com.imnotdurnk.global.commonClass.CommonResponse;
 import com.imnotdurnk.global.exception.InvalidDateException;
 import com.imnotdurnk.global.exception.ResourceNotFoundException;
 import com.imnotdurnk.global.response.SingleResponse;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.apache.http.protocol.HTTP;
@@ -41,6 +42,9 @@ public class GameLogController {
      * @return {@link GameStatistic}를 ResponseEntity body에 포함
      * @throws BadRequestException
      */
+    @Operation(
+            summary = "유저의 게임 통계"
+    )
     @GetMapping("/statistics")
     public ResponseEntity<SingleResponse<GameStatistic>> getStatistics
             (@RequestAttribute(value = "AccessToken", required = true) String token,
@@ -69,6 +73,9 @@ public class GameLogController {
      * @param gameResult
      * @return
      */
+    @Operation(
+            summary = "발음 평가를 제외한 게임 결과 저장"
+    )
     @PostMapping("/save")
     public ResponseEntity<?> saveGameResult(@RequestAttribute(value = "AccessToken", required = true) String accessToken,
                                             @RequestBody GameLogDto gameResult) throws BadRequestException {

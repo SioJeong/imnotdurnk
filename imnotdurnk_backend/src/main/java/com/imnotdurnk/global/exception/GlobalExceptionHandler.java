@@ -96,6 +96,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(HttpStatus.BAD_REQUEST.value(), "음성 파일 포맷이 일치하지 않음");
     }
 
+    // 인자로 전달되는 값이 잘못됨
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<?> handleIllegalArgumentException(IllegalArgumentException exception){
+        return handleExceptionInternal(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
+    }
+
     private ResponseEntity<?> handleExceptionInternal(int code, String message){
 
         //응답 객체
