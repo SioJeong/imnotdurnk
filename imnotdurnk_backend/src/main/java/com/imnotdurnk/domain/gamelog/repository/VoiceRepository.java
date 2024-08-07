@@ -18,5 +18,4 @@ public interface VoiceRepository extends JpaRepository<VoiceEntity, Integer> {
     @Query("DELETE FROM VoiceEntity v WHERE v.gameLogEntity.id = :logId")
     void deleteByLogId(int logId);
 
-    void deleteByGameLogEntity(GameLogEntity gameLogEntity);
 }
