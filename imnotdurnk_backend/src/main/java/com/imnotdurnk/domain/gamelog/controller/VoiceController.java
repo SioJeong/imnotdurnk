@@ -67,7 +67,7 @@ public class VoiceController {
     }
 
     @Operation(
-            summary = ""
+            summary = "음성 아이디로 음성 파일 url 요청"
     )
     @GetMapping("/{logId}")
     public ResponseEntity<SingleResponse<VoiceDto>> getVoice(@PathVariable("logId") int logId) throws BadRequestException {
@@ -87,7 +87,7 @@ public class VoiceController {
     }
 
     @Operation(
-            summary = ""
+            summary = "음성 아이디로 음성 파일 삭제 요청"
     )
     @DeleteMapping("/{logId}")
     public ResponseEntity<CommonResponse> deleteVoice(@PathVariable("logId") int logId) throws BadRequestException {
@@ -147,7 +147,8 @@ public class VoiceController {
      * @return
      */
     @Operation(
-            summary = "발음 평가 결과 저장"
+            summary = "발음 평가 결과 저장",
+            description = "일정 아이디, 발음 평가 결과(점수), 임시파일명 필수 포함"
     )
     @PostMapping("/pronounce/save")
     public ResponseEntity<?> savePronunciationResult(@RequestAttribute(value = "AccessToken", required = true) String accessToken,
