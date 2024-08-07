@@ -1,16 +1,15 @@
 import beerBottleImage from '@/assets/images/beerbottle.webp';
 import sojuBottleImage from '@/assets/images/sojubottle.webp';
+import MiniButton from '@/components/_button/MiniButton';
 import InputBox from '@/components/_common/InputBox';
+import Modal from '@/components/_modal/Modal';
 import ModalAlcoholLevelDropdown from '@/components/_modal/ModalAlcoholLevelDropdown';
 import ModalPostalCode from '@/components/_modal/ModalPostalCode';
 import ModalVoice from '@/components/_modal/ModalVoice';
-import useMyPageNavigation from '@/hooks/useMyPageNavigation';
+import useModalStore from '@/stores/useModalStore';
+import useUserStore from '@/stores/useUserStore';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getUserProfile } from '../../services/user';
-import useModalStore from '../../stores/useModalStore';
-import MiniButton from '../_button/MiniButton';
-import Modal from '../_modal/Modal';
 import * as St from './Profile.style';
 const ProfileUpdate = () => {
     const { openModal, closeModal } = useModalStore();
@@ -28,6 +27,12 @@ const ProfileUpdate = () => {
         detailedAddress: '',
         postalCode: '',
         emergencyCall: '',
+        beerCapacity: 0,
+        sojuCapacity: 0,
+        latitude: '',
+        longitude: '',
+        unsure: true,
+        voice: '',
     });
     const navigate = useNavigate();
     const onClickPasswordChangeButton = () => {
@@ -40,36 +45,42 @@ const ProfileUpdate = () => {
             [name]: value,
         }));
     };
+    const { user, setUser } = useUserStore((state) => ({
+        user: state.user,
+        setUser: state.setUser,
+    }));
+
+    const handleSearchedPostalCode = (address, zonecode) => {
+        setInputValues((prevValues) => ({
+            ...prevValues,
+            postalCode: zonecode,
+            address: address,
+        }));
+    };
     useEffect(() => {
-        const fetchUserProfile = async () => {
-            try {
-                const getProfileResult = await getUserProfile(); // getUserProfile 함수 비동기 호출
-
-                if (getProfileResult.isSuccess) {
-                    // 사용자 정보를 inputValues에 업데이트
-                    setInputValues({
-                        name: getProfileResult.data.name,
-                        nickname: getProfileResult.data.nickname,
-                        email: getProfileResult.data.email,
-                        phone: getProfileResult.data.phone,
-                        address: getProfileResult.data.address,
-                        detailedAddress: getProfileResult.data.detailedAddress,
-                        postalCode: getProfileResult.data.postalCode,
-                        emergencyCall: getProfileResult.data.emergencyCall,
-                    });
-                }
-            } catch (error) {
-                console.error('프로필 가져오기 중 오류 발생', error);
-                // 오류 처리 로직 추가
-            }
-        };
-
-        fetchUserProfile(); // useEffect에서 호출
-    }, []);
+        if (user) {
+            setInputValues({
+                name: user.name || '',
+                nickname: user.nickname || '',
+                email: user.email || '',
+                phone: user.phone || '',
+                address: user.address || '',
+                detailedAddress: user.detailedAddress || '',
+                postalCode: user.postalCode || '',
+                emergencyCall: user.emergencyCall || '',
+                beerCapacity: user.beerCapacity || 0,
+                sojuCapacity: user.sojuCapacity || 0,
+                latitude: user.latitude || '',
+                longitude: user.longitude || '',
+                unsure: user.unsure !== undefined ? user.unsure : true,
+                voice: user.voice || '',
+            });
+        }
+    }, [user]);
     return (
         <>
             <St.ProfileContainer>
-                <St.Title>{inputValues.nickname}님 안녕하세요!</St.Title>
+                <St.Title>원하시는 정보를 변경해주세요.</St.Title>
                 <St.InfoContainer>
                     <InputBox
                         labelText="이름"
@@ -78,7 +89,6 @@ const ProfileUpdate = () => {
                         value={inputValues.name}
                         name="name"
                         readOnly
-                        isProfileViewPage={true}
                     />
                     <InputBox
                         labelText="닉네임"
@@ -95,7 +105,6 @@ const ProfileUpdate = () => {
                         value={inputValues.email}
                         name="email"
                         readOnly
-                        isProfileViewPage={true}
                     />
                     <InputBox
                         labelText="연락처"
@@ -117,14 +126,14 @@ const ProfileUpdate = () => {
                                     src={sojuBottleImage}
                                     alt={`so`}
                                 />
-                                <St.Text>2병</St.Text>
+                                <St.Text>{inputValues.sojuCapacity} 병</St.Text>
                             </St.SojuBox>
                             <St.BeerBox>
                                 <St.StyledStepperImage
                                     src={beerBottleImage}
                                     alt={`be`}
                                 />
-                                <St.Text>2병</St.Text>
+                                <St.Text>{inputValues.beerCapacity} 병</St.Text>
                             </St.BeerBox>
                         </St.AlcolBox>
                     </St.AlcoholCapacityBox>
@@ -134,6 +143,9 @@ const ProfileUpdate = () => {
                         inputType="text"
                         value={inputValues.address}
                         name="address"
+                        onClickInputBox={(e) => {
+                            openProfileEditModal(e, 'postalCodeModal');
+                        }}
                         readOnly
                     />
                     <InputBox
@@ -151,7 +163,7 @@ const ProfileUpdate = () => {
                         value={inputValues.postalCode}
                         name="postalCode"
                         readOnly
-                        onClick={(e) => {
+                        onClickInputBox={(e) => {
                             openProfileEditModal(e, 'postalCodeModal');
                         }}
                     />
@@ -194,7 +206,11 @@ const ProfileUpdate = () => {
             />
             <Modal
                 modalId="postalCodeModal"
-                contents={<ModalPostalCode />}
+                contents={
+                    <ModalPostalCode
+                        handleSearchedPostalCode={handleSearchedPostalCode}
+                    />
+                }
                 buttonText={'저장하기'}
             />
             <Modal

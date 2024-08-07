@@ -122,7 +122,7 @@ const StyledStepperImage = styled.img`
     align-items: flex-end;
     object-fit: cover;
 `;
-
+const StyledRecordImage = styled.img``;
 export {
     ModalBackground,
     ModalContainer,
