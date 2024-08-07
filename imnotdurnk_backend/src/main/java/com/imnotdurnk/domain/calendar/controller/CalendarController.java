@@ -10,6 +10,7 @@ import com.imnotdurnk.global.exception.InvalidDateException;
 import com.imnotdurnk.global.exception.ResourceNotFoundException;
 import com.imnotdurnk.global.response.ListResponse;
 import com.imnotdurnk.global.response.SingleResponse;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
@@ -39,6 +40,9 @@ public class CalendarController {
      * @return ResponseEntity<ListResponse<DiaryDto>>
      *
      */
+    @Operation(
+            summary = "월별 일정 조회"
+    )
    @GetMapping
     public ResponseEntity<ListResponse<DiaryDto>> getDiary(@RequestAttribute(value = "AccessToken", required = true) String token,
                                       @RequestParam(required = true) int year, @RequestParam(required = true) int month) {
@@ -59,6 +63,9 @@ public class CalendarController {
      * @return 수정이 완료된 경우 200, 오류 400 404 500
      * @throws BadRequestException
      */
+     @Operation(
+             summary = "피드백 등록"
+     )
     @PutMapping("/{date}/plans/{planId}")
     public ResponseEntity<?> updateFeedback(@RequestAttribute(value = "AccessToken", required = true) String accessToken,
                                           @PathVariable String date,
@@ -92,6 +99,9 @@ public class CalendarController {
      * @return 일정이 성공적으로 등록되면 201 Created 상태 코드 반환
      * @throws BadRequestException 일정 등록 실패
      */
+    @Operation(
+            summary = "일정 추가"
+    )
     @PostMapping
     public ResponseEntity<?> addCalendar(@RequestAttribute(value = "AccessToken", required = true) String token, @RequestBody CalendarDto calendarDto) throws BadRequestException{
 
@@ -117,6 +127,9 @@ public class CalendarController {
      * @return 조회 성공 시 200 OK 상태 코드와 함께 해당 날짜의 일정 목록 반환
      * @throws ParseException 날짜 문자열을 파싱하는 과정에서 발생할 수 있는 예외
      */
+    @Operation(
+            summary = "특정 날짜의 일정 조회"
+    )
     @GetMapping("/{date}/plans")
     public ResponseEntity<?> getCalendar(@RequestAttribute(value = "AccessToken", required = true) String token,
                                          @PathVariable("date") String dateStr) throws ParseException{
@@ -141,6 +154,9 @@ public class CalendarController {
      * @param dateStr
      * @return
      */
+    @Operation(
+            summary = ""
+    )
     @GetMapping("/statistics")
     public ResponseEntity<?> getStatistics(@RequestAttribute(value = "AccessToken", required = true) String token,
                                            @RequestParam(required = true) String dateStr) {
@@ -168,6 +184,9 @@ public class CalendarController {
      *
      * @return
      */
+    @Operation(
+            summary = "도착 시간 등록/수정"
+    )
     @GetMapping("/{planId}")
     public ResponseEntity<?> updateArrivalTime(@RequestAttribute(value = "AccessToken", required = true) String accessToken,
                                                @PathVariable int planId,
@@ -193,6 +212,9 @@ public class CalendarController {
      *
      * @return
      */
+    @Operation(
+            summary = "일정 삭제"
+    )
     @DeleteMapping("/{planId}")
     public ResponseEntity<?> deletePlan(@RequestAttribute(value = "AccessToken", required = true) String accessToken,
                                                @PathVariable int planId) throws BadRequestException, ResourceNotFoundException {
@@ -213,6 +235,9 @@ public class CalendarController {
      * @param planId
      * @throws BadRequestException
      */
+    @Operation(
+            summary = "일정 상세 조회"
+    )
     @GetMapping("/plans/{planId}")
     public ResponseEntity<?> getPlanDetail(@RequestAttribute(value = "AccessToken", required = true) String accessToken,
                                            @PathVariable int planId) throws BadRequestException {

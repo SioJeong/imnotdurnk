@@ -7,6 +7,7 @@ import com.imnotdurnk.domain.map.service.MapService;
 import com.imnotdurnk.global.commonClass.CommonResponse;
 import com.imnotdurnk.global.response.ListResponse;
 import com.imnotdurnk.global.response.SingleResponse;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,9 @@ public class MapController {
 
     private MapService mapService;
 
+    @Operation(
+            summary = ""
+    )
     @GetMapping
     public ResponseEntity<SingleResponse<?>> getPath(@RequestAttribute(value = "AccessToken", required = true) String token,
                                                      @RequestParam(required = true) double startlat, @RequestParam(required = true) double startlon,
