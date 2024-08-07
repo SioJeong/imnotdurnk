@@ -10,6 +10,7 @@ import com.imnotdurnk.global.commonClass.CommonResponse;
 import com.imnotdurnk.global.exception.RequiredFieldMissingException;
 import com.imnotdurnk.global.exception.ResourceNotFoundException;
 import com.imnotdurnk.global.response.SingleResponse;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
@@ -30,6 +31,9 @@ public class VoiceController {
     private final S3FileUploadService s3FileUploadService;
 
 
+    @Operation(
+            summary = ""
+    )
     @PostMapping(value = "", consumes = "multipart/form-data")
     public ResponseEntity<CommonResponse> saveVoice(
             @RequestPart("voice") VoiceDto voice,
@@ -62,6 +66,9 @@ public class VoiceController {
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
+    @Operation(
+            summary = "음성 아이디로 음성 파일 url 요청"
+    )
     @GetMapping("/{logId}")
     public ResponseEntity<SingleResponse<VoiceDto>> getVoice(@PathVariable("logId") int logId) throws BadRequestException {
 
@@ -79,6 +86,9 @@ public class VoiceController {
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
+    @Operation(
+            summary = "음성 아이디로 음성 파일 삭제 요청"
+    )
     @DeleteMapping("/{logId}")
     public ResponseEntity<CommonResponse> deleteVoice(@PathVariable("logId") int logId) throws BadRequestException {
 
@@ -109,6 +119,9 @@ public class VoiceController {
      * @param file
      * @return 발음 평가 점수와 파일명, 대사를 포함한 {@link VoiceResultDto} 객체
      */
+    @Operation(
+            summary = "발음 평가 요청"
+    )
     @PostMapping(value="/pronounce", consumes = "multipart/form-data")
     public ResponseEntity<?> gameAboutPronunciation(@RequestPart MultipartFile file)
             throws UnsupportedAudioFileException, IOException, IllegalAccessException {
@@ -133,6 +146,10 @@ public class VoiceController {
      * @param voiceResultDto 평가 결과, 대본, 임시파일명
      * @return
      */
+    @Operation(
+            summary = "발음 평가 결과 저장",
+            description = "일정 아이디, 발음 평가 결과(점수), 임시파일명 필수 포함"
+    )
     @PostMapping("/pronounce/save")
     public ResponseEntity<?> savePronunciationResult(@RequestAttribute(value = "AccessToken", required = true) String accessToken,
                                                      @RequestBody VoiceResultDto voiceResultDto) throws BadRequestException {
@@ -163,6 +180,9 @@ public class VoiceController {
      * @param voiceResultDto
      * @return
      */
+    @Operation(
+            summary = "발음 평가 결과를 저장하지 않는 것을 알림"
+    )
     @PostMapping("/pronounce/not-save")
     public ResponseEntity<?> notSavePronunciationResult(@RequestBody VoiceResultDto voiceResultDto) throws IOException {
 
