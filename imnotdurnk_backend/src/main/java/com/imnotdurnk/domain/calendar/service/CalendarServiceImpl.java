@@ -19,6 +19,7 @@ import com.imnotdurnk.global.exception.InvalidDateException;
 import com.imnotdurnk.global.exception.InvalidTokenException;
 import com.imnotdurnk.global.exception.ResourceNotFoundException;
 import com.imnotdurnk.global.util.JwtUtil;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -269,6 +270,7 @@ public class CalendarServiceImpl implements CalendarService {
      * @throws ResourceNotFoundException 존재하지 않는 일정인 경우
      * @throws BadRequestException 사용자의 일정이 아닌 경우
      */
+    @Transactional
     @Override
     public void deletePlan(String accessToken, int planId) throws ResourceNotFoundException, BadRequestException {
 
@@ -284,6 +286,9 @@ public class CalendarServiceImpl implements CalendarService {
 
         //accessToken에 저장된 사용자 이메일과 조회 요청한 일정을 등록한 사용자의 이메일이 일치하지 않는 경우
         if(!tokenEmail.equals(userIdFromPlan)) throw new BadRequestException("잘못된 접근입니다.");
+
+        // 연관된 게임 ID 삭제
+        gameLogRepository.deleteByCalendarEntity(calendarEntity);
 
         // 일정 삭제
         calendarRepository.deleteById(planId);
