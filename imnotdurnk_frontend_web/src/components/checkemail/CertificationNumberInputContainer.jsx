@@ -1,17 +1,21 @@
 import Button from '@/components/_button/Button.jsx';
 import AlertMessage from '@/components/_common/AlertMessage.jsx';
 
-import { sendCertificationNumber } from '@/services/user';
 import { useRef, useState } from 'react';
 import * as St from './CertificationNumberInputContainer.style';
 
 //import { useState } from 'react';
-const CertificationNumberInputContainer = ({ email }) => {
+const CertificationNumberInputContainer = ({
+    setInputCertNum,
+    onClickResendButton,
+    compareCertificationNumber,
+    isWrong,
+    setIsWrong,
+    alertContents,
+    setAlertContents,
+}) => {
     const [certNumList, setCertNumList] = useState(['', '', '', '']);
-    const [certNum, setCertNum] = useState('');
     const inputsRef = useRef([]); // input에서 현위치 추적용
-    const [alertContents, setAlertContents] = useState('');
-    const [isWrong, setIsWrong] = useState(false);
     //하나의 input의 유효성 판별
     const validateInput = (value) => {
         // 0-9 사이의 숫자만 허용
@@ -51,35 +55,24 @@ const CertificationNumberInputContainer = ({ email }) => {
         // 포커스를 첫 번째 입력 필드로 이동
         inputsRef.current[0].focus();
         setIsWrong(false);
+        setAlertContents('');
     };
 
     //배열 -> 문자열로 전환 함수
     const convertCertNum = () => {
-        setCertNum(certNumList.join(''));
-        if (certNum.length < 4) {
-            // 이거나 api 요청해서 비교하는 함수 조건에 추가해야함
+        return certNumList.join('');
+    };
 
-            setAlertContents('인증코드가 잘못되었습니다.');
-        } else {
-            setAlertContents('');
-            // 인증 성공창 뜨기
-            // 다음 페이지로 이동
-        }
-    };
-    const onClickResendButton = async () => {
-        const resendResult = await sendCertificationNumber(email);
-    };
     const handleCertification = (e) => {
         e.preventDefault();
-        convertCertNum();
-        //todo 인증번호 받아오는 api 필요
-        //const comparedCertNum = checkCertificationNumber(email);
-
-        // if (certNum === comparedCertNum) {
-        //     //signup api 불러오기
-        // } else {
-        //     setIsWrong(true);
-        // }
+        const certNumString = convertCertNum();
+        if (certNumString.length === 4) {
+            setAlertContents('');
+            console.log('api 요청직전', certNumString);
+            compareCertificationNumber(certNumString);
+        } else {
+            setAlertContents('인증코드 형식이 잘못되었습니다.');
+        }
     };
     return (
         <St.CertificationContainer>

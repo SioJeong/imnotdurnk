@@ -94,10 +94,9 @@ const ProfileCreateInfo = () => {
             }));
         }
     };
-    //모달
+    //모달 관련
     const { openModal, closeModal } = useModalStore();
     const modalId = 'postalCodeModal';
-    //모달 열기
     const openPostalCodeModal = (e) => {
         e.preventDefault();
         openModal(modalId);

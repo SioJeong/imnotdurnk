@@ -4,14 +4,15 @@ const ToggleButton = ({
     toggle2,
     isMono,
     isFirstSelected,
-    changeToggle,
+    changeFirstToggle,
+    changeSecondToggle,
 }) => {
     return (
         <St.ToggleButtonContainer $isMono={isMono}>
             <St.ToggleButton
                 $isMono={isMono}
                 $isSelected={isFirstSelected}
-                onClick={changeToggle}
+                onClick={changeFirstToggle}
             >
                 <St.StyledH4 $isSelected={isFirstSelected}>
                     {toggle1}
@@ -20,7 +21,7 @@ const ToggleButton = ({
             <St.ToggleButton
                 $isMono={isMono}
                 $isSelected={!isFirstSelected}
-                onClick={changeToggle}
+                onClick={changeSecondToggle}
             >
                 <St.StyledH4 $isSelected={!isFirstSelected}>
                     {toggle2}

@@ -54,4 +54,5 @@ export const ForgetPasswordMessage = styled.h6`
     text-align: right;
     font-size: var(--font-body-h6, 0.57rem);
     line-height: normal;
+    cursor: pointer;
 `;
