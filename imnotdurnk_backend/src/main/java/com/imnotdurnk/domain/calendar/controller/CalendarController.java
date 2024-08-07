@@ -53,27 +53,21 @@ public class CalendarController {
      /***
      * 피드백 등록 API
      * @param accessToken
-     * @param date "YYYY-MM-DDThh:ss" 형식이어야 함
      * @param planId
      * @param calendarDto
      * @return 수정이 완료된 경우 200, 오류 400 404 500
      * @throws BadRequestException
      */
-    @PutMapping("/{date}/plans/{planId}")
+    @PutMapping("/plans/{planId}")
     public ResponseEntity<?> updateFeedback(@RequestAttribute(value = "AccessToken", required = true) String accessToken,
-                                          @PathVariable String date,
                                           @PathVariable int planId,
                                           @RequestBody CalendarDto calendarDto) throws BadRequestException, InvalidDateException {
-
-        if(!checkDateTime(date)) throw new InvalidDateException("날짜 입력 오류");
-        if(!checkTitle(calendarDto.getTitle())) throw new BadRequestException("제목이 없거나 30자를 초과했습니다.");
-        calendarDto.setDate(date);
 
         //응답 객체
         CommonResponse response = new CommonResponse();
 
         //피드백 등록
-        calendarService.updateFeedback(accessToken, date, planId, calendarDto);
+        calendarService.updateFeedback(accessToken, planId, calendarDto);
 
         response.setStatusCode(HttpStatus.OK.value());
         response.setMessage("피드백 등록이 완료되었습니다.");
