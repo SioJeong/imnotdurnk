@@ -1,23 +1,27 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { alcoholLevelToString } from '../../hooks/useAlcoholLevelFormatter';
 import {
     convertDateToString,
     convertTimeToString,
     formatTime,
 } from '../../hooks/useDateTimeFormatter';
-import { getEventDetail } from '../../services/calendar';
+import { deleteEvent, getEventDetail } from '../../services/calendar';
 import useCalendarStore from '../../stores/useCalendarStore';
 import useNavigationStore from '../../stores/useNavigationStore';
+import Button from '../_button/Button';
 import * as St from './PlanDetail.style';
 
 const PlanDetail = () => {
+    const navigate = useNavigate();
+    const queryClient = useQueryClient();
+
     const location = useLocation();
     const planId = location.pathname.split('/')[4];
 
     const setNavigation = useNavigationStore((state) => state.setNavigation);
-    const { setFullPlanDetail } = useCalendarStore();
+    const { setFullPlanDetail, resetPlanDetail } = useCalendarStore();
 
     const {
         data: planDetail,
@@ -44,7 +48,7 @@ const PlanDetail = () => {
                 icon2: { iconname: 'modify', path: 'goEditPlan' },
             });
         }
-    }, [planDetail, setNavigation]);
+    }, [planDetail, setNavigation, setFullPlanDetail]);
 
     const sojuBottle = Math.floor(planDetail?.sojuAmount / 8);
     const sojuGlass = planDetail?.sojuAmount % 8;
@@ -54,6 +58,32 @@ const PlanDetail = () => {
     const arrivalTimeString = planDetail?.arrivalTime
         ? formatTime(planDetail?.arrivalTime)
         : '-';
+
+    // TODO: 진짜 삭제 할 건지 물어봐야 할 듯?
+    const deletePlan = async () => {
+        const [year, month] = planDetail.date.split('T')[0].split('-');
+
+        try {
+            const success = await deleteEvent({ planId }); // api 요청
+
+            if (success) {
+                // 쿼리 무효화
+                queryClient.invalidateQueries([
+                    'monthlyEventList',
+                    year,
+                    month,
+                ]);
+                alert('일정이 삭제 되었습니다.');
+                resetPlanDetail();
+                navigate('/calendar'); // 캘린더 페이지로 이동
+                return true;
+            }
+        } catch (error) {
+            console.error('일정 삭제 중 오류 발생:', error.message);
+        }
+
+        return false;
+    };
 
     return (
         <St.Container>
@@ -148,6 +178,7 @@ const PlanDetail = () => {
                     </St.InputItemBox>
                 </St.InputContainer>
             </St.AlcoholContainer>
+            <Button text={'일정 삭제하기'} isRed={true} onClick={deletePlan} />
         </St.Container>
     );
 };

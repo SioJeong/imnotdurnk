@@ -18,9 +18,9 @@ const convertTimeToString = (time) => {
     return `${period} ${hour}시 ${minute}분`;
 };
 
-// backend 요청 형식에 따라 전송할 데이터 변환 (yyyy-MM-ddThh:ss 형식의 문자열)
-// dateString 형식: 2024년 8월 5일
-// timeString 형식: 오후 01시 32분
+// backend 요청 형식에 따라 전송할 데이터 변환
+// dateString 형식: 2024년 8월 5일 / timeString 형식: 오후 01시 32분
+// -> yyyy-MM-ddThh:ss 형식의 문자열
 const parseDateTime = (dateString, timeString) => {
     const [year, month, day] = dateString
         .replace('년', '')
@@ -42,8 +42,9 @@ const parseDateTime = (dateString, timeString) => {
     return `${year}-${month.padStart(2, '0')}-${String(day).padStart(2, '0')}T${String(hour).padStart(2, '0')}:${minute.padStart(2, '0')}`;
 };
 
-// backend에서 받아온 데이터 frontend 형식으로 변환 (2024년 8월 6일, 오후 10시 00분)
+// backend에서 받아온 데이터 frontend 형식으로 변환
 // datetimestring 형식: yyyy-MM-ddThh:ss 형식의 문자열
+// -> 2024년 8월 6일, 오후 10시 00분
 // const formatDateTime = (datetimestring) => {
 //     const date = new Date(datetimestring);
 
@@ -63,8 +64,9 @@ const parseDateTime = (dateString, timeString) => {
 //     return { formattedDate, formattedTime };
 // };
 
-// backend 요청 형식에 따라 전송할 데이터 변환 (00:00:00 형식의 문자열)
+// backend 요청 형식에 따라 전송할 데이터 변환
 // timeString 형식: 오후 10시 00분
+// -> 00:00:00 형식의 문자열
 const parseTime = (timeString) => {
     const [ampm, hourStr, minuteStr] = timeString.split(' ');
     let hour = parseInt(hourStr.split('시')[0], 10);
@@ -82,8 +84,9 @@ const parseTime = (timeString) => {
     return `${formattedHour}:${formattedMinute}:00`;
 };
 
-// backend에서 받아온 데이터 frontend 형식으로 변환 (오후 10시 00분)
+// backend에서 받아온 데이터 frontend 형식으로 변환
 // timeString 형식: 00:00:00 형식의 문자열
+// -> 오후 10시 00분
 const formatTime = (timeString) => {
     const [hourStr, minuteStr] = timeString.split(':');
     let hour = parseInt(hourStr, 10);
@@ -104,9 +107,25 @@ const formatTime = (timeString) => {
     return `${ampm} ${formattedHour}시 ${formattedMinute}분`;
 };
 
+// backend 요청 형식에 따라 전송할 데이터 변환
+// dateString 형식: 2024년 8월 7일
+// -> 2024-08-07 형태
+const dateStringToUrl = (dateString) => {
+    const [yearStr, monthStr, dayStr] = dateString.split(' ');
+    const year = yearStr.split('년')[0];
+    const month = monthStr.split('월')[0];
+    const day = dayStr.split('일')[0];
+
+    const formatterMonth = month.toString().padStart(2, '0');
+    const formattedDay = day.toString().padStart(2, '0');
+
+    return `${year}-${formatterMonth}-${formattedDay}`;
+};
+
 export {
     convertDateToString,
     convertTimeToString,
+    dateStringToUrl,
     formatTime,
     parseDateTime,
     parseTime,
