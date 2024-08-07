@@ -37,7 +37,7 @@ spring:
   # Mail Setting
   mail:
     host: smtp.gmail.com
-    port: 587
+    port: 456
     username: ${MAIL_USERNAME}
     password: ${MAIL_PASSWORD}
     properties:
