@@ -15,7 +15,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
 import org.apache.coyote.BadRequestException;
-import org.apache.coyote.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -93,7 +92,8 @@ public class UserController {
      *         UserNotVerifiedException 이메일 인증 전이라면 UNAUTHORIZED(401) 응답
      */
     @Operation(
-            summary = "사용자 회원가입"
+            summary = "사용자 회원가입",
+            description = "필수 입력 필드: email, password, name, phone"
     )
     @PostMapping("/signup")
     public ResponseEntity<?> signUp(@RequestBody UserDto userDto) throws BadRequestException {
@@ -279,7 +279,8 @@ public class UserController {
      * @throws BadRequestException
      */
     @Operation(
-            summary = "회원 탈퇴"
+            summary = "회원 탈퇴",
+            description = "비밀번호 확인 필요"
     )
     @PostMapping("delete-account")
     public ResponseEntity<?> deleteAccount(@RequestAttribute(value = "RefreshToken", required = true) String refreshToken,

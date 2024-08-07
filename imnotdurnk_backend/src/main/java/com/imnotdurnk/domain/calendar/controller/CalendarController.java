@@ -64,7 +64,8 @@ public class CalendarController {
      * @throws BadRequestException
      */
      @Operation(
-             summary = "피드백 등록"
+             summary = "피드백 등록",
+             description = "날짜: yyyy-MM-ddThh:ss 형식의 문자열"
      )
     @PutMapping("/{date}/plans/{planId}")
     public ResponseEntity<?> updateFeedback(@RequestAttribute(value = "AccessToken", required = true) String accessToken,
@@ -100,7 +101,8 @@ public class CalendarController {
      * @throws BadRequestException 일정 등록 실패
      */
     @Operation(
-            summary = "일정 추가"
+            summary = "일정 추가",
+            description ="제목: 30자 이하, 메모: 200자 이하, 날짜: yyyy-MM-ddThh:ss 형식의 문자열"
     )
     @PostMapping
     public ResponseEntity<?> addCalendar(@RequestAttribute(value = "AccessToken", required = true) String token, @RequestBody CalendarDto calendarDto) throws BadRequestException{
@@ -128,7 +130,8 @@ public class CalendarController {
      * @throws ParseException 날짜 문자열을 파싱하는 과정에서 발생할 수 있는 예외
      */
     @Operation(
-            summary = "특정 날짜의 일정 조회"
+            summary = "특정 날짜의 일정 조회",
+            description = "날짜: yyyy-MM-dd 형식의 문자열"
     )
     @GetMapping("/{date}/plans")
     public ResponseEntity<?> getCalendar(@RequestAttribute(value = "AccessToken", required = true) String token,
@@ -155,7 +158,8 @@ public class CalendarController {
      * @return
      */
     @Operation(
-            summary = ""
+            summary = "",
+            description = "날짜: yyyy-MM-dd 형식의 문자열"
     )
     @GetMapping("/statistics")
     public ResponseEntity<?> getStatistics(@RequestAttribute(value = "AccessToken", required = true) String token,
@@ -185,7 +189,8 @@ public class CalendarController {
      * @return
      */
     @Operation(
-            summary = "도착 시간 등록/수정"
+            summary = "도착 시간 등록/수정",
+            description = "도착 시간: HH:mm 형태"
     )
     @GetMapping("/{planId}")
     public ResponseEntity<?> updateArrivalTime(@RequestAttribute(value = "AccessToken", required = true) String accessToken,
