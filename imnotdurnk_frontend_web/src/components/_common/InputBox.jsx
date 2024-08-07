@@ -14,7 +14,7 @@ const InputBox = ({
     alertContents, // 에러메세지 내용
     readOnly,
     isProfileViewPage,
-    onClick,
+    onClickInputBox,
 }) => {
     const iconSrc = icons[iconName];
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -33,6 +33,7 @@ const InputBox = ({
             <St.InputBoxContainer
                 $size={size}
                 $isProfileViewPage={isProfileViewPage}
+                onClick={onClickInputBox}
             >
                 <St.TextContainer>
                     <St.InputLabel>{labelText}</St.InputLabel>

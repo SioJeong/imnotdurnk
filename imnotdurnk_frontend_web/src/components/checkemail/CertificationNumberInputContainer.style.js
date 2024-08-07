@@ -60,4 +60,5 @@ export const StyledMessage = styled.p`
     text-align: center;
     font-size: var(--font-body-h3, 1rem);
     line-height: normal;
+    cursor: pointer;
 `;

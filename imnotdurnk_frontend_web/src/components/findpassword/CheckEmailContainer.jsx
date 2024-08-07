@@ -2,7 +2,7 @@ import Button from '@/components/_button/Button.jsx';
 import InputBox from '@/components/_common/InputBox.jsx';
 import { useState } from 'react';
 import * as St from './CheckEmailContainer.style';
-const CheckEmailContainer = () => {
+const CheckEmailContainer = ({ handleIsSent, handleSendNewPassword }) => {
     const [inputValues, setInputValues] = useState({
         email: '',
     });
@@ -35,9 +35,11 @@ const CheckEmailContainer = () => {
         }
         return isValid;
     };
-    const handleSendNewPassword = () => {
+    const onClickSendNewPasswordButton = (e) => {
+        e.preventDefault();
         if (checkValidation()) {
-            console.log('새로운 비밀번호 만들기 아직');
+            handleIsSent();
+            handleSendNewPassword();
         }
     };
     return (
@@ -57,8 +59,7 @@ const CheckEmailContainer = () => {
                 size="big"
                 isRed="true"
                 onClick={(e) => {
-                    e.preventDefault();
-                    handleSendNewPassword();
+                    onClickSendNewPasswordButton(e);
                 }}
             />
         </St.CheckEmailContainer>

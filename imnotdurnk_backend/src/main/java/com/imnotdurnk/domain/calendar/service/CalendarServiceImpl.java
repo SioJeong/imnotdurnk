@@ -11,7 +11,11 @@ import com.imnotdurnk.domain.calendar.repository.mapping.AlcoholAmount;
 import com.imnotdurnk.domain.calendar.repository.mapping.AlcoholAmountImpl;
 import com.imnotdurnk.domain.calendar.repository.mapping.PlanForMonth;
 import com.imnotdurnk.domain.calendar.repository.mapping.PlanForMonthImpl;
+import com.imnotdurnk.domain.gamelog.entity.GameLogEntity;
+import com.imnotdurnk.domain.gamelog.entity.VoiceEntity;
 import com.imnotdurnk.domain.gamelog.repository.GameLogRepository;
+import com.imnotdurnk.domain.gamelog.repository.VoiceRepository;
+import com.imnotdurnk.domain.gamelog.service.S3FileUploadService;
 import com.imnotdurnk.domain.user.entity.UserEntity;
 import com.imnotdurnk.domain.user.repository.UserRepository;
 import com.imnotdurnk.global.exception.EntitySaveFailedException;
@@ -19,8 +23,11 @@ import com.imnotdurnk.global.exception.InvalidDateException;
 import com.imnotdurnk.global.exception.InvalidTokenException;
 import com.imnotdurnk.global.exception.ResourceNotFoundException;
 import com.imnotdurnk.global.util.JwtUtil;
+import com.imnotdurnk.global.util.SystemUtil;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.apache.coyote.BadRequestException;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,10 +44,18 @@ import java.util.stream.Collectors;
 public class CalendarServiceImpl implements CalendarService {
 
     private JwtUtil jwtUtil;
+    @Autowired
     private CalendarRepository calendarRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
     private GameLogRepository gameLogRepository;
+    @Autowired
+    private SystemUtil systemUtil;
+    @Autowired
+    private VoiceRepository voiceRepository;
+    @Autowired
+    private S3FileUploadService s3FileUploadService;
 
 
     @Override
@@ -60,7 +75,7 @@ public class CalendarServiceImpl implements CalendarService {
      * @param accessToken
      */
     @Override
-    public void updateFeedback(String accessToken, String date, int planId, CalendarDto calendarDto) throws BadRequestException, ResourceNotFoundException{
+    public void updateFeedback(String accessToken, int planId, CalendarDto calendarDto) throws BadRequestException, ResourceNotFoundException{
 
         //accessToken과 일정의 사용자가 일치하는지 확인
         String tokenEmail = jwtUtil.getUserEmail(accessToken, TokenType.ACCESS);
@@ -84,6 +99,7 @@ public class CalendarServiceImpl implements CalendarService {
         if(updatedCalendarEntity == null) throw new EntitySaveFailedException("피드백 등록에 실패하였습니다.");
 
     }
+
 
     /**
      * 일정 등록
@@ -269,6 +285,7 @@ public class CalendarServiceImpl implements CalendarService {
      * @throws ResourceNotFoundException 존재하지 않는 일정인 경우
      * @throws BadRequestException 사용자의 일정이 아닌 경우
      */
+    @Transactional
     @Override
     public void deletePlan(String accessToken, int planId) throws ResourceNotFoundException, BadRequestException {
 
@@ -284,6 +301,17 @@ public class CalendarServiceImpl implements CalendarService {
 
         //accessToken에 저장된 사용자 이메일과 조회 요청한 일정을 등록한 사용자의 이메일이 일치하지 않는 경우
         if(!tokenEmail.equals(userIdFromPlan)) throw new BadRequestException("잘못된 접근입니다.");
+
+        // 연관된 Voice 삭제
+        Optional<List<GameLogEntity>> gameLogEntities = gameLogRepository.findByCalendarEntity_Id(planId);
+        for(GameLogEntity gameLogEntity : gameLogEntities.get()) {
+            VoiceEntity voice = voiceRepository.findByLogId(gameLogEntity.getId());
+            s3FileUploadService.deleteFile(voice.getFileName());
+            voiceRepository.deleteById(gameLogEntity.getId());
+        }
+
+        // 연관된 게임 ID 삭제
+        gameLogRepository.deleteByCalendarEntity(calendarEntity);
 
         // 일정 삭제
         calendarRepository.deleteById(planId);

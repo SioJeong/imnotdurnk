@@ -1,10 +1,10 @@
 import beerBottleImage from '@/assets/images/beerbottle.webp';
 import sojuBottleImage from '@/assets/images/sojubottle.webp';
 import InputBox from '@/components/_common/InputBox';
+import { getUserProfile } from '@/services/user';
+import useUserStore from '@/stores/useUserStore';
 import { useEffect, useState } from 'react';
 import { Outlet, Route, Routes, useNavigate } from 'react-router-dom';
-import { getUserProfile } from '../../services/user';
-import useAuthStore from '../../stores/useAuthStore';
 import MiniButton from '../_button/MiniButton';
 import * as St from './Profile.style';
 import ProfileCreateAlcoholCapacity from './ProfileCreateAlcoholCapacity';
@@ -12,6 +12,7 @@ import ProfileCreateInfo from './ProfileCreateInfo';
 import ProfileCreateVoice from './ProfileCreateVoice';
 import ProfileUpdate from './ProfileUpdate';
 const Profile = () => {
+    //입력되는 값
     const [inputValues, setInputValues] = useState({
         name: '',
         nickname: '',
@@ -21,35 +22,58 @@ const Profile = () => {
         detailedAddress: '',
         postalCode: '',
         emergencyCall: '',
+        beerCapacity: 0,
+        sojuCapacity: 0,
+        latitude: '',
+        longitude: '',
+        unsure: true,
+        voice: '',
     });
-
+    //전역으로 저장되는 값
+    const { user, setUser } = useUserStore((state) => ({
+        user: state.user,
+        setUser: state.setUser,
+    }));
     const navigate = useNavigate();
     const onClickPasswordChangeButton = () => {
         navigate('/find-password');
     };
 
-    const { accessToken } = useAuthStore();
+    //getUserProfile();
     useEffect(() => {
-        const getProfileResult = getUserProfile(); // getUserProfile 함수
-        // if (getProfileResult.isSuccess) {
-        //     // 사용자 정보를 inputValues에 업데이트
-        //     setInputValues({
-        //         name: getProfileResult.data.name,
-        //         nickname: getProfileResult.data.nickname,
-        //         email: getProfileResult.data.email,
-        //         phone: getProfileResult.data.phone,
-        //         address: getProfileResult.data.address,
-        //         detailedAddress: getProfileResult.data.detailedAddress,
-        //         postalCode: getProfileResult.data.postalCode,
-        //         emergencyCall: getProfileResult.data.emergencyCall,
-        //     });
-        //
-        // }
+        const fetchUserProfile = async () => {
+            try {
+                const getProfileResult = await getUserProfile();
+
+                console.log('getProfileResult :', getProfileResult.data);
+                if (getProfileResult.isSuccess) {
+                    // api로 불러온 값 렌더링
+                    setInputValues({
+                        name: getProfileResult.data.name || '',
+                        nickname: getProfileResult.data.nickname || '',
+                        email: getProfileResult.data.email || '',
+                        phone: getProfileResult.data.phone || '',
+                        address: getProfileResult.data.address || '',
+                        detailedAddress:
+                            getProfileResult.data.detailedAddress || '',
+                        postalCode: getProfileResult.data.postalCode || '',
+                        emergencyCall:
+                            getProfileResult.data.emergencyCall || '',
+                    });
+                    //  전역상태로 저장
+                    setUser(getProfileResult.data);
+                    console.log('전역저장 후 ', user);
+                }
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            }
+        };
+        fetchUserProfile();
     }, []);
     return (
         <>
             <St.ProfileContainer>
-                <St.Title>{inputValues.nickname}님 안녕하세요!</St.Title>
+                <St.Title>{inputValues.name}님 안녕하세요!</St.Title>
                 <St.InfoContainer>
                     <InputBox
                         labelText="이름"
@@ -95,14 +119,17 @@ const Profile = () => {
                                     src={sojuBottleImage}
                                     alt={`so`}
                                 />
-                                <St.Text>2병</St.Text>
+                                <St.Text>{inputValues.sojuCapacity} 병</St.Text>
                             </St.SojuBox>
                             <St.BeerBox>
                                 <St.StyledStepperImage
                                     src={beerBottleImage}
                                     alt={`be`}
                                 />
-                                <St.Text>2병</St.Text>
+                                <St.Text>
+                                    {' '}
+                                    {inputValues.beerCapacity} 병
+                                </St.Text>
                             </St.BeerBox>
                         </St.AlcolBox>
                     </St.AlcoholCapacityBox>

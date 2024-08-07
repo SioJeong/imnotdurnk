@@ -4,6 +4,7 @@ import com.imnotdurnk.domain.auth.dto.TokenDto;
 import com.imnotdurnk.domain.auth.enums.TokenType;
 import com.imnotdurnk.domain.auth.service.AuthService;
 import com.imnotdurnk.global.commonClass.CommonResponse;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.slf4j.Logger;
@@ -37,6 +38,10 @@ public class AuthController {
      * @param type
      * @return 재발급 완료 여부 (토큰은 헤더에 넣어서 전송)
      */
+    @Operation(
+            summary = "토큰 재발급 요청",
+            description = "request의 쿠키를 확인하고 유효한 refresh token을 가지고 있을 경우에만 요청 받은 타입의 토큰을 재발급합니다."
+    )
     @GetMapping("/refresh")
     public ResponseEntity<CommonResponse> reissuedToken(
             @RequestAttribute(value = "RefreshToken", required = true) String refreshToken,

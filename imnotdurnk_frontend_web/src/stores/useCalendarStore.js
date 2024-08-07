@@ -6,12 +6,12 @@ import {
     parseDateTime,
     parseTime,
 } from '../hooks/useDateTimeFormatter';
-import { createEvent } from '../services/calendar';
+import { createEvent, updateEvent } from '../services/calendar';
 
 // 로컬 스토리지에 저장 O
 const usePersistentStore = create(
     persist(
-        (set) => ({
+        (set, get) => ({
             // 1. 선택한 날짜에 해당하는 이벤트 리스트
             eventListOnSelectedDate: [],
             setEventListOnSelectedDate: (events) =>
@@ -20,6 +20,77 @@ const usePersistentStore = create(
             // 2. 선택한 날짜의 상태 (alcoholLevel)
             statusOnDate: 0,
             setStatusOnDate: (status) => set({ statusOnDate: status }),
+
+            // 3. 일정 상세 -> 수정을 위한 임시 저장용
+            planDetail: {
+                id: null,
+                userId: null,
+                date: convertDateToString(new Date()), // 오류 방지 위한 new Date 처리
+                time: convertTimeToString(new Date()), // 오류 방지 위한 new Date 처리
+                title: '',
+                memo: '',
+                sojuAmount: 0,
+                beerAmount: 0,
+                alcoholLevel: 0,
+                arrivalTime: '',
+                gameLogEntities: [],
+            },
+            setPlanDetail: (newPlanDetail) =>
+                set((state) => ({
+                    planDetail: { ...state.planDetail, ...newPlanDetail },
+                })),
+            resetPlanDetail: () =>
+                set({
+                    planDetail: {
+                        id: null,
+                        userId: null,
+                        date: convertDateToString(new Date()), // 오류 방지 위한 new Date 처리
+                        time: convertTimeToString(new Date()), // 오류 방지 위한 new Date 처리
+                        title: '',
+                        memo: '',
+                        sojuAmount: 0,
+                        beerAmount: 0,
+                        alcoholLevel: 0,
+                        arrivalTime: '',
+                        gameLogEntities: [],
+                    },
+                }),
+            setFullPlanDetail: (newPlanDetail) =>
+                set({ planDetail: newPlanDetail }),
+            editPlan: async () => {
+                const { planDetail } = get();
+
+                const formattedDateTime = parseDateTime(
+                    planDetail.date,
+                    planDetail.time,
+                );
+
+                const formattedPlan = {
+                    id: planDetail.id,
+                    userId: planDetail.userId,
+                    date: formattedDateTime,
+                    title: planDetail.title,
+                    memo: planDetail.memo,
+                    sojuAmount: planDetail.sojuAmount,
+                    beerAmount: planDetail.beerAmount,
+                    alcoholLevel: planDetail.alcoholLevel,
+                    arrivalTime: planDetail.arrivalTime,
+                };
+
+                try {
+                    const success = await updateEvent({
+                        editedPlan: formattedPlan,
+                    });
+
+                    if (success) {
+                        return true;
+                    }
+                } catch (error) {
+                    console.error('일정 수정 중 오류 발생:', error.message);
+                }
+
+                return false;
+            },
         }),
         {
             name: 'calendar',

@@ -71,7 +71,7 @@ const InputIcon = styled.img`
         `
     pointer-events: none;
     visibility: hidden;
-    border: var(--color-white1);
+    border: none;
   `}
 `;
 

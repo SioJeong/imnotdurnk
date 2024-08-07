@@ -12,8 +12,8 @@ const MyPage = () => {
     return (
         <>
             <Routes>
-                <Route path="/" element={<Statistics />} />
-                <Route path="/profile" element={<Profile />} />
+                <Route path="/*" element={<Statistics />} />
+                <Route path="/profile/*" element={<Profile />} />
                 <Route
                     path="/profile/create/info"
                     element={<ProfileCreateInfo />}

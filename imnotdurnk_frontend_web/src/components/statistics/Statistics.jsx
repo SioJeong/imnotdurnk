@@ -19,9 +19,13 @@ const Statistics = () => {
             beerAmount: 0,
         },
     });
-    const changeToggle = () => {
-        setIsFirstSelected(!isFirstSelected);
+    const changeFirstToggle = () => {
+        setIsFirstSelected(true);
     };
+    const changeSecondToggle = () => {
+        setIsFirstSelected(false);
+    };
+
     const today = new Date();
     const year = today.getFullYear(); // 연도
     const month = String(today.getMonth() + 1).padStart(2, '0');
@@ -52,7 +56,8 @@ const Statistics = () => {
                 toggle2="Game"
                 isMono={false}
                 isFirstSelected={isFirstSelected}
-                changeToggle={changeToggle}
+                changeFirstToggle={changeFirstToggle}
+                changeSecondToggle={changeSecondToggle}
             />
 
             {isFirstSelected ? (
