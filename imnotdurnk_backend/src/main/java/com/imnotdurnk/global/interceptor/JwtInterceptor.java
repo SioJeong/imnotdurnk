@@ -118,6 +118,13 @@ public class JwtInterceptor implements HandlerInterceptor {
                 return true;
     		}
     	}
+        /**
+         * 회원 탈퇴시 리프레시 토큰 확인 필요 (redis에서 삭제하기 위해)
+         */
+        else if(request.getServletPath().equals("/users/delete-account")){
+            if(checkRefreshToken((request)) && checkAccessToken(request))
+                return true;
+        }
 
     	/**
     	 * Access Token 유효성 검증 및 attribute 설정
