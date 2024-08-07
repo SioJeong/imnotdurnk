@@ -66,7 +66,7 @@ const CertificationNumberInputContainer = ({
     const handleCertification = (e) => {
         e.preventDefault();
         const certNumString = convertCertNum();
-        if (certNumString.length == 4) {
+        if (certNumString.length === 4) {
             setAlertContents('');
             console.log('api 요청직전', certNumString);
             compareCertificationNumber(certNumString);
