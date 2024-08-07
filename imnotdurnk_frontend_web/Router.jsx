@@ -8,6 +8,7 @@ import Home from '@/pages/Home.jsx';
 import ModalTest from '@/pages/ModalTest';
 import MyPage from '@/pages/MyPage';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import Game from './src/pages/Game';
 
 const Router = () => {
     return (
@@ -22,6 +23,7 @@ const Router = () => {
                     <Route path="/modaltest" element={<ModalTest />} />
                     <Route path="/componenttest" element={<ComponentTest />} />
                     <Route path="/mypage/*" element={<MyPage />} />
+                    <Route path="/game/*" element={<Game />} />
                 </Route>
             </Routes>
         </BrowserRouter>

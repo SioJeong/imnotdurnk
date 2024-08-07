@@ -98,8 +98,6 @@ public class JwtInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws InvalidTokenException {
 
-        // 원활한 테스트를 위해 Interceptor 무효화
-        //return true;
     	/**
     	 * 로그아웃인 경우 유효성 검증 후 유효한 토큰만 attribute로 설정
     	 */
@@ -113,10 +111,11 @@ public class JwtInterceptor implements HandlerInterceptor {
     	 * 토큰 재발급 요청인 경우 Refresh Token 유효성 검증 및 attribute 설정
     	 */
     	else if(request.getServletPath().equals("/auth/refresh")) {
-            if(checkRefreshToken(request)) {
-                checkAccessToken(request);
-                return true;
-    		}
+            //리프레시 토큰 확인
+            if(!checkRefreshToken(request))
+                throw new InvalidTokenException("[인터셉터] 유효하지 않은 리프레시 토큰");
+            
+            checkAccessToken(request);
     	}
         /**
          * 회원 탈퇴시 리프레시 토큰 확인 필요 (redis에서 삭제하기 위해)
@@ -124,18 +123,18 @@ public class JwtInterceptor implements HandlerInterceptor {
         else if(request.getServletPath().equals("/users/delete-account")){
             if(checkRefreshToken((request)) && checkAccessToken(request))
                 return true;
+            else throw new InvalidTokenException("[인터셉터] 유효하지 않은 토큰");
         }
 
     	/**
     	 * Access Token 유효성 검증 및 attribute 설정
     	 */
     	else {
-    		if(checkAccessToken(request)) {
-    			return true;
-    		}
+    		if(!checkAccessToken(request))
+                throw new InvalidTokenException("[인터셉터] 유효하지 않은 엑세스 토큰");
     	}
 
-        throw new InvalidTokenException("Unauthorized");
+        return true;
     }
 
 }
