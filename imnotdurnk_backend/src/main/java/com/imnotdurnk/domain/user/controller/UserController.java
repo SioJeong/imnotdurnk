@@ -22,6 +22,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
+
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -63,16 +65,16 @@ public class UserController {
      *
      * @param email 인증 코드를 받은 이메일 주소
      * @param code  사용자가 입력한 인증 코드
-     * @return 인증 성공 시 OK(200) 응답, 실패 시 BadRequest(400) 응답
+     * @return 인증 성공 시 OK(200) 응답, 요청이 잘 왔으나 인증번호가 틀리면 UnprocessableEntity(422) 응답
      * @throws BadRequestException 필수 정보 누락 시 발생
      */
     @PostMapping("/signup/verify-code")
-    public ResponseEntity<?> verifyCode(@RequestParam String email, @RequestParam String code) throws Exception {
+    public ResponseEntity<?> verifyCode(@RequestBody String email, @RequestParam String code) throws Exception {
 
         if(email == null || email.equals("")) throw new RequiredFieldMissingException("이메일 누락");
         if(code == null || code.equals("")) throw new RequiredFieldMissingException("인증번호 누락");
 
-        userService.verifyCode(email, code);
+        if(!userService.verifyCode(email, code)) throw new BadRequestException("인증번호 일치하지 않음");
         CommonResponse response = new CommonResponse(200,"이메일 인증");
         return ResponseEntity.status(response.getHttpStatus()).body(response);
     }
