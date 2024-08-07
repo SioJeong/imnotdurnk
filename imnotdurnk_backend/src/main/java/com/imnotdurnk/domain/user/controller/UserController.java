@@ -280,7 +280,7 @@ public class UserController {
      */
     @Operation(
             summary = "회원 탈퇴",
-            description = "비밀번호 확인 필요"
+            description = "비밀번호 확인 필요 { password: string } 형식으로 요청"
     )
     @PostMapping("delete-account")
     public ResponseEntity<?> deleteAccount(@RequestAttribute(value = "RefreshToken", required = true) String refreshToken,
