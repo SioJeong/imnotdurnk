@@ -20,8 +20,20 @@ public class MailConfig {
     @Value("${spring.mail.password}")
     private String password;
 
+    @Value("${spring.mail.properties.mail.smtp.auth}")
+    private String auth;
+    @Value("${spring.mail.properties.mail.smtp.starttls.enable}")
+    private String starttlsEnable;
+    @Value("${spring.mail.properties.mail.smtp.debug}")
+    private String debug;
+    @Value("${spring.mail.properties.mail.smtp.ssl.trust}")
+    private String sslTrust;
+    @Value("${spring.mail.properties.mail.smtp.ssl.enable}")
+    private String sslEnable;
+
     @Bean
     public JavaMailSender javaMailService() {
+
         JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
 
         javaMailSender.setHost(host); // smtp 서버 주소
@@ -34,13 +46,14 @@ public class MailConfig {
     }
 
     private Properties getMailProperties() {
+
         Properties properties = new Properties();
         properties.setProperty("mail.transport.protocol", "smtp"); // 프로토콜 설정
-        properties.setProperty("mail.smtp.auth", "true"); // smtp 인증
-        properties.setProperty("mail.smtp.starttls.enable", "true"); // smtp strattles 사용
-        properties.setProperty("mail.debug", "true"); // 디버그 사용
-        properties.setProperty("mail.smtp.ssl.trust","smtp.naver.com"); // ssl 인증 서버는 smtp.naver.com
-        properties.setProperty("mail.smtp.ssl.enable","true"); // ssl 사용
+        properties.setProperty("mail.smtp.auth", auth); // smtp 인증
+        properties.setProperty("mail.smtp.starttls.enable", starttlsEnable); // smtp strattles 사용
+        properties.setProperty("mail.debug", debug); // 디버그 사용
+        properties.setProperty("mail.smtp.ssl.trust",sslTrust); // ssl 인증 서버는 smtp.gmail.com
+        properties.setProperty("mail.smtp.ssl.enable",sslEnable); // ssl 사용
         return properties;
     }
 
