@@ -128,7 +128,7 @@ public class UserServiceImpl implements UserService {
 
         //인증번호 생성
         Random random = new Random();
-        String verificationCode = String.valueOf(random.nextInt(999999));
+        String verificationCode = String.format("%04d", random.nextInt(10000));
 
         try {
             sendMail(email, "회원 인증 메일입니다.", verificationCode, "코드");
@@ -228,10 +228,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void sendMail(String email, String title, String code, String codeName) throws MessagingException, UnsupportedEncodingException {
-        log.info("이메일: " + email);
-        log.info("제목: " + title);
-        log.info("코드: " + code);
-        log.info("코드네임: " + codeName);
+        log.info("[회원가입 인증 요청 " + email + "] : " + code);
 
         MimeMessage message = emailsender.createMimeMessage();
         message.addRecipients(Message.RecipientType.TO, email);

@@ -9,7 +9,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-@Table(name = "routes")
+@Table(name = "route")
 public class RouteEntity {
 
     @Id

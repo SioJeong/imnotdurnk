@@ -11,6 +11,7 @@ import com.imnotdurnk.global.exception.InvalidDateException;
 import com.imnotdurnk.global.exception.InvalidTokenException;
 import com.imnotdurnk.global.exception.RequiredFieldMissingException;
 import com.imnotdurnk.global.response.SingleResponse;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
 import org.apache.coyote.BadRequestException;
@@ -46,6 +47,9 @@ public class UserController {
      *
      * @throws Exception 처리되지 않은 예외
      */
+    @Operation(
+            summary = "이메일 인증 요청"
+    )
     @GetMapping("/signup/verify")
     public ResponseEntity<?> verifyEmail(@RequestParam String email) throws BadRequestException, MessagingException, UnsupportedEncodingException {
 
@@ -66,6 +70,9 @@ public class UserController {
      * @return 인증 성공 시 OK(200) 응답, 실패 시 BadRequest(400) 응답
      * @throws BadRequestException 필수 정보 누락 시 발생
      */
+    @Operation(
+            summary = "이메일 인증 코드 확인"
+    )
     @PostMapping("/signup/verify-code")
     public ResponseEntity<?> verifyCode(@RequestParam String email, @RequestParam String code) throws Exception {
 
@@ -85,6 +92,9 @@ public class UserController {
      * @throws BadRequestException 이메일, 비밀번호, 이름 중 하나라도 누락되거나 이미 사용 중인 이메일인 경우 발생하는 예외
      *         UserNotVerifiedException 이메일 인증 전이라면 UNAUTHORIZED(401) 응답
      */
+    @Operation(
+            summary = "사용자 회원가입"
+    )
     @PostMapping("/signup")
     public ResponseEntity<?> signUp(@RequestBody UserDto userDto) throws BadRequestException {
 
@@ -106,6 +116,9 @@ public class UserController {
      * @return 로그인이 완료된 사용자의 인증 토큰을 header에 담은 {@link ResponseEntity} 객체
      * @throws BadRequestException 이메일, 비밀번호, 이름 중 하나라도 누락되거나 이미 사용 중인 이메일인 경우 발생하는 예외
      */
+    @Operation(
+            summary = "로그인"
+    )
     @PostMapping("/login")
     public ResponseEntity<?> login (@RequestBody LoginUserDto loginUserDto) throws BadRequestException {
 
@@ -122,7 +135,7 @@ public class UserController {
 
         ResponseCookie responseCookie = ResponseCookie
                 .from("RefreshToken", refreshTokenDto.getToken())
-                .domain("localhost") // 어떤 사이트에서 쿠키를 사용할 수 있도록 허용할 지 설정.
+                .domain("i11a609.p.ssafy.io") // 어떤 사이트에서 쿠키를 사용할 수 있도록 허용할 지 설정.
                 .path("/") // 위 사이트에서 쿠키를 허용할 경로를 설정.
                 .httpOnly(true) // HTTP 통신을 위해서만 사용하도록 설정.
                 .secure(true) // Set-Cookie 설정.
@@ -147,6 +160,9 @@ public class UserController {
      * @throws MessagingException
      * @throws UnsupportedEncodingException
      */
+    @Operation(
+            summary = "비밀번호 찾기(임시 비밀번호 발급)"
+    )
     @GetMapping("/login/find-password")
     public ResponseEntity<?> sendNewPassword(@RequestParam String email) throws BadRequestException, MessagingException, UnsupportedEncodingException {
 
@@ -164,6 +180,9 @@ public class UserController {
      * @return 업데이트 성공 시 HTTP 200 OK, 실패 시 BadRequestException 발생
      * @throws BadRequestException 수정 요청이 실패한 경우 발생
      */
+    @Operation(
+            summary = "사용자 프로필 정보를 업데이트"
+    )
     @PutMapping("/profile")
     public ResponseEntity<?> updateProfile(@RequestAttribute(value = "AccessToken", required = true)  String token, @RequestBody UserDto userDto) throws BadRequestException {
 
@@ -183,6 +202,9 @@ public class UserController {
      * @return 사용자 정보담은 {@link UserDto} 반환
      * @throws BadRequestException 조회 실패 시 발생
      */
+    @Operation(
+            summary = "사용자 프로필 정보 조회"
+    )
     @GetMapping("/profile")
     public ResponseEntity<?> getProfile(@RequestAttribute(value = "AccessToken", required = true) String token) throws BadRequestException {
 
@@ -199,6 +221,9 @@ public class UserController {
      * @param accessToken
      * @return 로그아웃 완료
      */
+    @Operation(
+            summary = "로그아웃"
+    )
     @PostMapping("logout")
     public ResponseEntity<?> logout (
             @RequestAttribute(value = "RefreshToken", required = false) String refreshToken,
@@ -221,6 +246,9 @@ public class UserController {
      * @throws BadRequestException 잘못된 형식의 데이터
      * @throws RequiredFieldMissingException 입력 값 누락
      */
+    @Operation(
+            summary = "비밀번호 변경"
+    )
     @PostMapping("update-password")
     public ResponseEntity<?> updatePassword(@RequestAttribute(value = "AccessToken", required = true) String accessToken,
                                             @RequestBody UpdatedPasswordDto updatedPasswordDto) throws BadRequestException {
@@ -250,6 +278,9 @@ public class UserController {
      * @return 탈퇴 성공 여부를 담은 {@link CommonResponse} 객체
      * @throws BadRequestException
      */
+    @Operation(
+            summary = "회원 탈퇴"
+    )
     @PostMapping("delete-account")
     public ResponseEntity<?> deleteAccount(@RequestAttribute(value = "RefreshToken", required = true) String refreshToken,
                                            @RequestAttribute(value = "AccessToken", required = true) String accessToken,

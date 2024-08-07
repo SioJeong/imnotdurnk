@@ -23,6 +23,12 @@ const Navigation = () => {
                 .split(' ')
                 .map((item) => item.trim());
 
+            // 제목 필수! 빈 값이면 반환
+            if (!plan.title || plan.title.trim() === '') {
+                alert('제목을 입력해야 합니다.');
+                return;
+            }
+
             const success = await submitPlan(); // 일정 제출 함수 호출
 
             if (success) {

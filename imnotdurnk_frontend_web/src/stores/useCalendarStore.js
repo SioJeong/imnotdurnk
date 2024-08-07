@@ -38,7 +38,7 @@ const useNonPersistentStore = create((set, get) => ({
         sojuAmount: 0,
         beerAmount: 0,
         alcoholLevel: '0: 취하지 않음',
-        arrivalTime: '오후 10시 00분',
+        arrivalTime: '-',
     },
     setPlan: (newPlan) =>
         set((state) => ({ plan: { ...state.plan, ...newPlan } })),
@@ -52,14 +52,13 @@ const useNonPersistentStore = create((set, get) => ({
                 sojuAmount: 0,
                 beerAmount: 0,
                 alcoholLevel: '0: 취하지 않음',
-                arrivalTime: '오후 10시 00분',
+                arrivalTime: '-',
             },
         }),
     submitPlan: async () => {
         const { plan } = get();
 
         const formattedDateTime = parseDateTime(plan.date, plan.time);
-        const formattedTime = parseTime(plan.arrivalTime);
 
         const formattedPlan = {
             date: formattedDateTime,
@@ -68,7 +67,8 @@ const useNonPersistentStore = create((set, get) => ({
             sojuAmount: plan.sojuAmount,
             beerAmount: plan.beerAmount,
             alcoholLevel: parseInt(plan.alcoholLevel.split(':')[0]),
-            arrivalTime: formattedTime,
+            arrivalTime:
+                plan.arrivalTime === '-' ? null : parseTime(plan.arrivalTime),
         };
 
         try {

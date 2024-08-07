@@ -13,7 +13,6 @@ const BarContainer = styled(View)`
 `;
 
 const BarSegment = styled(View)`
-    flex: 1;
     height: 1px;
     background-color: ${({ theme }) => theme.colors.green3};
     position: relative;

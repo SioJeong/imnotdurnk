@@ -16,7 +16,7 @@ const Home = () => {
                 isVisible: true,
                 icon1: { iconname: 'address', isRed: false },
                 title: '홈 화면',
-                icon2: { iconname: 'check', isRed: false },
+                icon2: { iconname: 'empty', isRed: false },
             });
 
             // Home 화면으로 오면 전역의 출발지와 목적지 초기화

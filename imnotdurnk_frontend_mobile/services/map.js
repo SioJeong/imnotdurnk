@@ -11,10 +11,14 @@ const getReverseGeocoding = async (latitude, longitude) => {
         const response = await axios.get(
             `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${GOOGLE_PLACES_API_KEY}&language=ko`,
         );
-        return (
+        let address =
             response.data.results[0]?.formatted_address ||
-            '현재 위치를 알 수 없음'
-        );
+            '현재 위치를 알 수 없음';
+
+        // "대한민국" 제거
+        address = address.replace(/^대한민국\s/, '');
+
+        return address;
     } catch (error) {
         console.error('주소 요청 중 오류 발생', error);
         throw error;
@@ -35,8 +39,8 @@ const fetchTransitDirections = async (departure, stopover) => {
 
             const firstPath = data.result.path[0];
 
-            const transitCoordinates = extractTransitCoordinates(firstPath);
-            const summaryCoordinates = transitCoordinates.reduce(
+            const transitPathInfo = extractTransitCoordinates(firstPath);
+            const summaryCoordinates = transitPathInfo.reduce(
                 (acc, route) => acc.concat(route.coordinates),
                 [],
             );
@@ -54,8 +58,7 @@ const fetchTransitDirections = async (departure, stopover) => {
                 busTransitCount: firstPath.info.busTransitCount,
                 subwayTransitCount: firstPath.info.subwayTransitCount,
                 totalWalkTime: Math.floor(firstPath.info.totalWalk / 90),
-                transitCoordinates: extractTransitCoordinates(firstPath),
-                transitCoordinates,
+                transitPathInfo,
                 summaryCoordinates,
             };
 

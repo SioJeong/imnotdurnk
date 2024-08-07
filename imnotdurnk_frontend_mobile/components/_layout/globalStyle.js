@@ -25,15 +25,13 @@ const NavContainer = styled(View)`
 
     padding: 8px 10px;
     margin: 0 auto;
-
-    /* TODO: 확인용 border - 추후 제거 */
-    /* border: 1px solid black; */
 `;
 
 const Container = styled(View)`
     flex: 1;
-    background-color: ${({ theme }) => theme.colors.white1};
+
     gap: 10px;
+    background-color: ${({ theme }) => theme.colors.white1};
 `;
 
 const Container2 = styled(View)`
@@ -42,24 +40,24 @@ const Container2 = styled(View)`
     justify-content: center;
     align-items: center;
 
+    gap: 16px;
     background-color: ${({ theme }) => theme.colors.white2};
-    gap: 10px;
 
     padding: 24px;
     border-radius: 20px;
     overflow: hidden;
 `;
 
-const ScrollContainer = styled(ScrollView)`
+const ScrollContainer = styled(ScrollView).attrs(() => ({
+    contentContainerStyle: {
+        flexGrow: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+}))`
+    overscrollmode: 'never';
     flex: 1;
-`;
-
-// 지도 우측 하단에 들어가는 버튼
-const FloatingButtonBottomRight = styled(View)`
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
-    z-index: 1;
+    flex-direction: column;
 `;
 
 const GlobalText = styled(Text)`
@@ -85,13 +83,13 @@ const MapSearchContainer = styled(View)`
     background-color: ${({ theme }) => theme.colors.green2};
 
     border-radius: 20px;
+    z-index: 1;
 `;
 
 export {
     AppContainer,
     Container,
     Container2,
-    FloatingButtonBottomRight,
     GlobalText,
     LayoutContainer,
     MapSearchContainer,
