@@ -1,5 +1,5 @@
 import ToggleButton from '@/components/_button/ToggleButton';
-import { getStaticsticsData } from '@/services/calendar';
+import { getStaticsticsData } from '@/services/statistics';
 import { useEffect, useState } from 'react';
 import { styled } from 'styled-components';
 import AlcoholStatistics from './AlcoholStatistics';
@@ -33,8 +33,10 @@ const Statistics = () => {
     const formattedDate = `${year}-${month}-${date}`;
 
     useEffect(() => {
+        console.log('useEffect내', formattedDate);
         const fetchStatisticsData = async () => {
             try {
+                console.log('useEffect내2', formattedDate);
                 const getStatisticsResult =
                     await getStaticsticsData(formattedDate); // getUserProfile 함수 비동기 호출
 

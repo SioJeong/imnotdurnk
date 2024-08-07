@@ -1,14 +1,15 @@
 import { api } from './api';
 
 //개인별 음주 통계 api 호츌
-const getStaticsticsData = async ({ formattedDate }) => {
+const getStaticsticsData = async (formattedDate) => {
+    console.log('fd', formattedDate);
     try {
         const response = await api.get(`/calendars/statistics`, {
             params: {
-                date: formattedDate,
+                dateStr: formattedDate,
             },
         });
-        console.log('2', response);
+        console.log('2', response.data);
         const { statusCode, httpStatus, message, data } = response.data;
         // apiErrorHandler(statusCode, httpStatus, message);
         console.log('통계데이터 얻기 response:', data);
