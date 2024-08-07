@@ -7,10 +7,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.Builder;
 import org.hibernate.annotations.ColumnDefault;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -65,8 +61,11 @@ public class UserEntity extends BaseEntity {
     @Column(name = "soju_capacity", nullable = true)
     private Integer sojuCapacity;
 
-    @Column(nullable = true)
-    private Boolean unsure;
+    @Column(name = "soju_unsure", nullable = true)
+    private Boolean sojuUnsure;
+
+    @Column(name = "beer_unsure", nullable = true)
+    private Boolean beerUnsure;
 
     @Column(nullable = false)
     @ColumnDefault("0")
@@ -75,7 +74,9 @@ public class UserEntity extends BaseEntity {
     public UserEntity() {}
 
     @Builder
-    public UserEntity(Integer id, String email, String password, String name, String phone, String nickname, String address, String detailedAddress, Double latitude, Double longitude, String postalCode, String voice, String emergencyCall, Integer beerCapacity, Integer sojuCapacity, Boolean unsure) {
+    public UserEntity(Integer id, String email, String password, String name, String phone, String nickname,
+                      String address, String detailedAddress, Double latitude, Double longitude, String postalCode,
+                      String voice, String emergencyCall, Integer beerCapacity, Integer sojuCapacity, Boolean sojuUnsure, Boolean beerUnsure) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -91,7 +92,8 @@ public class UserEntity extends BaseEntity {
         this.emergencyCall = emergencyCall;
         this.beerCapacity = beerCapacity;
         this.sojuCapacity = sojuCapacity;
-        this.unsure = unsure;
+        this.sojuUnsure = sojuUnsure;
+        this.beerUnsure = beerUnsure;
     }
 
     /**
@@ -115,7 +117,8 @@ public class UserEntity extends BaseEntity {
                 .emergencyCall(emergencyCall)
                 .beerCapacity(beerCapacity)
                 .sojuCapacity(sojuCapacity)
-                .unsure(unsure)
+                .sojuUnsure(sojuUnsure)
+                .beerUnsure(beerUnsure)
                 .build();
     }
 
