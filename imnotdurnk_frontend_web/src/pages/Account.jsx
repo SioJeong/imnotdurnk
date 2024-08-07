@@ -9,8 +9,11 @@ const Account = () => {
     const setNavigation = useNavigationStore((state) => state.setNavigation);
     const [isFirstSelected, setIsFirstSelected] = useState(false);
 
-    const changeToggle = () => {
-        setIsFirstSelected(!isFirstSelected);
+    const changeFirstToggle = () => {
+        setIsFirstSelected(true);
+    };
+    const changeSecondToggle = () => {
+        setIsFirstSelected(false);
     };
 
     useEffect(() => {
@@ -29,7 +32,8 @@ const Account = () => {
                 toggle2="Sign up"
                 isMono={true}
                 isFirstSelected={isFirstSelected}
-                changeToggle={changeToggle}
+                changeFirstToggle={changeFirstToggle}
+                changeSecondToggle={changeSecondToggle}
             />
             {isFirstSelected ? <Login /> : <Signup />}
         </AccountContainer>
