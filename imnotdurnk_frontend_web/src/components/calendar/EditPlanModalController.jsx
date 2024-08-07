@@ -1,3 +1,4 @@
+import { parseTime } from '../../hooks/useDateTimeFormatter';
 import useCalendarStore from '../../stores/useCalendarStore';
 import useModalStore from '../../stores/useModalStore';
 import Modal from '../_modal/Modal';
@@ -95,7 +96,7 @@ const EditPlanModalController = ({
 
     const submitSelectedArrivalTime = () => {
         const timeStr = `${selectedArrivalTime.ampm} ${selectedArrivalTime.hour} ${selectedArrivalTime.minute}`;
-        setPlanDetail({ arrivalTime: timeStr });
+        setPlanDetail({ arrivalTime: parseTime(timeStr) });
         closeModal('arrivalTimeModal');
     };
 

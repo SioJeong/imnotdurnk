@@ -98,7 +98,7 @@ const formatTime = (timeString) => {
         hour = 12;
     }
 
-    const formattedHour = hour.toString();
+    const formattedHour = hour.toString().padStart(2, '0');
     const formattedMinute = minuteStr.padStart(2, '0');
 
     return `${ampm} ${formattedHour}시 ${formattedMinute}분`;

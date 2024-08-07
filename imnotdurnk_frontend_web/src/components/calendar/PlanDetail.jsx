@@ -51,7 +51,9 @@ const PlanDetail = () => {
     const beerBottle = Math.floor(planDetail?.beerAmount / 500);
     const beerGlass = Math.round((planDetail?.beerAmount % 500) / 355);
 
-    const arrivalTimeString = planDetail?.arrivalTime;
+    const arrivalTimeString = planDetail?.arrivalTime
+        ? formatTime(planDetail?.arrivalTime)
+        : '-';
 
     return (
         <St.Container>
@@ -142,11 +144,7 @@ const PlanDetail = () => {
                             />
                             <h4>귀가 시간</h4>
                         </St.InputItemBoxTitle>
-                        <h4>
-                            {arrivalTimeString
-                                ? formatTime(arrivalTimeString)
-                                : '-'}
-                        </h4>
+                        <h4>{arrivalTimeString}</h4>
                     </St.InputItemBox>
                 </St.InputContainer>
             </St.AlcoholContainer>

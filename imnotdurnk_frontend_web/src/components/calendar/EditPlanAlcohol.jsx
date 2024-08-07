@@ -1,4 +1,5 @@
 import { alcoholLevelToString } from '../../hooks/useAlcoholLevelFormatter';
+import { formatTime } from '../../hooks/useDateTimeFormatter';
 import useCalendarStore from '../../stores/useCalendarStore';
 import * as St from './CreatePlanAlcohol.style';
 
@@ -10,9 +11,12 @@ const EditPlanAlcohol = ({
     selectedSojuGlassCount,
     selectedBeerBottleCount,
     selectedBeerGlassCount,
-    selectedAlcoholLevel,
 }) => {
-    const { plan, planDetail } = useCalendarStore();
+    const { planDetail } = useCalendarStore();
+
+    const formattedArrivalTime = planDetail.arrivalTime
+        ? formatTime(planDetail.arrivalTime)
+        : '-';
 
     return (
         <St.AlcoholContainer>
@@ -61,7 +65,7 @@ const EditPlanAlcohol = ({
                         />
                         <h4>귀가 시간</h4>
                     </St.InputItemBoxTitle>
-                    <h4>{plan.arrivalTime}</h4>
+                    <h4>{formattedArrivalTime}</h4>
                 </St.InputItemBox>
             </St.InputContainer>
         </St.AlcoholContainer>

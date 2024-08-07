@@ -1,6 +1,7 @@
 import { calendarMinmax } from '@/shared/constants/minmaxLength';
 import { useEffect, useRef, useState } from 'react';
 import { alcoholLevelToString } from '../../hooks/useAlcoholLevelFormatter';
+import { formatTime } from '../../hooks/useDateTimeFormatter';
 import useCalendarStore from '../../stores/useCalendarStore';
 import useModalStore from '../../stores/useModalStore';
 import * as St from './CreatePlan.style';
@@ -13,6 +14,11 @@ const EditPlan = () => {
 
     const [year, month, day] = planDetail.date.split(' ');
     const [ampm, hour, minute] = planDetail.time.split(' ');
+    const formattedArrivalTime = planDetail.arrivalTime
+        ? formatTime(planDetail.arrivalTime)
+        : '오후 10시 00분';
+    const [arrivedAmpm, arrivedHour, arrivedMinute] =
+        formattedArrivalTime.split(' '); // arrivalTime이 null인 경우 기본값 설정
 
     // input 영역 상태 관리
     const [selectedDate, setSelectedDate] = useState({
@@ -46,9 +52,9 @@ const EditPlan = () => {
     );
 
     const [selectedArrivalTime, setSelectedArrivalTime] = useState({
-        ampm: '오후',
-        hour: '10시',
-        minute: '00분',
+        ampm: arrivedAmpm,
+        hour: arrivedHour,
+        minute: arrivedMinute,
     });
 
     const memoRef = useRef(null);
@@ -152,7 +158,6 @@ const EditPlan = () => {
                     selectedSojuGlassCount={selectedSojuGlassCount}
                     selectedBeerBottleCount={selectedBeerBottleCount}
                     selectedBeerGlassCount={selectedBeerGlassCount}
-                    selectedAlcoholLevel={selectedAlcoholLevel}
                 />
             </St.Container>
             <EditPlanModalController

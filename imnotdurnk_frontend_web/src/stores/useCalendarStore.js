@@ -20,6 +20,27 @@ const usePersistentStore = create(
             // 2. 선택한 날짜의 상태 (alcoholLevel)
             statusOnDate: 0,
             setStatusOnDate: (status) => set({ statusOnDate: status }),
+
+            // 3. 일정 상세 -> 수정을 위한 임시 저장용
+            planDetail: {
+                id: null,
+                userId: null,
+                date: convertDateToString(new Date()), // 오류 방지 위한 new Date 처리
+                time: convertTimeToString(new Date()), // 오류 방지 위한 new Date 처리
+                title: '',
+                memo: '',
+                sojuAmount: 0,
+                beerAmount: 0,
+                alcoholLevel: 0,
+                arrivalTime: '22:00:00',
+                gameLogEntities: [],
+            },
+            setPlanDetail: (newPlanDetail) =>
+                set((state) => ({
+                    planDetail: { ...state.planDetail, ...newPlanDetail },
+                })),
+            setFullPlanDetail: (newPlanDetail) =>
+                set({ planDetail: newPlanDetail }),
         }),
         {
             name: 'calendar',
@@ -82,24 +103,6 @@ const useNonPersistentStore = create((set, get) => ({
 
         return false;
     },
-    planDetail: {
-        id: null,
-        userId: null,
-        date: convertDateToString(new Date()), // 오류 방지 위한 new Date 처리
-        time: convertTimeToString(new Date()), // 오류 방지 위한 new Date 처리
-        title: '',
-        memo: '',
-        sojuAmount: 0,
-        beerAmount: 0,
-        alcoholLevel: 0,
-        arrivalTime: null,
-        gameLogEntities: [],
-    },
-    setPlanDetail: (newPlanDetail) =>
-        set((state) => ({
-            planDetail: { ...state.planDetail, ...newPlanDetail },
-        })),
-    setFullPlanDetail: (newPlanDetail) => set({ planDetail: newPlanDetail }),
 }));
 
 const useCalendarStore = () => {
