@@ -57,30 +57,21 @@ public class CalendarController {
      /***
      * 피드백 등록 API
      * @param accessToken
-     * @param date "YYYY-MM-DDThh:ss" 형식이어야 함
      * @param planId
      * @param calendarDto
      * @return 수정이 완료된 경우 200, 오류 400 404 500
      * @throws BadRequestException
      */
-     @Operation(
-             summary = "피드백 등록"
-     )
-    @PutMapping("/{date}/plans/{planId}")
+    @PutMapping("/plans/{planId}")
     public ResponseEntity<?> updateFeedback(@RequestAttribute(value = "AccessToken", required = true) String accessToken,
-                                          @PathVariable String date,
                                           @PathVariable int planId,
                                           @RequestBody CalendarDto calendarDto) throws BadRequestException, InvalidDateException {
-
-        if(!checkDateTime(date)) throw new InvalidDateException("날짜 입력 오류");
-        if(!checkTitle(calendarDto.getTitle())) throw new BadRequestException("제목이 없거나 30자를 초과했습니다.");
-        calendarDto.setDate(date);
 
         //응답 객체
         CommonResponse response = new CommonResponse();
 
         //피드백 등록
-        calendarService.updateFeedback(accessToken, date, planId, calendarDto);
+        calendarService.updateFeedback(accessToken, planId, calendarDto);
 
         response.setStatusCode(HttpStatus.OK.value());
         response.setMessage("피드백 등록이 완료되었습니다.");
@@ -100,7 +91,8 @@ public class CalendarController {
      * @throws BadRequestException 일정 등록 실패
      */
     @Operation(
-            summary = "일정 추가"
+            summary = "일정 추가",
+            description ="제목: 30자 이하, 메모: 200자 이하, 날짜: yyyy-MM-ddThh:ss 형식의 문자열"
     )
     @PostMapping
     public ResponseEntity<?> addCalendar(@RequestAttribute(value = "AccessToken", required = true) String token, @RequestBody CalendarDto calendarDto) throws BadRequestException{
@@ -128,7 +120,8 @@ public class CalendarController {
      * @throws ParseException 날짜 문자열을 파싱하는 과정에서 발생할 수 있는 예외
      */
     @Operation(
-            summary = "특정 날짜의 일정 조회"
+            summary = "특정 날짜의 일정 조회",
+            description = "날짜: yyyy-MM-dd 형식의 문자열"
     )
     @GetMapping("/{date}/plans")
     public ResponseEntity<?> getCalendar(@RequestAttribute(value = "AccessToken", required = true) String token,
@@ -155,7 +148,8 @@ public class CalendarController {
      * @return
      */
     @Operation(
-            summary = ""
+            summary = "",
+            description = "날짜: yyyy-MM-dd 형식의 문자열"
     )
     @GetMapping("/statistics")
     public ResponseEntity<?> getStatistics(@RequestAttribute(value = "AccessToken", required = true) String token,
@@ -185,7 +179,8 @@ public class CalendarController {
      * @return
      */
     @Operation(
-            summary = "도착 시간 등록/수정"
+            summary = "도착 시간 등록/수정",
+            description = "도착 시간: HH:mm 형태"
     )
     @GetMapping("/{planId}")
     public ResponseEntity<?> updateArrivalTime(@RequestAttribute(value = "AccessToken", required = true) String accessToken,

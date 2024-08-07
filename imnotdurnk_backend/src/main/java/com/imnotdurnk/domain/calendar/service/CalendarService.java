@@ -17,7 +17,7 @@ public interface CalendarService {
 
     List<DiaryDto> getDiary(String token, int year, int month);
 
-    void updateFeedback(String accessToken, String date, int planId, CalendarDto calendarDto) throws BadRequestException, ResourceNotFoundException, EntitySaveFailedException;
+    void updateFeedback(String accessToken, int planId, CalendarDto calendarDto) throws BadRequestException, ResourceNotFoundException, EntitySaveFailedException;
 
     void addCalendar(String token, CalendarDto calendarDto) throws EntitySaveFailedException;
 
