@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import RecordRTC from 'recordrtc';
 import { styled } from 'styled-components';
 import { sendVoiceRecord } from '../../services/game';
+import VoiceSvgAnimation from '../_common/VoiceSvgAnimation';
 import Button from './../_button/Button';
 
 const VoiceGame = () => {
@@ -29,7 +30,7 @@ const VoiceGame = () => {
             recorderRef.current.stopRecording(() => {
                 recorderRef.current.getDataURL((dataURL) => {
                     const blob = dataURLToBlob(dataURL);
-                    console.log('Blob Type:', blob.type); // Blob 타입 확인
+                    console.log('Blob Type:', blob.type);
                     const audioUrl = URL.createObjectURL(blob);
                     audioRef.current.src = audioUrl;
                     setAudioBlob(blob);
@@ -76,7 +77,7 @@ const VoiceGame = () => {
         if (audioBlob) {
             const formData = new FormData();
             formData.append('file', audioBlob, 'recording.wav');
-            console.log('Sending audio file:', audioBlob); // 파일 정보 로그
+            console.log('Sending audio file:', audioBlob);
 
             try {
                 await sendVoiceRecord({ file: formData });
@@ -99,10 +100,10 @@ const VoiceGame = () => {
                 인간의 진정한 모습은{'\n'}술에 취했을 때 드러난다.
             </TestText>
             <RecordButton onClick={handleToggleRecording}>
-                <StyledIcon src="/src/assets/icons/size_24/Icon-voice.svg" />
+                <VoiceSvgAnimation $isRecording={isRecording} />
                 <h3>{recordingStatus}</h3>
             </RecordButton>
-            <audio ref={audioRef} controls />
+            <CustomAudio ref={audioRef} controls />
             <Button text="제출하기" isRed={true} onClick={handleSubmit} />
         </VoiceGameContainer>
     );
@@ -140,7 +141,9 @@ const RecordButton = styled.button`
     cursor: pointer;
 `;
 
-const StyledIcon = styled.img`
-    width: 11rem;
-    height: 11rem;
+const CustomAudio = styled.audio`
+    &::-webkit-media-controls-panel {
+        background-color: var(--color-white2);
+        border-radius: 5px;
+    }
 `;
