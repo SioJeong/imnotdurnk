@@ -6,9 +6,6 @@ import apiErrorHandler from './apiErrorHandler';
 const getAllEventList = async ({ year, month }) => {
     try {
         const response = await api.get('/calendars', {
-            headers: {
-                Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Im5heWUwN0BnLmhvbmdpay5hYy5rciIsImlhdCI6MTcyMjkwOTQyOSwiZXhwIjoxNzIzMDg5NDI5fQ.Nw3Kyq8tKhGVSVJsQQC7u1TJS679c5XV3_sUxBlNMlU`,
-            },
             params: { year, month },
         });
 
@@ -62,11 +59,7 @@ const getStaticsticsData = async ({ formattedDate }) => {
 };
 const createEvent = async ({ plan }) => {
     try {
-        const response = await api.post('/calendars', plan, {
-            headers: {
-                Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Im5heWUwN0BnLmhvbmdpay5hYy5rciIsImlhdCI6MTcyMjkwOTQyOSwiZXhwIjoxNzIzMDg5NDI5fQ.Nw3Kyq8tKhGVSVJsQQC7u1TJS679c5XV3_sUxBlNMlU`,
-            },
-        });
+        const response = await api.post('/calendars', plan, {});
 
         const { statusCode, httpStatus, message } = response.data;
         apiErrorHandler(statusCode, httpStatus, message);
@@ -81,11 +74,7 @@ const createEvent = async ({ plan }) => {
 
 const getEventDetail = async ({ planId }) => {
     try {
-        const response = await api.get(`/calendars/plans/${planId}`, {
-            headers: {
-                Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Im5heWUwN0BnLmhvbmdpay5hYy5rciIsImlhdCI6MTcyMjkwOTQyOSwiZXhwIjoxNzIzMDg5NDI5fQ.Nw3Kyq8tKhGVSVJsQQC7u1TJS679c5XV3_sUxBlNMlU`,
-            },
-        });
+        const response = await api.get(`/calendars/plans/${planId}`, {});
 
         const { statusCode, httpStatus, message, data } = response.data;
         apiErrorHandler(statusCode, httpStatus, message);
@@ -103,11 +92,7 @@ const updateEvent = async ({ editedPlan }) => {
         const response = await api.put(
             `/calendars/${editedPlan.date}/plans/${editedPlan.id}`,
             editedPlan,
-            {
-                headers: {
-                    Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Im5heWUwN0BnLmhvbmdpay5hYy5rciIsImlhdCI6MTcyMjkwOTQyOSwiZXhwIjoxNzIzMDg5NDI5fQ.Nw3Kyq8tKhGVSVJsQQC7u1TJS679c5XV3_sUxBlNMlU`,
-                },
-            },
+            {},
         );
 
         const { statusCode, httpStatus, message } = response.data;
@@ -123,11 +108,7 @@ const updateEvent = async ({ editedPlan }) => {
 
 const deleteEvent = async ({ planId }) => {
     try {
-        const response = await api.delete(`calendars/${planId}`, {
-            headers: {
-                Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Im5heWUwN0BnLmhvbmdpay5hYy5rciIsImlhdCI6MTcyMjkwOTQyOSwiZXhwIjoxNzIzMDg5NDI5fQ.Nw3Kyq8tKhGVSVJsQQC7u1TJS679c5XV3_sUxBlNMlU`,
-            },
-        });
+        const response = await api.delete(`calendars/${planId}`, {});
 
         const { statusCode, httpStatus, message } = response.data;
         apiErrorHandler(statusCode, httpStatus, message);
