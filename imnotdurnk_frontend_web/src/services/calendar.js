@@ -98,4 +98,53 @@ const getEventDetail = async ({ planId }) => {
     }
 };
 
-export { createEvent, getAllEventList, getEventDetail, getStaticsticsData };
+const updateEvent = async ({ editedPlan }) => {
+    try {
+        const response = await api.put(
+            `/calendars/${editedPlan.date}/plans/${editedPlan.id}`,
+            editedPlan,
+            {
+                headers: {
+                    Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Im5heWUwN0BnLmhvbmdpay5hYy5rciIsImlhdCI6MTcyMjkwOTQyOSwiZXhwIjoxNzIzMDg5NDI5fQ.Nw3Kyq8tKhGVSVJsQQC7u1TJS679c5XV3_sUxBlNMlU`,
+                },
+            },
+        );
+
+        const { statusCode, httpStatus, message } = response.data;
+        apiErrorHandler(statusCode, httpStatus, message);
+
+        if (statusCode === 200) {
+            return true;
+        }
+    } catch (error) {
+        throw new Error(error.message || '일정 수정 중 오류 발생');
+    }
+};
+
+const deleteEvent = async ({ planId }) => {
+    try {
+        const response = await api.delete(`calendars/${planId}`, {
+            headers: {
+                Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Im5heWUwN0BnLmhvbmdpay5hYy5rciIsImlhdCI6MTcyMjkwOTQyOSwiZXhwIjoxNzIzMDg5NDI5fQ.Nw3Kyq8tKhGVSVJsQQC7u1TJS679c5XV3_sUxBlNMlU`,
+            },
+        });
+
+        const { statusCode, httpStatus, message } = response.data;
+        apiErrorHandler(statusCode, httpStatus, message);
+
+        if (statusCode === 200) {
+            return true;
+        }
+    } catch (error) {
+        throw new Error(error.message || '일정 삭제 중 오류 발생');
+    }
+};
+
+export {
+    createEvent,
+    deleteEvent,
+    getAllEventList,
+    getEventDetail,
+    getStaticsticsData,
+    updateEvent,
+};

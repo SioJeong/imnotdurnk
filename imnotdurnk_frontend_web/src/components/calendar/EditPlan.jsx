@@ -1,17 +1,24 @@
 import { calendarMinmax } from '@/shared/constants/minmaxLength';
 import { useEffect, useRef, useState } from 'react';
+import { alcoholLevelToString } from '../../hooks/useAlcoholLevelFormatter';
+import { formatTime } from '../../hooks/useDateTimeFormatter';
 import useCalendarStore from '../../stores/useCalendarStore';
 import useModalStore from '../../stores/useModalStore';
 import * as St from './CreatePlan.style';
-import CreatePlanAlcohol from './CreatePlanAlcohol';
-import CreatePlanModalController from './CreatePlanModalController';
+import EditPlanAlcohol from './EditPlanAlcohol';
+import EditPlanModalController from './EditPlanModalController';
 
-const CreatePlan = () => {
-    const { plan, setPlan } = useCalendarStore();
+const EditPlan = () => {
+    const { planDetail, setPlanDetail } = useCalendarStore();
     const { openModal } = useModalStore();
 
-    const [year, month, day] = plan.date.split(' ');
-    const [ampm, hour, minute] = plan.time.split(' ');
+    const [year, month, day] = planDetail.date.split(' ');
+    const [ampm, hour, minute] = planDetail.time.split(' ');
+    const formattedArrivalTime = planDetail.arrivalTime
+        ? formatTime(planDetail.arrivalTime)
+        : '오후 10시 00분';
+    const [arrivedAmpm, arrivedHour, arrivedMinute] =
+        formattedArrivalTime.split(' '); // arrivalTime이 null인 경우 기본값 설정
 
     // input 영역 상태 관리
     const [selectedDate, setSelectedDate] = useState({
@@ -24,29 +31,30 @@ const CreatePlan = () => {
         hour,
         minute,
     });
-    const [title, setTitle] = useState('');
-    const [memo, setMemo] = useState('');
+    const [title, setTitle] = useState(planDetail.title);
+    const [memo, setMemo] = useState(planDetail.memo);
 
     const [selectedSojuBottleCount, setSelectedSojuBottleCount] = useState(
-        Math.floor(plan.sojuAmount / 8),
+        Math.floor(planDetail.sojuAmount / 8),
     );
     const [selectedSojuGlassCount, setSelectedSojuGlassCount] = useState(
-        plan.sojuAmount % 8,
+        planDetail.sojuAmount % 8,
     );
     const [selectedBeerBottleCount, setSelectedBeerBottleCount] = useState(
-        Math.floor(plan.beerAmount / 500),
+        Math.floor(planDetail.beerAmount / 500),
     );
     const [selectedBeerGlassCount, setSelectedBeerGlassCount] = useState(
-        Math.round((plan.beerAmount % 500) / 355),
+        Math.round((planDetail.beerAmount % 500) / 355),
     );
 
-    const [selectedAlcoholLevel, setSelectedAlcoholLevel] =
-        useState('0: 취하지 않음');
+    const [selectedAlcoholLevel, setSelectedAlcoholLevel] = useState(
+        alcoholLevelToString(planDetail.alcoholLevel),
+    );
 
     const [selectedArrivalTime, setSelectedArrivalTime] = useState({
-        ampm: '오후',
-        hour: '10시',
-        minute: '00분',
+        ampm: arrivedAmpm,
+        hour: arrivedHour,
+        minute: arrivedMinute,
     });
 
     const memoRef = useRef(null);
@@ -67,7 +75,7 @@ const CreatePlan = () => {
         const input = e.target.value;
         if (input.length <= titleMax) {
             setTitle(input);
-            setPlan({ title: input });
+            setPlanDetail({ title: input });
         }
     };
 
@@ -75,7 +83,7 @@ const CreatePlan = () => {
         const input = e.target.value;
         if (input.length <= memoMax) {
             setMemo(input);
-            setPlan({ memo: input });
+            setPlanDetail({ memo: input });
         }
     };
 
@@ -99,7 +107,7 @@ const CreatePlan = () => {
                                 src="/src/assets/icons/size_24/Icon-calendar.svg"
                                 alt="date"
                             />
-                            <h4>{plan.date}</h4>
+                            <h4>{planDetail.date}</h4>
                         </St.InputItemBox>
                         <St.InputItemBox
                             onClick={() => openModal('timeModal')}
@@ -109,7 +117,7 @@ const CreatePlan = () => {
                                 src="/src/assets/icons/size_24/Icon-clock.svg"
                                 alt="time"
                             />
-                            <h4>{plan.time}</h4>
+                            <h4>{planDetail.time}</h4>
                         </St.InputItemBox>
                         <St.InputItemBox>
                             <img
@@ -142,7 +150,7 @@ const CreatePlan = () => {
                         </St.InputItemBox>
                     </St.InputContainer>
                 </St.ScheduleContainer>
-                <CreatePlanAlcohol
+                <EditPlanAlcohol
                     openAlcoholModal={() => openModal('alcoholModal')}
                     openAlcoholLevelModal={() => openModal('alcoholLevelModal')}
                     openArrivalTimeModal={() => openModal('arrivalTimeModal')}
@@ -152,7 +160,7 @@ const CreatePlan = () => {
                     selectedBeerGlassCount={selectedBeerGlassCount}
                 />
             </St.Container>
-            <CreatePlanModalController
+            <EditPlanModalController
                 selectedDate={selectedDate}
                 setSelectedDate={setSelectedDate}
                 selectedTime={selectedTime}
@@ -174,4 +182,4 @@ const CreatePlan = () => {
     );
 };
 
-export default CreatePlan;
+export default EditPlan;
