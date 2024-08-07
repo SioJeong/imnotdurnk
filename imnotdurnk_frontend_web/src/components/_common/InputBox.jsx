@@ -27,7 +27,12 @@ const InputBox = ({
     // password만 분기 적용
     const currentInputType =
         inputType === 'password' && isPasswordVisible ? 'text' : inputType;
-
+    const handleKeyDown = (e) => {
+        if (e.key === ' ') {
+            // 띄어쓰기를 차단
+            e.preventDefault();
+        }
+    };
     return (
         <St.InputBoxContainerWithAlertMessage>
             <St.InputBoxContainer
@@ -45,6 +50,7 @@ const InputBox = ({
                         name={name}
                         readOnly={readOnly}
                         $isProfileViewPage={isProfileViewPage}
+                        onKeyDown={handleKeyDown}
                     />
                 </St.TextContainer>
 

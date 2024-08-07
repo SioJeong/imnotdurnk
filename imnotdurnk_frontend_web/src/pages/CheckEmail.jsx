@@ -4,6 +4,7 @@ import InformationMessage from '@/components/checkemail/InformationMessage';
 import {
     checkCertificationNumber,
     sendCertificationNumber,
+    signup,
 } from '@/services/user';
 import useModalStore from '@/stores/useModalStore';
 import useNavigationStore from '@/stores/useNavigationStore';
@@ -11,6 +12,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ModalTextBox from '../components/_modal/ModalTextBox';
 import useUserStore from '../stores/useUserStore';
+
 const CheckEmail = () => {
     const { user, setUser } = useUserStore((state) => ({
         user: state.user,
@@ -26,8 +28,7 @@ const CheckEmail = () => {
     const { openModal, closeModal } = useModalStore();
     const modalId = 'signupsuccessModal';
     //모달 열기
-    const openSignupSuccessModal = (e) => {
-        e.preventDefault();
+    const openSignupSuccessModal = (modalId) => {
         openModal(modalId);
     };
     // 인증번호 전송
@@ -39,10 +40,6 @@ const CheckEmail = () => {
                     const sendResult = await sendCertificationNumber(
                         user.email,
                     );
-                    console.log('sr', user, sendResult);
-                    if (!sendResult.isSuccess) {
-                        alert('전송실패');
-                    }
                 }
             } catch (error) {
                 console.error('이메일 인증 코드 발송 중 오류 발생', error);
@@ -63,9 +60,19 @@ const CheckEmail = () => {
             user.email,
             certNumString,
         );
-
+        console.log(comparedResult, 'cr');
         if (comparedResult.isSuccess) {
-            openSignupSuccessModal();
+            const signupResult = await signup(
+                user.name,
+                user.email,
+                user.phone,
+                user.password,
+            );
+            console.log('사인업 결과', signupResult);
+            if (signupResult.isSuccess) {
+                console.log('사인업 성공');
+                openSignupSuccessModal(modalId);
+            }
         } else {
             setIsWrong(true);
             setAlertContents('인증코드가 틀립니다.');
@@ -99,15 +106,10 @@ const CheckEmail = () => {
 
             <Modal
                 modalId={modalId}
-                contents={
-                    <ModalTextBox
-                        text="가입을 완료했습니다.
-입력하신 정보로 로그인 해보세요!"
-                    />
-                }
+                contents={<ModalTextBox text="가입을 완료했습니다." />}
                 buttonText={'로그인'}
-                onButtonClick={(e) => {
-                    closeModal;
+                onButtonClick={() => {
+                    closeModal();
                     navigate('/account');
                 }}
             />
