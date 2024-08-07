@@ -65,7 +65,7 @@ public class UserController {
      *
      * @param email 인증 코드를 받은 이메일 주소
      * @param code  사용자가 입력한 인증 코드
-     * @return 인증 성공 시 OK(200) 응답, 요청이 잘 왔으나 인증번호가 틀리면 UnprocessableEntity(422) 응답
+     * @return 인증 성공 시 OK(200) 응답, 요청이 잘 왔으나 인증번호가 틀리면 BadRequest(400) 응답
      * @throws BadRequestException 필수 정보 누락 시 발생
      */
     @PostMapping("/signup/verify-code")
