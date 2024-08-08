@@ -108,6 +108,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(exception.getCode(), exception.getMessage());
     }
 
+    // 예상하지 못한 예외 처리
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<?> handleRuntimeException(RuntimeException exception){
+        return handleExceptionInternal(HttpStatus.INTERNAL_SERVER_ERROR.value(), exception.getMessage());
+    }
+
+    // 예상하지 못한 예외 처리
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> handleException(Exception exception){
+        return handleExceptionInternal(HttpStatus.INTERNAL_SERVER_ERROR.value(), exception.getMessage());
+    }
+
     private ResponseEntity<?> handleExceptionInternal(int code, String message){
 
         //응답 객체
