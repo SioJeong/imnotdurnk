@@ -23,7 +23,7 @@ public class MapController {
     private MapService mapService;
 
     @GetMapping
-    public ResponseEntity<ListResponse<?>> getPath(@RequestAttribute(value = "AccessToken", required = true) String token,
+    public ResponseEntity<ListResponse<?>> getPath(
                                                      @RequestParam(required = true) double startlat, @RequestParam(required = true) double startlon,
                                                      @RequestParam(required = true) double destlat, @RequestParam(required = true) double destlon,
                                                     @RequestParam(required = true) String time){
@@ -35,7 +35,7 @@ public class MapController {
     }
 
     @GetMapping("/route")
-    public ResponseEntity<ListResponse<?>> getRoute(@RequestAttribute(value = "AccessToken", required = true) String token,
+    public ResponseEntity<ListResponse<?>> getRoute(
                                                    @RequestParam(required = true) int seq1, @RequestParam(required = true) int seq2,
                                                    @RequestParam(required = true) String routeId){
         ListResponse<RouteDto> response = new ListResponse<>();
