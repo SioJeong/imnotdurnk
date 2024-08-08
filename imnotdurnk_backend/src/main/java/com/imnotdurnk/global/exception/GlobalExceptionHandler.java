@@ -102,6 +102,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
     }
 
+    // 파일 전처리 실패
+    @ExceptionHandler(FailToConvertVoiceFileException.class)
+    public ResponseEntity<?> handleFailToConvertVoiceFileException(FailToConvertVoiceFileException exception){
+        return handleExceptionInternal(exception.getCode(), exception.getMessage());
+    }
+
     private ResponseEntity<?> handleExceptionInternal(int code, String message){
 
         //응답 객체
