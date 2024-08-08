@@ -2,7 +2,7 @@ import axios from 'axios';
 import {
     GOOGLE_PLACES_API_KEY,
     KAKAO_API_KEY,
-    NEW_ODSAY_KEY,
+    ODSAY_API_KEY,
 } from 'react-native-dotenv';
 
 // 좌표로 한글 주소 찾기
@@ -30,8 +30,7 @@ const fetchTransitDirections = async (departure, stopover) => {
     const { latitude: depLat, longitude: depLng } = departure;
     const { latitude: destLat, longitude: destLng } = stopover;
 
-    const directionsUrl = `https://api.odsay.com/v1/api/searchPubTransPathT?SX=${depLng}&SY=${depLat}&EX=${destLng}&EY=${destLat}&apiKey=${NEW_ODSAY_KEY}`;
-
+    const directionsUrl = `https://api.odsay.com/v1/api/searchPubTransPathT?SX=${depLng}&SY=${depLat}&EX=${destLng}&EY=${destLat}&apiKey=${ODSAY_API_KEY}`;
     try {
         const response = await axios.get(directionsUrl);
         if (response.status === 200) {
