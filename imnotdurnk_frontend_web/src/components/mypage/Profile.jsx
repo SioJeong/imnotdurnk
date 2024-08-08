@@ -1,11 +1,11 @@
 import beerBottleImage from '@/assets/images/beerbottle.webp';
 import sojuBottleImage from '@/assets/images/sojubottle.webp';
+import MiniButton from '@/components/_button/MiniButton';
 import InputBox from '@/components/_common/InputBox';
 import { getUserProfile } from '@/services/user';
 import useUserStore from '@/stores/useUserStore';
 import { useEffect, useState } from 'react';
 import { Outlet, Route, Routes, useNavigate } from 'react-router-dom';
-import MiniButton from '../_button/MiniButton';
 import * as St from './Profile.style';
 import ProfileCreateAlcoholCapacity from './ProfileCreateAlcoholCapacity';
 import ProfileCreateInfo from './ProfileCreateInfo';
@@ -45,7 +45,6 @@ const Profile = () => {
             try {
                 const getProfileResult = await getUserProfile();
 
-                console.log('getProfileResult :', getProfileResult.data);
                 if (getProfileResult.isSuccess) {
                     // api로 불러온 값 렌더링
                     setInputValues({
@@ -59,10 +58,17 @@ const Profile = () => {
                         postalCode: getProfileResult.data.postalCode || '',
                         emergencyCall:
                             getProfileResult.data.emergencyCall || '',
+                        beerCapacity: getProfileResult.data.beerCapacity || 0,
+                        sojuCapacity: getProfileResult.data.sojuCapacity || 0,
+                        latitude: getProfileResult.data.latitude || '',
+                        longitude: getProfileResult.data.longitude || '',
+                        unsure: !getProfileResult.data.unsure
+                            ? getProfileResult.data.unsure
+                            : true,
+                        voice: getProfileResult.data.voice || '',
                     });
                     //  전역상태로 저장
                     setUser(getProfileResult.data);
-                    console.log('전역저장 후 ', user);
                 }
             } catch (error) {
                 console.error('Error fetching user data:', error);
@@ -119,7 +125,11 @@ const Profile = () => {
                                     src={sojuBottleImage}
                                     alt={`so`}
                                 />
-                                <St.Text>{inputValues.sojuCapacity} 병</St.Text>
+                                <St.Text>
+                                    {inputValues.unsure
+                                        ? `모름`
+                                        : `${inputValues.sojuCapacity} 병`}
+                                </St.Text>
                             </St.SojuBox>
                             <St.BeerBox>
                                 <St.StyledStepperImage
@@ -127,8 +137,9 @@ const Profile = () => {
                                     alt={`be`}
                                 />
                                 <St.Text>
-                                    {' '}
-                                    {inputValues.beerCapacity} 병
+                                    {inputValues.unsure
+                                        ? `모름`
+                                        : `${inputValues.beerCapacity} 병`}
                                 </St.Text>
                             </St.BeerBox>
                         </St.AlcolBox>

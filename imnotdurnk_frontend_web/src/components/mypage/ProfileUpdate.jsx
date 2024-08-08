@@ -3,7 +3,6 @@ import sojuBottleImage from '@/assets/images/sojubottle.webp';
 import MiniButton from '@/components/_button/MiniButton';
 import InputBox from '@/components/_common/InputBox';
 import Modal from '@/components/_modal/Modal';
-import ModalAlcoholLevelDropdown from '@/components/_modal/ModalAlcoholLevelDropdown';
 import ModalPostalCode from '@/components/_modal/ModalPostalCode';
 import ModalVoice from '@/components/_modal/ModalVoice';
 import useModalStore from '@/stores/useModalStore';
@@ -34,21 +33,73 @@ const ProfileUpdate = () => {
         unsure: true,
         voice: '',
     });
+    const [alertMessages, setAlertMessages] = useState({
+        nickname: '', // 2~10자 한글만 가능
+        phone: '',
+        emergencyCall: '', //유효한 번호 형식이 아닙니다.
+    });
+    const { user, setTmpUser, tmpUser } = useUserStore((state) => ({
+        user: state.user,
+        setTmpUser: state.setTmpUser,
+        tmpUser: state.tmpUser,
+    }));
     const navigate = useNavigate();
     const onClickPasswordChangeButton = () => {
         navigate('/find-password');
     };
-    const handleInputChange = (e) => {
-        const { name, value } = e.target; // 입력값을 콘솔에 출력
-        setInputValues((prevValues) => ({
-            ...prevValues,
-            [name]: value,
-        }));
+    const formatPhoneNumber = (value) => {
+        const numericValue = value.replace(/\D/g, '');
+
+        // 포맷팅된 전화번호를 반환
+        if (numericValue.length > 6) {
+            return numericValue.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3');
+        } else if (numericValue.length > 3) {
+            return numericValue.replace(/(\d{3})(\d{0,4})/, '$1-$2');
+        }
+        return numericValue;
     };
-    const { user, setUser } = useUserStore((state) => ({
-        user: state.user,
-        setUser: state.setUser,
-    }));
+    const validateInput = (name, value) => {
+        let message = '';
+        const nicknameRegex = /^[ㄱ-ㅎㅏ-ㅣ가-힣]{2,10}$/;
+        const phoneRegex = /^010-\d{4}-\d{4}$/;
+
+        if (name === 'nickname') {
+            if (value.length !== 0 && !nicknameRegex.test(value)) {
+                message = '2 ~ 10자 내 한국어로 입력해야 합니다.';
+            }
+        } else if (name === 'emergencyCall') {
+            if (value.length !== 0 && !phoneRegex.test(value)) {
+                message = '올바른 전화번호 양식이 아닙니다.';
+            }
+        } else if (name === 'phone') {
+            if (value.length !== 0 && !phoneRegex.test(value)) {
+                message = '올바른 전화번호 양식이 아닙니다.';
+            }
+        }
+
+        return message;
+    };
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+
+        let formattedValue = value;
+        if (name === 'emergencyCall' || name === 'phone') {
+            formattedValue = formatPhoneNumber(value);
+        }
+
+        setInputValues((prevValues) => {
+            const newValues = { ...prevValues, [name]: formattedValue };
+            const message = validateInput(name, formattedValue);
+
+            setAlertMessages((prevMessages) => ({
+                ...prevMessages,
+                [name]: message,
+            }));
+
+            return newValues;
+        });
+    };
 
     const handleSearchedPostalCode = (address, zonecode) => {
         setInputValues((prevValues) => ({
@@ -56,6 +107,51 @@ const ProfileUpdate = () => {
             postalCode: zonecode,
             address: address,
         }));
+        // tmpUser 업데이트
+    };
+
+    // 소주, 맥주 마신 양 선택 모달
+    const [selectedSojuBottleCount, setSelectedSojuBottleCount] = useState(
+        0, // Math.floor(plan.sojuAmount / 8),
+    );
+    const [selectedSojuGlassCount, setSelectedSojuGlassCount] = useState(
+        0,
+        //plan.sojuAmount % 8,
+    );
+    const [selectedBeerBottleCount, setSelectedBeerBottleCount] = useState(
+        0, //   Math.floor(plan.beerAmount / 500),
+    );
+    const [selectedBeerGlassCount, setSelectedBeerGlassCount] = useState(
+        0, //   Math.round((plan.beerAmount % 500) / 355),
+    );
+
+    const handleSelectedSojuBottleCount = (sojuBottleCount) => {
+        setSelectedSojuBottleCount(sojuBottleCount);
+    };
+
+    const handleSelectedSojuGlassCount = (sojuGlassCount) => {
+        setSelectedSojuGlassCount(sojuGlassCount);
+    };
+
+    const handleSelectedBeerBottleCount = (beerBottleCount) => {
+        setSelectedBeerBottleCount(beerBottleCount);
+    };
+
+    const handleSelectedBeerGlassCount = (beerGlassCount) => {
+        setSelectedBeerGlassCount(beerGlassCount);
+    };
+    const submitSelectedAlcohol = () => {
+        console.log(
+            selectedSojuBottleCount,
+            selectedSojuGlassCount,
+            selectedBeerGlassCount,
+        );
+        // setPlan({
+        //     sojuAmount: selectedSojuBottleCount * 8 + selectedSojuGlassCount,
+        //     beerAmount:
+        //         selectedBeerBottleCount * 500 + selectedBeerGlassCount * 355,
+        // });
+        closeModal('alcoholModal');
     };
     useEffect(() => {
         if (user) {
@@ -72,15 +168,22 @@ const ProfileUpdate = () => {
                 sojuCapacity: user.sojuCapacity || 0,
                 latitude: user.latitude || '',
                 longitude: user.longitude || '',
-                unsure: user.unsure !== undefined ? user.unsure : true,
+                unsure: !user.unsure ? user.unsure : true,
                 voice: user.voice || '',
             });
         }
     }, [user]);
+
     return (
         <>
             <St.ProfileContainer>
-                <St.Title>원하시는 정보를 변경해주세요.</St.Title>
+                <St.Title
+                    onClick={() => {
+                        console.log(tmpUser); // tmpUser의 현재 상태를 콘솔에 출력합니다.
+                    }}
+                >
+                    원하시는 정보를 변경해주세요.
+                </St.Title>
                 <St.InfoContainer>
                     <InputBox
                         labelText="이름"
@@ -97,6 +200,7 @@ const ProfileUpdate = () => {
                         value={inputValues.nickname}
                         onChange={handleInputChange}
                         name="nickname"
+                        alertContents={alertMessages.nickname}
                     />
                     <InputBox
                         labelText="이메일"
@@ -113,10 +217,11 @@ const ProfileUpdate = () => {
                         value={inputValues.phone}
                         onChange={handleInputChange}
                         name="phone"
+                        alertContents={alertMessages.phone}
                     />
                     <St.AlcoholCapacityBox
                         onClick={(e) => {
-                            openProfileEditModal(e, 'alcoholLevelModal');
+                            openProfileEditModal(e, 'alcoholModal');
                         }}
                     >
                         <St.StyledH6>주량</St.StyledH6>
@@ -143,6 +248,7 @@ const ProfileUpdate = () => {
                         inputType="text"
                         value={inputValues.address}
                         name="address"
+                        onChange={handleInputChange}
                         onClickInputBox={(e) => {
                             openProfileEditModal(e, 'postalCodeModal');
                         }}
@@ -155,6 +261,7 @@ const ProfileUpdate = () => {
                         value={inputValues.detailedAddress}
                         onChange={handleInputChange}
                         name="detailedAddress"
+                        alertContents={alertMessages.detailedAddress}
                     />
                     <InputBox
                         labelText="우편번호"
@@ -163,6 +270,7 @@ const ProfileUpdate = () => {
                         value={inputValues.postalCode}
                         name="postalCode"
                         readOnly
+                        onChange={handleInputChange}
                         onClickInputBox={(e) => {
                             openProfileEditModal(e, 'postalCodeModal');
                         }}
@@ -174,6 +282,7 @@ const ProfileUpdate = () => {
                         value={inputValues.emergencyCall}
                         onChange={handleInputChange}
                         name="emergencyCall"
+                        alertContents={alertMessages.emergencyCall}
                     />
                     <St.VoiceBox
                         onClick={(e) => {
@@ -199,11 +308,7 @@ const ProfileUpdate = () => {
                     />
                 </St.ButtonContainer>
             </St.ProfileContainer>
-            <Modal
-                modalId="alcoholLevelModal"
-                contents={<ModalAlcoholLevelDropdown />}
-                buttonText={'저장하기'}
-            />
+
             <Modal
                 modalId="postalCodeModal"
                 contents={

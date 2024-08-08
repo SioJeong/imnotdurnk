@@ -1,11 +1,11 @@
 import IconButton from '@/components/_button/IconButton.jsx';
+import { dateStringToUrl } from '@/hooks/useDateTimeFormatter.js';
+import useCalendarStore from '@/stores/useCalendarStore.js';
+import useNavigationStore from '@/stores/useNavigationStore.js';
+import useUserStore from '@/stores/useUserStore.js';
 import { useQueryClient } from '@tanstack/react-query';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { dateStringToUrl } from '../../hooks/useDateTimeFormatter.js';
-import useCalendarStore from '../../stores/useCalendarStore.js';
-import useNavigationStore from '../../stores/useNavigationStore.js';
 import * as St from './Navigation.style.js';
-
 const Navigation = () => {
     const { navigation } = useNavigationStore((state) => state);
     const {
@@ -16,7 +16,11 @@ const Navigation = () => {
         resetPlanDetail,
         editPlan,
     } = useCalendarStore();
-
+    const { tmpUser, user, setUser } = useUserStore((state) => ({
+        user: state.user,
+        setUser: state.setUser,
+        tmpUser: state.tmpUser,
+    }));
     const navigate = useNavigate();
     const location = useLocation();
     const queryClient = useQueryClient();
@@ -70,6 +74,16 @@ const Navigation = () => {
                 resetPlanDetail();
                 navigate(`/calendar/${date}/plan/${planId}`); // 일정 상세 페이지로 이동
             }
+        } else if (path === 'updateProfile') {
+            console.log('프로필 업데잍확인', tmpUser);
+            if (tmpUser.isAvailable) {
+                console.log('있음');
+            } else {
+                console.log('없음');
+            }
+            //api 요청
+
+            //성공하면 전역상태 user에 저장
         } else if (path) {
             navigate(path);
         }

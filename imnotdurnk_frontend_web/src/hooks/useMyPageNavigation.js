@@ -37,7 +37,11 @@ const useMyPageNavigation = () => {
                 isVisible: true,
                 icon1: { iconname: 'backarrow', path: '-1' },
                 title: '프로필 변경',
-                icon2: { iconname: 'check', isRed: 'true', path: 'submitPlan' },
+                icon2: {
+                    iconname: 'check',
+                    isRed: 'true',
+                    path: 'updateProfile',
+                },
             });
         }
     }, [location.pathname, setNavigation]);

@@ -23,4 +23,5 @@ export const StyledMessage = styled.p`
 
 export const StyledMessagewhenNotSent = styled.p`
     font-size: var(--font-body-h3);
+    cursor: pointer;
 `;
