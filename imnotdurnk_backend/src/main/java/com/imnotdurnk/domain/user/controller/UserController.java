@@ -139,7 +139,7 @@ public class UserController {
 
         ResponseCookie responseCookie = ResponseCookie
                 .from("RefreshToken", refreshTokenDto.getToken())
-                .domain("i11a609.p.ssafy.io") // 어떤 사이트에서 쿠키를 사용할 수 있도록 허용할 지 설정.
+                .domain("localhost") // 어떤 사이트에서 쿠키를 사용할 수 있도록 허용할 지 설정.
                 .path("/") // 위 사이트에서 쿠키를 허용할 경로를 설정.
                 .httpOnly(true) // HTTP 통신을 위해서만 사용하도록 설정.
                 .secure(true) // Set-Cookie 설정.
@@ -332,7 +332,7 @@ public class UserController {
      * @return 기준에 부합하면 true, 아니면 false
      */
     public boolean checkpassword(String password) {
-        return Pattern.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{8,16}$", password);
+        return Pattern.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[~!@#$%^&*]*).{8,16}$", password);
     }
 
     /***
