@@ -1,5 +1,5 @@
 package com.imnotdurnk.global.util;
-import com.imnotdurnk.global.exception.FailToConvertVoiceFile;
+import com.imnotdurnk.global.exception.FailToConvertVoiceFileException;
 import jakarta.validation.constraints.NotNull;
 import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
@@ -76,7 +76,7 @@ public class AudioUtil {
             output = new FileOutputStream(rawFile);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-            throw new FailToConvertVoiceFile("raw 저장 실패");
+            throw new FailToConvertVoiceFileException("raw 저장 실패");
         }
 
         //바이트 변환 -> 포맷 변환 -> wav에서 raw로 변환

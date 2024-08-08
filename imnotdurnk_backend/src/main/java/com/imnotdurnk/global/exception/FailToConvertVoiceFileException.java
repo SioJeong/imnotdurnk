@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * https://developer.mozilla.org/ko/docs/Web/HTTP/Status/500
  */
 @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-public class FailToConvertVoiceFile extends RuntimeException {
+public class FailToConvertVoiceFileException extends RuntimeException {
     private int code = HttpStatus.INTERNAL_SERVER_ERROR.value();
 
-    public FailToConvertVoiceFile(String message) { super(message); }
+    public FailToConvertVoiceFileException(String message) { super(message); }
 
     public int getCode() {
         return code;

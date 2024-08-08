@@ -81,7 +81,7 @@ public class VoiceServiceImpl implements VoiceService {
             fileTitle = audioUtil.SaveRaw(wavFile);
         }
         catch(IOException e){
-            throw new FailToConvertVoiceFile("음성 파일 전처리 실패");
+            throw new FailToConvertVoiceFileException("음성 파일 전처리 실패");
         }
 
         //ETRI 발음평가 API 호출
@@ -101,7 +101,7 @@ public class VoiceServiceImpl implements VoiceService {
             byte[] audioBytes = Files.readAllBytes(path);
             audioContents = Base64.getEncoder().encodeToString(audioBytes);
         } catch (IOException e) {
-            throw new FailToConvertVoiceFile("음성 파일을 Base64로 변환 실패");
+            throw new FailToConvertVoiceFileException("음성 파일을 Base64로 변환 실패");
         }
 
         argument.put("language_code", languageCode);
@@ -229,7 +229,7 @@ public class VoiceServiceImpl implements VoiceService {
      * @param mfile
      * @return 변환된 {@link File} 객체
      * @throws IllegalAccessException
-     * @throws FailToConvertVoiceFile
+     * @throws FailToConvertVoiceFileException
      */
     @Override
     public File multipartToFile(MultipartFile mfile) {
@@ -238,7 +238,7 @@ public class VoiceServiceImpl implements VoiceService {
                 + "_"
                 + UUID.randomUUID().toString() + ".wav";
         if (originalFilename == null || originalFilename.isEmpty()) {
-            throw new FailToConvertVoiceFile("File name is invalid.");
+            throw new FailToConvertVoiceFileException("File name is invalid.");
         }
 
         // 안전한 임시 파일 경로를 설정
@@ -253,7 +253,7 @@ public class VoiceServiceImpl implements VoiceService {
             if (file.exists()) {
                 file.delete();
             }
-            throw new FailToConvertVoiceFile("파일 전처리 실패");
+            throw new FailToConvertVoiceFileException("파일 전처리 실패");
         }
 
         // 파일 정보 로그
