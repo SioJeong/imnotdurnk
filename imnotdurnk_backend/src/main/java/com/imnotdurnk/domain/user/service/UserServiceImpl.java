@@ -277,7 +277,7 @@ public class UserServiceImpl implements UserService {
             redisUtil.setData(email,"0");
             return true;
         } else {  //코드와 이메일이 일치하지 않음
-            return false;
+            throw new BadRequestException("이메일 일치하지 않음");
         }
     }
 
