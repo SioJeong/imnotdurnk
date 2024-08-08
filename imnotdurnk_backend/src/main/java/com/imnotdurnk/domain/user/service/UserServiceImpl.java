@@ -106,7 +106,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void signUp(UserDto userDto) throws BadRequestException{
 
-        if(redisUtil.getData(userDto.getEmail())==null||!redisUtil.getData(userDto.getEmail()).equals("1")) throw new BadRequestException("인증되지 않은 사용자입니다.");
+        if(redisUtil.getData(userDto.getEmail())==null||!redisUtil.getData(userDto.getEmail()).equals("0")) throw new BadRequestException("인증되지 않은 사용자입니다.");
         if(existsByEmail(userDto.getEmail())) throw new BadRequestException("중복된 이메일 입니다.");
 
         //비밀번호 암호화
@@ -129,6 +129,12 @@ public class UserServiceImpl implements UserService {
         //인증번호 생성
         Random random = new Random();
         String verificationCode = String.format("%04d", random.nextInt(10000));
+        String cnt = redisUtil.getData(email);
+        if(cnt==null) redisUtil.setDataExpire(email, "1",60*5L);    //인증번호 전송 횟수 저장
+        else {
+            if(cnt.length()==5) throw new BadRequestException("인증번호 횟수 초과");
+            redisUtil.setDataExpire(email, cnt+1,(5-cnt.length())/5*60*5L);
+        }
 
         try {
             sendMail(email, "회원 인증 메일입니다.", verificationCode, "코드");
@@ -268,7 +274,7 @@ public class UserServiceImpl implements UserService {
             return false;
         }
         if (redisUtil.getData(verificationCode).equals(email)){  //인증코드와 이메일이 일치함
-            redisUtil.setData(email,"1");
+            redisUtil.setData(email,"0");
             return true;
         } else {  //코드와 이메일이 일치하지 않음
             return false;
