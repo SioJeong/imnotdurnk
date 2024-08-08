@@ -5,6 +5,7 @@ import useNavigationStore from '@/stores/useNavigationStore.js';
 import useUserStore from '@/stores/useUserStore.js';
 import { useQueryClient } from '@tanstack/react-query';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { ToastSuccess, ToastWarning } from '../_common/alert.js';
 import * as St from './Navigation.style.js';
 const Navigation = () => {
     const { navigation } = useNavigationStore((state) => state);
@@ -34,7 +35,7 @@ const Navigation = () => {
 
             // 제목 필수! 빈 값이면 반환
             if (!plan.title || plan.title.trim() === '') {
-                alert('제목을 입력해야 합니다.');
+                ToastWarning('제목을 입력해야 합니다.', true);
                 return;
             }
 
@@ -47,8 +48,7 @@ const Navigation = () => {
                     year,
                     month,
                 ]);
-                // TODO: 일정 등록 완료 alert 커스텀
-                alert('일정이 등록 되었습니다.');
+                ToastSuccess('일정이 등록되었습니다!', true);
                 resetPlan();
                 navigate('/calendar');
             }
@@ -61,7 +61,7 @@ const Navigation = () => {
 
             // 제목 필수! 빈 값이면 반환
             if (!planDetail.title || planDetail.title.trim() === '') {
-                alert('제목을 입력해야 합니다.');
+                ToastWarning('제목을 입력해야 합니다.', true);
                 return;
             }
 
@@ -69,8 +69,7 @@ const Navigation = () => {
 
             if (success) {
                 queryClient.invalidateQueries(['planDetail', planId]);
-                // TODO: 일정 수정 완료 alert 커스텀
-                alert('일정이 수정 되었습니다.');
+                ToastSuccess('일정이 수정되었습니다!', true);
                 resetPlanDetail();
                 navigate(`/calendar/${date}/plan/${planId}`); // 일정 상세 페이지로 이동
             }

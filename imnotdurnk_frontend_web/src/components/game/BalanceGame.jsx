@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { ToastError } from '../_common/alert';
 
 const styles = {
     container: {
@@ -82,8 +83,9 @@ const BalanceGame = () => {
                         handleOrientation,
                     );
                 } else {
-                    alert(
-                        'Permission to access device orientation was denied.',
+                    // TODO: 추후 삭제 ?
+                    ToastError(
+                        'Permission to access device orientation was denied',
                     );
                 }
             } catch (error) {

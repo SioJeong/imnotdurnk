@@ -10,6 +10,7 @@ import useModalStore from '@/stores/useModalStore';
 import useNavigationStore from '@/stores/useNavigationStore';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ToastSuccess } from '../components/_common/alert';
 import ModalTextBox from '../components/_modal/ModalTextBox';
 import useUserStore from '../stores/useUserStore';
 
@@ -50,7 +51,11 @@ const CheckEmail = () => {
 
     //재전송하기
     const onClickResendButton = async () => {
+        ToastSuccess('인증번호를 전송중입니다.', true);
         const resendResult = await sendCertificationNumber(user.email);
+        if (resendResult) {
+            ToastSuccess('인증번호가 재전송되었습니다.', true);
+        }
     };
     //인증번호 비교하기
     const compareCertificationNumber = async (certNumString) => {

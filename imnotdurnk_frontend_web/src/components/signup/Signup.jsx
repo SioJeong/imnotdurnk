@@ -4,7 +4,9 @@ import InputBox from '@/components/_common/InputBox';
 import useUserStore from '@/stores/useUserStore';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ToastWarning } from '../_common/alert';
 import * as St from './Signup.style';
+
 const Signup = () => {
     const { user, setUser } = useUserStore((state) => ({
         user: state.user,
@@ -53,14 +55,18 @@ const Signup = () => {
         });
         navigate('/check-email');
     };
+
     //유효성 검사
     const checkValidation = () => {
         let isValid = true;
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        const passwordRegex =
+        const passwordRegex1 =
             /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,16}$/;
+        const passwordRegex2 =
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[~!@#$%^&*])[A-Za-z\d~!@#$%^&*]{8,16}$/;
+
         const nameRegex = /^[ㄱ-ㅎㅏ-ㅣ가-힣]{2,10}$/;
-        const phoneRegex = /^010-\d{4}-\d{4}$/;
+        const phoneRegex = /^01[0|1]-\d{3,4}-\d{4}$/;
 
         //이름 유효성 검사
         if (!nameRegex.test(inputValues.name)) {
@@ -95,7 +101,7 @@ const Signup = () => {
             isValid = false;
             setAlertMessages((prev) => ({
                 ...prev,
-                phone: '올바른 이메일 양식이 아닙니다.',
+                phone: '올바른 핸드폰 형식이 아닙니다.',
             }));
         } else {
             setAlertMessages((prev) => ({
@@ -105,7 +111,10 @@ const Signup = () => {
         }
 
         //비밀번호
-        if (!passwordRegex.test(inputValues.password)) {
+        if (
+            !passwordRegex1.test(inputValues.password) &&
+            !passwordRegex2.test(inputValues.password)
+        ) {
             isValid = false;
             setAlertMessages((prev) => ({
                 ...prev,
@@ -119,7 +128,10 @@ const Signup = () => {
             }));
         }
         //비밀번호 확인
-        if (!passwordRegex.test(inputValues.passwordCheck)) {
+        if (
+            !passwordRegex1.test(inputValues.password) &&
+            !passwordRegex2.test(inputValues.password)
+        ) {
             isValid = false;
             setAlertMessages((prev) => ({
                 ...prev,
@@ -149,24 +161,34 @@ const Signup = () => {
             }));
         }
 
-        if (!inputValues.agreeCheckBox) {
-            isValid = false;
-        }
+        // 회원가입 약관 확인
         if (isValid) {
-            handleSignup();
+            if (!inputValues.agreeCheckBox) {
+                isValid = false;
+                ToastWarning('회원가입 약관에 동의해야 합니다.', false);
+            } else {
+                handleSignup();
+            }
         }
     };
+
     const formatPhoneNumber = (value) => {
-        const numericValue = value.replace(/\D/g, '');
+        const numericValue = value.replace(/\D/g, '').slice(0, 11); // 최대 11자리
 
         // 포맷팅된 전화번호를 반환
-        if (numericValue.length > 6) {
+        if (numericValue.length === 11) {
             return numericValue.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3');
+        } else if (numericValue.length === 10) {
+            return numericValue.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
+        } else if (numericValue.length > 6) {
+            return numericValue.replace(/(\d{3})(\d{3,4})/, '$1-$2');
         } else if (numericValue.length > 3) {
-            return numericValue.replace(/(\d{3})(\d{0,4})/, '$1-$2');
+            return numericValue.replace(/(\d{3})(\d{0,3})/, '$1-$2');
         }
+
         return numericValue;
     };
+
     //1. 입력 값 확인
     const handleInputChange = (e) => {
         const { name, value } = e.target;

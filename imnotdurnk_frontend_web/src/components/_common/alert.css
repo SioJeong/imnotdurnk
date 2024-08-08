@@ -1,7 +1,13 @@
-.swal2-container {
-    padding-top: 6rem !important;
+/* ToastAlert 위치 설정 */
+.pt-with-navigation {
+    padding-top: 6rem !important; // navigation 있는 경우
 }
 
+.pt-without-navigation {
+    padding-top: 2rem !important; // navigation 없는 경우
+}
+
+/* 공통: 박스 및 폰트 */
 .swal2-toast {
     display: flex !important;
     width: auto !important;

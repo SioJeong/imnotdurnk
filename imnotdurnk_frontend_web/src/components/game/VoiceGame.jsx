@@ -53,6 +53,7 @@ const VoiceGame = () => {
                     mimeType: 'audio/wav',
                     recorderType: RecordRTC.StereoAudioRecorder,
                     disableLogs: true,
+                    desiredSampRate: 16000,
                 });
 
                 recorder.startRecording();
