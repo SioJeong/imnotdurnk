@@ -81,6 +81,7 @@ public class CalendarEntity extends BaseEntity {
 
     public CalendarDto toDto() {
         return CalendarDto.builder()
+                .planId(id)
                 .userId(userEntity.getId())
                 .date(date.toString())
                 .title(title)
