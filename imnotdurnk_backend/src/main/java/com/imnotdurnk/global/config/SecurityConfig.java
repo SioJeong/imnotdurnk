@@ -27,6 +27,8 @@ public class SecurityConfig {
                 .cors().and()
                 .authorizeRequests()
                 .requestMatchers("/api/users").permitAll()
+                .requestMatchers("/swagger-ui/**").permitAll()  // Swagger UI 경로 허용
+                .requestMatchers("/v3/api-docs/**").permitAll() // Swagger 문서 경로 허용
                 .and()
                 .build();
     }
