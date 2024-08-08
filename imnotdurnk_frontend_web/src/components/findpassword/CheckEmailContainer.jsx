@@ -1,47 +1,22 @@
 import Button from '@/components/_button/Button.jsx';
 import InputBox from '@/components/_common/InputBox.jsx';
-import { useState } from 'react';
 import * as St from './CheckEmailContainer.style';
-const CheckEmailContainer = ({ handleIsSent, handleSendNewPassword }) => {
-    const [inputValues, setInputValues] = useState({
-        email: '',
-    });
-    const [alertMessages, setAlertMessages] = useState({
-        email: '',
-        //'올바른 이메일 양식이 아닙니다.'
-        // '해당 이메일이 없습니다.'
-    });
+const CheckEmailContainer = ({
+    handleIsSent,
+    handleSendNewPassword,
+    email,
+    setEmail,
+    alertMessages,
+    setAlertMessages,
+    checkValidation,
+    onClickSendNewPasswordButton,
+}) => {
     const handleInputChange = (e) => {
         const { name, value } = e.target; // 입력값을 콘솔에 출력
-        setInputValues((prevValues) => ({
-            ...prevValues,
-            [name]: value,
-        }));
+
+        setEmail(value);
     };
-    const checkValidation = () => {
-        let isValid = true;
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(inputValues.email)) {
-            isValid = false;
-            setAlertMessages((prev) => ({
-                ...prev,
-                email: '올바른 이메일 양식이 아닙니다.',
-            }));
-        } else {
-            setAlertMessages((prev) => ({
-                ...prev,
-                email: '',
-            }));
-        }
-        return isValid;
-    };
-    const onClickSendNewPasswordButton = (e) => {
-        e.preventDefault();
-        if (checkValidation()) {
-            handleIsSent();
-            handleSendNewPassword();
-        }
-    };
+
     return (
         <St.CheckEmailContainer>
             <St.StyledH2>이메일을 입력해주세요.</St.StyledH2>
@@ -49,7 +24,7 @@ const CheckEmailContainer = ({ handleIsSent, handleSendNewPassword }) => {
                 labelText="Your Email"
                 iconName="email"
                 inputType="email"
-                value={inputValues.email}
+                value={email}
                 onChange={handleInputChange}
                 name="email"
                 alertContents={alertMessages.email}

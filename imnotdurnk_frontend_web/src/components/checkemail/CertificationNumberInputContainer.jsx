@@ -68,7 +68,6 @@ const CertificationNumberInputContainer = ({
         const certNumString = convertCertNum();
         if (certNumString.length === 4) {
             setAlertContents('');
-            console.log('api 요청직전', certNumString);
             compareCertificationNumber(certNumString);
         } else {
             setAlertContents('인증코드 형식이 잘못되었습니다.');

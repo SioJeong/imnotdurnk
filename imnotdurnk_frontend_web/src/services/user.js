@@ -87,14 +87,14 @@ const sendCertificationNumber = async (email) => {
 
 //이메일 인증, 인증번호 일치 여부 확인 api
 const checkCertificationNumber = async (email, inputCertNum) => {
-    console.log(email, inputCertNum);
+    console.log('1', email, inputCertNum, typeof inputCertNum);
     try {
+        console.log('2', email, inputCertNum, typeof inputCertNum);
         const response = await apiNoToken.post(`/users/signup/verify-code`, {
-            params: {
-                email: email,
-                code: inputCertNum,
-            },
+            email: email,
+            verifyCode: inputCertNum,
         });
+        console.log('3', email, inputCertNum, typeof inputCertNum);
         const { statusCode, httpStatus, message } = response.data;
         // apiErrorHandler(statusCode, httpStatus, message);
         console.log('res', response);
@@ -117,6 +117,12 @@ const putUserDetailedInfo = async (
     address,
     detailedAddress,
     emergencyCall,
+    name,
+    phone,
+    beerCapacity,
+    sojuCapacity,
+    unsure,
+    voice,
 ) => {
     try {
         const response = await api.put(`/users/profile`, {
@@ -125,6 +131,12 @@ const putUserDetailedInfo = async (
             address: address,
             detailedAddress: detailedAddress,
             emergencyCall: emergencyCall,
+            name: name,
+            phone: phone,
+            beerCapacity: beerCapacity,
+            sojuCapacity: sojuCapacity,
+            unsure: unsure,
+            voice: voice,
         });
         const { statusCode, httpStatus, message } = response.data;
         // apiErrorHandler(statusCode, httpStatus, message);
@@ -161,11 +173,13 @@ const getUserProfile = async () => {
 };
 
 //비번 재전송
-const sendNewPassword = async ({ email }) => {
-    console.log(email);
+const sendNewPassword = async (email) => {
+    console.log('api내', email);
     try {
-        const response = await api.post(`/users/login/find-password`, {
-            email: email,
+        const response = await api.get(`/users/login/find-password`, {
+            params: {
+                email: email,
+            },
         });
         const { statusCode, httpStatus, message, data } = response.data;
         //apiErrorHandler(statusCode, httpStatus, message);
@@ -173,7 +187,7 @@ const sendNewPassword = async ({ email }) => {
         return {
             isSuccess: statusCode === 200,
             data: data,
-            message: '프로필 정보 가져오기 성공',
+            message: '인증번호 보내기 성공',
         };
     } catch (err) {
         return {
