@@ -274,10 +274,10 @@ public class UserServiceImpl implements UserService {
             return false;
         }
         if (redisUtil.getData(verificationCode).equals(email)){  //인증코드와 이메일이 일치함
-            redisUtil.setData(email,"0");
+            redisUtil.setData(email,"1");
             return true;
         } else {  //코드와 이메일이 일치하지 않음
-            return false;
+            throw new BadRequestException("이메일 일치하지 않음");
         }
     }
 
