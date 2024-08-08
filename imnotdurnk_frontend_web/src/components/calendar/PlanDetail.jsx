@@ -44,7 +44,10 @@ const PlanDetail = () => {
             setFullPlanDetail({ ...planDetail, date, time }); // 전역에 저장해서 수정 시 데이터 사용..
             setNavigation({
                 isVisible: true,
-                icon1: { iconname: 'backarrow', path: '-1' },
+                icon1: {
+                    iconname: 'backarrow',
+                    path: `/calendar/${planDetail.date.split('T')[0]}`,
+                },
                 title: `${planDetail.title}`,
                 icon2: { iconname: 'modify', path: 'goEditPlan' },
             });
@@ -88,98 +91,126 @@ const PlanDetail = () => {
 
     return (
         <St.Container>
-            <St.ScheduleContainer $alcoholLevel={planDetail?.alcoholLevel || 0}>
-                <St.ScheduleTitle $alcoholLevel={planDetail?.alcoholLevel || 0}>
-                    일정 정보
-                </St.ScheduleTitle>
-                <St.InputContainer>
-                    <St.InputItemBox>
-                        <img
-                            src="/src/assets/icons/size_24/Icon-calendar.svg"
-                            alt="date"
-                        />
-                        <h4>
-                            {convertDateToString(new Date(planDetail?.date))}
-                        </h4>
-                    </St.InputItemBox>
-                    <St.InputItemBox>
-                        <img
-                            src="/src/assets/icons/size_24/Icon-clock.svg"
-                            alt="time"
-                        />
-                        <h4>
-                            {convertTimeToString(new Date(planDetail?.date))}
-                        </h4>
-                    </St.InputItemBox>
-                    <St.InputItemBox>
-                        <img
-                            src="/src/assets/icons/size_24/Icon-title.svg"
-                            alt="title"
-                        />
-                        <St.TitleAndMemo>{planDetail?.title}</St.TitleAndMemo>
-                    </St.InputItemBox>
-                    <St.InputItemBox $boxSize="long">
-                        <St.MemoIconImage
-                            src="/src/assets/icons/size_24/Icon-memo.svg"
-                            alt="memo"
-                        />
-                        <St.TitleAndMemo>
-                            {planDetail?.memo || '메모가 없습니다.'}
-                        </St.TitleAndMemo>
-                    </St.InputItemBox>
-                </St.InputContainer>
-            </St.ScheduleContainer>
-            <St.AlcoholContainer>
-                <St.AlcoholTitle>음주 기록</St.AlcoholTitle>
-                <St.InputContainer>
-                    <St.DrinkInputBox>
-                        <St.InputItemBox $alcoholCount={true}>
-                            <St.AlcoholCountImage
-                                src="/src/assets/images/mini-soju-bottle.webp"
-                                alt="soju"
-                                $isSoju={true}
-                            />
-                            <h4>
-                                {sojuBottle}병 {sojuGlass}잔
-                            </h4>
-                        </St.InputItemBox>
-                        <St.InputItemBox $alcoholCount={true}>
-                            <St.AlcoholCountImage
-                                src="/src/assets/images/mini-beer-bottle.webp"
-                                alt="beer"
-                                $isSoju={false}
-                            />
-                            <h4>
-                                {beerBottle}병 {beerGlass}잔
-                            </h4>
-                        </St.InputItemBox>
-                    </St.DrinkInputBox>
+            {isLoading ? (
+                <St.LoadingAndErrorText>
+                    일정 상세 정보를 가져오는 중입니다.
+                </St.LoadingAndErrorText>
+            ) : isError ? (
+                <St.LoadingAndErrorText>
+                    Error: {error.message}
+                </St.LoadingAndErrorText>
+            ) : (
+                <>
+                    <St.ScheduleContainer
+                        $alcoholLevel={planDetail?.alcoholLevel || 0}
+                    >
+                        <St.ScheduleTitle
+                            $alcoholLevel={planDetail?.alcoholLevel || 0}
+                        >
+                            일정 정보
+                        </St.ScheduleTitle>
+                        <St.InputContainer>
+                            <St.InputItemBox>
+                                <img
+                                    src="/src/assets/icons/size_24/Icon-calendar.svg"
+                                    alt="date"
+                                />
+                                <h4>
+                                    {convertDateToString(
+                                        new Date(planDetail?.date),
+                                    )}
+                                </h4>
+                            </St.InputItemBox>
+                            <St.InputItemBox>
+                                <img
+                                    src="/src/assets/icons/size_24/Icon-clock.svg"
+                                    alt="time"
+                                />
+                                <h4>
+                                    {convertTimeToString(
+                                        new Date(planDetail?.date),
+                                    )}
+                                </h4>
+                            </St.InputItemBox>
+                            <St.InputItemBox>
+                                <img
+                                    src="/src/assets/icons/size_24/Icon-title.svg"
+                                    alt="title"
+                                />
+                                <St.TitleAndMemo>
+                                    {planDetail?.title}
+                                </St.TitleAndMemo>
+                            </St.InputItemBox>
+                            <St.InputItemBox $boxSize="long">
+                                <St.MemoIconImage
+                                    src="/src/assets/icons/size_24/Icon-memo.svg"
+                                    alt="memo"
+                                />
+                                <St.TitleAndMemo>
+                                    {planDetail?.memo || '메모가 없습니다.'}
+                                </St.TitleAndMemo>
+                            </St.InputItemBox>
+                        </St.InputContainer>
+                    </St.ScheduleContainer>
+                    <St.AlcoholContainer>
+                        <St.AlcoholTitle>음주 기록</St.AlcoholTitle>
+                        <St.InputContainer>
+                            <St.DrinkInputBox>
+                                <St.InputItemBox $alcoholCount={true}>
+                                    <St.AlcoholCountImage
+                                        src="/src/assets/images/mini-soju-bottle.webp"
+                                        alt="soju"
+                                        $isSoju={true}
+                                    />
+                                    <h4>
+                                        {sojuBottle}병 {sojuGlass}잔
+                                    </h4>
+                                </St.InputItemBox>
+                                <St.InputItemBox $alcoholCount={true}>
+                                    <St.AlcoholCountImage
+                                        src="/src/assets/images/mini-beer-bottle.webp"
+                                        alt="beer"
+                                        $isSoju={false}
+                                    />
+                                    <h4>
+                                        {beerBottle}병 {beerGlass}잔
+                                    </h4>
+                                </St.InputItemBox>
+                            </St.DrinkInputBox>
 
-                    <St.InputItemBox>
-                        <St.InputItemBoxTitle>
-                            <img
-                                src="/src/assets/icons/size_24/Icon-health.svg"
-                                alt="alcohol-level"
-                            />
-                            <h4>만취 정도</h4>
-                        </St.InputItemBoxTitle>
-                        <h4>
-                            {alcoholLevelToString(planDetail?.alcoholLevel)}
-                        </h4>
-                    </St.InputItemBox>
-                    <St.InputItemBox>
-                        <St.InputItemBoxTitle>
-                            <img
-                                src="/src/assets/icons/size_24/Icon-clock.svg"
-                                alt="arrival-time"
-                            />
-                            <h4>귀가 시간</h4>
-                        </St.InputItemBoxTitle>
-                        <h4>{arrivalTimeString}</h4>
-                    </St.InputItemBox>
-                </St.InputContainer>
-            </St.AlcoholContainer>
-            <Button text={'일정 삭제하기'} isRed={true} onClick={deletePlan} />
+                            <St.InputItemBox>
+                                <St.InputItemBoxTitle>
+                                    <img
+                                        src="/src/assets/icons/size_24/Icon-health.svg"
+                                        alt="alcohol-level"
+                                    />
+                                    <h4>만취 정도</h4>
+                                </St.InputItemBoxTitle>
+                                <h4>
+                                    {alcoholLevelToString(
+                                        planDetail?.alcoholLevel,
+                                    )}
+                                </h4>
+                            </St.InputItemBox>
+                            <St.InputItemBox>
+                                <St.InputItemBoxTitle>
+                                    <img
+                                        src="/src/assets/icons/size_24/Icon-clock.svg"
+                                        alt="arrival-time"
+                                    />
+                                    <h4>귀가 시간</h4>
+                                </St.InputItemBoxTitle>
+                                <h4>{arrivalTimeString}</h4>
+                            </St.InputItemBox>
+                        </St.InputContainer>
+                    </St.AlcoholContainer>
+                    <Button
+                        text={'일정 삭제하기'}
+                        isRed={true}
+                        onClick={deletePlan}
+                    />
+                </>
+            )}
         </St.Container>
     );
 };

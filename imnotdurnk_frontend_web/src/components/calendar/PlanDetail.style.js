@@ -6,6 +6,11 @@ const Container = styled.div`
     gap: 1.7857rem;
 `;
 
+const LoadingAndErrorText = styled.h3`
+    padding-top: 3rem;
+    text-align: center;
+`;
+
 // 일정 정보
 const ScheduleContainer = styled.div`
     display: flex;
@@ -114,6 +119,7 @@ export {
     InputContainer,
     InputItemBox,
     InputItemBoxTitle,
+    LoadingAndErrorText,
     MemoIconImage,
     ScheduleContainer,
     ScheduleTitle,
