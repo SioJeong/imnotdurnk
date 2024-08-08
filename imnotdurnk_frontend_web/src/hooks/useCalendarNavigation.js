@@ -19,9 +19,10 @@ const useCalendarNavigation = () => {
                 icon2: { iconname: 'check', isRed: 'true', path: 'submitPlan' },
             });
         } else if (path.match('/calendar/\\d{4}-\\d{2}-\\d{2}/plan/\\d+')) {
+            const date = path.split('/')[2];
             setNavigation({
                 isVisible: true,
-                icon1: { iconname: 'backarrow', path: '-1' },
+                icon1: { iconname: 'backarrow', path: `/calendar/${date}` },
                 title: '일정 상세',
                 icon2: { iconname: 'modify', path: 'goEditPlan' },
             });

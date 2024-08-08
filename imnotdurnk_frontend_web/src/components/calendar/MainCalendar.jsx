@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import useCalendarNavigation from '../../hooks/useCalendarNavigation';
-import useCalendarStore from '../../stores/useCalendarStore';
 import CalendarStatusBar from './CalendarStatusBar';
 import EventCard from './EventCard';
 import * as St from './MainCalendar.style';
@@ -11,8 +10,8 @@ const MainCalendar = () => {
 
     // TODO: 여유 생기면 selectedDate도 전역에 저장하고, '오늘' 버튼 만들기
     const [selectedDate, setSelectedDate] = useState(new Date()); // 초기 값 오늘
-
-    const { eventListOnSelectedDate, statusOnDate } = useCalendarStore();
+    const [eventListOnSelectedDate, setEventListOnSelectedDate] = useState([]);
+    const [statusOnDate, setStatusOnDate] = useState(0);
 
     const { navigate } = useCalendarNavigation();
 
@@ -31,11 +30,13 @@ const MainCalendar = () => {
                 onChangeView={setView}
                 selectedDate={selectedDate}
                 setSelectedDate={setSelectedDate}
+                setEventListOnSelectedDate={setEventListOnSelectedDate}
+                setStatusOnDate={setStatusOnDate}
             />
             <CalendarStatusBar />
             {view === 'month' && (
                 <EventCard
-                    alcoholLevel={statusOnDate?.alcoholLevel}
+                    alcoholLevel={statusOnDate}
                     onItemClick={handleItemClick}
                     selectedDate={selectedDate}
                     fromCalendar={true}
@@ -46,9 +47,7 @@ const MainCalendar = () => {
                                 return (
                                     <St.EventCardTitle
                                         key={e.id}
-                                        $alcoholLevel={
-                                            statusOnDate?.alcoholLevel
-                                        }
+                                        $alcoholLevel={statusOnDate}
                                     >
                                         - {e.title}
                                     </St.EventCardTitle>
@@ -56,7 +55,7 @@ const MainCalendar = () => {
                             })}
                             {eventListOnSelectedDate.length > 3 && (
                                 <St.EventCardMorePlan
-                                    $alcoholLevel={statusOnDate?.alcoholLevel}
+                                    $alcoholLevel={statusOnDate}
                                 >
                                     (이외 {eventListOnSelectedDate.length - 3}
                                     개의 일정이 있습니다.)
