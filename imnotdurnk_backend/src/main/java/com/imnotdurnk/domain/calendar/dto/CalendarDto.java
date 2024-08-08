@@ -20,6 +20,8 @@ public class CalendarDto {
 
     private Integer id;
 
+    private Integer planId;
+
     private Integer userId;
 
     private String date;
@@ -40,6 +42,7 @@ public class CalendarDto {
 
     @Builder
     public CalendarDto(Integer Id,
+                       Integer planId,
                        Integer userId,
                        String date,
                        String title,
@@ -49,6 +52,7 @@ public class CalendarDto {
                        Integer beerAmount,
                        Integer sojuAmount) {
         this.id = id;
+        this.planId = planId;
         this.userId = userId;
         this.date = date;
         this.title = title;
