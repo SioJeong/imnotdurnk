@@ -122,20 +122,20 @@ public class VoiceController {
      */
     @Operation(
             summary = "발음 평가 요청",
-            description = "음성 파일과 스크립트({ script: string }) 포함 필요"
+            description = "음성 파일과 스크립트 필요"
     )
     @PostMapping(value="/pronounce", consumes = "multipart/form-data")
     public ResponseEntity<?> gameAboutPronunciation(@RequestPart MultipartFile file,
-                                                    @RequestBody Map<String, String> script) throws UnsupportedAudioFileException, IOException, IllegalAccessException {
+                                                    @RequestPart(value = "script") String script) throws UnsupportedAudioFileException, IOException, IllegalAccessException {
 
         //파일 누락
         if(file.isEmpty()) throw new RequiredFieldMissingException("음성 파일 누락");
         //대사 누락
-        if(script.get("script") == null || script.get("script").equals(""))
+        if(script == null || script.equals(""))
             throw new RequiredFieldMissingException("스크립트 누락");
 
         //점수 가져오기
-        VoiceResultDto result = voiceService.getScoreFromVoice(file, script.get("script"));
+        VoiceResultDto result = voiceService.getScoreFromVoice(file, script);
 
 
         SingleResponse response = new SingleResponse();
