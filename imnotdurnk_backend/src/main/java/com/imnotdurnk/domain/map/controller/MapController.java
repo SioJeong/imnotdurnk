@@ -2,6 +2,7 @@ package com.imnotdurnk.domain.map.controller;
 
 import com.imnotdurnk.domain.calendar.dto.DiaryDto;
 import com.imnotdurnk.domain.map.dto.MapDto;
+import com.imnotdurnk.domain.map.dto.RouteDto;
 import com.imnotdurnk.domain.map.entity.MapResult;
 import com.imnotdurnk.domain.map.service.MapService;
 import com.imnotdurnk.global.commonClass.CommonResponse;
@@ -21,17 +22,25 @@ public class MapController {
 
     private MapService mapService;
 
-    @Operation(
-            summary = ""
-    )
     @GetMapping
-    public ResponseEntity<SingleResponse<?>> getPath(@RequestAttribute(value = "AccessToken", required = true) String token,
+    public ResponseEntity<ListResponse<?>> getPath(@RequestAttribute(value = "AccessToken", required = true) String token,
                                                      @RequestParam(required = true) double startlat, @RequestParam(required = true) double startlon,
-                                                     @RequestParam(required = true) double destlat, @RequestParam(required = true) double destlon){
-        SingleResponse<MapDto> response = new SingleResponse<>();
-        MapResult result = mapService.getStopsAndRoutesInArea(destlat,destlon,startlat, startlon);
-        MapDto res = new MapDto(result.getDistance(),result.getStop_lat(),result.getStop_lon(),result.getStop_name(), result.getStop_id());
-        response.setData(res);
+                                                     @RequestParam(required = true) double destlat, @RequestParam(required = true) double destlon,
+                                                    @RequestParam(required = true) String time){
+        ListResponse<MapDto> response = new ListResponse<>();
+        List<MapDto> result = mapService.getStopsAndRoutesInArea(destlat,destlon,startlat, startlon, time);
+        response.setDataList(result);
+        response.setMessage("결과 반환 성공");
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/route")
+    public ResponseEntity<ListResponse<?>> getRoute(@RequestAttribute(value = "AccessToken", required = true) String token,
+                                                   @RequestParam(required = true) int seq1, @RequestParam(required = true) int seq2,
+                                                   @RequestParam(required = true) String routeId){
+        ListResponse<RouteDto> response = new ListResponse<>();
+        List<RouteDto> result = mapService.getRoutes(routeId,seq1,seq2);
+        response.setDataList(result);
         response.setMessage("결과 반환 성공");
         return ResponseEntity.ok(response);
     }

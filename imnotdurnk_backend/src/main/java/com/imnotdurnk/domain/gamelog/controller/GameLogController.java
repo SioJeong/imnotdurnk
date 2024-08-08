@@ -2,6 +2,7 @@ package com.imnotdurnk.domain.gamelog.controller;
 
 import com.imnotdurnk.domain.gamelog.dto.GameLogDto;
 import com.imnotdurnk.domain.gamelog.dto.GameStatistic;
+import com.imnotdurnk.domain.gamelog.dto.Question;
 import com.imnotdurnk.domain.gamelog.service.GameLogService;
 import com.imnotdurnk.global.commonClass.CommonResponse;
 import com.imnotdurnk.global.exception.InvalidDateException;
@@ -92,6 +93,24 @@ public class GameLogController {
         response.setMessage("저장 완료");
         response.setStatusCode(HttpStatus.OK.value());
 
+        return ResponseEntity.status(response.getHttpStatus()).body(response);
+    }
+
+    /**
+     * 게임용 랜덤 문장 제공 API
+     * @param accessToken
+     * @return
+     */
+    @Operation(
+            summary = "게임용 랜덤 문장 제공"
+    )
+    @GetMapping("/question")
+    public ResponseEntity<SingleResponse<String>> getQuestion(@RequestAttribute(value = "AccessToken", required = true) String accessToken) {
+
+        String question = Question.getRandom();
+        if (question == null) throw new ResourceNotFoundException("제공된 문장이 없음");
+
+        SingleResponse<String> response = new SingleResponse<>(HttpStatus.OK.value(), "랜덤문장 제공 완료", question);
         return ResponseEntity.status(response.getHttpStatus()).body(response);
     }
 
