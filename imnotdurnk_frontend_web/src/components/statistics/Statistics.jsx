@@ -1,6 +1,5 @@
 import ToggleButton from '@/components/_button/ToggleButton';
-import { getStaticsticsData } from '@/services/calendar';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { styled } from 'styled-components';
 import AlcoholStatistics from './AlcoholStatistics';
 import GameStatistics from './GameStatistics';
@@ -32,23 +31,23 @@ const Statistics = () => {
     const date = String(today.getDate()).padStart(2, '0');
     const formattedDate = `${year}-${month}-${date}`;
 
-    useEffect(() => {
-        const fetchStatisticsData = async () => {
-            try {
-                const getStatisticsResult =
-                    await getStaticsticsData(formattedDate); // getUserProfile 함수 비동기 호출
+    // useEffect(() => {
+    //     const fetchStatisticsData = async () => {
+    //         try {
+    //             const getStatisticsResult =
+    //                 await getStaticsticsData(formattedDate); // getUserProfile 함수 비동기 호출
 
-                if (getStatisticsResult.isSuccess) {
-                    // 사용자 정보를 inputValues에 업데이트
-                }
-            } catch (error) {
-                console.error('통계 가져오기 중 오류 발생', error);
-                // 오류 처리 로직 추가
-            }
-        };
+    //             if (getStatisticsResult.isSuccess) {
+    //                 // 사용자 정보를 inputValues에 업데이트
+    //             }
+    //         } catch (error) {
+    //             console.error('통계 가져오기 중 오류 발생', error);
+    //             // 오류 처리 로직 추가
+    //         }
+    //     };
 
-        fetchStatisticsData();
-    });
+    //     fetchStatisticsData();
+    // });
     return (
         <Container>
             <ToggleButton
