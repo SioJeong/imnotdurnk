@@ -1,0 +1,62 @@
+.swal2-container {
+    padding-top: 6rem !important;
+}
+
+.swal2-toast {
+    display: flex !important;
+    width: auto !important;
+    padding: 1rem 1.5rem !important;
+    font-family: 'Pretendard' !important;
+}
+
+.swal2-title {
+    font-size: var(--font-title-h3) !important;
+}
+
+/* 성공 alert */
+.toast-success {
+    background-color: var(--color-white2) !important;
+    color: var(--color-green2) !important;
+}
+
+.toast-success .swal2-timer-progress-bar {
+    background: var(--color-green1) !important;
+}
+
+.toast-success .swal2-success-ring {
+    border-color: var(--color-green1) !important;
+}
+
+.toast-success .swal2-success-line-tip,
+.toast-success .swal2-success-line-long {
+    background-color: var(--color-green1) !important;
+}
+
+/* 경고 alert */
+.toast-warning {
+    background-color: var(--color-yellow) !important;
+    color: var(--color-green2) !important;
+}
+
+.toast-warning .swal2-timer-progress-bar {
+    background: var(--color-green2) !important;
+}
+
+.toast-warning .swal2-icon-content {
+    color: var(--color-green2) !important;
+}
+
+/* 오류 alert */
+.toast-error {
+    background-color: var(--color-red) !important;
+    color: var(--color-white1) !important;
+}
+
+.toast-error .swal2-x-mark-line-left,
+.toast-error .swal2-x-mark-line-right {
+    background-color: var(--color-white1) !important;
+}
+
+.toast-error .swal2-timer-progress-bar {
+    background: var(--color-white1) !important;
+}
