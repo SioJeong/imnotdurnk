@@ -71,7 +71,7 @@ public class VoiceServiceImpl implements VoiceService {
      * @throws javax.sound.sampled.UnsupportedAudioFileException
      */
     @Override
-    public VoiceResultDto getScoreFromVoice(MultipartFile file)
+    public VoiceResultDto getScoreFromVoice(MultipartFile file, String script)
             throws UnsupportedAudioFileException {
 
         Double score = null;
@@ -87,7 +87,7 @@ public class VoiceServiceImpl implements VoiceService {
         //ETRI 발음평가 API 호출
         String openApiURL = "http://aiopen.etri.re.kr:8000/WiseASR/PronunciationKor";   //한국어
         String languageCode = "korean";     // 언어 코드
-        String script = "상표 붙인 큰 깡통은 깐 깡통인가 안 깐 깡통인가";    // 평가 대본
+//        String script = "상표 붙인 큰 깡통은 깐 깡통인가 안 깐 깡통인가";    // 평가 대본
         String audioFilePath = RAW_DIR + fileTitle;  // 녹음된 음성 파일 경로
         String audioContents = null;
 
