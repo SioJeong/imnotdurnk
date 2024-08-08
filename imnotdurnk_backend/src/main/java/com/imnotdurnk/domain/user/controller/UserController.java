@@ -332,7 +332,7 @@ public class UserController {
      * @return 기준에 부합하면 true, 아니면 false
      */
     public boolean checkpassword(String password) {
-        return Pattern.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{8,16}$", password);
+        return Pattern.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[~!@#$%^&*]*).{8,16}$", password);
     }
 
     /***

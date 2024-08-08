@@ -42,6 +42,8 @@ public class VoiceServiceImpl implements VoiceService {
     @Value("${etri.accesskey}")
     private String accessKey;
     private final String tempWavFilePath = System.getProperty("java.io.tmpdir");
+    private static final String RAW_DIR = "/app/tmp/raw/";
+    private static final String WAV_DIR = "/app/tmp/wav/";
 
     @Override
     public boolean addVoice(GameLogEntity gameLogEntity, VoiceDto voiceDto) {
@@ -69,7 +71,7 @@ public class VoiceServiceImpl implements VoiceService {
      * @throws javax.sound.sampled.UnsupportedAudioFileException
      */
     @Override
-    public VoiceResultDto getScoreFromVoice(MultipartFile file)
+    public VoiceResultDto getScoreFromVoice(MultipartFile file, String script)
             throws UnsupportedAudioFileException {
 
         Double score = null;
@@ -79,14 +81,14 @@ public class VoiceServiceImpl implements VoiceService {
             fileTitle = audioUtil.SaveRaw(wavFile);
         }
         catch(IOException e){
-            throw new FailToConvertVoiceFile("음성 파일 전처리 실패");
+            throw new FailToConvertVoiceFileException("음성 파일 전처리 실패");
         }
 
         //ETRI 발음평가 API 호출
         String openApiURL = "http://aiopen.etri.re.kr:8000/WiseASR/PronunciationKor";   //한국어
         String languageCode = "korean";     // 언어 코드
-        String script = "상표 붙인 큰 깡통은 깐 깡통인가 안 깐 깡통인가";    // 평가 대본
-        String audioFilePath = fileTitle;  // 녹음된 음성 파일 경로
+//        String script = "상표 붙인 큰 깡통은 깐 깡통인가 안 깐 깡통인가";    // 평가 대본
+        String audioFilePath = RAW_DIR + fileTitle;  // 녹음된 음성 파일 경로
         String audioContents = null;
 
         Gson gson = new Gson();
@@ -99,7 +101,7 @@ public class VoiceServiceImpl implements VoiceService {
             byte[] audioBytes = Files.readAllBytes(path);
             audioContents = Base64.getEncoder().encodeToString(audioBytes);
         } catch (IOException e) {
-            throw new FailToConvertVoiceFile("음성 파일을 Base64로 변환 실패");
+            throw new FailToConvertVoiceFileException("음성 파일을 Base64로 변환 실패");
         }
 
         argument.put("language_code", languageCode);
@@ -151,7 +153,7 @@ public class VoiceServiceImpl implements VoiceService {
         } finally {
 
             // 파일 삭제
-            File rawFile = new File(fileTitle);
+            File rawFile = new File(RAW_DIR, fileTitle);
             deleteTempFile(rawFile);
 //            deleteTempFile(wavFile);
         }
@@ -195,7 +197,7 @@ public class VoiceServiceImpl implements VoiceService {
     public void saveVoiceFile(String filename, GameLogEntity gameLogEntity) {
 
         // 임시 파일 가져오기
-        File file = new File(tempWavFilePath, filename);
+        File file = new File(WAV_DIR, filename);
         if(!file.exists()){
             throw new ResourceNotFoundException("임시 파일을 찾을 수 없음");
         }
@@ -227,7 +229,7 @@ public class VoiceServiceImpl implements VoiceService {
      * @param mfile
      * @return 변환된 {@link File} 객체
      * @throws IllegalAccessException
-     * @throws FailToConvertVoiceFile
+     * @throws FailToConvertVoiceFileException
      */
     @Override
     public File multipartToFile(MultipartFile mfile) {
@@ -236,11 +238,11 @@ public class VoiceServiceImpl implements VoiceService {
                 + "_"
                 + UUID.randomUUID().toString() + ".wav";
         if (originalFilename == null || originalFilename.isEmpty()) {
-            throw new FailToConvertVoiceFile("File name is invalid.");
+            throw new FailToConvertVoiceFileException("File name is invalid.");
         }
 
         // 안전한 임시 파일 경로를 설정
-        File file = new File(tempWavFilePath, originalFilename);
+        File file = new File(WAV_DIR, originalFilename);
 
         try {
             // 파일 전송
@@ -251,7 +253,7 @@ public class VoiceServiceImpl implements VoiceService {
             if (file.exists()) {
                 file.delete();
             }
-            throw new FailToConvertVoiceFile("파일 전처리 실패");
+            throw new FailToConvertVoiceFileException("파일 전처리 실패");
         }
 
         // 파일 정보 로그
@@ -265,7 +267,9 @@ public class VoiceServiceImpl implements VoiceService {
      */
     @Override
     public void deleteTempFile(File file) {
-        if (file.exists() && !file.delete()) {
+
+        if(!file.exists()) log.warn("임시 파일이 존재하지 않음: " + file.getAbsolutePath());
+        else if (file.exists() && !file.delete()) {
             log.warn("임시 파일 삭제 실패: " + file.getAbsolutePath());
         }
         log.debug("임시 파일 삭제: " + file.getAbsolutePath());
@@ -273,7 +277,7 @@ public class VoiceServiceImpl implements VoiceService {
 
     @Override
     public void deleteTempFile(String filename) {
-        File file = new File(tempWavFilePath, filename);
+        File file = new File(WAV_DIR, filename);
         if (file.exists() && !file.delete()) {
             log.warn("임시 파일 삭제 실패: " + file.getAbsolutePath());
         }

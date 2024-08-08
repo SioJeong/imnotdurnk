@@ -7,6 +7,7 @@ import useAuthStore from '../../stores/useAuthStore';
 // eslint-disable-next-line import/no-unresolved
 import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
+import { ToastError, ToastSuccess } from '../_common/alert';
 import * as St from './Login.style';
 const Login = () => {
     const [inputValues, setInputValues] = useState({
@@ -30,6 +31,7 @@ const Login = () => {
         );
         if (loginResult.isSuccess) {
             if (inputValues.isEmailSaved) {
+                ToastSuccess('나안취햄ㅅ어에 오신 것을 환영합니다.', true);
                 setAccessToken(loginResult.accessToken);
                 setCookie('rememberUserId', inputValues.email, { path: '/' });
             } else {
@@ -39,6 +41,9 @@ const Login = () => {
             // 임시로 mypage로 이동 추후에는 /home으로 변경 필요
 
             navigate('/');
+        } else {
+            // TODO: 임의로 Error 넣어두긴 했는데, 이메일/비번 틀린 경우 분기 하실 거면 추가하심 좋을 것 같습니다 !
+            ToastError('로그인 정보가 틀렸습니다.', false);
         }
     };
 
@@ -46,8 +51,6 @@ const Login = () => {
     const checkValidation = () => {
         let isValid = true;
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        const passwordRegex =
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,16}$/;
 
         if (!emailRegex.test(inputValues.email)) {
             isValid = false;
@@ -62,12 +65,11 @@ const Login = () => {
             }));
         }
 
-        if (!passwordRegex.test(inputValues.password)) {
+        if (inputValues.password === '') {
             isValid = false;
             setAlertMessages((prev) => ({
                 ...prev,
-                password:
-                    '비밀번호는 대문자, 소문자, 숫자를 포함하고 8~16자리여야 합니다.',
+                password: '비밀번호를 입력해주세요.',
             }));
         } else {
             setAlertMessages((prev) => ({
