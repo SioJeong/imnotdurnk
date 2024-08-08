@@ -25,6 +25,7 @@ public interface CalendarRepository extends JpaRepository<CalendarEntity, Intege
             WHERE month(c.date) = :month
             AND year(c.date) = :year
             AND c.userEntity.id = :user
+            ORDER BY day(c.date) DESC
         """)
     List<DiaryDto> findAllDiary(Integer user, Integer year, Integer month);
 
