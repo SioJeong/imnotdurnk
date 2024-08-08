@@ -130,17 +130,22 @@ public class UserServiceImpl implements UserService {
         Random random = new Random();
         String verificationCode = String.format("%04d", random.nextInt(10000));
         String cnt = redisUtil.getData(email);
-        if(cnt==null) redisUtil.setDataExpire(email, "1",60*5L);    //인증번호 전송 횟수 저장
-        else {
-            if(cnt.length()==5) throw new BadRequestException("인증번호 횟수 초과");
-            redisUtil.setDataExpire(email, cnt+1,(5-cnt.length())/5*60*5L);
+        if (cnt == null) {
+            redisUtil.setDataExpire(email, "1", 60 * 5L);  // 인증번호 전송 횟수 저장
+        } else {
+            int sendCount = Integer.parseInt(cnt); // cnt를 정수로 변환
+            if (sendCount >= 5) throw new BadRequestException("인증번호 횟수 초과");
+
+            sendCount++; // 전송 횟수 증가
+            redisUtil.setDataExpire(email, String.valueOf(sendCount), 60 * 5L); // 증가된 횟수 저장
         }
 
-        try {
-            sendMail(email, "회원 인증 메일입니다.", verificationCode, "코드");
-        } catch (MessagingException e) {
-            throw new MessagingException(e.getMessage());
-        }
+        //try {
+        //    sendMail(email, "회원 인증 메일입니다.", verificationCode, "코드");
+      //  } catch (MessagingException e) {
+    //        throw new MessagingException(e.getMessage());
+    //    }
+            System.out.println(verificationCode);
         //Redis 저장소에 인증번호-메일을 5분동안 저장
         redisUtil.setDataExpire(verificationCode, email,60*5L);
 
