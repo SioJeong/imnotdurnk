@@ -42,6 +42,8 @@ public class VoiceServiceImpl implements VoiceService {
     @Value("${etri.accesskey}")
     private String accessKey;
     private final String tempWavFilePath = System.getProperty("java.io.tmpdir");
+    private static final String RAW_DIR = "/app/tmp/raw/";
+    private static final String WAV_DIR = "/app/tmp/wav/";
 
     @Override
     public boolean addVoice(GameLogEntity gameLogEntity, VoiceDto voiceDto) {
@@ -86,7 +88,7 @@ public class VoiceServiceImpl implements VoiceService {
         String openApiURL = "http://aiopen.etri.re.kr:8000/WiseASR/PronunciationKor";   //한국어
         String languageCode = "korean";     // 언어 코드
         String script = "상표 붙인 큰 깡통은 깐 깡통인가 안 깐 깡통인가";    // 평가 대본
-        String audioFilePath = fileTitle;  // 녹음된 음성 파일 경로
+        String audioFilePath = RAW_DIR + fileTitle;  // 녹음된 음성 파일 경로
         String audioContents = null;
 
         Gson gson = new Gson();
@@ -151,7 +153,7 @@ public class VoiceServiceImpl implements VoiceService {
         } finally {
 
             // 파일 삭제
-            File rawFile = new File(fileTitle);
+            File rawFile = new File(RAW_DIR, fileTitle);
             deleteTempFile(rawFile);
 //            deleteTempFile(wavFile);
         }
@@ -195,7 +197,7 @@ public class VoiceServiceImpl implements VoiceService {
     public void saveVoiceFile(String filename, GameLogEntity gameLogEntity) {
 
         // 임시 파일 가져오기
-        File file = new File(tempWavFilePath, filename);
+        File file = new File(WAV_DIR, filename);
         if(!file.exists()){
             throw new ResourceNotFoundException("임시 파일을 찾을 수 없음");
         }
@@ -240,7 +242,7 @@ public class VoiceServiceImpl implements VoiceService {
         }
 
         // 안전한 임시 파일 경로를 설정
-        File file = new File(tempWavFilePath, originalFilename);
+        File file = new File(WAV_DIR, originalFilename);
 
         try {
             // 파일 전송
@@ -265,7 +267,9 @@ public class VoiceServiceImpl implements VoiceService {
      */
     @Override
     public void deleteTempFile(File file) {
-        if (file.exists() && !file.delete()) {
+
+        if(!file.exists()) log.warn("임시 파일이 존재하지 않음: " + file.getAbsolutePath());
+        else if (file.exists() && !file.delete()) {
             log.warn("임시 파일 삭제 실패: " + file.getAbsolutePath());
         }
         log.debug("임시 파일 삭제: " + file.getAbsolutePath());
@@ -273,7 +277,7 @@ public class VoiceServiceImpl implements VoiceService {
 
     @Override
     public void deleteTempFile(String filename) {
-        File file = new File(tempWavFilePath, filename);
+        File file = new File(WAV_DIR, filename);
         if (file.exists() && !file.delete()) {
             log.warn("임시 파일 삭제 실패: " + file.getAbsolutePath());
         }
