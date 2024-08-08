@@ -11,6 +11,11 @@ const useCalendarNavigation = () => {
     useEffect(() => {
         const path = location.pathname;
 
+        // PlanDetail 경로일 경우 네비게이션 설정을 하지 않음
+        if (path.match('/calendar/\\d{4}-\\d{2}-\\d{2}/plan/\\d+')) {
+            return;
+        }
+
         if (path.match('/calendar/create-plan')) {
             setNavigation({
                 isVisible: true,
@@ -18,15 +23,17 @@ const useCalendarNavigation = () => {
                 title: '일정 추가',
                 icon2: { iconname: 'check', isRed: 'true', path: 'submitPlan' },
             });
-        } else if (path.match('/calendar/\\d{4}-\\d{2}-\\d{2}/plan/\\d+')) {
-            const date = path.split('/')[2];
-            setNavigation({
-                isVisible: true,
-                icon1: { iconname: 'backarrow', path: `/calendar/${date}` },
-                title: '일정 상세',
-                icon2: { iconname: 'modify', path: 'goEditPlan' },
-            });
-        } else if (path.startsWith('/calendar/edit-plan/')) {
+        }
+        // else if (path.match()) {
+        //     const date = path.split('/')[2];
+        //     setNavigation({
+        //         isVisible: true,
+        //         icon1: { iconname: 'backarrow', path: `/calendar/${date}` },
+        //         title: '일정 상세',
+        //         icon2: { iconname: 'modify', path: 'goEditPlan' },
+        //     });
+        // }
+        else if (path.startsWith('/calendar/edit-plan/')) {
             setNavigation({
                 isVisible: true,
                 icon1: { iconname: 'backarrow', path: '-1' },

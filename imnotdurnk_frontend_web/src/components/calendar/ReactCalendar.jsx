@@ -29,13 +29,19 @@ const ReactCalendar = ({
 
     useEffect(() => {
         if (selectedDate && monthlyEventList) {
-            const eventListOnSelectedDate = monthlyEventList.filter((e) => {
-                return (
-                    e.date.getFullYear() === selectedDate.getFullYear() &&
-                    e.date.getMonth() === selectedDate.getMonth() &&
-                    e.date.getDate() === selectedDate.getDate()
-                );
-            });
+            const sortedMonthlyEventList = monthlyEventList.sort(
+                (a, b) => new Date(b.date) - new Date(a.date),
+            );
+
+            const eventListOnSelectedDate = sortedMonthlyEventList.filter(
+                (e) => {
+                    return (
+                        e.date.getFullYear() === selectedDate.getFullYear() &&
+                        e.date.getMonth() === selectedDate.getMonth() &&
+                        e.date.getDate() === selectedDate.getDate()
+                    );
+                },
+            );
             setEventListOnSelectedDate(eventListOnSelectedDate);
             if (eventListOnSelectedDate.length > 0) {
                 const statusOnDate = eventListOnSelectedDate.sort(
