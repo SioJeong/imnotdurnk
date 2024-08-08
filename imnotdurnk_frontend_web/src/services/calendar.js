@@ -66,7 +66,7 @@ const getEventDetail = async ({ planId }) => {
 const updateEvent = async ({ editedPlan }) => {
     try {
         const response = await api.put(
-            `/calendars/${editedPlan.date}/plans/${editedPlan.id}`,
+            `/calendars/plans/${editedPlan.id}`,
             editedPlan,
             {},
         );
