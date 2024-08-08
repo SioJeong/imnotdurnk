@@ -11,6 +11,7 @@ import { deleteEvent, getEventDetail } from '../../services/calendar';
 import useCalendarStore from '../../stores/useCalendarStore';
 import useNavigationStore from '../../stores/useNavigationStore';
 import Button from '../_button/Button';
+import { ToastSuccess } from '../_common/alert';
 import * as St from './PlanDetail.style';
 
 const PlanDetail = () => {
@@ -73,7 +74,7 @@ const PlanDetail = () => {
                     year,
                     month,
                 ]);
-                alert('일정이 삭제 되었습니다.');
+                ToastSuccess('일정이 삭제되었습니다', true);
                 resetPlanDetail();
                 navigate('/calendar'); // 캘린더 페이지로 이동
                 return true;
