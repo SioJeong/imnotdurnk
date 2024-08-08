@@ -41,7 +41,7 @@ public class CalendarDto {
     public CalendarDto() {}
 
     @Builder
-    public CalendarDto(Integer Id,
+    public CalendarDto(
                        Integer planId,
                        Integer userId,
                        String date,
@@ -51,7 +51,6 @@ public class CalendarDto {
                        String memo,
                        Integer beerAmount,
                        Integer sojuAmount) {
-        this.id = id;
         this.planId = planId;
         this.userId = userId;
         this.date = date;
