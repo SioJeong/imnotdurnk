@@ -36,6 +36,8 @@ public class AudioUtil {
     private byte[] buff = new byte[1024];
     private int read;
 
+    private static final String RAW_DIR = "/app/tmp/raw/";
+
     // 리니어 PCM 인코딩 및 지정된 파라미터를 가지는 AudioFormat를 구축
     // http://cris.joongbu.ac.kr/course/java/api/javax/sound/sampled/AudioFormat.html
     private static final AudioFormat FORMAT = new AudioFormat(
@@ -56,13 +58,22 @@ public class AudioUtil {
     public String SaveRaw(File file) throws UnsupportedAudioFileException, IOException {
         OutputStream output = null;
 
-        String output_title = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMddHHmmss"))
+        // 저장할 경로 설정
+        File rawDir = new File(RAW_DIR);
+        if (!rawDir.exists()) {
+            rawDir.mkdirs(); // 디렉토리 생성
+        }
+
+        String outputTitle = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMddHHmmss"))
                 + "_"
-                +  UUID.randomUUID().toString()
+                + UUID.randomUUID().toString()
                 + ".raw";
 
+        File rawFile = new File(RAW_DIR, outputTitle);
+
+
         try {
-            output = new FileOutputStream(output_title);
+            output = new FileOutputStream(rawFile);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             throw new FailToConvertVoiceFile("raw 저장 실패");
@@ -71,7 +82,7 @@ public class AudioUtil {
         //바이트 변환 -> 포맷 변환 -> wav에서 raw로 변환
         output.write(formatWavToRaw(changeFormat(AudioToByte(file), FORMAT)));
 
-        return output_title;
+        return outputTitle;
     }
 
     /***
@@ -95,8 +106,8 @@ public class AudioUtil {
             throws IOException, UnsupportedAudioFileException {
 
         // 인풋 파일 포맷 확인
-        log.trace("Original Format: " + AudioSystem.getAudioFileFormat(new ByteArrayInputStream(audioFileContent)).getFormat());
-        log.trace("Target Format: " + audioFormat);
+        log.debug("Original Format: " + AudioSystem.getAudioFileFormat(new ByteArrayInputStream(audioFileContent)).getFormat());
+        log.debug("Target Format: " + audioFormat);
 
         try (final AudioInputStream originalAudioStream = AudioSystem
                 .getAudioInputStream(new ByteArrayInputStream(audioFileContent));
