@@ -9,13 +9,12 @@ const getStaticsticsData = async (formattedDate) => {
                 dateStr: formattedDate,
             },
         });
-        console.log('2', response.data);
-        const { statusCode, httpStatus, message, data } = response.data;
+
+        console.log('2', response.status);
         // apiErrorHandler(statusCode, httpStatus, message);
-        console.log('통계데이터 얻기 response:', data);
         return {
-            isSuccess: statusCode === 200,
-            data: data,
+            isSuccess: response.status === 200,
+            data: response.data,
             message: '통계 정보 가져오기 성공',
         };
     } catch (err) {
