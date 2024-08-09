@@ -59,3 +59,4 @@ public interface CalendarRepository extends JpaRepository<CalendarEntity, Intege
     List<PlanForMonth> findRecent12MonthsPlanCount(LocalDateTime startDate, LocalDateTime endDate);
 
 }
+

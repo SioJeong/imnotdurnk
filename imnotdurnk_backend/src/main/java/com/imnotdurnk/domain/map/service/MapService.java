@@ -14,3 +14,4 @@ public interface MapService {
 
     public List<MapDto> getStopsAndRoutesInAreaWithTaxi(double destLat, double destLon, double latitude, double longitude, String time);
 }
+

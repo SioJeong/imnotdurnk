@@ -24,7 +24,7 @@ public class MapController {
 
     @Operation(
             summary = "대중교통 경로 조회",
-            description = "현재 시간에 환승없이 도달 가능한 도착지와 가장 가까운 대중교통 경로를 조회합니다. 간단한 정보만 반환합니다."
+            description = "현재 시간에 환승없이 도달 가능한 도착지와 가장 가까운 대중교통 경로를 조회합니다."
     )
     @GetMapping
     public ResponseEntity<ListResponse<?>> getSimplePath(
@@ -60,8 +60,8 @@ public class MapController {
     )
     @GetMapping("/route")
     public ResponseEntity<ListResponse<?>> getRoute(
-                                                   @RequestParam(required = true) int seq1, @RequestParam(required = true) int seq2,
-                                                   @RequestParam(required = true) String routeId){
+            @RequestParam(required = true) int seq1, @RequestParam(required = true) int seq2,
+            @RequestParam(required = true) String routeId){
         ListResponse<RouteDto> response = new ListResponse<>();
         List<RouteDto> result = mapService.getRoutes(routeId,seq1,seq2);
         response.setDataList(result);
@@ -70,3 +70,4 @@ public class MapController {
     }
 
 }
+

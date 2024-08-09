@@ -48,7 +48,10 @@ public class MapDto {
         this.taxi = taxi;
     }
 
-    public MapDto(Optional<String> startLon, Optional<String> startLat, Optional<String> routeId, Optional<Integer> seq2, Optional<Integer> seq1, Optional<Integer> walkingTime, Optional<Double> duration, Optional<Double> distance, Optional<String> destStop, Optional<String> route, Optional<Double> startDistance, Optional<String> startStop, Optional<String> destLon, Optional<String> destLat) {
+    public MapDto() {
+    }
+
+    public MapDto(Optional<String> destLat, Optional<String> destLon, Optional<String> startStop, Optional<Double> startDistance, Optional<String> route, Optional<String> destStop, Optional<Double> distance, Optional<Double> duration, Optional<Integer> walkingTime, Optional<Integer> seq1, Optional<Integer> seq2, Optional<String> routeId, Optional<String> startLat, Optional<String> startLon) {
         this.startLon = startLon;
         this.startLat = startLat;
         this.routeId = routeId;
@@ -64,8 +67,5 @@ public class MapDto {
         this.destLon = destLon;
         this.destLat = destLat;
     }
-
-    public MapDto() {
-    }
-
 }
+

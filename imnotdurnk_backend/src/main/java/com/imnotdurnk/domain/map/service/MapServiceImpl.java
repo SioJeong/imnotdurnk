@@ -17,14 +17,11 @@ import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
-
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
 
@@ -65,6 +62,7 @@ public class MapServiceImpl implements MapService {
                     slon=slon.replace("\r", "");
                     String dlon = result.getDestLon().get();
                     dlon=dlon.replace("\r", "");
+
                     mapResult.add(new MapDto(result.getDestLat(), Optional.of(dlon),result.getStartStop(),result.getStartDistance(),result.getRoute(),result.getDestStop(),result.getDistance(),result.getDuration(), Optional.of(5 * t), result.getSeq1(), result.getSeq2(), result.getRouteId(), result.getStartLat(), Optional.of(slon)));
                 }
                 break;
@@ -164,21 +162,21 @@ public class MapServiceImpl implements MapService {
         return routeResult;
     }
 
-/**
- * 지정된 출발지와 도착지에 대한 택시 요금을 비동기적으로 가져옴
- *
- * 이 메서드는 카카오 맵 API를 호출하여 주어진 출발지(origin)와 도착지(destination) 간의
- * 택시 요금과 통행료를 계산하여 반환함
- *
- * @param origin 출발지의 좌표
- * @param destination 도착지의 좌표
- * @return Mono<Integer> 택시 요금과 통행료의 합계를 포함하는 Mono 객체.
- *         성공적으로 요금을 가져오면 Integer 값이 반환되며,
- *         오류가 발생하면 Mono.error()를 통해 에러가 전달됩니다.
- *
- * @throws JsonProcessingException JSON 응답을 파싱하는 도중 발생할 수 있는 예외.
- */
-private Mono<Integer> fetchTaxiFare(String origin, String destination) {
+    /**
+     * 지정된 출발지와 도착지에 대한 택시 요금을 비동기적으로 가져옴
+     *
+     * 이 메서드는 카카오 맵 API를 호출하여 주어진 출발지(origin)와 도착지(destination) 간의
+     * 택시 요금과 통행료를 계산하여 반환함
+     *
+     * @param origin 출발지의 좌표
+     * @param destination 도착지의 좌표
+     * @return Mono<Integer> 택시 요금과 통행료의 합계를 포함하는 Mono 객체.
+     *         성공적으로 요금을 가져오면 Integer 값이 반환되며,
+     *         오류가 발생하면 Mono.error()를 통해 에러가 전달됩니다.
+     *
+     * @throws JsonProcessingException JSON 응답을 파싱하는 도중 발생할 수 있는 예외.
+     */
+    private Mono<Integer> fetchTaxiFare(String origin, String destination) {
         HttpClient httpClient = HttpClient.create()
                 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000) // timeout 시간
                 .responseTimeout(Duration.ofMillis(5000))
