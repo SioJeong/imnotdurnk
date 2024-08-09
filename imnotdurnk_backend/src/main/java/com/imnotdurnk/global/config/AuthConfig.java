@@ -25,10 +25,13 @@ public class AuthConfig implements WebMvcConfigurer {
          * 5. 발음 평가 요청 API
          */
         registry.addInterceptor(jwtTokenInterceptor)
-                .excludePathPatterns("/users/login", "/users/signup/**","/users/signup/verify","/users/signup", "/map/**",
-                        "/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**",
-		       	        "/webjars/**",
-                        "/users/login/find-password",
-                        "/voice/pronounce");
+                .excludePathPatterns(
+                        "/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**", "/webjars/**",
+                        "/users/login/**", //로그인
+                        "/users/signup/**", //회원가입
+                        "/map/**",
+                        "/voice/pronounce", //발음 평가 요청
+                        "/game-logs/question" //게임용 랜덤 문장 제공
+                        );
     }
 }
