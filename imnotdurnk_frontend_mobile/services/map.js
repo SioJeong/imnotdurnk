@@ -1,15 +1,10 @@
 import axios from 'axios';
-import {
-    GOOGLE_PLACES_API_KEY,
-    KAKAO_API_KEY,
-    NEW_ODSAY_KEY,
-} from 'react-native-dotenv';
 
 // 좌표로 한글 주소 찾기
 const getReverseGeocoding = async (latitude, longitude) => {
     try {
         const response = await axios.get(
-            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${GOOGLE_PLACES_API_KEY}&language=ko`,
+            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyDushsIyoXh3N-MV2gDlhFlvPWYYbASgjg&language=ko`,
         );
         let address =
             response.data.results[0]?.formatted_address ||
@@ -30,8 +25,7 @@ const fetchTransitDirections = async (departure, stopover) => {
     const { latitude: depLat, longitude: depLng } = departure;
     const { latitude: destLat, longitude: destLng } = stopover;
 
-    const directionsUrl = `https://api.odsay.com/v1/api/searchPubTransPathT?SX=${depLng}&SY=${depLat}&EX=${destLng}&EY=${destLat}&apiKey=${NEW_ODSAY_KEY}`;
-
+    const directionsUrl = `https://api.odsay.com/v1/api/searchPubTransPathT?SX=${depLng}&SY=${depLat}&EX=${destLng}&EY=${destLat}&apiKey=yPtxRPMa8thnw9UFLUnu5vholrViOMIYNolIXPJ1Pvo`;
     try {
         const response = await axios.get(directionsUrl);
         if (response.status === 200) {
@@ -83,7 +77,7 @@ const fetchTaxiDirections = async (departure, stopover, destination) => {
         // 원래 출발지에서 목적지까지의 택시비
         const originResponse = await axios.get(originDirectionsUrl, {
             headers: {
-                Authorization: `KakaoAK ${KAKAO_API_KEY}`,
+                Authorization: `KakaoAK 5ab9885b1d3961d30c9b4d9fdfa0d10e`,
             },
         });
         let originFare = 0;
@@ -97,7 +91,7 @@ const fetchTaxiDirections = async (departure, stopover, destination) => {
         // 알고리즘으로 도출된 최적 경유지부터 목적지까지의 택시비
         const response = await axios.get(directionsUrl, {
             headers: {
-                Authorization: `KakaoAK ${KAKAO_API_KEY}`,
+                Authorization: `KakaoAK 5ab9885b1d3961d30c9b4d9fdfa0d10e`,
             },
         });
         if (response.status === 200) {

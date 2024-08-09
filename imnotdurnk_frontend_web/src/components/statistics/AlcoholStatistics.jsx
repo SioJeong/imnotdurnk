@@ -1,23 +1,56 @@
 import SelectButton from '@/components/_button/SelectButton';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { styled } from 'styled-components';
 
-const AlcoholStatistics = () => {
+import { Bar, BarChart, ResponsiveContainer, XAxis } from 'recharts';
+
+const AlcoholStatistics = ({ avgData, planForMonths }) => {
     const [activeIndex, setActiveIndex] = useState(2);
     const tabContentsList = [
-        { text: 'Day', unit: '일' },
-        { text: 'Month', unit: '월' },
-        { text: 'Year', unit: '연' },
+        { text: 'Day', comment: '이번달 일별 평균 음주량은' },
+        { text: 'Month', comment: '올해 월별 평균 음주량은' },
+        { text: 'Year', comment: '올해 총 음주량은' },
     ];
+
     const handleButtonClick = (index) => {
         setActiveIndex(index);
     };
+    useEffect(() => {
+        console.log(planForMonths, 'useEf');
+    }, [planForMonths]);
+
     return (
         <StatisticsBox>
             <StatisticsVisualization>
                 <MainTitle>월별 음주 통계</MainTitle>
                 <SubTitle>지난 달보다 이번달 7번 더 많이 마셨습니다.</SubTitle>
-                <Graph></Graph>
+                <Graph>
+                    <ResponsiveContainer width="100%" height="100%">
+                        <BarChart
+                            width={500}
+                            height={300}
+                            data={planForMonths}
+                            margin={{
+                                top: 5,
+                                right: 30,
+                                left: 20,
+                                bottom: 5,
+                            }}
+                            barSize={20}
+                        >
+                            <XAxis
+                                dataKey={planForMonths.month}
+                                scale="point"
+                                padding={{ left: 10, right: 10 }}
+                            />
+                            <Bar
+                                dataKey={planForMonths.count}
+                                fill="#8884d8"
+                                background={{ fill: '#eee' }}
+                            />
+                        </BarChart>
+                    </ResponsiveContainer>
+                </Graph>
             </StatisticsVisualization>
             <StatisticsText>
                 <ButtonBox>
@@ -31,9 +64,10 @@ const AlcoholStatistics = () => {
                     ))}
                 </ButtonBox>
                 <Analysis>
-                    지난 1년간 {tabContentsList[activeIndex].unit}별 평균
-                    음주량은 <br />
-                    소주 0.4병 맥주 0.3병입니다.
+                    {tabContentsList[activeIndex].comment}
+                    <br />
+                    소주 {avgData[activeIndex].soju}병, 맥주
+                    {avgData[activeIndex].beer} 병입니다.
                 </Analysis>
             </StatisticsText>
         </StatisticsBox>

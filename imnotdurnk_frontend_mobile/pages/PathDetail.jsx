@@ -28,6 +28,7 @@ const PathDetail = ({ route }) => {
                 <CustomMap
                     transitPolylineCoordinates={transitInfo.summaryCoordinates}
                     taxiPolylineCoordinates={taxiPathInfo.taxiCoordinates}
+                    isResult={true}
                 />
             </View>
             <PathDescription pathInfo={pathInfo} />

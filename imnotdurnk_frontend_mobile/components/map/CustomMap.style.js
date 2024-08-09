@@ -3,12 +3,14 @@ import MapView from 'react-native-maps';
 import { styled } from 'styled-components/native';
 
 const Container = styled.View`
+    flex: 1;
     border-radius: 20px;
     overflow: hidden;
 `;
 
 const StyledMap = styled(MapView)`
-    min-height: 300px;
+    flex: 1;
+    min-height: 340px;
     width: 100%;
 `;
 
