@@ -89,7 +89,6 @@ const sendCertificationNumber = async (email) => {
 const checkCertificationNumber = async (email, inputCertNum) => {
     console.log('1', email, inputCertNum, typeof inputCertNum);
     try {
-        console.log('2', email, inputCertNum, typeof inputCertNum);
         const response = await apiNoToken.post(`/users/signup/verify-code`, {
             email: email,
             verifyCode: inputCertNum,
