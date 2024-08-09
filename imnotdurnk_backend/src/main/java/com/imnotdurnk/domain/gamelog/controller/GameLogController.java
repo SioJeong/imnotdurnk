@@ -98,14 +98,13 @@ public class GameLogController {
 
     /**
      * 게임용 랜덤 문장 제공 API
-     * @param accessToken
      * @return
      */
     @Operation(
             summary = "게임용 랜덤 문장 제공"
     )
     @GetMapping("/question")
-    public ResponseEntity<SingleResponse<String>> getQuestion(@RequestAttribute(value = "AccessToken", required = true) String accessToken) {
+    public ResponseEntity<SingleResponse<String>> getQuestion() {
 
         String question = Question.getRandom();
         if (question == null) throw new ResourceNotFoundException("제공된 문장이 없음");
