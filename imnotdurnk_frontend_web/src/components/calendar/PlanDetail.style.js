@@ -1,9 +1,20 @@
 import { styled } from 'styled-components';
 
-const Container = styled.div`
+const PlanDetailContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+`;
+
+const PlanDetailBox = styled.div`
     display: flex;
     flex-direction: column;
     gap: 1.7857rem;
+`;
+
+const LoadingAndErrorText = styled.h3`
+    padding-top: 3rem;
+    text-align: center;
 `;
 
 // 일정 정보
@@ -109,12 +120,14 @@ export {
     AlcoholContainer,
     AlcoholCountImage,
     AlcoholTitle,
-    Container,
     DrinkInputBox,
     InputContainer,
     InputItemBox,
     InputItemBoxTitle,
+    LoadingAndErrorText,
     MemoIconImage,
+    PlanDetailBox,
+    PlanDetailContainer,
     ScheduleContainer,
     ScheduleTitle,
     TitleAndMemo,

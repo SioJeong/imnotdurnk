@@ -17,7 +17,7 @@ public interface VoiceService {
 
     boolean removeVoiceByLogId(int logId);
 
-    VoiceResultDto getScoreFromVoice(MultipartFile file) throws IOException, IllegalAccessException, UnsupportedAudioFileException;
+    VoiceResultDto getScoreFromVoice(MultipartFile file, String script) throws IOException, IllegalAccessException, UnsupportedAudioFileException;
 
     File multipartToFile(MultipartFile mfile) throws IOException;
 

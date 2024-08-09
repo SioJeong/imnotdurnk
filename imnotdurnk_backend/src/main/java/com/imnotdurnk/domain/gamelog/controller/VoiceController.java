@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.IOException;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/voice")
@@ -120,16 +121,21 @@ public class VoiceController {
      * @return 발음 평가 점수와 파일명, 대사를 포함한 {@link VoiceResultDto} 객체
      */
     @Operation(
-            summary = "발음 평가 요청"
+            summary = "발음 평가 요청",
+            description = "음성 파일과 스크립트 필요"
     )
     @PostMapping(value="/pronounce", consumes = "multipart/form-data")
-    public ResponseEntity<?> gameAboutPronunciation(@RequestPart MultipartFile file)
-            throws UnsupportedAudioFileException, IOException, IllegalAccessException {
+    public ResponseEntity<?> gameAboutPronunciation(@RequestPart MultipartFile file,
+                                                    @RequestPart(value = "script") String script) throws UnsupportedAudioFileException, IOException, IllegalAccessException {
 
+        //파일 누락
         if(file.isEmpty()) throw new RequiredFieldMissingException("음성 파일 누락");
+        //대사 누락
+        if(script == null || script.equals(""))
+            throw new RequiredFieldMissingException("스크립트 누락");
 
         //점수 가져오기
-        VoiceResultDto result = voiceService.getScoreFromVoice(file);
+        VoiceResultDto result = voiceService.getScoreFromVoice(file, script);
 
 
         SingleResponse response = new SingleResponse();
@@ -181,7 +187,8 @@ public class VoiceController {
      * @return
      */
     @Operation(
-            summary = "발음 평가 결과를 저장하지 않는 것을 알림"
+            summary = "발음 평가 결과를 저장하지 않는 것을 알림",
+            description = "발음 평가 결과에서 나왔던 임시파일명 필수 포함 {filename: string}"
     )
     @PostMapping("/pronounce/not-save")
     public ResponseEntity<?> notSavePronunciationResult(@RequestBody VoiceResultDto voiceResultDto) throws IOException {

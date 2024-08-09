@@ -12,16 +12,7 @@ import { createEvent, updateEvent } from '../services/calendar';
 const usePersistentStore = create(
     persist(
         (set, get) => ({
-            // 1. 선택한 날짜에 해당하는 이벤트 리스트
-            eventListOnSelectedDate: [],
-            setEventListOnSelectedDate: (events) =>
-                set({ eventListOnSelectedDate: events }),
-
-            // 2. 선택한 날짜의 상태 (alcoholLevel)
-            statusOnDate: 0,
-            setStatusOnDate: (status) => set({ statusOnDate: status }),
-
-            // 3. 일정 상세 -> 수정을 위한 임시 저장용
+            // 1. 일정 상세 -> 수정을 위한 임시 저장용
             planDetail: {
                 id: null,
                 userId: null,
