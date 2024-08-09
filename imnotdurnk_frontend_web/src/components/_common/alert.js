@@ -164,9 +164,9 @@ const InfoConfirmModal = (
 // ToastWarning('제목을 입력해야 합니다.', false);
 // ToastSuccess('일정이 등록되었습니다!', true);
 
-// toast 뜨는 위치가 애매하다면, 뒤에 true 하나 더 추가해 보기 (navigation 있는 경우와 없는 경우의 중간 위치)
+// toast 뜨는 위치가 애매하다면, true, true 설정해 보기 (navigation 있는 경우와 없는 경우의 중간 위치)
 // ToastError('이메일 전송에 실패하였습니다.', true, true);
-// ToastWarning('제목을 입력해야 합니다.', false, true);
+// ToastWarning('제목을 입력해야 합니다.', true, true);
 // ToastSuccess('일정이 등록되었습니다!', true, true);
 
 // DeleteConfirmModal(
