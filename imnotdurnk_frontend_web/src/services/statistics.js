@@ -1,20 +1,18 @@
 import { api } from './api';
 
 //개인별 음주 통계 api 호츌
-const getStaticsticsData = async ({ formattedDate }) => {
+const getAlcoholStaticsticsData = async (formattedDate) => {
     try {
         const response = await api.get(`/calendars/statistics`, {
             params: {
-                date: formattedDate,
+                dateStr: formattedDate,
             },
         });
-        console.log('2', response);
-        const { statusCode, httpStatus, message, data } = response.data;
+
         // apiErrorHandler(statusCode, httpStatus, message);
-        console.log('통계데이터 얻기 response:', data);
         return {
-            isSuccess: statusCode === 200,
-            data: data,
+            isSuccess: response.status === 200,
+            data: response.data,
             message: '통계 정보 가져오기 성공',
         };
     } catch (err) {
@@ -24,4 +22,4 @@ const getStaticsticsData = async ({ formattedDate }) => {
         };
     }
 };
-export { getStaticsticsData };
+export { getAlcoholStaticsticsData };

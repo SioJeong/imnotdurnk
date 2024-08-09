@@ -1,6 +1,6 @@
 {
     "expo": {
-        "name": "imnotdurnk_frontend_mobile",
+        "name": "나안취햄ㅅ어",
         "slug": "imnotdurnk_frontend_mobile",
         "version": "1.0.0",
         "orientation": "portrait",
@@ -18,10 +18,26 @@
             "adaptiveIcon": {
                 "foregroundImage": "./assets/adaptive-icon.png",
                 "backgroundColor": "#ffffff"
+            },
+            "package": "com.jeongsangyoung.imnotdurnk_frontend_mobile",
+            "permissions": [
+                "ACCESS_FINE_LOCATION",
+                "ACCESS_COARSE_LOCATION",
+                "ACCESS_BACKGROUND_LOCATION"
+            ],
+            "config": {
+                "googleMaps": {
+                    "apiKey": "AIzaSyDushsIyoXh3N-MV2gDlhFlvPWYYbASgjg"
+                }
             }
         },
         "web": {
             "favicon": "./assets/favicon.png"
+        },
+        "extra": {
+            "eas": {
+                "projectId": "c856d07b-15e8-4a42-86f4-d5b1b7833544"
+            }
         }
     }
 }

@@ -7,7 +7,7 @@ import { styled } from 'styled-components';
 
 const Account = () => {
     const setNavigation = useNavigationStore((state) => state.setNavigation);
-    const [isFirstSelected, setIsFirstSelected] = useState(false);
+    const [isFirstSelected, setIsFirstSelected] = useState(true);
 
     const changeFirstToggle = () => {
         setIsFirstSelected(true);

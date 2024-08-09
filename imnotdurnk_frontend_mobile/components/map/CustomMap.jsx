@@ -1,19 +1,95 @@
 import { useFocusEffect } from '@react-navigation/native';
-import { useCallback, useEffect, useRef } from 'react';
+import * as Location from 'expo-location';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Marker, Polyline, PROVIDER_GOOGLE } from 'react-native-maps';
 import { useTheme } from 'styled-components/native';
+import CurrentLocation from '../../assets/images/CurrentLocation.png';
 import MarkerImage from '../../assets/images/Marker.png';
 import useLocationStore from '../../stores/useLocationStore';
 import IconButton from '../_common/IconButton';
 import * as Map from './CustomMap.style';
 
-const CustomMap = ({ transitPolylineCoordinates, taxiPolylineCoordinates }) => {
-    const { mapCenter, departure, destination, setMapCenter } =
-        useLocationStore();
+const BACKGROUND_LOCATION_TASK = 'background-location-task';
+
+const CustomMap = ({
+    transitPolylineCoordinates,
+    taxiPolylineCoordinates,
+    isResult = false,
+}) => {
+    const {
+        mapCenter,
+        departure,
+        destination,
+        currentLocation,
+        setMapCenter,
+        setCurrentLocation,
+    } = useLocationStore();
     const mapRef = useRef(null);
+    const [foregroundSubscription, setForegroundSubscription] = useState(null);
 
     const theme = useTheme();
 
+    useEffect(() => {
+        const startBackgroundLocationTracking = async () => {
+            try {
+                await Location.startLocationUpdatesAsync(
+                    BACKGROUND_LOCATION_TASK,
+                    {
+                        accuracy: Location.Accuracy.Balanced,
+                        timeInterval: 10000,
+                        foregroundService: {
+                            notificationTitle: '백그라운드 위치 추적',
+                            notificationBody: '위치 정보를 추적 중입니다.',
+                        },
+                    },
+                );
+
+                console.log('백그라운드 위치 추적이 시작되었습니다.');
+            } catch (error) {
+                console.error('위치 추적 설정 중 오류 발생:', error);
+            }
+        };
+
+        const startForegroundLocationTracking = async () => {
+            try {
+                const subscription = await Location.watchPositionAsync(
+                    {
+                        accuracy: Location.Accuracy.High,
+                        distanceInterval: 10, // 10미터 이동할 때마다 업데이트
+                    },
+                    (location) => {
+                        const { latitude, longitude } = location.coords;
+                        const coords = {
+                            latitude,
+                            longitude,
+                            latitudeDelta: 0.005,
+                            longitudeDelta: 0.005,
+                        };
+                        useLocationStore.getState().setCurrentLocation(coords);
+                        console.log('Foreground location update:', coords);
+                    },
+                );
+                setForegroundSubscription(subscription);
+                console.log('포그라운드 위치 추적이 시작되었습니다.');
+            } catch (error) {
+                console.error('위치 추적 설정 중 오류 발생:', error);
+            }
+        };
+
+        startBackgroundLocationTracking();
+        startForegroundLocationTracking();
+
+        return () => {
+            console.log('백그라운드 위치 추적이 종료되었습니다');
+            Location.stopLocationUpdatesAsync(BACKGROUND_LOCATION_TASK);
+            if (foregroundSubscription) {
+                foregroundSubscription.remove();
+                console.log('포그라운드 위치 추적이 종료되었습니다');
+            }
+        };
+    }, []);
+
+    // 검색 혹은 버튼 누를 시 위치로 이동하면서 애니메이션 효과
     useEffect(() => {
         if (mapRef.current && mapCenter) {
             mapRef.current.animateToRegion(mapCenter, 500);
@@ -66,6 +142,18 @@ const CustomMap = ({ transitPolylineCoordinates, taxiPolylineCoordinates }) => {
         ]),
     );
 
+    // 현재 위치 버튼 눌렀을 때
+    const moveCurrentLocation = () => {
+        const currentPosition = {
+            latitude: currentLocation.latitude,
+            longitude: currentLocation.longitude,
+            latitudeDelta: 0.005,
+            longitudeDelta: 0.005,
+        };
+
+        setMapCenter(currentPosition);
+    };
+
     return (
         <Map.Container>
             {mapCenter && (
@@ -74,7 +162,7 @@ const CustomMap = ({ transitPolylineCoordinates, taxiPolylineCoordinates }) => {
                     provider={PROVIDER_GOOGLE}
                     initialRegion={mapCenter}
                 >
-                    {departure && (
+                    {departure && isResult && (
                         <Marker
                             coordinate={departure}
                             title="출발지"
@@ -88,6 +176,15 @@ const CustomMap = ({ transitPolylineCoordinates, taxiPolylineCoordinates }) => {
                             title="목적지"
                             description="선택한 목적지"
                             image={MarkerImage}
+                        />
+                    )}
+                    {currentLocation && (
+                        <Marker
+                            coordinate={currentLocation}
+                            title="현재 위치"
+                            description="내 위치"
+                            image={CurrentLocation}
+                            style={{ zIndex: 1000 }}
                         />
                     )}
                     {transitPolylineCoordinates &&
@@ -112,14 +209,7 @@ const CustomMap = ({ transitPolylineCoordinates, taxiPolylineCoordinates }) => {
                 <IconButton
                     iconname={'location'}
                     isRed={true}
-                    onPress={() => {
-                        setMapCenter({
-                            latitude: 37.50127843458193,
-                            longitude: 127.0396046598167,
-                            latitudeDelta: 0.005,
-                            longitudeDelta: 0.005,
-                        });
-                    }}
+                    onPress={moveCurrentLocation}
                 />
             </Map.FloatingButtonBottomRight>
         </Map.Container>

@@ -1,5 +1,4 @@
 import { useRef } from 'react';
-import { GOOGLE_PLACES_API_KEY } from 'react-native-dotenv';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { useTheme } from 'styled-components/native';
 import { SearchBarContainer } from './SearchBar.style';
@@ -62,7 +61,7 @@ const SearchBar = ({ placeholder, onPress }) => {
                     }
                 }}
                 query={{
-                    key: GOOGLE_PLACES_API_KEY,
+                    key: 'AIzaSyDushsIyoXh3N-MV2gDlhFlvPWYYbASgjg',
                     language: 'ko',
                     components: 'country:kr',
                 }}

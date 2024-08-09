@@ -187,7 +187,8 @@ public class VoiceController {
      * @return
      */
     @Operation(
-            summary = "발음 평가 결과를 저장하지 않는 것을 알림"
+            summary = "발음 평가 결과를 저장하지 않는 것을 알림",
+            description = "발음 평가 결과에서 나왔던 임시파일명 필수 포함 {filename: string}"
     )
     @PostMapping("/pronounce/not-save")
     public ResponseEntity<?> notSavePronunciationResult(@RequestBody VoiceResultDto voiceResultDto) throws IOException {

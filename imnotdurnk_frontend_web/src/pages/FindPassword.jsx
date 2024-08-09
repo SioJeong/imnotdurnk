@@ -14,11 +14,9 @@ const FindPassword = () => {
     });
     const handleIsSent = () => {
         setIsSent(true);
-        console.log('hs', email);
     };
 
     const handleSendNewPassword = async () => {
-        console.log('Sending new password for email:', email); // 상태 확인
         if (email) {
             // 이메일이 유효한지 확인
             const sendNewPasswordResult = await sendNewPassword(email);
@@ -49,7 +47,6 @@ const FindPassword = () => {
     const onClickSendNewPasswordButton = (e) => {
         e.preventDefault();
         if (checkValidation()) {
-            console.log('유효성 검사 ㄱ성공', email);
             handleIsSent();
             handleSendNewPassword();
         }

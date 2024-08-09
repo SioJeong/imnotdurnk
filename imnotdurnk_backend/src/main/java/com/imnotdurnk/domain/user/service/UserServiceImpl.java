@@ -140,11 +140,11 @@ public class UserServiceImpl implements UserService {
             redisUtil.setDataExpire(email, String.valueOf(sendCount), 60 * 5L); // 증가된 횟수 저장
         }
 
-        //try {
-        //    sendMail(email, "회원 인증 메일입니다.", verificationCode, "코드");
-      //  } catch (MessagingException e) {
-    //        throw new MessagingException(e.getMessage());
-    //    }
+        try {
+            sendMail(email, "회원 인증 메일입니다.", verificationCode, "코드");
+        } catch (MessagingException e) {
+            throw new MessagingException(e.getMessage());
+        }
             System.out.println(verificationCode);
         //Redis 저장소에 인증번호-메일을 5분동안 저장
         redisUtil.setDataExpire(verificationCode, email,60*5L);
@@ -307,8 +307,10 @@ public class UserServiceImpl implements UserService {
         UserEntity user = userRepository.findByEmail(jwtUtil.getUserEmail(token, TokenType.ACCESS));
         if (user == null) throw new BadRequestException("일치하는 회원 없음");
         UserDto profile = user.toDto();
-        BeanUtils.copyProperties(profile, user, systemUtil.getNullPropertyNames(profile));
-        userRepository.save(user);
+
+        //비밀번호는 전송되지 않도록 null 처리
+        profile.setPassword(null);
+
         return profile;
     }
 

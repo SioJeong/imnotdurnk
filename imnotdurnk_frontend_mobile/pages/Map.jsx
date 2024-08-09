@@ -38,22 +38,16 @@ const Map = () => {
     );
 
     useEffect(() => {
-        // 위치 정보 수집 권한 요청 및 초기 위치 설정
+        // 페이지로 들어오면 현재 좌표 받아서
+        // 맵 중앙, 현재 위치, 촐발지로 세팅하고 시작
         const getLocationPermission = async () => {
             try {
-                let { status } =
-                    await Location.requestForegroundPermissionsAsync();
-                if (status !== 'granted') {
-                    console.log('위치 권한이 허용되지 않았습니다.');
-                    return;
-                }
-
                 let location = await Location.getCurrentPositionAsync({});
                 const { latitude, longitude } = location.coords;
 
                 const initialPosition = {
-                    latitude: 37.50127843458193,
-                    longitude: 127.0396046598167,
+                    latitude: latitude,
+                    longitude: longitude,
                     latitudeDelta: 0.005,
                     longitudeDelta: 0.005,
                 };
@@ -156,7 +150,6 @@ const Map = () => {
                     }}
                 />
             </St.MapSearchContainer>
-
             <CustomMap />
         </St.Container>
     );

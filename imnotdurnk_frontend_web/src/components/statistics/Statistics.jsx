@@ -3,21 +3,9 @@ import { useState } from 'react';
 import { styled } from 'styled-components';
 import AlcoholStatistics from './AlcoholStatistics';
 import GameStatistics from './GameStatistics';
-
 const Statistics = () => {
     const [isFirstSelected, setIsFirstSelected] = useState(true);
-    const [inputValues, setInputValues] = useState({
-        lastMonthCount: 0,
-        thisMonthCount: 0,
-        yearTotal: {
-            sojuAmount: 0,
-            beerAmount: 0,
-        },
-        monthTotal: {
-            sojuAmount: 0,
-            beerAmount: 0,
-        },
-    });
+
     const changeFirstToggle = () => {
         setIsFirstSelected(true);
     };
@@ -25,29 +13,6 @@ const Statistics = () => {
         setIsFirstSelected(false);
     };
 
-    const today = new Date();
-    const year = today.getFullYear(); // 연도
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const date = String(today.getDate()).padStart(2, '0');
-    const formattedDate = `${year}-${month}-${date}`;
-
-    // useEffect(() => {
-    //     const fetchStatisticsData = async () => {
-    //         try {
-    //             const getStatisticsResult =
-    //                 await getStaticsticsData(formattedDate); // getUserProfile 함수 비동기 호출
-
-    //             if (getStatisticsResult.isSuccess) {
-    //                 // 사용자 정보를 inputValues에 업데이트
-    //             }
-    //         } catch (error) {
-    //             console.error('통계 가져오기 중 오류 발생', error);
-    //             // 오류 처리 로직 추가
-    //         }
-    //     };
-
-    //     fetchStatisticsData();
-    // });
     return (
         <Container>
             <ToggleButton
@@ -58,7 +23,6 @@ const Statistics = () => {
                 changeFirstToggle={changeFirstToggle}
                 changeSecondToggle={changeSecondToggle}
             />
-
             {isFirstSelected ? (
                 <AlcoholStatistics />
             ) : (

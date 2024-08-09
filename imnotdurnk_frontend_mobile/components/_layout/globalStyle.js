@@ -37,7 +37,7 @@ const Container = styled(View)`
 const Container2 = styled(View)`
     flex: 1;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-evenly;
     align-items: center;
 
     gap: 16px;
