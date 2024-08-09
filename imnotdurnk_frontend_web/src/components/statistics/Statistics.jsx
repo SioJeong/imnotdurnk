@@ -119,22 +119,32 @@ const Statistics = () => {
     };
 
     useEffect(() => {
+        console.log('useEffect내', formattedDate);
         const fetchStatisticsData = async () => {
             try {
+                console.log('useEffect내2', formattedDate);
                 const getStatisticsResult =
                     await getStaticsticsData(formattedDate); // getUserProfile 함수 비동기 호출
 
                 if (getStatisticsResult.isSuccess) {
                     // 사용자 정보를 inputValues에 업데이트
+                    console.log('isSuccess', getStatisticsResult.data);
+                    calculateAlcoholStatistics(getStatisticsResult.data);
+                    //배열에 값넣기
+                    setAlcoholStatistics((prevState) => ({
+                        ...prevState,
+                        planForMonths: getStatisticsResult.data.planForMonths, // 이 부분을 실제 데이터로 설정
+                    }));
                 }
+                console.log(alcoholStatistics.planForMonths, 'ddssds');
             } catch (error) {
                 console.error('통계 가져오기 중 오류 발생', error);
                 // 오류 처리 로직 추가
             }
         };
-
         fetchStatisticsData();
-    });
+    }, []);
+
     return (
         <Container>
             <ToggleButton
