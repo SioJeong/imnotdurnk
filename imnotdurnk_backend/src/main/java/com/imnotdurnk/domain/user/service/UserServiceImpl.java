@@ -140,11 +140,11 @@ public class UserServiceImpl implements UserService {
             redisUtil.setDataExpire(email, String.valueOf(sendCount), 60 * 5L); // 증가된 횟수 저장
         }
 
-        //try {
-        //    sendMail(email, "회원 인증 메일입니다.", verificationCode, "코드");
-      //  } catch (MessagingException e) {
-    //        throw new MessagingException(e.getMessage());
-    //    }
+        try {
+            sendMail(email, "회원 인증 메일입니다.", verificationCode, "코드");
+        } catch (MessagingException e) {
+            throw new MessagingException(e.getMessage());
+        }
             System.out.println(verificationCode);
         //Redis 저장소에 인증번호-메일을 5분동안 저장
         redisUtil.setDataExpire(verificationCode, email,60*5L);
