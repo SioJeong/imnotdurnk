@@ -27,14 +27,15 @@ public class UserDto {
     private String emergencyCall;
     private Integer beerCapacity;
     private Integer sojuCapacity;
-    private Boolean unsure;     //주량 모름
-    private Boolean verified;   //이메일 인증 여부
-
+    private Boolean sojuUnsure;     //주량 모름
+    private Boolean beerUnsure;     //주량 모름
     public UserDto() {
     }
 
     @Builder
-    public UserDto(String email, String password, String name, String phone, String nickname, String address, String detailedAddress, Double latitude, Double longitude, String postalCode, String voice, String emergencyCall, Integer beerCapacity, Integer sojuCapacity, Boolean unsure, Boolean verified) {
+    public UserDto(String email, String password, String name, String phone, String nickname, String address,
+                   String detailedAddress, Double latitude, Double longitude, String postalCode, String voice,
+                   String emergencyCall, Integer beerCapacity, Integer sojuCapacity, Boolean sojuUnsure, Boolean beerUnsure) {
         this.email = email;
         this.password = password;
         this.name = name;
@@ -49,8 +50,8 @@ public class UserDto {
         this.emergencyCall = emergencyCall;
         this.beerCapacity = beerCapacity;
         this.sojuCapacity = sojuCapacity;
-        this.unsure = unsure;
-        this.verified = verified;
+        this.sojuUnsure = sojuUnsure;
+        this.beerUnsure = beerUnsure;
     }
 
     /**
@@ -74,8 +75,8 @@ public class UserDto {
                 .emergencyCall(emergencyCall)
                 .beerCapacity(beerCapacity)
                 .sojuCapacity(sojuCapacity)
-                .unsure(unsure)
-                .verified(verified)
+                .sojuUnsure(sojuUnsure)
+                .beerUnsure(beerUnsure)
                 .build();
     }
 }

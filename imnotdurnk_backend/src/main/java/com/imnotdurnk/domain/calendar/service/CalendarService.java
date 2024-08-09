@@ -17,17 +17,19 @@ public interface CalendarService {
 
     List<DiaryDto> getDiary(String token, int year, int month);
 
-    void updateFeedback(String accessToken, String date, int planId, CalendarDto calendarDto) throws BadRequestException, ResourceNotFoundException, EntitySaveFailedException;
+    void updateFeedback(String accessToken, int planId, CalendarDto calendarDto) throws BadRequestException, ResourceNotFoundException, EntitySaveFailedException;
 
     void addCalendar(String token, CalendarDto calendarDto) throws EntitySaveFailedException;
 
     List<CalendarDto> getCalendar( String token, String date);
 
-    CalendarStatisticDto getCalendarStatistic(LocalDate date, String token);
+    CalendarStatisticDto getCalendarStatistic(String dateStr, String token);
 
     void updateArrivalTime(String accessToken, int planId, String arrivalTime) throws BadRequestException, ResourceNotFoundException, EntitySaveFailedException;
 
     PlanDetailDto getPlanDetail(String accessToken, int planId) throws ResourceNotFoundException, BadRequestException;
 
     CalendarEntity isSameUserAndGetCalendarEntity (String accessToken, int planId) throws ResourceNotFoundException, BadRequestException;
+
+    void deletePlan(String accessToken, int planId) throws BadRequestException, ResourceNotFoundException;
 }

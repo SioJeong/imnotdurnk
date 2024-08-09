@@ -1,5 +1,15 @@
 import { styled } from 'styled-components';
 
+const InputBoxContainerWithAlertMessage = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.2143rem;
+    width: ${(props) =>
+        props.$size === 'small'
+            ? '9rem'
+            : '100%'}; /* 'small'이 아닐 때 100%로 설정 */
+`;
 const InputBoxContainer = styled.div`
     display: flex;
     justify-content: space-between;
@@ -15,7 +25,10 @@ const InputBoxContainer = styled.div`
         ${(props) => (props.$size === 'small' ? '1.1429rem' : '1.4286rem')};
 
     border-radius: 10.0002px;
-    background: var(--color-white1, #fff);
+    background: ${(props) =>
+        props.$isProfileViewPage
+            ? 'var(--color-white2)'
+            : 'var(--color-white1, #fff)'};
 `;
 
 const TextContainer = styled.div`
@@ -40,6 +53,10 @@ const Input = styled.input`
     border: none;
     outline: none;
     font-size: var(--font-body-h5, 9.94px);
+    background: ${(props) =>
+        props.$isProfileViewPage
+            ? 'var(--color-white2)'
+            : 'var(--color-white1, #fff)'};
 `;
 
 const InputIcon = styled.img`
@@ -54,7 +71,15 @@ const InputIcon = styled.img`
         `
     pointer-events: none;
     visibility: hidden;
+    border: none;
   `}
 `;
 
-export { Input, InputBoxContainer, InputIcon, InputLabel, TextContainer };
+export {
+    Input,
+    InputBoxContainer,
+    InputBoxContainerWithAlertMessage,
+    InputIcon,
+    InputLabel,
+    TextContainer,
+};

@@ -40,14 +40,14 @@ public interface GameLogRepository extends JpaRepository<GameLogEntity, Integer>
         WHERE gl.gameType = :gameType
         AND FUNCTION('MONTH', c.date) = :month
         AND FUNCTION('YEAR', c.date) = :year
-        AND gl.score < :averageScore
+        AND CAST(gl.score AS double) < :averageScore
         """)
     int countDaysWithLowScores(@Param("gameType") int gameType,
                                @Param("month") int month,
                                @Param("year") int year,
                                @Param("averageScore") double averageScore);
 
-
+    void deleteByCalendarEntity(Optional<CalendarEntity> calendarEntity);
     Optional<List<GameLogEntity>> findByCalendarEntity_Id(int planId);
 
     GameLogEntity findById(int id);

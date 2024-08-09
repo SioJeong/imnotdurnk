@@ -2,6 +2,10 @@
 const apiErrorHandler = (statusCode, httpStatus, message) => {
     if (statusCode !== 0) {
         switch (httpStatus) {
+            case 'OK':
+                return; // 예외 던지지 않고 함수 종료
+            case 'CREATED':
+                return; // 예외 던지지 않고 함수 종료
             case 'UNAUTHORIZED':
                 throw new Error('인증 오류: 다시 로그인해주세요.');
             case 'BAD_REQUEST':

@@ -16,7 +16,7 @@ export const MessageContainer = styled.div`
     height: 3rem;
 `;
 export const StyledH2 = styled.h2``;
-export const InputContainer = styled.div`
+export const InputContainer = styled.form`
     display: flex;
     height: 5.7143rem;
     min-height: 80px;
@@ -35,11 +35,12 @@ export const Input = styled.input`
     border-radius: 20px;
     background: var(--color-white1, #fff);
 
-    border: 1px solid transparent; /* 기본적으로 투명한 보더 */
+    border: none; /* 기본적으로 테두리 없음 */
+    outline: none; /* 기본 아웃라인 없음 */
     transition: border 0.3s ease; /* 보더 변화에 애니메이션 추가 */
 
     &:focus {
-        border-color: var(--color-green2); /* 포커스 시 보더 색상 */
+        border: none; /* 포커스 시에도 테두리 없음 */
         outline: none; /* 기본 포커스 아웃라인 제거 */
     }
 
@@ -47,7 +48,8 @@ export const Input = styled.input`
         border-color: var(--color-green2); /* 클릭 시 보더 색상 */
     }
 
-    color: var(--color-green3, #252f2c);
+    color: ${(props) =>
+        props.$isWrong ? 'var(--color-red)' : 'var(--color-green3, #252f2c)'};
     font-size: var(--font-title-h1);
     font-style: normal;
     font-weight: 500;
@@ -58,4 +60,5 @@ export const StyledMessage = styled.p`
     text-align: center;
     font-size: var(--font-body-h3, 1rem);
     line-height: normal;
+    cursor: pointer;
 `;

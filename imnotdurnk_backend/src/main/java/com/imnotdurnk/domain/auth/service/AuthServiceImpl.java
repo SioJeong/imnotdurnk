@@ -88,8 +88,8 @@ public class AuthServiceImpl implements AuthService{
         }
 
         // 토큰이 invalid하면 예외를 던짐
-        throw new InvalidTokenException("토큰 인증 실패");
-
+//        throw new InvalidTokenException("토큰 인증 실패");
+        return false;
     }
 
     /**

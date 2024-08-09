@@ -3,12 +3,14 @@ package com.imnotdurnk.domain.calendar.repository;
 import com.imnotdurnk.domain.calendar.dto.DiaryDto;
 import com.imnotdurnk.domain.calendar.repository.mapping.AlcoholAmount;
 import com.imnotdurnk.domain.calendar.entity.CalendarEntity;
+import com.imnotdurnk.domain.calendar.repository.mapping.PlanForMonth;
 import com.imnotdurnk.domain.user.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -23,6 +25,7 @@ public interface CalendarRepository extends JpaRepository<CalendarEntity, Intege
             WHERE month(c.date) = :month
             AND year(c.date) = :year
             AND c.userEntity.id = :user
+            ORDER BY day(c.date) DESC
         """)
     List<DiaryDto> findAllDiary(Integer user, Integer year, Integer month);
 
@@ -30,50 +33,7 @@ public interface CalendarRepository extends JpaRepository<CalendarEntity, Intege
     List<CalendarEntity> findByUserEntity_IdAndDate(Integer userId, LocalDate date);
 
     @Query("""
-        SELECT COUNT(date)
-        FROM CalendarEntity
-        WHERE userEntity.id = :userId
-        AND FUNCTION('MONTH', date) = :month
-        AND FUNCTION('YEAR', date) = :year
-        """)
-    int countByMonth(Integer userId, int month, int year);
-
-    @Query("""
-        SELECT SUM(sojuAmount)
-        FROM CalendarEntity
-        WHERE userEntity.id = :userId
-        AND FUNCTION('MONTH', date) = :month
-        AND FUNCTION('YEAR', date) = :year
-        """)
-    double sumSojuByMonth(Integer userId, int month, int year);
-
-    @Query("""
-        SELECT SUM(beerAmount)
-        FROM CalendarEntity
-        WHERE userEntity.id = :userId
-        AND FUNCTION('MONTH', date) = :month
-        AND FUNCTION('YEAR', date) = :year
-        """)
-    double sumBeerByMonth(Integer userId, int month, int year);
-
-    @Query("""
-        SELECT SUM(sojuAmount)
-        FROM CalendarEntity
-        WHERE userEntity.id = :userId
-        AND FUNCTION('YEAR', date) = :year
-        """)
-    double sumSojuByYear(Integer userId, int year);
-
-    @Query("""
-        SELECT SUM(beerAmount)
-        FROM CalendarEntity
-        WHERE userEntity.id = :userId
-        AND FUNCTION('YEAR', date) = :year
-        """)
-    double sumBeerByYear(Integer userId, int year);
-
-    @Query("""
-        SELECT SUM(sojuAmount), SUM(beerAmount)
+        SELECT SUM(sojuAmount) as sojuAmount, SUM(beerAmount) as beerAmount
         FROM CalendarEntity
         WHERE userEntity.id = :userId
         AND FUNCTION('MONTH', date) = :month
@@ -82,10 +42,20 @@ public interface CalendarRepository extends JpaRepository<CalendarEntity, Intege
     AlcoholAmount sumAlcoholByMonth(Integer userId, int month, int year);
 
     @Query("""
-        SELECT SUM(sojuAmount), SUM(beerAmount)
+        SELECT SUM(sojuAmount) as sojuAmount, SUM(beerAmount) as beerAmount
         FROM CalendarEntity
         WHERE userEntity.id = :userId
         AND FUNCTION('YEAR', date) = :year
         """)
     AlcoholAmount sumAlcoholByYear(Integer userId, int year);
+
+    @Query("""
+        SELECT FUNCTION('YEAR', c.date) as year, FUNCTION('MONTH', c.date) as month, COUNT(c.id) as count
+        FROM CalendarEntity c
+        WHERE c.date BETWEEN :startDate AND :endDate
+        GROUP BY FUNCTION('YEAR', c.date), FUNCTION('MONTH', c.date)
+        ORDER BY FUNCTION('YEAR', c.date) DESC, FUNCTION('MONTH', c.date) DESC
+        """)
+    List<PlanForMonth> findRecent12MonthsPlanCount(LocalDateTime startDate, LocalDateTime endDate);
+
 }

@@ -19,6 +19,8 @@ import jakarta.mail.Message;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +37,7 @@ import java.util.Random;
 @Service
 public class UserServiceImpl implements UserService {
 
+    private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
     @Autowired
     private UserRepository userRepository;
 
@@ -103,11 +106,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public void signUp(UserDto userDto) throws BadRequestException{
 
+        if(redisUtil.getData(userDto.getEmail())==null||!redisUtil.getData(userDto.getEmail()).equals("0")) throw new BadRequestException("인증되지 않은 사용자입니다.");
+        if(existsByEmail(userDto.getEmail())) throw new BadRequestException("중복된 이메일 입니다.");
+
         //비밀번호 암호화
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
         UserEntity user = userDto.toEntity();
         user.setDeleted(false);
         if (!userRepository.save(user).getName().equals(userDto.getName())) throw new BadRequestException("저장 실패");
+
     }
 
     /**
@@ -119,17 +126,26 @@ public class UserServiceImpl implements UserService {
     @Override
     public void sendVerificationCode(String email) throws MessagingException, UnsupportedEncodingException, BadRequestException {
 
-        if (!existsByEmail(email)) throw new ResourceNotFoundException("이메일이 존재하지 않음");
-
         //인증번호 생성
         Random random = new Random();
-        String verificationCode = String.valueOf(random.nextInt(999999));
+        String verificationCode = String.format("%04d", random.nextInt(10000));
+        String cnt = redisUtil.getData(email);
+        if (cnt == null) {
+            redisUtil.setDataExpire(email, "1", 60 * 5L);  // 인증번호 전송 횟수 저장
+        } else {
+            int sendCount = Integer.parseInt(cnt); // cnt를 정수로 변환
+            if (sendCount >= 5) throw new BadRequestException("인증번호 횟수 초과");
+
+            sendCount++; // 전송 횟수 증가
+            redisUtil.setDataExpire(email, String.valueOf(sendCount), 60 * 5L); // 증가된 횟수 저장
+        }
 
         try {
             sendMail(email, "회원 인증 메일입니다.", verificationCode, "코드");
         } catch (MessagingException e) {
             throw new MessagingException(e.getMessage());
         }
+            System.out.println(verificationCode);
         //Redis 저장소에 인증번호-메일을 5분동안 저장
         redisUtil.setDataExpire(verificationCode, email,60*5L);
 
@@ -158,9 +174,6 @@ public class UserServiceImpl implements UserService {
 
         //비밀번호가 일치하는 회원이 없는 경우
         if (!passwordEncoder.matches(password,user.getPassword())) throw new BadRequestException("비밀번호가 일치하지 않습니다.");
-
-        //이메일 인증 전인 경우
-        if (user.getVerified() == false) throw new UserNotVerifiedException("이메일이 인증되지 않았습니다.");
 
         //토큰 생성
         TokenDto accessToken = jwtUtil.generateToken(user.getEmail(), TokenType.ACCESS);
@@ -226,6 +239,8 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void sendMail(String email, String title, String code, String codeName) throws MessagingException, UnsupportedEncodingException {
+        log.info("[회원가입 인증 요청 " + email + "] : " + code);
+
         MimeMessage message = emailsender.createMimeMessage();
         message.addRecipients(Message.RecipientType.TO, email);
         message.setSubject(title);// 제목
@@ -264,12 +279,10 @@ public class UserServiceImpl implements UserService {
             return false;
         }
         if (redisUtil.getData(verificationCode).equals(email)){  //인증코드와 이메일이 일치함
-            UserEntity user = userRepository.findByEmail(email);
-            user.setVerified(true);
-            userRepository.save(user);
+            redisUtil.setData(email,"0");
             return true;
         } else {  //코드와 이메일이 일치하지 않음
-            return false;
+            throw new BadRequestException("이메일 일치하지 않음");
         }
     }
 

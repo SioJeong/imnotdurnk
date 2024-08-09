@@ -1,81 +1,68 @@
-import { styled } from 'styled-components';
-import useCalendarStore from '../../stores/useCalendarStore';
+import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import * as St from './EventCard.style';
 
-const EventCard = ({ alcoholLevel, onItemClick, children }) => {
-    const { selectedDate } = useCalendarStore();
+const EventCard = ({
+    alcoholLevel,
+    onItemClick,
+    selectedDate,
+    fromCalendar,
+    eventId,
+    children,
+}) => {
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    const [selectedDateFromPath, setSelectedDateFromPath] = useState(null);
+
+    useEffect(() => {
+        if (location.pathname.startsWith('/calendar/')) {
+            const pathDate = location.pathname.split('/')[2];
+            const [year, month, day] = pathDate.split('-').map(Number);
+            if (year && month && day) {
+                setSelectedDateFromPath(new Date(year, month - 1, day));
+            }
+        }
+    }, [location.pathname]);
+
+    const selectedDateForDisplay = fromCalendar
+        ? selectedDate
+        : selectedDateFromPath;
 
     // 요일 index -> 문자열로 변환하는 함수
     const getDayName = (date) => {
         const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-        return days[date.getDay()];
+        return date ? days[date.getDay()] : null; // TODO: selectedDate 널 체크 사항 -> 이거 뭐야
+    };
+
+    // 카드 클릭 시 페이지 이동 동작
+    const handleOnClick = () => {
+        if (fromCalendar) {
+            onItemClick(selectedDate);
+        } else {
+            const currentPath = location.pathname;
+            navigate(`${currentPath}/plan/${eventId}`);
+        }
     };
 
     return (
-        <CalendarItemBox
+        <St.CalendarItemBox
             $alcoholLevel={alcoholLevel}
-            onClick={() => onItemClick(selectedDate)}
+            onClick={handleOnClick}
         >
-            <CalendarItemDate $isWeekend={selectedDate?.getDay()}>
-                <h4>{getDayName(selectedDate)}</h4>
-                <h2>{selectedDate?.getDate()}</h2>
-            </CalendarItemDate>
-            <CalendarItemBodyBox>{children}</CalendarItemBodyBox>
-        </CalendarItemBox>
+            <St.CalendarItemDate // TODO: selectedDate 널 체크 사항 -> 이거 뭐야
+                $isWeekend={
+                    selectedDateForDisplay
+                        ? selectedDateForDisplay.getDay()
+                        : null
+                }
+            >
+                <h4>{getDayName(selectedDateForDisplay)}</h4>
+                <h2>{selectedDateForDisplay?.getDate()}</h2>
+            </St.CalendarItemDate>
+            <St.CalendarItemBodyBox>{children}</St.CalendarItemBodyBox>
+        </St.CalendarItemBox>
     );
 };
 
 export default EventCard;
-
-const CalendarItemBox = styled.div`
-    display: flex;
-    gap: 1.4286rem;
-    align-items: center;
-
-    width: auto;
-    min-height: 8.2857rem;
-    padding: 1.5357rem 1.7143rem;
-    border-radius: 20px;
-
-    background-color: ${({ $alcoholLevel }) => {
-        switch ($alcoholLevel) {
-            case 3:
-                return 'var(--color-red)';
-            case 2:
-                return 'var(--color-green1)';
-            case 1:
-                return 'var(--color-yellow)';
-            default:
-                return 'var(--color-white2)';
-        }
-    }};
-`;
-
-const CalendarItemDate = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 0.2857rem;
-
-    width: 3.7143rem;
-    height: 5.2143rem;
-    border-radius: 10px;
-    background-color: var(--color-white1);
-
-    // 요일에 따른 글자 색상 설정
-    h4,
-    h2 {
-        color: ${({ $isWeekend }) =>
-            $isWeekend === 0
-                ? 'var(--color-red)'
-                : $isWeekend === 6
-                  ? 'var(--color-blue)'
-                  : 'var(--color-green3)'};
-    }
-`;
-
-const CalendarItemBodyBox = styled.div`
-    display: flex;
-    flex-direction: column;
-    width: 15.1429rem;
-`;

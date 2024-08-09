@@ -5,8 +5,10 @@ import CheckEmail from '@/pages/CheckEmail';
 import ComponentTest from '@/pages/ComponentTest';
 import FindPassword from '@/pages/FindPassword';
 import Home from '@/pages/Home.jsx';
+import ModalTest from '@/pages/ModalTest';
+import MyPage from '@/pages/MyPage';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import ModalTest from './src/pages/ModalTest';
+import Game from './src/pages/Game';
 
 const Router = () => {
     return (
@@ -19,7 +21,9 @@ const Router = () => {
                     <Route path="/find-password/" element={<FindPassword />} />
                     <Route path="/calendar/*" element={<Calendar />} />
                     <Route path="/modaltest" element={<ModalTest />} />
-                    <Route path="/component-test" element={<ComponentTest />} />
+                    <Route path="/componenttest" element={<ComponentTest />} />
+                    <Route path="/mypage/*" element={<MyPage />} />
+                    <Route path="/game/*" element={<Game />} />
                 </Route>
             </Routes>
         </BrowserRouter>

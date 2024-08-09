@@ -7,6 +7,8 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -14,6 +16,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 @AllArgsConstructor
 public class JwtInterceptor implements HandlerInterceptor {
 
+    private static final Logger log = LoggerFactory.getLogger(JwtInterceptor.class);
     private final AuthService authService;
 
 
@@ -27,6 +30,7 @@ public class JwtInterceptor implements HandlerInterceptor {
     private boolean checkRefreshToken(HttpServletRequest request) throws InvalidTokenException {
 
         Cookie[] cookies = request.getCookies();
+        log.info("리프레시 토큰 체크: " + request.getCookies() == null ? "null" : request.getCookies()[0].getValue());
 
         // 쿠키에서 Refresh Token 탐색 후 존재하면 유효성 검증
         for(Cookie cookie : cookies) {
@@ -70,6 +74,7 @@ public class JwtInterceptor implements HandlerInterceptor {
 
             // 가져온 access Token의 검증이 완료된 경우
             if(authService.isTokenValid(accessToken, TokenType.ACCESS)) {
+//                log.info("access token 검증 완료: " + accessToken);
                 request.setAttribute("AccessToken", accessToken);
                 return true;
             }
@@ -91,10 +96,8 @@ public class JwtInterceptor implements HandlerInterceptor {
      * @throws Exception
      */
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws InvalidTokenException {
 
-        // 원활한 테스트를 위해 Interceptor 무효화
-        //return true;
     	/**
     	 * 로그아웃인 경우 유효성 검증 후 유효한 토큰만 attribute로 설정
     	 */
@@ -108,23 +111,30 @@ public class JwtInterceptor implements HandlerInterceptor {
     	 * 토큰 재발급 요청인 경우 Refresh Token 유효성 검증 및 attribute 설정
     	 */
     	else if(request.getServletPath().equals("/auth/refresh")) {
-    		if(checkRefreshToken(request)) {
-    			return true;
-    		}
+            //리프레시 토큰 확인
+            if(!checkRefreshToken(request))
+                throw new InvalidTokenException("[인터셉터] 유효하지 않은 리프레시 토큰");
+            
+            checkAccessToken(request);
     	}
+        /**
+         * 회원 탈퇴시 리프레시 토큰 확인 필요 (redis에서 삭제하기 위해)
+         */
+        else if(request.getServletPath().equals("/users/delete-account")){
+            if(checkRefreshToken((request)) && checkAccessToken(request))
+                return true;
+            else throw new InvalidTokenException("[인터셉터] 유효하지 않은 토큰");
+        }
 
     	/**
     	 * Access Token 유효성 검증 및 attribute 설정
     	 */
     	else {
-    		if(checkAccessToken(request)) {
-    			return true;
-    		}
+    		if(!checkAccessToken(request))
+                throw new InvalidTokenException("[인터셉터] 유효하지 않은 엑세스 토큰");
     	}
 
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401 상태 코드 설정
-        response.getWriter().write("Unauthorized"); // 응답 메시지 설정
-		return false;
+        return true;
     }
 
 }

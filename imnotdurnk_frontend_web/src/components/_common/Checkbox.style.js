@@ -4,6 +4,8 @@ const StyledLabel = styled.label`
     display: flex;
     align-items: center;
     gap: 0.5rem;
+
+    cursor: pointer;
 `;
 
 const StyledInput = styled.input.attrs({ type: 'checkbox' })`

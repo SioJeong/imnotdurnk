@@ -26,7 +26,11 @@ public class SecurityConfig {
                 .csrf().disable()
                 .cors().and()
                 .authorizeRequests()
-                .requestMatchers("/api/users").permitAll()
+                .requestMatchers("/api/users",
+                        "/v3/api-docs/**", // Swagger 문서 경로 허용
+                        "/swagger-ui/**",  // Swagger UI 경로 허용
+                        "/swagger-resources/**",
+                        "/webjars/**").permitAll()
                 .and()
                 .build();
     }

@@ -38,6 +38,8 @@ const ToggleButton = styled.div`
         `
         border: 1px solid var(--color-green3, #252F2C);
   `}
+
+    cursor: pointer;
 `;
 const StyledH4 = styled.h4`
     color: ${(props) =>

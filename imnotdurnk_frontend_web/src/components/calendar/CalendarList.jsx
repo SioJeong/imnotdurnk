@@ -1,69 +1,68 @@
-import { styled } from 'styled-components';
-import useCalendarStore from '../../stores/useCalendarStore';
+import { useQuery } from '@tanstack/react-query';
+import { useLocation } from 'react-router-dom';
+import { getDailyEventList } from '../../services/calendar';
+import * as St from './CalendarList.style';
 import CalendarStatusBar from './CalendarStatusBar';
 import EventCard from './EventCard';
 
 const CalendarList = () => {
-    const { eventListOnSelectedDate } = useCalendarStore();
+    const location = useLocation();
+    const date = location.pathname.split('/')[2];
+
+    const {
+        data: dailyEventList,
+        error,
+        isError,
+        isLoading,
+    } = useQuery({
+        queryKey: ['dailyEventList', date],
+        queryFn: () => getDailyEventList({ date }),
+        enabled: !!date, // date 있을 때만 쿼리 실행
+        keepPreviousData: true, // 새 데이터 가져오는 동안 이전 데이터 유지
+    });
 
     return (
-        <CalendarListContainer>
+        <St.CalendarListContainer>
             <CalendarStatusBar />
-            <CalendarListBox>
-                {eventListOnSelectedDate.length > 0 ? (
-                    eventListOnSelectedDate.map((e) => {
-                        return (
-                            <EventCard key={e.id} alcoholLevel={e.alcoholLevel}>
-                                <div>
-                                    <CalendarItemTitle
-                                        $alcoholLevel={e.alcoholLevel}
-                                    >
-                                        {e.title}
-                                    </CalendarItemTitle>
-                                    <CalendarItemTime
-                                        $alcoholLevel={e.alcoholLevel}
-                                    >
-                                        {e.time}
-                                    </CalendarItemTime>
-                                </div>
-                            </EventCard>
-                        );
-                    })
+            <St.CalendarListBox>
+                {isLoading ? (
+                    <St.LoadingAndErrorText>
+                        일정을 불러오는 중입니다.
+                    </St.LoadingAndErrorText>
+                ) : isError ? (
+                    <St.LoadingAndErrorText>
+                        Error: {error.message}
+                    </St.LoadingAndErrorText>
+                ) : dailyEventList && dailyEventList.length > 0 ? (
+                    dailyEventList.map((e) => (
+                        <EventCard
+                            key={e.id}
+                            alcoholLevel={e.alcoholLevel}
+                            fromCalendar={false}
+                            eventId={e.id}
+                        >
+                            <div>
+                                <St.CalendarItemTitle
+                                    $alcoholLevel={e.alcoholLevel}
+                                >
+                                    {e.title}
+                                </St.CalendarItemTitle>
+                                <St.CalendarItemTime
+                                    $alcoholLevel={e.alcoholLevel}
+                                >
+                                    {e.time}
+                                </St.CalendarItemTime>
+                            </div>
+                        </EventCard>
+                    ))
                 ) : (
-                    <StyledEmptyEvent>
+                    <St.StyledEmptyEvent>
                         일정이 존재하지 않습니다.
-                    </StyledEmptyEvent>
+                    </St.StyledEmptyEvent>
                 )}
-            </CalendarListBox>
-        </CalendarListContainer>
+            </St.CalendarListBox>
+        </St.CalendarListContainer>
     );
 };
 
 export default CalendarList;
-
-const CalendarListContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-`;
-
-const CalendarListBox = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-`;
-
-const CalendarItemTitle = styled.h3`
-    color: ${({ $alcoholLevel }) =>
-        $alcoholLevel >= 2 ? 'var(--color-white1)' : 'var(--color-green3)'};
-`;
-
-const CalendarItemTime = styled.p`
-    color: ${({ $alcoholLevel }) =>
-        $alcoholLevel >= 2 ? 'var(--color-white1)' : 'var(--color-green3)'};
-`;
-
-const StyledEmptyEvent = styled.h3`
-    padding-top: 3rem;
-`;
