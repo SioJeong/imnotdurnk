@@ -96,7 +96,9 @@ const EditPlan = () => {
     return (
         <>
             <St.Container>
-                <St.ScheduleContainer>
+                <St.ScheduleContainerForEdit
+                    $alcoholLevel={planDetail.alcoholLevel}
+                >
                     <h3>일정 정보</h3>
                     <St.InputContainer>
                         <St.InputItemBox
@@ -149,7 +151,7 @@ const EditPlan = () => {
                             />
                         </St.InputItemBox>
                     </St.InputContainer>
-                </St.ScheduleContainer>
+                </St.ScheduleContainerForEdit>
                 <EditPlanAlcohol
                     openAlcoholModal={() => openModal('alcoholModal')}
                     openAlcoholLevelModal={() => openModal('alcoholLevelModal')}
