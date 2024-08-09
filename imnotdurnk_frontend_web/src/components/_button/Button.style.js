@@ -30,7 +30,8 @@ const StyledButton = styled.button`
         props.$isRed
             ? 'var(--color-red, #FF6A5F)'
             : 'var(--color-white1, #fff)'};
-    border: none;
+    border: ${({ $border }) =>
+        $border ? '1px solid var(--color-green3)' : 'none'};
     border-radius: 45.0002px;
 
     box-sizing: border-box;
