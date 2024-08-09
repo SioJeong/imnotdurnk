@@ -46,18 +46,21 @@ const getDailyEventList = async ({ date }) => {
 
         if (statusCode === 200) {
             // dataList 변환 작업
-            const eventList = dataList.map((e) => {
-                const { _, formattedTime } = formatDateTime(e.date);
+            const sortedEventList = dataList
+                .map((e) => {
+                    const { _, formattedTime } = formatDateTime(e.date);
 
-                return {
-                    id: e.planId,
-                    title: e.title,
-                    alcoholLevel: e.alcoholLevel,
-                    time: formattedTime,
-                };
-            });
+                    return {
+                        id: e.planId,
+                        title: e.title,
+                        alcoholLevel: e.alcoholLevel,
+                        time: formattedTime,
+                        originalDate: new Date(e.date), // 정렬을 위해 원래 날짜 저장
+                    };
+                })
+                .sort((a, b) => b.originalDate - a.originalDate);
 
-            return eventList;
+            return sortedEventList.map(({ originalDate, ...rest }) => rest); // 정렬 후 원래 날짜 제거
         }
     } catch (error) {
         throw new Error(
