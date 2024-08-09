@@ -1,8 +1,7 @@
 import { api } from './api';
 
 //개인별 음주 통계 api 호츌
-const getStaticsticsData = async (formattedDate) => {
-    console.log('fd', formattedDate);
+const getAlcoholStaticsticsData = async (formattedDate) => {
     try {
         const response = await api.get(`/calendars/statistics`, {
             params: {
@@ -10,7 +9,6 @@ const getStaticsticsData = async (formattedDate) => {
             },
         });
 
-        console.log('2', response.status);
         // apiErrorHandler(statusCode, httpStatus, message);
         return {
             isSuccess: response.status === 200,
@@ -24,4 +22,4 @@ const getStaticsticsData = async (formattedDate) => {
         };
     }
 };
-export { getStaticsticsData };
+export { getAlcoholStaticsticsData };

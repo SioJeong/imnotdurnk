@@ -12,7 +12,6 @@ const sendVoiceRecord = async ({ file }) => {
         });
 
         const { statusCode, httpStatus, message } = response.data;
-        console.log(statusCode);
         apiErrorHandler(statusCode, httpStatus, message);
 
         // if (statusCode === 201) {
