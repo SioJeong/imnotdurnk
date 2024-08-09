@@ -1,6 +1,7 @@
 package com.imnotdurnk.domain.calendar.entity;
 
 import com.imnotdurnk.domain.calendar.dto.CalendarDto;
+import com.imnotdurnk.domain.calendar.dto.PlanDetailDto;
 import com.imnotdurnk.domain.gamelog.entity.GameLogEntity;
 import com.imnotdurnk.domain.user.dto.UserDto;
 import com.imnotdurnk.domain.user.entity.UserEntity;
@@ -92,7 +93,6 @@ public class CalendarEntity extends BaseEntity {
                 .sojuAmount(sojuAmount)
                 .build();
     }
-
 
     public void setEntityFromDto(CalendarDto calendarDto){
         this.date = LocalDateTime.parse(calendarDto.getDate());

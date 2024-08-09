@@ -11,6 +11,7 @@ import com.imnotdurnk.domain.calendar.repository.mapping.AlcoholAmount;
 import com.imnotdurnk.domain.calendar.repository.mapping.AlcoholAmountImpl;
 import com.imnotdurnk.domain.calendar.repository.mapping.PlanForMonth;
 import com.imnotdurnk.domain.calendar.repository.mapping.PlanForMonthImpl;
+import com.imnotdurnk.domain.gamelog.dto.GameLogDto;
 import com.imnotdurnk.domain.gamelog.entity.GameLogEntity;
 import com.imnotdurnk.domain.gamelog.entity.VoiceEntity;
 import com.imnotdurnk.domain.gamelog.repository.GameLogRepository;
@@ -261,7 +262,11 @@ public class CalendarServiceImpl implements CalendarService {
         CalendarEntity calendarEntity = isSameUserAndGetCalendarEntity(accessToken, planId);
 
         // 게임 로그 조회
-        calendarEntity.setGameLogEntities(gameLogRepository.findByCalendarEntity_Id(planId).get());
+        List<GameLogDto> gameLogDtos = gameLogRepository.findByCalendarEntity_Id(planId)
+                .map(gameLogEntities -> gameLogEntities.stream()
+                        .map(GameLogEntity::toDto) // toDto 메서드를 사용하여 변환
+                        .collect(Collectors.toList()))
+                .orElseGet(Collections::emptyList);
 
         return PlanDetailDto.builder()
                 .memo(calendarEntity.getMemo())
@@ -272,7 +277,7 @@ public class CalendarServiceImpl implements CalendarService {
                 .id(calendarEntity.getId())
                 .userId(calendarEntity.getUserEntity().getId())
 		        .alcoholLevel(calendarEntity.getAlcoholLevel())
-                .gameLogEntities(calendarEntity.getGameLogEntities())
+                .gameLogDtos(gameLogDtos)
                 .date(calendarEntity.getDate())
                 .build();
     }
