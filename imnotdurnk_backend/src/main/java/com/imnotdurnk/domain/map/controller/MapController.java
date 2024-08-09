@@ -60,8 +60,8 @@ public class MapController {
     )
     @GetMapping("/route")
     public ResponseEntity<ListResponse<?>> getRoute(
-            @RequestParam(required = true) int seq1, @RequestParam(required = true) int seq2,
-            @RequestParam(required = true) String routeId){
+                                                   @RequestParam(required = true) int seq1, @RequestParam(required = true) int seq2,
+                                                   @RequestParam(required = true) String routeId){
         ListResponse<RouteDto> response = new ListResponse<>();
         List<RouteDto> result = mapService.getRoutes(routeId,seq1,seq2);
         response.setDataList(result);

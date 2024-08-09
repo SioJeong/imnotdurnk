@@ -13,6 +13,10 @@ const CalendarListBox = styled.div`
     gap: 1rem;
 `;
 
+const LoadingAndErrorText = styled.h3`
+    padding-top: 3rem;
+`;
+
 const CalendarItemTitle = styled.h3`
     color: ${({ $alcoholLevel }) =>
         $alcoholLevel >= 2 ? 'var(--color-white1)' : 'var(--color-green3)'};
@@ -32,5 +36,6 @@ export {
     CalendarItemTitle,
     CalendarListBox,
     CalendarListContainer,
+    LoadingAndErrorText,
     StyledEmptyEvent,
 };

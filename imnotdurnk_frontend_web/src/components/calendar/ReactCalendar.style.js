@@ -35,4 +35,9 @@ const DateDot = styled.li`
     }};
 `;
 
-export { DateDot, DateNum, DateTile };
+const LoadingAndErrorText = styled.h3`
+    padding: 12rem 0;
+    text-align: center;
+`;
+
+export { DateDot, DateNum, DateTile, LoadingAndErrorText };

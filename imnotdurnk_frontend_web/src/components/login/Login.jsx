@@ -31,7 +31,11 @@ const Login = () => {
         );
         if (loginResult.isSuccess) {
             if (inputValues.isEmailSaved) {
-                ToastSuccess('나안취햄ㅅ어에 오신 것을 환영합니다.', true);
+                ToastSuccess(
+                    '나안취햄ㅅ어에 오신 것을 환영합니다.',
+                    true,
+                    true,
+                );
                 setAccessToken(loginResult.accessToken);
                 setCookie('rememberUserId', inputValues.email, { path: '/' });
             } else {

@@ -69,7 +69,7 @@ const Navigation = () => {
 
             if (success) {
                 queryClient.invalidateQueries(['planDetail', planId]);
-                ToastSuccess('일정이 수정되었습니다!', true);
+                ToastSuccess('일정이 수정되었습니다!', true, true);
                 resetPlanDetail();
                 navigate(`/calendar/${date}/plan/${planId}`); // 일정 상세 페이지로 이동
             }

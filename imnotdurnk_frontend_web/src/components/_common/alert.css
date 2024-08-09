@@ -7,6 +7,10 @@
     padding-top: 2rem !important; // navigation 없는 경우
 }
 
+.pt-with-navigation.specific-page {
+    padding-top: 3.5rem !important; // 특정 페이지에서 navigation 있는 경우 추가
+}
+
 /* 공통: 박스 및 폰트 */
 .swal2-toast {
     display: flex !important;
@@ -65,4 +69,32 @@
 
 .toast-error .swal2-timer-progress-bar {
     background: var(--color-white1) !important;
+}
+
+/* 삭제 modal */
+.delete-popup-class {
+    grid-row: 1 !important;
+    padding: 1rem 3rem !important;
+    width: auto;
+    background-color: var(--color-white1);
+    font-family: 'Pretendard' !important;
+}
+
+.delete-confirm-button-class {
+    background-color: var(--color-red);
+    color: var(--color-white1);
+}
+
+/* 인포 modal */
+.info-popup-class {
+    grid-row: 1 !important;
+    padding: 1rem 2rem !important;
+    width: auto;
+    background-color: var(--color-white1);
+    font-family: 'Pretendard' !important;
+}
+
+.info-confirm-button-class {
+    background-color: var(--color-blue);
+    color: var(--color-white1);
 }

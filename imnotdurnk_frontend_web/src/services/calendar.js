@@ -1,3 +1,4 @@
+import { formatDateTime } from '../hooks/useDateTimeFormatter';
 import { api } from './api';
 import apiErrorHandler from './apiErrorHandler';
 
@@ -10,25 +11,60 @@ const getAllEventList = async ({ year, month }) => {
         });
 
         const { statusCode, httpStatus, message, dataList } = response.data;
-
         apiErrorHandler(statusCode, httpStatus, message);
 
-        // dataList 변환 작업
-        const eventList = dataList.map((e) => ({
-            id: e.planId,
-            title: e.title,
-            date: new Date(e.datetime),
-            alcoholLevel: e.alcoholLevel,
-            time: new Date(e.datetime).toLocaleTimeString('ko-KR', {
-                hour: '2-digit',
-                minute: '2-digit',
-            }),
-        }));
+        if (statusCode === 0) {
+            // dataList 변환 작업
+            const eventList = dataList.map((e) => ({
+                id: e.planId,
+                title: e.title,
+                date: new Date(e.datetime),
+                alcoholLevel: e.alcoholLevel,
+                time: new Date(e.datetime).toLocaleTimeString('ko-KR', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                }),
+            }));
 
-        return eventList;
+            return eventList;
+        }
     } catch (error) {
         throw new Error(
             error.message || '월별 전체 일정 가져오는 중 오류 발생',
+        );
+    }
+};
+
+const getDailyEventList = async ({ date }) => {
+    try {
+        const response = await api.get(`/calendars/${date}/plans`, {
+            params: { date },
+        });
+
+        const { statusCode, httpStatus, message, dataList } = response.data;
+        apiErrorHandler(statusCode, httpStatus, message);
+
+        if (statusCode === 200) {
+            // dataList 변환 작업
+            const sortedEventList = dataList
+                .map((e) => {
+                    const { _, formattedTime } = formatDateTime(e.date);
+
+                    return {
+                        id: e.planId,
+                        title: e.title,
+                        alcoholLevel: e.alcoholLevel,
+                        time: formattedTime,
+                        originalDate: new Date(e.date), // 정렬을 위해 원래 날짜 저장
+                    };
+                })
+                .sort((a, b) => b.originalDate - a.originalDate);
+
+            return sortedEventList.map(({ originalDate, ...rest }) => rest); // 정렬 후 원래 날짜 제거
+        }
+    } catch (error) {
+        throw new Error(
+            error.message || '일별 전체 일정 가져오는 중 오류 발생',
         );
     }
 };
@@ -101,6 +137,7 @@ export {
     createEvent,
     deleteEvent,
     getAllEventList,
+    getDailyEventList,
     getEventDetail,
     updateEvent,
 };
