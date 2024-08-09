@@ -1,6 +1,12 @@
 import { styled } from 'styled-components';
 
-const Container = styled.div`
+const PlanDetailContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+`;
+
+const PlanDetailBox = styled.div`
     display: flex;
     flex-direction: column;
     gap: 1.7857rem;
@@ -114,13 +120,14 @@ export {
     AlcoholContainer,
     AlcoholCountImage,
     AlcoholTitle,
-    Container,
     DrinkInputBox,
     InputContainer,
     InputItemBox,
     InputItemBoxTitle,
     LoadingAndErrorText,
     MemoIconImage,
+    PlanDetailBox,
+    PlanDetailContainer,
     ScheduleContainer,
     ScheduleTitle,
     TitleAndMemo,
