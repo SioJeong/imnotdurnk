@@ -11,7 +11,7 @@ import { deleteEvent, getEventDetail } from '../../services/calendar';
 import useCalendarStore from '../../stores/useCalendarStore';
 import useNavigationStore from '../../stores/useNavigationStore';
 import Button from '../_button/Button';
-import { ToastSuccess } from '../_common/alert';
+import { DeleteConfirmModal, ToastSuccess } from '../_common/alert';
 import * as St from './PlanDetail.style';
 
 const PlanDetail = () => {
@@ -63,7 +63,6 @@ const PlanDetail = () => {
         ? formatTime(planDetail?.arrivalTime)
         : '-';
 
-    // TODO: 진짜 삭제 할 건지 물어봐야 할 듯?
     const deletePlan = async () => {
         const [year, month] = planDetail.date.split('T')[0].split('-');
 
@@ -87,6 +86,20 @@ const PlanDetail = () => {
         }
 
         return false;
+    };
+
+    const handleDelete = () => {
+        DeleteConfirmModal(
+            '일정을 삭제 하시겠습니까?',
+            '삭제',
+            '취소',
+            async () => {
+                const result = await deletePlan();
+                return result;
+            },
+            () => {},
+            '일정이 삭제 되었습니다.',
+        );
     };
 
     return (
@@ -207,7 +220,7 @@ const PlanDetail = () => {
                     <Button
                         text={'일정 삭제하기'}
                         isRed={true}
-                        onClick={deletePlan}
+                        onClick={handleDelete}
                     />
                 </>
             )}

@@ -66,3 +66,31 @@
 .toast-error .swal2-timer-progress-bar {
     background: var(--color-white1) !important;
 }
+
+/* 삭제 modal */
+.delete-popup-class {
+    grid-row: 1 !important;
+    padding: 1rem 3rem !important;
+    width: auto;
+    background-color: var(--color-white1);
+    font-family: 'Pretendard' !important;
+}
+
+.delete-confirm-button-class {
+    background-color: var(--color-red);
+    color: var(--color-white1);
+}
+
+/* 인포 modal */
+.info-popup-class {
+    grid-row: 1 !important;
+    padding: 1rem 2rem !important;
+    width: auto;
+    background-color: var(--color-white1);
+    font-family: 'Pretendard' !important;
+}
+
+.info-confirm-button-class {
+    background-color: var(--color-blue);
+    color: var(--color-white1);
+}
