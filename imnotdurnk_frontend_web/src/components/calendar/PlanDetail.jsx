@@ -222,7 +222,8 @@ const PlanDetail = () => {
                         </St.AlcoholContainer>
                         <Button
                             text={'일정 삭제하기'}
-                            isRed={true}
+                            isRed={false}
+                            border={true}
                             onClick={handleDelete}
                         />
                     </>
