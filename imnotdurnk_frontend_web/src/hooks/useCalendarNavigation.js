@@ -23,17 +23,7 @@ const useCalendarNavigation = () => {
                 title: '일정 추가',
                 icon2: { iconname: 'check', isRed: 'true', path: 'submitPlan' },
             });
-        }
-        // else if (path.match()) {
-        //     const date = path.split('/')[2];
-        //     setNavigation({
-        //         isVisible: true,
-        //         icon1: { iconname: 'backarrow', path: `/calendar/${date}` },
-        //         title: '일정 상세',
-        //         icon2: { iconname: 'modify', path: 'goEditPlan' },
-        //     });
-        // }
-        else if (path.startsWith('/calendar/edit-plan/')) {
+        } else if (path.startsWith('/calendar/edit-plan/')) {
             setNavigation({
                 isVisible: true,
                 icon1: { iconname: 'backarrow', path: '-1' },
