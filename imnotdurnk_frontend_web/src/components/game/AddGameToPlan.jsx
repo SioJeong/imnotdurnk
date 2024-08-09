@@ -5,14 +5,12 @@ import {
     dateStringToUrl,
 } from '../../hooks/useDateTimeFormatter';
 import { getDailyEventList } from '../../services/calendar';
-import useGameStore from '../../stores/useGameStore';
 import useNavigationStore from '../../stores/useNavigationStore';
 import CalendarStatusBar from '../calendar/CalendarStatusBar';
 import EventCard from '../calendar/EventCard';
 import * as St from './AddGameToPlan.style';
 
 const AddGameToPlan = () => {
-    const { voiceGameResult } = useGameStore();
     const setNavigation = useNavigationStore((state) => state.setNavigation);
 
     const date = dateStringToUrl(convertDateToString(new Date()));
@@ -30,7 +28,6 @@ const AddGameToPlan = () => {
     });
 
     useEffect(() => {
-        console.log('일정 리스트에서 받아온 voiceGameResult', voiceGameResult);
         setNavigation({
             isVisible: true,
             icon1: { iconname: 'backarrow', path: '-1' },
@@ -39,12 +36,9 @@ const AddGameToPlan = () => {
         });
     }, []);
 
-    useEffect(() => {
-        console.log('오늘의 일정 가져와 보자 dailyEventList', dailyEventList);
-    }, [dailyEventList]);
-
     return (
         <St.CalendarListContainer>
+            <St.Notice>게임 기록을 등록할 일정을 선택해주세요!</St.Notice>
             <CalendarStatusBar />
             <St.CalendarListBox>
                 {isLoading ? (
@@ -60,7 +54,7 @@ const AddGameToPlan = () => {
                         <EventCard
                             key={e.id}
                             alcoholLevel={e.alcoholLevel}
-                            fromCalendar={true}
+                            parentComponent="addGameToPlan"
                             eventId={e.id}
                         >
                             <div>

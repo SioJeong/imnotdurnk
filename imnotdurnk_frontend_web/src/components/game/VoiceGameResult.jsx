@@ -13,7 +13,6 @@ const VoiceGameResult = () => {
     const { voiceGameResult } = useGameStore();
 
     useEffect(() => {
-        console.log('게임 결과에서 받아온 voiceGameResult', voiceGameResult);
         setNavigation({
             isVisible: true,
             icon1: { iconname: 'backarrow', path: '/game/voicegame' },
@@ -22,7 +21,7 @@ const VoiceGameResult = () => {
         });
     }, []);
 
-    // TODO:
+    // TODO: 로그인 안 한 경우 로그인 페이지로 바로 라우팅 (ToastWarning 함께)
     const handleSubmit = () => {
         InfoConfirmModal(
             '오늘 등록한 일정이 있나요?',

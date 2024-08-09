@@ -38,7 +38,7 @@ const CalendarList = () => {
                         <EventCard
                             key={e.id}
                             alcoholLevel={e.alcoholLevel}
-                            fromCalendar={false}
+                            parentComponent="calendarList"
                             eventId={e.id}
                         >
                             <div>

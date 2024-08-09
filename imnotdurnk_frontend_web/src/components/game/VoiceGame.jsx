@@ -98,7 +98,6 @@ const VoiceGame = () => {
             formData.append('file', audioBlob, 'recording.wav');
             formData.append('script', testSentence);
             try {
-                // TODO: 음성 분석 중입니다? ?????? 로딩 화면 추가하자 !!!!!
                 ToastSuccess('음성 분석 중입니다.');
 
                 const dataResult = await sendVoiceRecord({ formData });

@@ -1,4 +1,4 @@
-import { apiNoToken } from './api';
+import { api, apiNoToken } from './api';
 import apiErrorHandler from './apiErrorHandler';
 
 const getTestSentence = async () => {
@@ -39,4 +39,19 @@ const sendVoiceRecord = async ({ formData }) => {
     }
 };
 
-export { getTestSentence, sendVoiceRecord };
+const saveVoiceGameResult = async ({ data }) => {
+    try {
+        const response = await api.post('/voice/pronounce/save', data, {});
+
+        const { statusCode, httpStatus, message } = response.data;
+        apiErrorHandler(statusCode, httpStatus, message);
+
+        if (statusCode === 200) {
+            return true;
+        }
+    } catch (error) {
+        throw new Error(error.message || '음성 게임 결과 저장 중 오류 발생');
+    }
+};
+
+export { getTestSentence, saveVoiceGameResult, sendVoiceRecord };
