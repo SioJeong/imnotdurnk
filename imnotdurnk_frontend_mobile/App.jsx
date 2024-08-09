@@ -2,12 +2,16 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useFonts } from 'expo-font';
+import * as Location from 'expo-location';
 import { StatusBar } from 'expo-status-bar';
+import * as TaskManager from 'expo-task-manager';
+import { useEffect } from 'react';
 import { SafeAreaView, StyleSheet, Text } from 'react-native';
 import { ThemeProvider } from 'styled-components/native';
 import Layout from './components/_layout/Layout';
 import Router from './Router';
 import theme from './shared/styles/theme';
+import useLocationStore from './stores/useLocationStore';
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -26,12 +30,65 @@ const queryClient = new QueryClient({
     },
 });
 
+const BACKGROUND_LOCATION_TASK = 'background-location-task';
+
+const defineBackgroundTask = () => {
+    if (!TaskManager.isTaskDefined(BACKGROUND_LOCATION_TASK)) {
+        TaskManager.defineTask(BACKGROUND_LOCATION_TASK, ({ data, error }) => {
+            if (error) {
+                console.error('Background location task error:', error);
+                return;
+            }
+            if (data) {
+                const { locations } = data;
+                if (locations && locations.length > 0) {
+                    const { latitude, longitude } = locations[0].coords;
+                    const coords = {
+                        latitude,
+                        longitude,
+                        latitudeDelta: 0.005,
+                        longitudeDelta: 0.005,
+                    };
+                    useLocationStore.getState().setCurrentLocation(coords);
+                    console.log('Background location update:', coords);
+                }
+            }
+        });
+    }
+};
+
 const App = () => {
     // pretendard font 적용
     const [fontsLoaded] = useFonts({
         'Pretendard-Light': require('./assets/fonts/Pretendard-Light.ttf'),
         'Pretendard-Medium': require('./assets/fonts/Pretendard-Medium.ttf'),
     });
+
+    // 앱 실행 시 위치 추적 권한 요청
+    useEffect(() => {
+        const requestLocationPermissions = async () => {
+            try {
+                const foregroundPermission =
+                    await Location.requestForegroundPermissionsAsync();
+                const backgroundPermission =
+                    await Location.requestBackgroundPermissionsAsync();
+
+                if (
+                    foregroundPermission.status !== 'granted' ||
+                    backgroundPermission.status !== 'granted'
+                ) {
+                    console.log('위치 권한이 거부되었습니다.');
+                } else {
+                    console.log('위치 권한이 허용되었습니다.');
+                    defineBackgroundTask();
+                }
+            } catch (error) {
+                console.error('위치 권한 요청 중 오류 발생:', error);
+            }
+        };
+
+        requestLocationPermissions();
+    }, []);
 
     if (!fontsLoaded) {
         return <Text>폰트 로딩 중</Text>; // TODO: 추후 loading 컴포넌트로 변경 필요
