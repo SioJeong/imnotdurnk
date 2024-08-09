@@ -60,12 +60,10 @@ const CheckEmail = () => {
     //인증번호 비교하기
     const compareCertificationNumber = async (certNumString) => {
         // 4자리로 변경되면 이걸로 사용
-        console.log('컴페어 함수 내', certNumString);
         const comparedResult = await checkCertificationNumber(
             user.email,
             certNumString,
         );
-        console.log(comparedResult, 'cr');
         if (comparedResult.isSuccess) {
             const signupResult = await signup(
                 user.name,
@@ -73,9 +71,7 @@ const CheckEmail = () => {
                 user.phone,
                 user.password,
             );
-            console.log('사인업 결과', signupResult);
             if (signupResult.isSuccess) {
-                console.log('사인업 성공');
                 openSignupSuccessModal(modalId);
             }
         } else {

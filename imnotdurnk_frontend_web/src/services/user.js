@@ -87,22 +87,18 @@ const sendCertificationNumber = async (email) => {
 
 //이메일 인증, 인증번호 일치 여부 확인 api
 const checkCertificationNumber = async (email, inputCertNum) => {
-    console.log('1', email, inputCertNum, typeof inputCertNum);
     try {
         const response = await apiNoToken.post(`/users/signup/verify-code`, {
             email: email,
             verifyCode: inputCertNum,
         });
-        console.log('3', email, inputCertNum, typeof inputCertNum);
         const { statusCode, httpStatus, message } = response.data;
         // apiErrorHandler(statusCode, httpStatus, message);
-        console.log('res', response);
         return {
             isSuccess: statusCode === 200,
             message: '이메일 인증 성공',
         };
     } catch (err) {
-        console.log('err', err);
         return {
             isSuccess: false,
             message: err.message || '데이터 가져오는 중 오류 발생',
@@ -157,7 +153,6 @@ const getUserProfile = async () => {
         const response = await api.get(`/users/profile`);
         const { statusCode, httpStatus, message, data } = response.data;
         //apiErrorHandler(statusCode, httpStatus, message);
-        console.log(data, 'rd', response.data.data);
         return {
             isSuccess: statusCode === 200,
             data: data,
@@ -173,7 +168,6 @@ const getUserProfile = async () => {
 
 //비번 재전송
 const sendNewPassword = async (email) => {
-    console.log('api내', email);
     try {
         const response = await api.get(`/users/login/find-password`, {
             params: {
@@ -182,7 +176,6 @@ const sendNewPassword = async (email) => {
         });
         const { statusCode, httpStatus, message, data } = response.data;
         //apiErrorHandler(statusCode, httpStatus, message);
-        console.log(data, 'rd', response.data.data);
         return {
             isSuccess: statusCode === 200,
             data: data,
