@@ -5,7 +5,7 @@ import { styled } from 'styled-components';
 import { getGameStaticsticsData } from '../../services/statistics';
 
 const GameStatistics = ({ formattedDate }) => {
-    //게임 종류 고르는 탭
+    //첫번째 게임 종류 고르는 탭
     const [activeGameTypeIndex, setActiveGameTypeIndex] = useState(0);
     const tabGameTypeList = [0, 1, 2, 3];
     const handleGameTypeClick = (index) => {
@@ -19,7 +19,7 @@ const GameStatistics = ({ formattedDate }) => {
         { text: 'Month', comment1: '달', comment2: '은' },
         { text: 'Year', comment1: '년도', comment2: '는' },
     ];
-    //탭 이동
+    //두번째 탭 이동
     const handleButtonClick = (index) => {
         setActiveIndex(index);
     };
@@ -28,7 +28,7 @@ const GameStatistics = ({ formattedDate }) => {
     //Pie Chart에서 필요한 데이터 형식으로 변경한 게임 데이터
     const [monthAverageForPieChart, setMonthAverageForPieChart] = useState([]);
     const [totalAverageForPieChart, setTotalAverageForPieChart] = useState([]);
-    const [compareScore, setCompareScore] = useState([]);
+    const [compareScoreList, setCompareScoreList] = useState([]); //전체 vs 이번달 값 배열
 
     const convertGameStatisticsResult = (gameData) => {
         // setGameStatisticsForPieChart([
@@ -77,7 +77,7 @@ const GameStatistics = ({ formattedDate }) => {
         console.log('달별 결과 포 파이', compareScoreForChartTmpList);
         setMonthAverageForPieChart(monthDataForChartTmpList);
         setTotalAverageForPieChart(totalDataForChartTmpList);
-        setCompareScore(compareScoreForChartTmpList);
+        setCompareScoreList(compareScoreForChartTmpList);
     };
 
     const CustomLabel = ({ cx, cy, value, name }) => {
@@ -162,8 +162,10 @@ const GameStatistics = ({ formattedDate }) => {
             <StatisticsVisualization>
                 <MainTitle>점수 통계</MainTitle>
                 <SubTitle>
-                    이번 달은 점수 전체 평균보다
-                    {compareScore[activeGameTypeIndex]}
+                    이번 달은 점수 전체 평균보다{' '}
+                    <Highlight>
+                        {compareScoreList[activeGameTypeIndex]}
+                    </Highlight>
                 </SubTitle>
                 <Graph>
                     <ResponsiveContainer width={200} height={150}>
@@ -212,8 +214,14 @@ const GameStatistics = ({ formattedDate }) => {
                     ))}
                 </ButtonBox>
                 <Analysis>
-                    지난 1년간 일별 평균 음주량은 <br />
-                    소주 0.4병 맥주 0.3병입니다.
+                    이번{' '}
+                    <Highlight>
+                        {tabContentsList[activeIndex].comment1}
+                    </Highlight>
+                    {tabContentsList[activeIndex].comment2}
+                    <Highlight> _일</Highlight>
+                    은 평균보다 낮아요. <br />
+                    <Highlight>_일</Highlight> 과음하셨나봐요!
                 </Analysis>
             </StatisticsText>
         </StyledContainer>
@@ -292,6 +300,10 @@ const Analysis = styled.div`
     color: var(--color-white1, #fff);
 
     font-size: var(--font-body-h2);
+`;
+
+const Highlight = styled.span`
+    color: var(--color-red);
 `;
 const Graph = styled.div`
     display: flex;

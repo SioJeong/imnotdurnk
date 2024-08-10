@@ -115,7 +115,8 @@ const AlcoholStatistics = ({ today, formattedDate }) => {
             <StatisticsVisualization>
                 <MainTitle>월별 음주 통계</MainTitle>
                 <SubTitle>
-                    지난 달보다 이번 달 {Math.abs(differenceOfSchedule)}번
+                    지난 달보다 이번 달{' '}
+                    <Highlight>{Math.abs(differenceOfSchedule)}번 </Highlight>
                     {differenceOfSchedule < 0 ? ' 더 적게' : ' 더 많이 '}{' '}
                     마셨습니다.
                 </SubTitle>
@@ -171,8 +172,9 @@ const AlcoholStatistics = ({ today, formattedDate }) => {
                 <Analysis>
                     {tabContentsList[activeIndex].comment}
                     <br />
-                    소주 {avgData[activeIndex].soju}병, 맥주
-                    {avgData[activeIndex].beer} 병입니다.
+                    소주<Highlight> {avgData[activeIndex].soju}</Highlight>병,
+                    맥주
+                    <Highlight>{avgData[activeIndex].beer}</Highlight> 병입니다.
                 </Analysis>
             </StatisticsText>
         </StatisticsBox>
@@ -245,6 +247,9 @@ const Analysis = styled.div`
     color: var(--color-white1, #fff);
 
     font-size: var(--font-body-h2);
+`;
+const Highlight = styled.span`
+    color: var(--color-red);
 `;
 
 export default AlcoholStatistics;
