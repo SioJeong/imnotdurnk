@@ -129,15 +129,7 @@ const Profile = () => {
     };
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        console.log(
-            currentPassword,
-            newPassword,
-            newPasswordCheck,
-            '입력때마다 ',
-            name,
-            value,
-            currentPassword === newPassword,
-        );
+
         if (name === 'currentPassword') {
             setCurrentPassword(value);
         } else if (name === 'newPassword') {
@@ -163,7 +155,6 @@ const Profile = () => {
     };
     const handleInputChangeForDelete = (e) => {
         const { name, value } = e.target;
-        console.log('ㅇㅇ', name, value);
         setPasswordForDelete(value);
     };
 

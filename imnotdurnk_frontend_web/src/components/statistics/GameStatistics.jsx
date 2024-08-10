@@ -9,7 +9,6 @@ const GameStatistics = ({ formattedDate }) => {
     const [activeGameTypeIndex, setActiveGameTypeIndex] = useState(0);
     const tabGameTypeList = [0, 1, 2, 3];
     const handleGameTypeClick = (index) => {
-        console.log(index);
         setActiveGameTypeIndex(index);
     };
 
@@ -35,7 +34,6 @@ const GameStatistics = ({ formattedDate }) => {
         const totalDataForChartTmpList = [];
         const compareScoreForChartTmpList = [];
         const convertDataResult = gameData.map((value, index) => {
-            console.log('index=', index, 'value=', value);
             monthDataForChartTmpList.push([
                 {
                     name: '이번 달 점수 평균',
@@ -131,8 +129,6 @@ const GameStatistics = ({ formattedDate }) => {
             } catch (error) {
                 console.error('Error fetching user data:', error);
             }
-
-            console.log('gs', gameStatisticsList);
         };
         fetchGameStatistics();
     }, []);
