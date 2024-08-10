@@ -1,4 +1,4 @@
-import { ScrollView, Text, View } from 'react-native';
+import { Pressable, ScrollView, Text, View } from 'react-native';
 import { styled } from 'styled-components/native';
 
 const AppContainer = styled(View)`
@@ -71,6 +71,36 @@ const GlobalText = styled(Text)`
         theme.colors[color] ? theme.colors[color] : theme.colors.green3};
 `;
 
+const HomeButtonContainer = styled(View)`
+    flex: 1;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    padding: 14px 14px 28px 14px;
+    gap: 26px;
+    align-self: stretch;
+    height: 100%;
+`;
+
+const HomeButton = styled(Pressable)`
+    width: 100%;
+`;
+
+const HomeButtonElement = styled(View)`
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 12px 24px;
+    gap: 10px;
+    align-self: stretch;
+    border-radius: 20px;
+
+    background-color: ${({ color, theme }) =>
+        theme.colors[color] ? theme.colors[color] : theme.colors.green3};
+`;
+
 const MapSearchContainer = styled(View)`
     flex-direction: column;
     justify-content: center;
@@ -91,6 +121,9 @@ export {
     Container,
     Container2,
     GlobalText,
+    HomeButton,
+    HomeButtonContainer,
+    HomeButtonElement,
     LayoutContainer,
     MapSearchContainer,
     NavContainer,
