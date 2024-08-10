@@ -116,8 +116,8 @@ const putUserDetailedInfo = async (
     phone,
     beerCapacity,
     sojuCapacity,
-    unsure,
-    voice,
+    sojuUnsure,
+    beerUnsure,
 ) => {
     try {
         const response = await api.put(`/users/profile`, {
@@ -130,12 +130,12 @@ const putUserDetailedInfo = async (
             phone: phone,
             beerCapacity: beerCapacity,
             sojuCapacity: sojuCapacity,
-            unsure: unsure,
-            voice: voice,
+            sojuUnsure: sojuUnsure,
+            beerUnsure: beerUnsure,
         });
         const { statusCode, httpStatus, message } = response.data;
         // apiErrorHandler(statusCode, httpStatus, message);
-
+        console.log('웨안돼', response);
         return {
             isSuccess: statusCode === 200,
             message: '프로필 업데이트 성공',

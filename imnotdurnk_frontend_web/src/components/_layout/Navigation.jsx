@@ -5,7 +5,8 @@ import useNavigationStore from '@/stores/useNavigationStore.js';
 import useUserStore from '@/stores/useUserStore.js';
 import { useQueryClient } from '@tanstack/react-query';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { ToastSuccess, ToastWarning } from '../_common/alert.js';
+import { putUserDetailedInfo } from '../../services/user.js';
+import { ToastError, ToastSuccess, ToastWarning } from '../_common/alert.js';
 import * as St from './Navigation.style.js';
 const Navigation = () => {
     const { navigation } = useNavigationStore((state) => state);
@@ -17,10 +18,11 @@ const Navigation = () => {
         resetPlanDetail,
         editPlan,
     } = useCalendarStore();
-    const { tmpUser, user, setUser } = useUserStore((state) => ({
+    const { tmpUser, user, setUser, isValid } = useUserStore((state) => ({
         user: state.user,
         setUser: state.setUser,
         tmpUser: state.tmpUser,
+        isValid: state.isValid,
     }));
     const navigate = useNavigate();
     const location = useLocation();
@@ -74,11 +76,29 @@ const Navigation = () => {
                 navigate(`/calendar/${date}/plan/${planId}`); // 일정 상세 페이지로 이동
             }
         } else if (path === 'updateProfile') {
-            console.log('프로필 업데잍확인', tmpUser);
-            if (tmpUser.isAvailable) {
-                console.log('있음');
+            console.log(isValid, '프로필 업데잍확인', tmpUser);
+            if (isValid) {
+                // 프로필 변경 api
+                const profileUpdateResult = await putUserDetailedInfo(
+                    tmpUser.nickname,
+                    tmpUser.postalCode,
+                    tmpUser.address,
+                    tmpUser.detailedAddress,
+                    tmpUser.emergencyCall,
+                    tmpUser.phone,
+                    tmpUser.beerCapacity,
+                    tmpUser.sojuCapacity,
+                    //tmpUser.sojuUnsure,
+                    //tmpUser.beerUnsure,
+                );
+                // User 전역 상태 변경
+
+                // tmpUser 값 다 지우기
+
+                //ToastSuccess('프로필을 변경했습니다', true);
+                //navigate('/profile');
             } else {
-                console.log('없음');
+                ToastError('프로필 변경에 실패했습니다', true);
             }
             //api 요청
 
