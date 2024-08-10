@@ -16,8 +16,8 @@ const GameStatistics = ({ formattedDate }) => {
     //두번째 통계 월,년 고르는 탭
     const [activeIndex, setActiveIndex] = useState(0);
     const tabContentsList = [
-        { text: 'Month', comment1: '달', comment2: '은' },
-        { text: 'Year', comment1: '년도', comment2: '는' },
+        { text: 'Month', comment1: ' 달', comment2: '은 ' },
+        { text: 'Year', comment1: ' 해', comment2: '는 ' },
     ];
     //두번째 탭 이동
     const handleButtonClick = (index) => {
@@ -31,16 +31,6 @@ const GameStatistics = ({ formattedDate }) => {
     const [compareScoreList, setCompareScoreList] = useState([]); //전체 vs 이번달 값 배열
 
     const convertGameStatisticsResult = (gameData) => {
-        // setGameStatisticsForPieChart([
-        //     {
-        //         name: '이번 달 점수 평균',
-        //         value: gameData.monthAverage,
-        //     },
-        //     {
-        //         name: 'Remaining',
-        //         value: 100 - gameData.monthAverage,
-        //     },
-        // ]);
         const monthDataForChartTmpList = [];
         const totalDataForChartTmpList = [];
         const compareScoreForChartTmpList = [];
@@ -74,7 +64,6 @@ const GameStatistics = ({ formattedDate }) => {
                 compareScoreForChartTmpList.push(' 낮습니다.');
             }
         });
-        console.log('달별 결과 포 파이', compareScoreForChartTmpList);
         setMonthAverageForPieChart(monthDataForChartTmpList);
         setTotalAverageForPieChart(totalDataForChartTmpList);
         setCompareScoreList(compareScoreForChartTmpList);
@@ -214,14 +203,30 @@ const GameStatistics = ({ formattedDate }) => {
                     ))}
                 </ButtonBox>
                 <Analysis>
-                    이번{' '}
+                    이번
                     <Highlight>
                         {tabContentsList[activeIndex].comment1}
                     </Highlight>
                     {tabContentsList[activeIndex].comment2}
-                    <Highlight> _일</Highlight>
+                    <Highlight>
+                        {gameStatisticsList === undefined && activeIndex === 0
+                            ? gameStatisticsList[activeGameTypeIndex]
+                                  .lowerCountThanMonthAvg
+                            : gameStatisticsList[activeGameTypeIndex]
+                                  .lowerCountThanYearAvg}
+                        일
+                    </Highlight>
                     은 평균보다 낮아요. <br />
-                    <Highlight>_일</Highlight> 과음하셨나봐요!
+                    <Highlight>
+                        {' '}
+                        {gameStatisticsList === undefined && activeIndex === 0
+                            ? gameStatisticsList[activeGameTypeIndex]
+                                  .lowerCountThanMonthAvg
+                            : gameStatisticsList[activeGameTypeIndex]
+                                  .lowerCountThanYearAvg}
+                        일
+                    </Highlight>{' '}
+                    과음하셨나봐요!
                 </Analysis>
             </StatisticsText>
         </StyledContainer>
