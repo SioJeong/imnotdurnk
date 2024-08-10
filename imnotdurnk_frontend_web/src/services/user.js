@@ -206,8 +206,26 @@ const logout = async () => {
         };
     }
 };
+const deleteAccount = async () => {
+    try {
+        const response = await api.post(`/users/delete-account`);
+
+        const { statusCode, httpStatus } = response.data;
+
+        return {
+            isSuccess: statusCode === 200,
+            message: '회원탈퇴 성공',
+        };
+    } catch (err) {
+        return {
+            isSuccess: false,
+            message: err.message || '데이터 가져오는 중 오류 발생',
+        };
+    }
+};
 export {
     checkCertificationNumber,
+    deleteAccount,
     getUser,
     getUserProfile,
     login,

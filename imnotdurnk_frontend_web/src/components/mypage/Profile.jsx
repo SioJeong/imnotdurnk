@@ -2,11 +2,14 @@ import beerBottleImage from '@/assets/images/beerbottle.webp';
 import sojuBottleImage from '@/assets/images/sojubottle.webp';
 import MiniButton from '@/components/_button/MiniButton';
 import InputBox from '@/components/_common/InputBox';
-import { getUserProfile, logout } from '@/services/user';
+import Modal from '@/components/_modal/Modal';
+import { deleteAccount, getUserProfile, logout } from '@/services/user';
 import useUserStore from '@/stores/useUserStore';
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { Outlet, Route, Routes, useNavigate } from 'react-router-dom';
+import useModalStore from '../../stores/useModalStore';
+import ModalTextBox from '../_modal/ModalTextBox';
 import * as St from './Profile.style';
 import ProfileCreateAlcoholCapacity from './ProfileCreateAlcoholCapacity';
 import ProfileCreateInfo from './ProfileCreateInfo';
@@ -51,7 +54,24 @@ const Profile = () => {
             console.log('로그아웃 실패');
         }
     };
-    const handleDeleteAccount = () => {};
+
+    const { openModal, closeModal } = useModalStore();
+    const closeHandler = (state) => {
+        closeModal(state);
+    };
+    const onClickDeleteAccountButton = () => {
+        openModal('deleteAccountModal');
+    };
+    const handleDeleteAccount = async () => {
+        //삭제 api -> 성공시 -> account로 이동
+        const deleteAccountResult = await deleteAccount();
+        if (deleteAccountResult.isSuccess) {
+            console.log('탈퇴 성공');
+            navigate('/account');
+        } else {
+            console.log('탈티 실패');
+        }
+    };
     useEffect(() => {
         const fetchUserProfile = async () => {
             try {
@@ -198,7 +218,7 @@ const Profile = () => {
                         text="회원탈퇴"
                         iconname="bin"
                         isRed={false}
-                        onClick={handleDeleteAccount}
+                        onClick={onClickDeleteAccountButton}
                     />
                     <MiniButton
                         text="로그아웃"
@@ -213,6 +233,17 @@ const Profile = () => {
                         onClick={handlePasswordChange}
                     />
                 </St.ButtonContainer>
+                <Modal
+                    modalId="deleteAccountModal"
+                    contents={
+                        <ModalTextBox text="회원 정보를 삭제하시겠습니까?" />
+                    }
+                    buttonText={'탈퇴하기'}
+                    onButtonClick={() => {
+                        closeModal();
+                        handleDeleteAccount();
+                    }}
+                />
             </St.ProfileContainer>
             <Routes>
                 {/* /create 하위 경로들 */}
