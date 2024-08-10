@@ -1,13 +1,19 @@
 import { useQuery } from '@tanstack/react-query';
-import { useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
+import {
+    convertDateToString,
+    dateStringToUrl,
+} from '../../hooks/useDateTimeFormatter';
 import { getDailyEventList } from '../../services/calendar';
-import * as St from './CalendarList.style';
-import CalendarStatusBar from './CalendarStatusBar';
-import EventCard from './EventCard';
+import useNavigationStore from '../../stores/useNavigationStore';
+import CalendarStatusBar from '../calendar/CalendarStatusBar';
+import EventCard from '../calendar/EventCard';
+import * as St from './AddGameToPlan.style';
 
-const CalendarList = () => {
-    const location = useLocation();
-    const date = location.pathname.split('/')[2];
+const AddGameToPlan = () => {
+    const setNavigation = useNavigationStore((state) => state.setNavigation);
+
+    const date = dateStringToUrl(convertDateToString(new Date()));
 
     const {
         data: dailyEventList,
@@ -21,8 +27,18 @@ const CalendarList = () => {
         keepPreviousData: true, // 새 데이터 가져오는 동안 이전 데이터 유지
     });
 
+    useEffect(() => {
+        setNavigation({
+            isVisible: true,
+            icon1: { iconname: 'backarrow', path: '-1' },
+            title: '오늘의 일정 목록',
+            icon2: { iconname: 'empty' },
+        });
+    }, []);
+
     return (
         <St.CalendarListContainer>
+            <St.Notice>게임 기록을 등록할 일정을 선택해주세요!</St.Notice>
             <CalendarStatusBar />
             <St.CalendarListBox>
                 {isLoading ? (
@@ -38,7 +54,7 @@ const CalendarList = () => {
                         <EventCard
                             key={e.id}
                             alcoholLevel={e.alcoholLevel}
-                            parentComponent="calendarList"
+                            parentComponent="addGameToPlan"
                             eventId={e.id}
                         >
                             <div>
@@ -65,4 +81,4 @@ const CalendarList = () => {
     );
 };
 
-export default CalendarList;
+export default AddGameToPlan;

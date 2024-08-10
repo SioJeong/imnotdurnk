@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { icons } from '../../shared/constants/icons';
 import * as St from './GameList.style';
 
 const GameList = () => {
@@ -7,17 +8,28 @@ const GameList = () => {
     const goToVoiceGame = () => {
         navigate('/game/voicegame');
     };
-
     const goToBalanceGame = () => {
         navigate('/game/balancegame');
     };
 
     return (
         <St.GameContainer>
-            <St.GameItem onClick={goToVoiceGame}>발음 게임</St.GameItem>
-            <St.GameItem>타이핑 게임</St.GameItem>
-            <St.GameItem onClick={goToBalanceGame}>밸런스 게임</St.GameItem>
-            <St.GameItem>기억력 게임</St.GameItem>
+            <St.GameItem onClick={goToVoiceGame} $type={'voice'}>
+                <St.GameImage src={icons['voice']} alt="voice" />
+                <St.GameText $isDark={true}>발음 게임</St.GameText>
+            </St.GameItem>
+            <St.GameItem onClick={goToBalanceGame} $type={'balance'}>
+                <St.GameImage src={icons['balanceWhite']} alt="balance" />
+                <St.GameText $isDark={false}>밸런스 게임</St.GameText>
+            </St.GameItem>
+            <St.GameItem $type={'keyboard'}>
+                <St.GameImage src={icons['keyboardWhite']} alt="keyboard" />
+                <St.GameText $isDark={false}>타이핑 게임</St.GameText>
+            </St.GameItem>
+            <St.GameItem $type={'memorize'}>
+                <St.GameImage src={icons['memorize']} alt="memorize" />
+                <St.GameText $isDark={true}>기억력 게임</St.GameText>
+            </St.GameItem>
         </St.GameContainer>
     );
 };

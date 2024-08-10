@@ -1,19 +1,38 @@
+import { useQuery } from '@tanstack/react-query';
 import { useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import RecordRTC from 'recordrtc';
-import { styled } from 'styled-components';
-import { sendVoiceRecord } from '../../services/game';
+import { getTestSentence, sendVoiceRecord } from '../../services/game';
+import useGameStore from '../../stores/useGameStore';
+import { ToastSuccess } from '../_common/alert';
 import VoiceSvgAnimation from '../_common/VoiceSvgAnimation';
 import Button from './../_button/Button';
+import * as St from './VoiceGame.style';
 
 const VoiceGame = () => {
+    const navigate = useNavigate();
+    const { setVoiceGameResult } = useGameStore();
+
     const [isRecording, setIsRecording] = useState(false);
     const [audioBlob, setAudioBlob] = useState(null);
     const [recordingStatus, setRecordingStatus] =
-        useState('녹음을 시작합니다.');
+        useState('버튼을 눌러 녹음을 시작해주세요.');
 
     const audioRef = useRef();
     const recorderRef = useRef(null);
     const streamRef = useRef(null);
+
+    const {
+        data: testSentence,
+        error,
+        isError,
+        isLoading,
+    } = useQuery({
+        queryKey: ['testSentence'],
+        queryFn: () => getTestSentence(),
+        staleTime: 0, // 컴포넌트 마운트 할 때마다 새로 실행
+        cacheTime: 0, // 캐시 비활성화
+    });
 
     const dataURLToBlob = (dataURL) => {
         const binary = atob(dataURL.split(',')[1]);
@@ -30,7 +49,6 @@ const VoiceGame = () => {
             recorderRef.current.stopRecording(() => {
                 recorderRef.current.getDataURL((dataURL) => {
                     const blob = dataURLToBlob(dataURL);
-                    console.log('Blob Type:', blob.type);
                     const audioUrl = URL.createObjectURL(blob);
                     audioRef.current.src = audioUrl;
                     setAudioBlob(blob);
@@ -67,9 +85,9 @@ const VoiceGame = () => {
                     audioRef.current.load();
                 }
             } catch (error) {
-                console.error('Error accessing media devices.', error);
+                console.error('미디어 장치 접속 중 오류 발생: ', error);
                 setIsRecording(false);
-                setRecordingStatus('녹음을 시작합니다.');
+                setRecordingStatus('버튼을 눌러 녹음을 시작해주세요.');
             }
         }
     };
@@ -78,73 +96,45 @@ const VoiceGame = () => {
         if (audioBlob) {
             const formData = new FormData();
             formData.append('file', audioBlob, 'recording.wav');
-            console.log('Sending audio file:', audioBlob);
-
+            formData.append('script', testSentence);
             try {
-                await sendVoiceRecord({ file: formData });
-                console.log('File successfully submitted');
+                ToastSuccess('음성 분석 중입니다.');
+
+                const dataResult = await sendVoiceRecord({ formData });
+                if (dataResult) {
+                    console.log('dataResult ---- 전송 받은 결과', dataResult);
+                    setVoiceGameResult(dataResult);
+                    navigate('/game/voicegame/result');
+                }
             } catch (error) {
-                console.error('Error submitting file:', error);
+                console.error('음성 파일 제출 오류: ', error);
             }
         } else {
-            console.log('No audio file to submit');
+            console.log('전송할 오디오 파일이 없습니다.');
         }
     };
 
     return (
-        <VoiceGameContainer>
-            <Notice>
+        <St.VoiceGameContainer>
+            <St.Notice>
                 <h2>아래의 글을 따라 읽어주세요!</h2>
                 <h4>말술님의 혀가 꼬였는지 저희가 들어볼게요.</h4>
-            </Notice>
-            <TestText>
-                인간의 진정한 모습은{'\n'}술에 취했을 때 드러난다.
-            </TestText>
-            <RecordButton onClick={handleToggleRecording}>
+            </St.Notice>
+            {isLoading ? (
+                <h3>문장을 가져오는 중입니다.</h3>
+            ) : isError ? (
+                <h3>Error: {error.message}</h3>
+            ) : (
+                <St.TestText>{testSentence}</St.TestText>
+            )}
+            <St.RecordButton onClick={handleToggleRecording}>
                 <VoiceSvgAnimation $isRecording={isRecording} />
                 <h3>{recordingStatus}</h3>
-            </RecordButton>
-            <CustomAudio ref={audioRef} controls />
+            </St.RecordButton>
+            <St.CustomAudio ref={audioRef} controls />
             <Button text="제출하기" isRed={true} onClick={handleSubmit} />
-        </VoiceGameContainer>
+        </St.VoiceGameContainer>
     );
 };
 
 export default VoiceGame;
-
-const VoiceGameContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 2rem;
-    padding: 3rem;
-    border-radius: 20px;
-    background-color: var(--color-white2);
-`;
-
-const Notice = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
-`;
-
-const TestText = styled.h2`
-    text-align: center;
-    white-space: pre-line;
-`;
-
-const RecordButton = styled.button`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-    cursor: pointer;
-`;
-
-const CustomAudio = styled.audio`
-    &::-webkit-media-controls-panel {
-        background-color: var(--color-white2);
-        border-radius: 5px;
-    }
-`;
