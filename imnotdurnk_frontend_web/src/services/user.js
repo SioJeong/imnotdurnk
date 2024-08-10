@@ -206,9 +206,11 @@ const logout = async () => {
         };
     }
 };
-const deleteAccount = async () => {
+const deleteAccount = async (passwordForDelete) => {
     try {
-        const response = await api.post(`/users/delete-account`);
+        const response = await api.post(`/users/delete-account`, {
+            password: passwordForDelete,
+        });
 
         const { statusCode, httpStatus } = response.data;
 
@@ -223,7 +225,29 @@ const deleteAccount = async () => {
         };
     }
 };
+
+const changePassword = async (currentPassword, newpassword) => {
+    try {
+        const response = await api.post(`/users/update-password`, {
+            prevPassword: currentPassword,
+            newPassword: newpassword,
+        });
+
+        const { statusCode, httpStatus } = response.data;
+
+        return {
+            isSuccess: statusCode === 200,
+            message: '로그인 성공',
+        };
+    } catch (err) {
+        return {
+            isSuccess: false,
+            message: err.message || '데이터 가져오는 중 오류 발생',
+        };
+    }
+};
 export {
+    changePassword,
     checkCertificationNumber,
     deleteAccount,
     getUser,

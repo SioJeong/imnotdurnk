@@ -3,12 +3,19 @@ import sojuBottleImage from '@/assets/images/sojubottle.webp';
 import MiniButton from '@/components/_button/MiniButton';
 import InputBox from '@/components/_common/InputBox';
 import Modal from '@/components/_modal/Modal';
-import { deleteAccount, getUserProfile, logout } from '@/services/user';
+import {
+    changePassword,
+    deleteAccount,
+    getUserProfile,
+    logout,
+} from '@/services/user';
 import useUserStore from '@/stores/useUserStore';
 import { useEffect, useState } from 'react';
-import { useCookies } from 'react-cookie';
 import { Outlet, Route, Routes, useNavigate } from 'react-router-dom';
 import useModalStore from '../../stores/useModalStore';
+import { ToastError, ToastSuccess } from '../_common/alert';
+import ModalPassword from '../_modal/ModalPassword';
+import ModalPasswordForDeleteAccount from '../_modal/ModalPasswordForDeleteAccount';
 import ModalTextBox from '../_modal/ModalTextBox';
 import * as St from './Profile.style';
 import ProfileCreateAlcoholCapacity from './ProfileCreateAlcoholCapacity';
@@ -40,18 +47,15 @@ const Profile = () => {
         setUser: state.setUser,
     }));
     const navigate = useNavigate();
-    const handlePasswordChange = () => {};
 
-    const [removeCookie] = useCookies(['RefreshToken']);
-
+    // TODO: 배포 상태에서 되는지 확인 필요(로컬은 쿠키가 없어서 불가능.. )
     const handleLogout = async () => {
         const logoutResult = await logout();
         if (logoutResult.isSuccess) {
-            //removeCookie('RefreshToken', { path: '/' });
+            ToastSuccess('로그아웃 되었습니다!', true);
             navigate('/account');
-            console.log('로그아웃 성공');
         } else {
-            console.log('로그아웃 실패');
+            ToastError('로그아웃에 실패하였습니다.', true);
         }
     };
 
@@ -59,19 +63,122 @@ const Profile = () => {
     const closeHandler = (state) => {
         closeModal(state);
     };
+    const onClickPasswordChangeButton = () => {
+        openModal('changePasswordModal');
+    };
+    const [currentPassword, setCurrentPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [newPasswordCheck, setNewPasswordCheck] = useState('');
+    const [alertMessages, setAlertMessages] = useState({
+        newPassword: '', //1.현재 비번이랑 달라야함 2. 8-16자리 대소숫
+        newPasswordCheck: '', // newPassword랑 같아야함
+    });
+    const [isPasswordValid, setIsPasswordValid] = useState(true);
+    const handlePasswordChange = async () => {
+        // 입력된 비밀번호 맞는지 확인
+        // 새 비밀번호
+
+        if (isPasswordValid) {
+            //변경 API 요청
+            const passwordChangeResult = await changePassword(
+                currentPassword,
+                newPassword,
+            );
+            if (passwordChangeResult.isSuccess) {
+                ToastSuccess('비밀번호가 변경되었습니다!', true);
+                closeModal('changePasswordModal');
+                setCurrentPassword('');
+                setNewPassword('');
+                setNewPasswordCheck('');
+                setAlertMessages({
+                    newPassword: '',
+                    newPasswordCheck: '',
+                });
+            } else {
+                ToastError('비밀번호 변경에 실패하였습니다.', true);
+            }
+        }
+    };
+    const validatePassword = (name, value) => {
+        let message = '';
+        const passwordRegex =
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,16}$/;
+
+        // 비밀번호 유효성 검사
+        if (name === 'newPassword') {
+            if (value.length > 0 && !passwordRegex.test(value)) {
+                setIsPasswordValid(false);
+                message =
+                    '비밀번호는 대문자, 소문자, 숫자를 포함하고 8~16자리여야 합니다.';
+            } else if (value === currentPassword) {
+                setIsPasswordValid(false);
+                message =
+                    '이전 비밀번호와 같습니다. 다른 비밀번호를 입력해주세요.';
+            } else {
+                setIsPasswordValid(true);
+            }
+        } else if (name === 'newPasswordCheck') {
+            if (value.length > 0 && value !== newPassword) {
+                setIsPasswordValid(false);
+                message = '새로 입력한 비밀번호와 일치하지 않습니다.';
+            } else {
+                setIsPasswordValid(true);
+            }
+        }
+        return message;
+    };
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        console.log(
+            currentPassword,
+            newPassword,
+            newPasswordCheck,
+            '입력때마다 ',
+            name,
+            value,
+            currentPassword === newPassword,
+        );
+        if (name === 'currentPassword') {
+            setCurrentPassword(value);
+        } else if (name === 'newPassword') {
+            setNewPassword(value);
+        } else if (name === 'newPasswordCheck') {
+            setNewPasswordCheck(value);
+        }
+        const message = validatePassword(name, value);
+        setAlertMessages((prevMessages) => ({
+            ...prevMessages,
+            [name]: message,
+        }));
+    };
+
+    //계정 삭제 관련 함수 모음
+    const [passwordForDelete, setPasswordForDelete] = useState('');
     const onClickDeleteAccountButton = () => {
         openModal('deleteAccountModal');
     };
+    const onClickConfirmDeelteAccountButton = () => {
+        closeModal('deleteAccountModal');
+        openModal('InputPasswordForDeleteAccountModal');
+    };
+    const handleInputChangeForDelete = (e) => {
+        const { name, value } = e.target;
+        console.log('ㅇㅇ', name, value);
+        setPasswordForDelete(value);
+    };
+
     const handleDeleteAccount = async () => {
         //삭제 api -> 성공시 -> account로 이동
-        const deleteAccountResult = await deleteAccount();
+        const deleteAccountResult = await deleteAccount(passwordForDelete);
         if (deleteAccountResult.isSuccess) {
-            console.log('탈퇴 성공');
+            ToastSuccess('탈퇴되었습니다!', true);
+            setPasswordForDelete('');
             navigate('/account');
         } else {
-            console.log('탈티 실패');
+            ToastError('회원 탈퇴에 실패하였습니다.', true);
         }
     };
+    //
     useEffect(() => {
         const fetchUserProfile = async () => {
             try {
@@ -115,7 +222,7 @@ const Profile = () => {
                 <St.InfoContainer>
                     <InputBox
                         labelText="이름"
-                        iconName="empty"
+                        iconName="emptyWhite2"
                         inputType="text"
                         value={inputValues.name}
                         name="name"
@@ -124,7 +231,7 @@ const Profile = () => {
                     />
                     <InputBox
                         labelText="닉네임"
-                        iconName="empty"
+                        iconName="emptyWhite2"
                         inputType="text"
                         value={inputValues.nickname}
                         name="nickname"
@@ -133,7 +240,7 @@ const Profile = () => {
                     />
                     <InputBox
                         labelText="이메일"
-                        iconName="empty"
+                        iconName="emptyWhite2"
                         inputType="email"
                         value={inputValues.email}
                         name="email"
@@ -142,7 +249,7 @@ const Profile = () => {
                     />
                     <InputBox
                         labelText="연락처"
-                        iconName="empty"
+                        iconName="emptyWhite2"
                         inputType="text"
                         value={inputValues.phone}
                         name="phone"
@@ -178,7 +285,7 @@ const Profile = () => {
                     </St.AlcoholCapacityBox>
                     <InputBox
                         labelText="주소"
-                        iconName="empty"
+                        iconName="emptyWhite2"
                         inputType="text"
                         value={inputValues.address}
                         name="address"
@@ -187,7 +294,7 @@ const Profile = () => {
                     />
                     <InputBox
                         labelText="상세 주소"
-                        iconName="empty"
+                        iconName="emptyWhite2"
                         inputType="text"
                         value={inputValues.detailedAddress}
                         name="detailedAddress"
@@ -196,7 +303,7 @@ const Profile = () => {
                     />
                     <InputBox
                         labelText="우편번호"
-                        iconName="empty"
+                        iconName="emptyWhite2"
                         inputType="text"
                         value={inputValues.postalCode}
                         name="postalCode"
@@ -205,7 +312,7 @@ const Profile = () => {
                     />
                     <InputBox
                         labelText="비상 연락망"
-                        iconName="empty"
+                        iconName="emptyWhite2"
                         inputType="text"
                         value={inputValues.emergencyCall}
                         name="emergencyCall"
@@ -230,7 +337,7 @@ const Profile = () => {
                         text="비밀번호 변경"
                         iconname="key"
                         isRed={true}
-                        onClick={handlePasswordChange}
+                        onClick={onClickPasswordChangeButton}
                     />
                 </St.ButtonContainer>
                 <Modal
@@ -239,8 +346,37 @@ const Profile = () => {
                         <ModalTextBox text="회원 정보를 삭제하시겠습니까?" />
                     }
                     buttonText={'탈퇴하기'}
+                    onButtonClick={onClickConfirmDeelteAccountButton}
+                />
+                <Modal
+                    modalId="changePasswordModal"
+                    contents={
+                        <ModalPassword
+                            currentPassword={currentPassword}
+                            newPasswordCheck={newPasswordCheck}
+                            newPassword={newPassword}
+                            handleInputChange={handleInputChange}
+                            alertMessages={alertMessages}
+                        />
+                    }
+                    buttonText={'비밀번호 변경하기'}
                     onButtonClick={() => {
                         closeModal();
+                        handlePasswordChange();
+                    }}
+                />
+                <Modal
+                    modalId="InputPasswordForDeleteAccountModal"
+                    contents={
+                        <ModalPasswordForDeleteAccount
+                            passwordForDelete={passwordForDelete}
+                            handleInputChangeForDelete={
+                                handleInputChangeForDelete
+                            }
+                        />
+                    }
+                    buttonText={'탈퇴하기'}
+                    onButtonClick={() => {
                         handleDeleteAccount();
                     }}
                 />
