@@ -3,7 +3,6 @@ import InputBox from '@/components/_common/InputBox';
 import { putUserDetailedInfo } from '@/services/user.js';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import useMyPageNavigation from '../../hooks/useMyPageNavigation';
 import useModalStore from '../../stores/useModalStore';
 import Modal from '../_modal/Modal';
 import ModalPostalCode from '../_modal/ModalPostalCode';
@@ -29,8 +28,7 @@ const ProfileCreateInfo = () => {
     const checkValidation = () => {
         let isValid = true;
         const nicknameRegex = /^[ㄱ-ㅎㅏ-ㅣ가-힣]{2,10}$/;
-        const phoneRegex = /^010-\d{4}-\d{4}$/;
-
+        const phoneRegex = /^(010|011)-\d{4}-\d{4}$/;
         //닉네임 유효성 검사(한글 2~10자)
         if (
             inputValues.nickname.length !== 0 &&

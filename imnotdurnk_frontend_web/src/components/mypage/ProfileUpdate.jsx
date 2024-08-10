@@ -1,15 +1,15 @@
 import beerBottleImage from '@/assets/images/beerbottle.webp';
 import sojuBottleImage from '@/assets/images/sojubottle.webp';
-import MiniButton from '@/components/_button/MiniButton';
 import InputBox from '@/components/_common/InputBox';
 import Modal from '@/components/_modal/Modal';
 import ModalPostalCode from '@/components/_modal/ModalPostalCode';
-import ModalVoice from '@/components/_modal/ModalVoice';
 import useModalStore from '@/stores/useModalStore';
 import useUserStore from '@/stores/useUserStore';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import ModalAlcohol from '../_modal/ModalAlcohol';
 import * as St from './Profile.style';
+
 const ProfileUpdate = () => {
     const { openModal, closeModal } = useModalStore();
     //모달 열기
@@ -61,7 +61,7 @@ const ProfileUpdate = () => {
     const validateInput = (name, value) => {
         let message = '';
         const nicknameRegex = /^[ㄱ-ㅎㅏ-ㅣ가-힣]{2,10}$/;
-        const phoneRegex = /^010-\d{4}-\d{4}$/;
+        const phoneRegex = /^(010|011)-\d{4}-\d{4}$/;
 
         if (name === 'nickname') {
             if (value.length !== 0 && !nicknameRegex.test(value)) {
@@ -111,48 +111,48 @@ const ProfileUpdate = () => {
     };
 
     // 소주, 맥주 마신 양 선택 모달
-    const [selectedSojuBottleCount, setSelectedSojuBottleCount] = useState(
-        0, // Math.floor(plan.sojuAmount / 8),
-    );
-    const [selectedSojuGlassCount, setSelectedSojuGlassCount] = useState(
-        0,
-        //plan.sojuAmount % 8,
-    );
-    const [selectedBeerBottleCount, setSelectedBeerBottleCount] = useState(
-        0, //   Math.floor(plan.beerAmount / 500),
-    );
-    const [selectedBeerGlassCount, setSelectedBeerGlassCount] = useState(
-        0, //   Math.round((plan.beerAmount % 500) / 355),
-    );
+    // const [selectedSojuBottleCount, setSelectedSojuBottleCount] = useState(
+    //     0, // Math.floor(plan.sojuAmount / 8),
+    // );
+    // const [selectedSojuGlassCount, setSelectedSojuGlassCount] = useState(
+    //     0,
+    //     //plan.sojuAmount % 8,
+    // );
+    // const [selectedBeerBottleCount, setSelectedBeerBottleCount] = useState(
+    //     0, //   Math.floor(plan.beerAmount / 500),
+    // );
+    // const [selectedBeerGlassCount, setSelectedBeerGlassCount] = useState(
+    //     0, //   Math.round((plan.beerAmount % 500) / 355),
+    // );
 
-    const handleSelectedSojuBottleCount = (sojuBottleCount) => {
-        setSelectedSojuBottleCount(sojuBottleCount);
-    };
+    // const handleSelectedSojuBottleCount = (sojuBottleCount) => {
+    //     setSelectedSojuBottleCount(sojuBottleCount);
+    // };
 
-    const handleSelectedSojuGlassCount = (sojuGlassCount) => {
-        setSelectedSojuGlassCount(sojuGlassCount);
-    };
+    // const handleSelectedSojuGlassCount = (sojuGlassCount) => {
+    //     setSelectedSojuGlassCount(sojuGlassCount);
+    // };
 
-    const handleSelectedBeerBottleCount = (beerBottleCount) => {
-        setSelectedBeerBottleCount(beerBottleCount);
-    };
+    // const handleSelectedBeerBottleCount = (beerBottleCount) => {
+    //     setSelectedBeerBottleCount(beerBottleCount);
+    // };
 
-    const handleSelectedBeerGlassCount = (beerGlassCount) => {
-        setSelectedBeerGlassCount(beerGlassCount);
-    };
-    const submitSelectedAlcohol = () => {
-        console.log(
-            selectedSojuBottleCount,
-            selectedSojuGlassCount,
-            selectedBeerGlassCount,
-        );
-        // setPlan({
-        //     sojuAmount: selectedSojuBottleCount * 8 + selectedSojuGlassCount,
-        //     beerAmount:
-        //         selectedBeerBottleCount * 500 + selectedBeerGlassCount * 355,
-        // });
-        closeModal('alcoholModal');
-    };
+    // const handleSelectedBeerGlassCount = (beerGlassCount) => {
+    //     setSelectedBeerGlassCount(beerGlassCount);
+    // };
+    // const submitSelectedAlcohol = () => {
+    //     console.log(
+    //         selectedSojuBottleCount,
+    //         selectedSojuGlassCount,
+    //         selectedBeerGlassCount,
+    //     );
+    //     // setPlan({
+    //     //     sojuAmount: selectedSojuBottleCount * 8 + selectedSojuGlassCount,
+    //     //     beerAmount:
+    //     //         selectedBeerBottleCount * 500 + selectedBeerGlassCount * 355,
+    //     // });
+    //     closeModal('alcoholModal');
+    // };
     useEffect(() => {
         if (user) {
             setInputValues({
@@ -172,7 +172,7 @@ const ProfileUpdate = () => {
                 voice: user.voice || '',
             });
         }
-    }, [user]);
+    }, []);
 
     return (
         <>
@@ -278,31 +278,8 @@ const ProfileUpdate = () => {
                         name="emergencyCall"
                         alertContents={alertMessages.emergencyCall}
                     />
-                    <St.VoiceBox
-                        onClick={(e) => {
-                            openProfileEditModal(e, 'voiceModal');
-                        }}
-                    >
-                        <St.StyledH6>목소리</St.StyledH6>
-                        <St.VoiceButton />
-                    </St.VoiceBox>
                 </St.InfoContainer>
-                <St.ButtonContainer>
-                    <MiniButton text="회원탈퇴" iconname="bin" isRed={false} />
-                    <MiniButton
-                        text="로그아웃"
-                        iconname="signout"
-                        isRed={false}
-                    />
-                    <MiniButton
-                        text="비밀번호 변경"
-                        iconname="key"
-                        isRed={true}
-                        onClick={onClickPasswordChangeButton}
-                    />
-                </St.ButtonContainer>
             </St.ProfileContainer>
-
             <Modal
                 modalId="postalCodeModal"
                 contents={
@@ -313,9 +290,41 @@ const ProfileUpdate = () => {
                 buttonText={'저장하기'}
             />
             <Modal
-                modalId="voiceModal"
-                contents={<ModalVoice />}
+                modalId="alcoholModal"
+                contents={
+                    <div
+                        style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '1.7143rem',
+                        }}
+                    >
+                        <ModalAlcohol
+                            drinkType={'소주'}
+                            selectedSojuBottleCount={selectedSojuBottleCount}
+                            // handleSelectedSojuBottleCount={
+                            //     handleSelectedSojuBottleCount
+                            // }
+                            selectedSojuGlassCount={selectedSojuGlassCount}
+                            // handleSelectedSojuGlassCount={
+                            //     handleSelectedSojuGlassCount
+                            // }
+                        />
+                        <ModalAlcohol
+                            drinkType={'맥주'}
+                            selectedBeerBottleCount={selectedBeerBottleCount}
+                            // handleSelectedBeerBottleCount={
+                            //     handleSelectedBeerBottleCount
+                            // }
+                            selectedBeerGlassCount={selectedBeerGlassCount}
+                            // handleSelectedBeerGlassCount={
+                            //     handleSelectedBeerGlassCount
+                            // }
+                        />
+                    </div>
+                }
                 buttonText={'저장하기'}
+                onButtonClick={submitSelectedAlcohol}
             />
         </>
     );
