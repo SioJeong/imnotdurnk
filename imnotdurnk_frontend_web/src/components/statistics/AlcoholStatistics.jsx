@@ -3,13 +3,8 @@ import { useEffect, useState } from 'react';
 import { Bar, BarChart, ResponsiveContainer, XAxis } from 'recharts';
 import { styled } from 'styled-components';
 import { getAlcoholStaticsticsData } from '../../services/statistics';
-const AlcoholStatistics = () => {
+const AlcoholStatistics = ({ today, formattedDate }) => {
     //날짜 관련 변수- 오늘 통계 불러오기 위한 formattedDate용, 음주량 계산용
-    const today = new Date();
-    const year = today.getFullYear(); // 연도
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const date = String(today.getDate()).padStart(2, '0');
-    const formattedDate = `${year}-${month}-${date}`;
 
     //두번째 통계 탭
     const [activeIndex, setActiveIndex] = useState(2);
@@ -91,16 +86,12 @@ const AlcoholStatistics = () => {
     const [formattedPlanForMonths, setFormattedPlanForMonths] = useState([]);
 
     useEffect(() => {
-        const fetchUserProfile = async () => {
+        const fetchAlcoholStatistics = async () => {
             try {
                 const getStatisticsResult =
                     await getAlcoholStaticsticsData(formattedDate);
 
                 if (getStatisticsResult.isSuccess) {
-                    console.log(
-                        'getStatisticsResult',
-                        getStatisticsResult.data,
-                    );
                     calculateAlcoholStatistics(getStatisticsResult.data);
                     const updatedData = convertFormatOfMonth(
                         getStatisticsResult.data.planForMonths,
@@ -116,7 +107,7 @@ const AlcoholStatistics = () => {
                 console.error('Error fetching user data:', error);
             }
         };
-        fetchUserProfile();
+        fetchAlcoholStatistics();
     }, []);
 
     return (
