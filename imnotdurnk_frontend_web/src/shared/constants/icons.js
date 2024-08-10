@@ -10,6 +10,8 @@ import Check from '../../assets/icons/size_24/Icon-check.svg';
 import Clock from '../../assets/icons/size_24/Icon-clock.svg';
 import Down from '../../assets/icons/size_24/Icon-down.svg';
 import Email from '../../assets/icons/size_24/Icon-email.svg';
+import Empty from '../../assets/icons/size_24/Icon-empty.svg';
+import emptyWhite2 from '../../assets/icons/size_24/Icon-emptywhite2.svg';
 import Health from '../../assets/icons/size_24/Icon-health.svg';
 import Invisible from '../../assets/icons/size_24/Icon-invisible.svg';
 import KeyboardWhite from '../../assets/icons/size_24/Icon-keyboard-white.svg';
@@ -26,7 +28,6 @@ import Profile from '../../assets/icons/size_24/Icon-profile.svg';
 import Title from '../../assets/icons/size_24/Icon-title.svg';
 import Visible from '../../assets/icons/size_24/Icon-visible.svg';
 import Voice from '../../assets/icons/size_24/Icon-voice.svg';
-
 const icons = {
     address: Address,
     backarrow: BackArrow,
@@ -56,6 +57,8 @@ const icons = {
     bin: Bin,
     signout: Signout,
     profile: Profile,
+    empty: Empty,
+    emptyWhite2: emptyWhite2,
 };
 
 export { icons };
