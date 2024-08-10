@@ -1,24 +1,14 @@
 import Button from '@/components/_button/Button';
 import { useState } from 'react';
+import StepperButton from '../_button/StepperButton';
+import Checkbox from '../_common/Checkbox';
 import * as St from './ProfileCreateAlcoholCapacity.style';
 const ProfileCreateAlcoholCapacity = () => {
-    const [inputValues, setInputValues] = useState({
-        nickname: '',
-        postalCode: '',
-        address: '',
-        detailedAdddress: '',
-        passwordCheck: '',
-        emergencyCall: '',
-    });
-    const [alertMessages, setAlertMessages] = useState({
-        nickname: '',
-        postalCode: '',
-        address: '',
-        detailedAdddress: '',
-        passwordCheck: '',
-        emergencyCall: '',
-    });
-    const handleInputChange = (e) => {};
+    const [selectedSojuBottleCount, setSelectedSojuBottleCount] = useState(0);
+    const [selectedSojuGlassCount, setSelectedSojuGlassCount] = useState(0);
+    const [selectedBeerBottleCount, setSelectedBeerBottleCount] = useState(0);
+    const [selectedBeerGlassCount, setSelectedBeerGlassCount] = useState(0);
+
     return (
         <St.ProfileCreateContainer>
             <St.MessageWrapper>
@@ -28,7 +18,80 @@ const ProfileCreateAlcoholCapacity = () => {
                 </St.SubTitle>
             </St.MessageWrapper>
 
-            <St.AlcoholCapacityBox></St.AlcoholCapacityBox>
+            <St.AlcoholCapacityContainer>
+                <St.AlcoholCapacityBox>
+                    <St.AlcoholTitle>
+                        <St.AlcoholText>소주 _병</St.AlcoholText>
+                        <Checkbox
+                            text={'모르겠어요'}
+                            // checked={isUnknown}
+                            // onChange={handleCheckboxChange}
+                        />
+                    </St.AlcoholTitle>
+                    <St.AlcoholInputContainer>
+                        <St.AlcoholInputBox>
+                            <St.AlcoholImage
+                                src={`/src/assets/images/sojubottle.webp`}
+                                alt={`soju bottle image`}
+                            />
+                            <StepperButton
+                                icon1={'minus'}
+                                icon2={'plus'}
+                                // function1={handleGlassDecrement}
+                                // function2={handleGlassIncrement}
+                            />
+                        </St.AlcoholInputBox>
+                        <St.AlcoholInputBox>
+                            <St.AlcoholImage
+                                src={`/src/assets/images/sojuglass.webp`}
+                                alt={`soju glass image`}
+                            />
+                            <StepperButton
+                                icon1={'minus'}
+                                icon2={'plus'}
+                                // function1={handleGlassDecrement}
+                                // function2={handleGlassIncrement}
+                            />
+                        </St.AlcoholInputBox>
+                    </St.AlcoholInputContainer>
+                </St.AlcoholCapacityBox>
+                <St.AlcoholCapacityBox>
+                    <St.AlcoholTitle>
+                        <St.AlcoholText>맥주 _병</St.AlcoholText>
+                        <Checkbox
+                            text={'모르겠어요'}
+                            // checked={isUnknown}
+                            // onChange={handleCheckboxChange}
+                        />
+                    </St.AlcoholTitle>
+                    <St.AlcoholInputContainer>
+                        <St.AlcoholInputBox>
+                            <St.AlcoholImage
+                                src={`/src/assets/images/beerbottle.webp`}
+                                alt={`beer bottle image`}
+                            />
+                            <StepperButton
+                                icon1={'minus'}
+                                icon2={'plus'}
+                                // function1={handleGlassDecrement}
+                                // function2={handleGlassIncrement}
+                            />
+                        </St.AlcoholInputBox>
+                        <St.AlcoholInputBox>
+                            <St.AlcoholImage
+                                src={`/src/assets/images/beerglass.webp`}
+                                alt={`beer glass image`}
+                            />
+                            <StepperButton
+                                icon1={'minus'}
+                                icon2={'plus'}
+                                // function1={handleGlassDecrement}
+                                // function2={handleGlassIncrement}
+                            />
+                        </St.AlcoholInputBox>
+                    </St.AlcoholInputContainer>
+                </St.AlcoholCapacityBox>
+            </St.AlcoholCapacityContainer>
             <St.ButtonBox>
                 <Button text="Skip" size="medium" isRed={false} />
                 <Button text="Next" size="medium" isRed={true} />

@@ -4,6 +4,7 @@ import { putUserDetailedInfo } from '@/services/user.js';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useModalStore from '../../stores/useModalStore';
+import { ToastError, ToastSuccess } from '../_common/alert';
 import Modal from '../_modal/Modal';
 import ModalPostalCode from '../_modal/ModalPostalCode';
 import * as St from './ProfileCreateInfo.style';
@@ -107,16 +108,22 @@ const ProfileCreateInfo = () => {
             address: address,
         }));
     };
-    const onClickNextButton = (e) => {
+    const onClickNextButton = async (e) => {
         e.preventDefault();
         if (checkValidation()) {
-            putUserDetailedInfo(
+            const profileUpdateResult = await putUserDetailedInfo(
                 inputValues.nickname,
                 inputValues.postalCode,
                 inputValues.address,
                 inputValues.detailedAddress,
                 inputValues.emergencyCall,
             );
+            if (profileUpdateResult.isSuccess) {
+                ToastSuccess('프로필 업데이트 성공', true);
+                navigate('/mypage/profile/create/alcohol-capacity');
+            } else {
+                ToastError('프로필 업데이트 실패', true);
+            }
         }
     };
     const onClickSkipButton = () => {

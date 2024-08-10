@@ -18,7 +18,7 @@ const InputBoxContainer = styled.div`
 
     width: ${(props) =>
         props.$size === 'small'
-            ? '9rem'
+            ? '13rem'
             : '100%'}; /* 'small'이 아닐 때 100%로 설정 */
 
     padding: 0.5rem

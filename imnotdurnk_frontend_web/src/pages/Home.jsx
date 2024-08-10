@@ -20,7 +20,7 @@ const Home = () => {
     const goToAccount = () => navigate('/account');
     const goToMyPage = () => navigate('/mypage');
     const goToGame = () => navigate('/game');
-
+    const goToProfileCreate = () => navigate('/mypage/profile/create/info');
     return (
         <div style={{ display: 'flex', flexDirection: 'column' }}>
             <br />
@@ -34,6 +34,11 @@ const Home = () => {
             <br />
             <br />
             <button onClick={goToGame}>게임으로 이동</button>
+            <br />
+            <br />
+            <button onClick={goToProfileCreate}>
+                첫회원 프로필 채우기 이동
+            </button>
         </div>
     );
 };
