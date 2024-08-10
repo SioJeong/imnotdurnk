@@ -2,15 +2,17 @@ import beerBottleImage from '@/assets/images/beerbottle.webp';
 import sojuBottleImage from '@/assets/images/sojubottle.webp';
 import MiniButton from '@/components/_button/MiniButton';
 import InputBox from '@/components/_common/InputBox';
-import { getUserProfile } from '@/services/user';
+import { getUserProfile, logout } from '@/services/user';
 import useUserStore from '@/stores/useUserStore';
 import { useEffect, useState } from 'react';
+import { useCookies } from 'react-cookie';
 import { Outlet, Route, Routes, useNavigate } from 'react-router-dom';
 import * as St from './Profile.style';
 import ProfileCreateAlcoholCapacity from './ProfileCreateAlcoholCapacity';
 import ProfileCreateInfo from './ProfileCreateInfo';
 import ProfileCreateVoice from './ProfileCreateVoice';
 import ProfileUpdate from './ProfileUpdate';
+
 const Profile = () => {
     //입력되는 값
     const [inputValues, setInputValues] = useState({
@@ -35,11 +37,21 @@ const Profile = () => {
         setUser: state.setUser,
     }));
     const navigate = useNavigate();
-    const onClickPasswordChangeButton = () => {
-        navigate('/find-password');
-    };
+    const handlePasswordChange = () => {};
 
-    //getUserProfile();
+    const [removeCookie] = useCookies(['RefreshToken']);
+
+    const handleLogout = async () => {
+        const logoutResult = await logout();
+        if (logoutResult.isSuccess) {
+            //removeCookie('RefreshToken', { path: '/' });
+            navigate('/account');
+            console.log('로그아웃 성공');
+        } else {
+            console.log('로그아웃 실패');
+        }
+    };
+    const handleDeleteAccount = () => {};
     useEffect(() => {
         const fetchUserProfile = async () => {
             try {
@@ -180,23 +192,25 @@ const Profile = () => {
                         readOnly
                         isProfileViewPage={true}
                     />
-                    <St.VoiceBox>
-                        <St.StyledH6>목소리</St.StyledH6>
-                        <St.VoiceButton />
-                    </St.VoiceBox>
                 </St.InfoContainer>
                 <St.ButtonContainer>
-                    <MiniButton text="회원탈퇴" iconname="bin" isRed={false} />
+                    <MiniButton
+                        text="회원탈퇴"
+                        iconname="bin"
+                        isRed={false}
+                        onClick={handleDeleteAccount}
+                    />
                     <MiniButton
                         text="로그아웃"
                         iconname="signout"
                         isRed={false}
+                        onClick={handleLogout}
                     />
                     <MiniButton
                         text="비밀번호 변경"
                         iconname="key"
                         isRed={true}
-                        onClick={onClickPasswordChangeButton}
+                        onClick={handlePasswordChange}
                     />
                 </St.ButtonContainer>
             </St.ProfileContainer>

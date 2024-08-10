@@ -188,11 +188,30 @@ const sendNewPassword = async (email) => {
         };
     }
 };
+
+const logout = async () => {
+    try {
+        const response = await api.post(`/users/logout`);
+
+        const { statusCode, httpStatus } = response.data;
+
+        return {
+            isSuccess: statusCode === 200,
+            message: '로그인 성공',
+        };
+    } catch (err) {
+        return {
+            isSuccess: false,
+            message: err.message || '데이터 가져오는 중 오류 발생',
+        };
+    }
+};
 export {
     checkCertificationNumber,
     getUser,
     getUserProfile,
     login,
+    logout,
     putUserDetailedInfo,
     sendCertificationNumber,
     sendNewPassword,
