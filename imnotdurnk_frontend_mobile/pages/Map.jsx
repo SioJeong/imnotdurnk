@@ -113,10 +113,12 @@ const Map = () => {
                 <SearchBar
                     placeholder={departurePlaceholder}
                     onPress={setDeparture}
+                    zIndex={10}
                 />
                 <SearchBar
                     placeholder="목적지를 입력하세요"
                     onPress={setDestination}
+                    zIndex={9}
                 />
                 <Button
                     text={'경로 검색하기'}
