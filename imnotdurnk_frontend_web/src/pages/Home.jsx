@@ -1,18 +1,20 @@
 import useNavigationStore from '@/stores/useNavigationStore';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { styled } from 'styled-components';
 import useAuthStore from '../stores/useAuthStore';
 
 const Home = () => {
     const setNavigation = useNavigationStore((state) => state.setNavigation);
     const navigate = useNavigate();
     const { accessToken } = useAuthStore();
+
     useEffect(() => {
         setNavigation({
             isVisible: true,
-            icon1: { iconname: 'address' },
+            icon1: { iconname: 'empty' },
             title: 'Home',
-            icon2: { iconname: 'check', isRed: true },
+            icon2: { iconname: 'profile', isRed: false, path: '/mypage' },
         });
     }, [setNavigation]);
 
@@ -20,27 +22,97 @@ const Home = () => {
     const goToAccount = () => navigate('/account');
     const goToMyPage = () => navigate('/mypage');
     const goToGame = () => navigate('/game');
-    const goToProfileCreate = () => navigate('/mypage/profile/create/info');
+    const goToNavigation = () => console.log('앱으로 이동');
+
+    const tabContentsList = [
+        {
+            iconName: 'calendar',
+            text: '음주 기록 캘린더',
+            onClick: goToCalender,
+            backgroundColor: 'var(--color-white2)',
+            fontColor: 'var(--color-green2)',
+        },
+        {
+            iconName: 'minigame',
+            text: '만취 판단 미니 게임',
+            onClick: goToGame,
+            backgroundColor: 'var(--color-red)',
+            fontColor: 'var(--color-white1)',
+        },
+        {
+            iconName: 'location',
+            text: '최소 택시비 길찾기',
+            onClick: goToNavigation,
+            backgroundColor: 'var(--color-white2)',
+            fontColor: 'var(--color-green2)',
+        },
+        {
+            iconName: 'chart',
+            text: '나의 음주 통계',
+            onClick: goToMyPage,
+            backgroundColor: 'var(--color-green2)',
+            fontColor: 'var(--color-white1)',
+        },
+    ];
+
     return (
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <br />
-            <button onClick={goToAccount}>로그인/회원가입 이동</button>
-            <br />
-            <br />
-            <button onClick={goToCalender}>캘린더로 이동</button>
-            <br />
-            <br />
-            <button onClick={goToMyPage}>마이페이지로 이동</button>
-            <br />
-            <br />
-            <button onClick={goToGame}>게임으로 이동</button>
-            <br />
-            <br />
-            <button onClick={goToProfileCreate}>
-                첫회원 프로필 채우기 이동
-            </button>
-        </div>
+        <HomeContainer>
+            <div onClick={goToAccount}> (임시)로그인으로 이동</div>
+            {tabContentsList.map((item, index) => (
+                <HomeBox
+                    key={index}
+                    onClick={item.onClick}
+                    $backgroundColor={item.backgroundColor}
+                >
+                    <StyledImage
+                        src={`/src/assets/images/${item.iconName}.webp`}
+                        alt={item.text}
+                    />
+                    <StyledH3 $fontColor={item.fontColor}>{item.text}</StyledH3>
+                </HomeBox>
+            ))}
+        </HomeContainer>
     );
 };
+
+const HomeContainer = styled.div`
+    display: flex;
+    width: 25.7143rem;
+    height: 38.7143rem;
+    padding: 14px 14px 28px 14px;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.7143rem;
+    flex-shrink: 0;
+    cursor: pointer;
+`;
+
+const HomeBox = styled.div`
+    display: flex;
+    height: 7.6786rem;
+    padding: 0.8571rem 1.7143rem;
+    justify-content: center;
+    align-items: center;
+    gap: 1.4286rem;
+    flex-shrink: 0;
+    align-self: stretch;
+    border-radius: 20px;
+    background: ${(props) => props.$backgroundColor};
+`;
+
+const StyledImage = styled.img`
+    width: 5.2857rem;
+    height: 5.2857rem;
+`;
+
+const StyledH3 = styled.h3`
+    display: flex;
+    width: 11.4286rem;
+    height: 1.7143rem;
+    flex-direction: column;
+    justify-content: center;
+    text-align: right;
+    color: ${(props) => props.$fontColor};
+`;
 
 export default Home;

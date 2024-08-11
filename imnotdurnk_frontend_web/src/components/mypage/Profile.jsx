@@ -256,7 +256,7 @@ const Profile = () => {
                                 <St.Text>
                                     {inputValues.sojuUnsure
                                         ? '모름'
-                                        : `${inputValues.sojuCapacity} 병`}
+                                        : `${Math.floor((inputValues.sojuCapacity / 8) * 10) / 10} 병`}
                                 </St.Text>
                             </St.SojuBox>
                             <St.BeerBox>
@@ -267,7 +267,7 @@ const Profile = () => {
                                 <St.Text>
                                     {inputValues.beerUnsure
                                         ? `모름`
-                                        : `${inputValues.beerCapacity} 병`}
+                                        : `${Math.floor((inputValues.beerCapacity / 500) * 10) / 10} 병`}
                                 </St.Text>
                             </St.BeerBox>
                         </St.AlcolBox>

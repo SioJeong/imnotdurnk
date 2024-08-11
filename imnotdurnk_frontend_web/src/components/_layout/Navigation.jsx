@@ -18,12 +18,15 @@ const Navigation = () => {
         resetPlanDetail,
         editPlan,
     } = useCalendarStore();
-    const { tmpUser, user, setUser, isValid } = useUserStore((state) => ({
-        user: state.user,
-        setUser: state.setUser,
-        tmpUser: state.tmpUser,
-        isValid: state.isValid,
-    }));
+    const { tmpUser, user, setUser, isValid, setUserFromTmp } = useUserStore(
+        (state) => ({
+            user: state.user,
+            setUser: state.setUser,
+            tmpUser: state.tmpUser,
+            isValid: state.isValid,
+            setUserFromTmp: state.setUserFromTmp,
+        }),
+    );
     const navigate = useNavigate();
     const location = useLocation();
     const queryClient = useQueryClient();
@@ -79,24 +82,27 @@ const Navigation = () => {
             console.log(isValid, '프로필 업데잍확인', tmpUser);
             if (isValid) {
                 // 프로필 변경 api
-                const profileUpdateResult = await putUserDetailedInfo(
-                    tmpUser.nickname,
-                    tmpUser.postalCode,
-                    tmpUser.address,
-                    tmpUser.detailedAddress,
-                    tmpUser.emergencyCall,
-                    tmpUser.phone,
-                    tmpUser.beerCapacity,
-                    tmpUser.sojuCapacity,
-                    //tmpUser.sojuUnsure,
-                    //tmpUser.beerUnsure,
-                );
-                // User 전역 상태 변경
-
-                // tmpUser 값 다 지우기
-
-                //ToastSuccess('프로필을 변경했습니다', true);
-                //navigate('/profile');
+                const profileUpdateResult = await putUserDetailedInfo({
+                    nickname: tmpUser.nickname,
+                    postalCode: tmpUser.postalCode,
+                    address: tmpUser.address,
+                    detailedAddress: tmpUser.detailedAddress,
+                    emergencyCall: tmpUser.emergencyCall,
+                    phone: tmpUser.phone,
+                    beerCapacity: tmpUser.beerCapacity,
+                    sojuCapacity: tmpUser.sojuCapacity,
+                    sojuUnsure: tmpUser.sojuUnsure,
+                    beerUnsure: tmpUser.beerUnsure,
+                });
+                if (profileUpdateResult.isSuccess) {
+                    console.log('성공', tmpUser);
+                    // tmpUser값으로  User 변경 tmpUser 값 다 지우기
+                    setUserFromTmp();
+                    ToastSuccess('프로필을 변경했습니다', true);
+                    navigate('/mypage/profile');
+                } else {
+                    console.log('실패');
+                }
             } else {
                 ToastError('프로필 변경에 실패했습니다', true);
             }
