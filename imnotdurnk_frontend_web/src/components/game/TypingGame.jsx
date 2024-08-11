@@ -97,7 +97,6 @@ const TypingGame = () => {
             setTestText(getTestTextResult);
         };
         getTestText();
-        console.log('Opening modal');
         openModal(modalId);
     }, [openModal]);
 
