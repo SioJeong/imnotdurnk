@@ -3,10 +3,10 @@ import Checkbox from '@/components/_common/Checkbox';
 import InputBox from '@/components/_common/InputBox';
 import useUserStore from '@/stores/useUserStore';
 import { useEffect, useState } from 'react';
+import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
 import { ToastWarning } from '../_common/alert';
 import * as St from './Signup.style';
-
 const Signup = () => {
     const { user, setUser } = useUserStore((state) => ({
         user: state.user,
@@ -42,7 +42,7 @@ const Signup = () => {
         });
     }, [user]);
     const navigate = useNavigate();
-
+    const [cookies, setCookie, removeCookie] = useCookies(['isNewUser']);
     //전역상태로 저장
     const handleSignup = async () => {
         setUser({
@@ -53,6 +53,7 @@ const Signup = () => {
             passwordCheck: inputValues.passwordCheck,
             agreeCheckBox: inputValues.agreeCheckBox,
         });
+        setCookie('isNewUser', true, { path: '/' });
         navigate('/check-email');
     };
 

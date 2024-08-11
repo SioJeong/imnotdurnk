@@ -15,7 +15,10 @@ const Login = () => {
         password: '',
         isEmailSaved: false,
     });
-    const [cookies, setCookie, removeCookie] = useCookies(['rememberUserId']);
+    const [cookies, setCookie, removeCookie] = useCookies([
+        'rememberUserId',
+        'isNewUser',
+    ]);
 
     const [alertMessages, setAlertMessages] = useState({
         email: '', //'올바른 이메일 양식이 아닙니다.',
@@ -42,9 +45,12 @@ const Login = () => {
                 // 이메일 저장 체크가 해제된 경우 쿠키 제거
                 removeCookie('rememberUserId');
             }
-            // 임시로 mypage로 이동 추후에는 /home으로 변경 필요
-
-            navigate('/');
+            // isNewUser 쿠기가 true면 mypage/profile/create/info로 이동
+            if (cookies.isNewUser) {
+                navigate('/mypage/profile/create/info');
+            } else {
+                navigate('/');
+            }
         } else {
             // TODO: 임의로 Error 넣어두긴 했는데, 이메일/비번 틀린 경우 분기 하실 거면 추가하심 좋을 것 같습니다 !
             ToastError('로그인 정보가 틀렸습니다.', false);
