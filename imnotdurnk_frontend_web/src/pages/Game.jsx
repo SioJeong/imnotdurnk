@@ -1,11 +1,11 @@
+import AddGameToPlan from '@/components/game/AddGameToPlan';
+import BalanceGame from '@/components/game/BalanceGame';
+import GameList from '@/components/game/GameList';
+import TypingGame from '@/components/game/TypingGame';
+import VoiceGame from '@/components/game/VoiceGame';
+import VoiceGameResult from '@/components/game/VoiceGameResult';
+import useGameNavigation from '@/hooks/useGameNavigation';
 import { Route, Routes } from 'react-router-dom';
-import AddGameToPlan from '../components/game/AddGameToPlan';
-import BalanceGame from '../components/game/BalanceGame';
-import GameList from '../components/game/GameList';
-import VoiceGame from '../components/game/VoiceGame';
-import VoiceGameResult from '../components/game/VoiceGameResult';
-import useGameNavigation from '../hooks/useGameNavigation';
-
 const Game = () => {
     useGameNavigation();
 
@@ -19,6 +19,7 @@ const Game = () => {
                 element={<AddGameToPlan />}
             />
             <Route path="/balancegame" element={<BalanceGame />} />
+            <Route path="/typinggame" element={<TypingGame />} />
         </Routes>
     );
 };
