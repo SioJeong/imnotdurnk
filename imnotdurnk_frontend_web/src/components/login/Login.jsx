@@ -48,6 +48,7 @@ const Login = () => {
             // isNewUser 쿠기가 true면 mypage/profile/create/info로 이동
             if (cookies.isNewUser) {
                 navigate('/mypage/profile/create/info');
+                removeCookie('isNewUser');
             } else {
                 navigate('/');
             }

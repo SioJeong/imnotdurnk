@@ -197,7 +197,6 @@ const Profile = () => {
                     });
                     //  전역상태로 저장
                     setUser(getProfileResult.data);
-                    console.log('get', getProfileResult.data);
                 }
             } catch (error) {
                 console.error('Error fetching user data:', error);

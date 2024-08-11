@@ -78,3 +78,7 @@ export const ButtonBox = styled.div`
     align-items: center;
     align-self: stretch;
 `;
+export const H6 = styled.h6`
+    width: 100%;
+    text-align: left;
+`;

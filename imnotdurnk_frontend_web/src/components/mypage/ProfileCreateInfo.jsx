@@ -111,13 +111,13 @@ const ProfileCreateInfo = () => {
     const onClickNextButton = async (e) => {
         e.preventDefault();
         if (checkValidation()) {
-            const profileUpdateResult = await putUserDetailedInfo(
-                inputValues.nickname,
-                inputValues.postalCode,
-                inputValues.address,
-                inputValues.detailedAddress,
-                inputValues.emergencyCall,
-            );
+            const profileUpdateResult = await putUserDetailedInfo({
+                nickname: inputValues.nickname,
+                postalCode: inputValues.postalCode,
+                address: inputValues.address,
+                detailedAddress: inputValues.detailedAddress,
+                emergencyCall: inputValues.emergencyCall,
+            });
             if (profileUpdateResult.isSuccess) {
                 ToastSuccess('프로필 업데이트 성공', true);
                 navigate('/mypage/profile/create/alcohol-capacity');

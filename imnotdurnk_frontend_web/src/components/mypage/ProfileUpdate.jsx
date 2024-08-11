@@ -168,7 +168,6 @@ const ProfileUpdate = () => {
                 beerUnsure: user.beerUnsure || false,
             });
         }
-        console.log('user', user);
     }, []);
     // inputValues 변경 시 tmpUser 업데이트
     useEffect(() => {

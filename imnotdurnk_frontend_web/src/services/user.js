@@ -106,36 +106,11 @@ const checkCertificationNumber = async (email, inputCertNum) => {
     }
 };
 //유저 추가 정보 저장
-const putUserDetailedInfo = async (
-    nickname,
-    postalCode,
-    address,
-    detailedAddress,
-    emergencyCall,
-    name,
-    phone,
-    beerCapacity,
-    sojuCapacity,
-    sojuUnsure,
-    beerUnsure,
-) => {
+const putUserDetailedInfo = async (editProfile) => {
     try {
-        const response = await api.put(`/users/profile`, {
-            nickname: nickname,
-            postalCode: postalCode,
-            address: address,
-            detailedAddress: detailedAddress,
-            emergencyCall: emergencyCall,
-            name: name,
-            phone: phone,
-            beerCapacity: beerCapacity,
-            sojuCapacity: sojuCapacity,
-            sojuUnsure: sojuUnsure,
-            beerUnsure: beerUnsure,
-        });
+        const response = await api.put(`/users/profile`, editProfile);
         const { statusCode, httpStatus, message } = response.data;
         // apiErrorHandler(statusCode, httpStatus, message);
-        console.log('웨안돼', response);
         return {
             isSuccess: statusCode === 200,
             message: '프로필 업데이트 성공',
