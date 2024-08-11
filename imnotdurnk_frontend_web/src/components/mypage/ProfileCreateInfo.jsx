@@ -3,8 +3,8 @@ import InputBox from '@/components/_common/InputBox';
 import { putUserDetailedInfo } from '@/services/user.js';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import useMyPageNavigation from '../../hooks/useMyPageNavigation';
 import useModalStore from '../../stores/useModalStore';
-import { ToastError, ToastSuccess } from '../_common/alert';
 import Modal from '../_modal/Modal';
 import ModalPostalCode from '../_modal/ModalPostalCode';
 import * as St from './ProfileCreateInfo.style';
@@ -29,7 +29,8 @@ const ProfileCreateInfo = () => {
     const checkValidation = () => {
         let isValid = true;
         const nicknameRegex = /^[ㄱ-ㅎㅏ-ㅣ가-힣]{2,10}$/;
-        const phoneRegex = /^(010|011)-\d{4}-\d{4}$/;
+        const phoneRegex = /^010-\d{4}-\d{4}$/;
+
         //닉네임 유효성 검사(한글 2~10자)
         if (
             inputValues.nickname.length !== 0 &&
@@ -108,22 +109,16 @@ const ProfileCreateInfo = () => {
             address: address,
         }));
     };
-    const onClickNextButton = async (e) => {
+    const onClickNextButton = (e) => {
         e.preventDefault();
         if (checkValidation()) {
-            const profileUpdateResult = await putUserDetailedInfo({
-                nickname: inputValues.nickname,
-                postalCode: inputValues.postalCode,
-                address: inputValues.address,
-                detailedAddress: inputValues.detailedAddress,
-                emergencyCall: inputValues.emergencyCall,
-            });
-            if (profileUpdateResult.isSuccess) {
-                ToastSuccess('프로필 업데이트 성공', true);
-                navigate('/mypage/profile/create/alcohol-capacity');
-            } else {
-                ToastError('프로필 업데이트 실패', true);
-            }
+            putUserDetailedInfo(
+                inputValues.nickname,
+                inputValues.postalCode,
+                inputValues.address,
+                inputValues.detailedAddress,
+                inputValues.emergencyCall,
+            );
         }
     };
     const onClickSkipButton = () => {
