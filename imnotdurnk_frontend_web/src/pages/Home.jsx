@@ -14,7 +14,11 @@ const Home = () => {
             isVisible: true,
             icon1: { iconname: 'empty' },
             title: 'Home',
-            icon2: { iconname: 'profile', isRed: false, path: '/mypage' },
+            icon2: {
+                iconname: 'profile',
+                isRed: false,
+                path: '/mypage/profile',
+            },
         });
     }, [setNavigation]);
 

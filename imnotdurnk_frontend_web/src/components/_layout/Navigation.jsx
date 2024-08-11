@@ -79,7 +79,6 @@ const Navigation = () => {
                 navigate(`/calendar/${date}/plan/${planId}`); // 일정 상세 페이지로 이동
             }
         } else if (path === 'updateProfile') {
-            console.log(isValid, '프로필 업데잍확인', tmpUser);
             if (isValid) {
                 // 프로필 변경 api
                 const profileUpdateResult = await putUserDetailedInfo({
@@ -95,13 +94,12 @@ const Navigation = () => {
                     beerUnsure: tmpUser.beerUnsure,
                 });
                 if (profileUpdateResult.isSuccess) {
-                    console.log('성공', tmpUser);
                     // tmpUser값으로  User 변경 tmpUser 값 다 지우기
                     setUserFromTmp();
                     ToastSuccess('프로필을 변경했습니다', true);
                     navigate('/mypage/profile');
                 } else {
-                    console.log('실패');
+                    ToastError('프로필 업데이트를 실패했습니다.', true);
                 }
             } else {
                 ToastError('프로필 변경에 실패했습니다', true);

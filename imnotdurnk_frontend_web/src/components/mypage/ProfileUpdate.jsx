@@ -7,6 +7,7 @@ import useModalStore from '@/stores/useModalStore';
 import useUserStore from '@/stores/useUserStore';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import ModalEditDrinkingCapacity from '../_modal/ModalEditDrinkingCapacity';
 import * as St from './Profile.style';
 
 const ProfileUpdate = () => {
@@ -46,34 +47,68 @@ const ProfileUpdate = () => {
         }),
     );
 
-    // TODO : 무한루프 발생. .
-    // const [selectedSojuBottleCount, setSelectedSojuBottleCount] = useState(
-    //     Math.floor(user.sojuAmount / 8) || 0,
-    // );
-    // const [selectedSojuGlassCount, setSelectedSojuGlassCount] = useState(
-    //     user.sojuAmount % 8 || 0,
-    // );
-    // const [selectedBeerBottleCount, setSelectedBeerBottleCount] = useState(
-    //     Math.floor(user.beerAmount / 500) || 0,
-    // );
-    // const [selectedBeerGlassCount, setSelectedBeerGlassCount] = useState(
-    //     Math.round((user.beerAmount % 500) / 355) || 0,
-    // );
-    // const handleSelectedSojuBottleCount = (sojuBottleCount) => {
-    //     setSelectedSojuBottleCount(sojuBottleCount);
-    // };
+    // TODO : alcoholModal용
+    const [selectedSojuBottleCount, setSelectedSojuBottleCount] = useState(0);
+    const [selectedSojuGlassCount, setSelectedSojuGlassCount] = useState(0);
+    const [selectedBeerBottleCount, setSelectedBeerBottleCount] = useState(0);
+    const [selectedBeerGlassCount, setSelectedBeerGlassCount] = useState(0);
+    const toggleSojuUnsure = () => {
+        setInputValues((prevValues) => ({
+            ...prevValues, // 현재 상태를 유지
+            sojuUnsure: !prevValues.sojuUnsure,
+        }));
+    };
+    const toggleBeerUnsure = () => {
+        setInputValues((prevValues) => ({
+            ...prevValues, // 현재 상태를 유지
+            beerUnsure: !prevValues.beerUnsure,
+        }));
+    };
+    const handleModalEditDrinkingCapacity = () => {
+        console.log(
+            '결과는?',
+            selectedBeerBottleCount,
+            selectedBeerGlassCount,
+            selectedSojuBottleCount,
+            selectedSojuGlassCount,
+        );
+        console.log(
+            '잔단위로 계산 값',
+            selectedBeerBottleCount * 500 + selectedBeerGlassCount * 355,
+        );
+        console.log(
+            '잔단위로 계산 값',
+            selectedSojuBottleCount * 8 + selectedSojuGlassCount,
+        );
+        if (!inputValues.beerUnsure) {
+            setInputValues((prevValues) => ({
+                ...prevValues, // 현재 상태를 유지
+                beerCapacity:
+                    selectedBeerBottleCount * 500 +
+                    selectedBeerGlassCount * 355,
+            }));
+        } else {
+            setInputValues((prevValues) => ({
+                ...prevValues, // 현재 상태를 유지
+                beerCapacity: 0,
+            }));
+        }
+        if (!inputValues.sojuUnsure) {
+            setInputValues((prevValues) => ({
+                ...prevValues, // 현재 상태를 유지
+                sojuCapacity:
+                    selectedSojuBottleCount * 8 + selectedSojuGlassCount,
+            }));
+        } else {
+            setInputValues((prevValues) => ({
+                ...prevValues, // 현재 상태를 유지
+                sojuCapacity: 0,
+            }));
+        }
+        closeModal('alcoholModal');
+    };
 
-    // const handleSelectedSojuGlassCount = (sojuGlassCount) => {
-    //     setSelectedSojuGlassCount(sojuGlassCount);
-    // };
-
-    // const handleSelectedBeerBottleCount = (beerBottleCount) => {
-    //     setSelectedBeerBottleCount(beerBottleCount);
-    // };
-
-    // const handleSelectedBeerGlassCount = (beerGlassCount) => {
-    //     setSelectedBeerGlassCount(beerGlassCount);
-    // };
+    //
     const navigate = useNavigate();
 
     const formatPhoneNumber = (value) => {
@@ -150,7 +185,6 @@ const ProfileUpdate = () => {
     };
 
     useEffect(() => {
-        console.log(user, '확인좀');
         if (user) {
             setInputValues({
                 name: user.name || '',
@@ -168,9 +202,14 @@ const ProfileUpdate = () => {
                 sojuUnsure: user.sojuUnsure || false,
                 beerUnsure: user.beerUnsure || false,
             });
+            setSelectedBeerBottleCount(user.beerCapacity / 500);
+            setSelectedBeerGlassCount((user.beerCapacity % 500) / 355);
+            setSelectedSojuBottleCount(user.sojuCapacity / 8);
+            setSelectedSojuGlassCount(user.sojuCapacity % 8);
         }
     }, []);
-    // inputValues 변경 시 tmpUser 업데이트
+
+    // inputValues 변경 시 tmpUser 업데이트(추후 API 요청시 tmpUser 데이터로 진행)
     useEffect(() => {
         setTmpUser(inputValues);
     }, [inputValues, setTmpUser]);
@@ -300,48 +339,27 @@ const ProfileUpdate = () => {
                 }
                 buttonText={'저장하기'}
             />
-            {/* <Modal
+            <Modal
                 modalId="alcoholModal"
                 contents={
-                    <div
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: '1.7143rem',
-                        }}
-                    >
-                        <ModalAlcohol
-                            drinkType={'소주'}
-                            selectedSojuBottleCount={selectedSojuBottleCount}
-                            handleSelectedSojuBottleCount={
-                                handleSelectedSojuBottleCount
-                            }
-                            selectedSojuGlassCount={selectedSojuGlassCount}
-                            handleSelectedSojuGlassCount={
-                                handleSelectedSojuGlassCount
-                            }
-                        />
-                        <ModalAlcohol
-                            drinkType={'맥주'}
-                            selectedBeerBottleCount={selectedBeerBottleCount}
-                            handleSelectedBeerBottleCount={
-                                handleSelectedBeerBottleCount
-                            }
-                            selectedBeerGlassCount={selectedBeerGlassCount}
-                            handleSelectedBeerGlassCount={
-                                handleSelectedBeerGlassCount
-                            }
-                        />
-                    </div>
+                    <ModalEditDrinkingCapacity
+                        selectedSojuBottleCount={selectedSojuBottleCount}
+                        setSelectedSojuBottleCount={setSelectedSojuBottleCount}
+                        selectedSojuGlassCount={selectedSojuGlassCount}
+                        setSelectedSojuGlassCount={setSelectedSojuGlassCount}
+                        selectedBeerBottleCount={selectedBeerBottleCount}
+                        setSelectedBeerBottleCount={setSelectedBeerBottleCount}
+                        selectedBeerGlassCount={selectedBeerGlassCount}
+                        setSelectedBeerGlassCount={setSelectedBeerGlassCount}
+                        toggleSojuUnsure={toggleSojuUnsure}
+                        toggleBeerUnsure={toggleBeerUnsure}
+                        sojuUnsure={inputValues.sojuUnsure}
+                        beerUnsure={inputValues.beerUnsure}
+                    />
                 }
                 buttonText={'저장하기'}
-                // onButtonClick={console.log(
-                //     selectedSojuBottleCount,
-                //     selectedSojuGlassCount,
-                //     selectedBeerBottleCount,
-                //     selectedBeerGlassCount,
-                // )}
-            /> */}
+                onButtonClick={handleModalEditDrinkingCapacity}
+            />
         </>
     );
 };
