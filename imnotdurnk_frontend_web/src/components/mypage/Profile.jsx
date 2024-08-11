@@ -1,5 +1,5 @@
-import miniBeerBottleImage from '@/assets/images/mini-beer-bottle.webp';
-import miniSojuBottleImage from '@/assets/images/mini-soju-bottle.webp';
+import beerBottleImage from '@/assets/images/beerbottle.webp';
+import sojuBottleImage from '@/assets/images/sojubottle.webp';
 import MiniButton from '@/components/_button/MiniButton';
 import InputBox from '@/components/_common/InputBox';
 import Modal from '@/components/_modal/Modal';
@@ -20,6 +20,7 @@ import ModalTextBox from '../_modal/ModalTextBox';
 import * as St from './Profile.style';
 import ProfileCreateAlcoholCapacity from './ProfileCreateAlcoholCapacity';
 import ProfileCreateInfo from './ProfileCreateInfo';
+import ProfileCreateVoice from './ProfileCreateVoice';
 import ProfileUpdate from './ProfileUpdate';
 
 const Profile = () => {
@@ -37,8 +38,8 @@ const Profile = () => {
         sojuCapacity: 0,
         latitude: '',
         longitude: '',
-        sojuUnsure: false,
-        beerUnsure: false,
+        unsure: true,
+        voice: '',
     });
     //전역으로 저장되는 값
     const { user, setUser } = useUserStore((state) => ({
@@ -148,7 +149,7 @@ const Profile = () => {
     const onClickDeleteAccountButton = () => {
         openModal('deleteAccountModal');
     };
-    const onClickConfirmDeleteAccountButton = () => {
+    const onClickConfirmDeelteAccountButton = () => {
         closeModal('deleteAccountModal');
         openModal('InputPasswordForDeleteAccountModal');
     };
@@ -191,8 +192,9 @@ const Profile = () => {
                         sojuCapacity: getProfileResult.data.sojuCapacity || 0,
                         latitude: getProfileResult.data.latitude || '',
                         longitude: getProfileResult.data.longitude || '',
-                        sojuUnsure: getProfileResult.data.sojuUnsure,
-                        beerUnsure: getProfileResult.data.beerUnsure,
+                        unsure: !getProfileResult.data.unsure
+                            ? getProfileResult.data.unsure
+                            : true,
                         voice: getProfileResult.data.voice || '',
                     });
                     //  전역상태로 저장
@@ -250,24 +252,24 @@ const Profile = () => {
                         <St.AlcolBox>
                             <St.SojuBox>
                                 <St.StyledStepperImage
-                                    src={miniSojuBottleImage}
+                                    src={sojuBottleImage}
                                     alt={`so`}
                                 />
                                 <St.Text>
-                                    {inputValues.sojuUnsure
-                                        ? '모름'
-                                        : `${Math.floor((inputValues.sojuCapacity / 8) * 10) / 10} 병`}
+                                    {inputValues.unsure
+                                        ? `모름`
+                                        : `${inputValues.sojuCapacity} 병`}
                                 </St.Text>
                             </St.SojuBox>
                             <St.BeerBox>
                                 <St.StyledStepperImage
-                                    src={miniBeerBottleImage}
+                                    src={beerBottleImage}
                                     alt={`be`}
                                 />
                                 <St.Text>
-                                    {inputValues.beerUnsure
+                                    {inputValues.unsure
                                         ? `모름`
-                                        : `${Math.floor((inputValues.beerCapacity / 500) * 10) / 10} 병`}
+                                        : `${inputValues.beerCapacity} 병`}
                                 </St.Text>
                             </St.BeerBox>
                         </St.AlcolBox>
@@ -335,7 +337,7 @@ const Profile = () => {
                         <ModalTextBox text="회원 정보를 삭제하시겠습니까?" />
                     }
                     buttonText={'탈퇴하기'}
-                    onButtonClick={onClickConfirmDeleteAccountButton}
+                    onButtonClick={onClickConfirmDeelteAccountButton}
                 />
                 <Modal
                     modalId="changePasswordModal"
@@ -378,6 +380,7 @@ const Profile = () => {
                         path="alcohol-capacity"
                         element={<ProfileCreateAlcoholCapacity />}
                     />
+                    <Route path="voice" element={<ProfileCreateVoice />} />
                 </Route>
                 {/* /update 경로 */}
                 <Route path="update" element={<ProfileUpdate />} />

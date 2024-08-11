@@ -16,14 +16,14 @@ const useMyPageNavigation = () => {
                 isVisible: true,
                 icon1: { iconname: 'address', path: '/' },
                 title: '통계',
-                icon2: { iconname: 'profile', path: '/mypage/profile' },
+                icon2: { iconname: 'profile', path: 'mypage/profile' },
             });
         } else if (path === '/mypage/profile') {
             setNavigation({
                 isVisible: true,
-                icon1: { iconname: 'backarrow', path: '/mypage' },
+                icon1: { iconname: 'backarrow', path: '/' },
                 title: '프로필',
-                icon2: { iconname: 'modify', path: '/mypage/profile/update' },
+                icon2: { iconname: 'modify', path: 'mypage/profile/update' },
             });
         } else if (path.startsWith('/mypage/profile/create/')) {
             setNavigation({

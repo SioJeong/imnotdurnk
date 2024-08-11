@@ -14,13 +14,15 @@ const useUserStore = create((set) => ({
         sojuCapacity: 0,
         latitude: '',
         longitude: '',
-        sojuUnsure: false,
-        beerUnsure: false,
+        unsure: true,
         voice: '',
     },
     setUser: (newUser) =>
         set((state) => ({ user: { ...state.user, ...newUser } })),
     tmpUser: {
+        isValid: true,
+        //유효성 검사 통과된건 tmpUser에 저장하고 isAvaiable=true로 바꿈
+        //그 후 전역상태,api 모두 프로필이 업데이트되면 true로 바꾸고, 모든 값 비움
         name: '',
         nickname: '',
         email: '',
@@ -33,35 +35,11 @@ const useUserStore = create((set) => ({
         sojuCapacity: 0,
         latitude: '',
         longitude: '',
-        sojuUnsure: false,
-        beerUnsure: false,
+        unsure: true,
         voice: '',
     },
     setTmpUser: (newTmpUser) =>
         set((state) => ({ tmpUser: { ...state.tmpUser, ...newTmpUser } })),
-    setUserFromTmp: () =>
-        set((state) => ({
-            user: { ...state.user, ...state.tmpUser },
-            tmpUser: {
-                name: '',
-                nickname: '',
-                email: '',
-                phone: '',
-                address: '',
-                detailedAddress: '',
-                postalCode: '',
-                emergencyCall: '',
-                beerCapacity: 0,
-                sojuCapacity: 0,
-                latitude: '',
-                longitude: '',
-                sojuUnsure: false,
-                beerUnsure: false,
-                voice: '',
-            },
-        })),
-    isValid: true, // profileUpdate 페이지의 유효성 검사
-    setIsValid: (newIsValid) => set({ isValid: newIsValid }),
 }));
 
 export default useUserStore;

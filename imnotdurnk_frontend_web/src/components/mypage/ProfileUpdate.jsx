@@ -1,15 +1,15 @@
 import beerBottleImage from '@/assets/images/beerbottle.webp';
 import sojuBottleImage from '@/assets/images/sojubottle.webp';
+import MiniButton from '@/components/_button/MiniButton';
 import InputBox from '@/components/_common/InputBox';
 import Modal from '@/components/_modal/Modal';
 import ModalPostalCode from '@/components/_modal/ModalPostalCode';
+import ModalVoice from '@/components/_modal/ModalVoice';
 import useModalStore from '@/stores/useModalStore';
 import useUserStore from '@/stores/useUserStore';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import ModalEditDrinkingCapacity from '../_modal/ModalEditDrinkingCapacity';
 import * as St from './Profile.style';
-
 const ProfileUpdate = () => {
     const { openModal, closeModal } = useModalStore();
     //모달 열기
@@ -26,91 +26,27 @@ const ProfileUpdate = () => {
         detailedAddress: '',
         postalCode: '',
         emergencyCall: '',
+        beerCapacity: 0,
+        sojuCapacity: 0,
         latitude: '',
         longitude: '',
-        sojuUnsure: false,
-        beerUnsure: false,
+        unsure: true,
+        voice: '',
     });
     const [alertMessages, setAlertMessages] = useState({
         nickname: '', // 2~10자 한글만 가능
         phone: '',
         emergencyCall: '', //유효한 번호 형식이 아닙니다.
     });
-
-    const { user, setTmpUser, tmpUser, isValid, setIsValid } = useUserStore(
-        (state) => ({
-            user: state.user,
-            setTmpUser: state.setTmpUser,
-            tmpUser: state.tmpUser,
-            isValid: state.isValid,
-            setIsValid: state.setIsValid,
-        }),
-    );
-
-    // TODO : alcoholModal용
-    const [selectedSojuBottleCount, setSelectedSojuBottleCount] = useState(0);
-    const [selectedSojuGlassCount, setSelectedSojuGlassCount] = useState(0);
-    const [selectedBeerBottleCount, setSelectedBeerBottleCount] = useState(0);
-    const [selectedBeerGlassCount, setSelectedBeerGlassCount] = useState(0);
-    const toggleSojuUnsure = () => {
-        setInputValues((prevValues) => ({
-            ...prevValues, // 현재 상태를 유지
-            sojuUnsure: !prevValues.sojuUnsure,
-        }));
-    };
-    const toggleBeerUnsure = () => {
-        setInputValues((prevValues) => ({
-            ...prevValues, // 현재 상태를 유지
-            beerUnsure: !prevValues.beerUnsure,
-        }));
-    };
-    const handleModalEditDrinkingCapacity = () => {
-        console.log(
-            '결과는?',
-            selectedBeerBottleCount,
-            selectedBeerGlassCount,
-            selectedSojuBottleCount,
-            selectedSojuGlassCount,
-        );
-        console.log(
-            '잔단위로 계산 값',
-            selectedBeerBottleCount * 500 + selectedBeerGlassCount * 355,
-        );
-        console.log(
-            '잔단위로 계산 값',
-            selectedSojuBottleCount * 8 + selectedSojuGlassCount,
-        );
-        if (!inputValues.beerUnsure) {
-            setInputValues((prevValues) => ({
-                ...prevValues, // 현재 상태를 유지
-                beerCapacity:
-                    selectedBeerBottleCount * 500 +
-                    selectedBeerGlassCount * 355,
-            }));
-        } else {
-            setInputValues((prevValues) => ({
-                ...prevValues, // 현재 상태를 유지
-                beerCapacity: 0,
-            }));
-        }
-        if (!inputValues.sojuUnsure) {
-            setInputValues((prevValues) => ({
-                ...prevValues, // 현재 상태를 유지
-                sojuCapacity:
-                    selectedSojuBottleCount * 8 + selectedSojuGlassCount,
-            }));
-        } else {
-            setInputValues((prevValues) => ({
-                ...prevValues, // 현재 상태를 유지
-                sojuCapacity: 0,
-            }));
-        }
-        closeModal('alcoholModal');
-    };
-
-    //
+    const { user, setTmpUser, tmpUser } = useUserStore((state) => ({
+        user: state.user,
+        setTmpUser: state.setTmpUser,
+        tmpUser: state.tmpUser,
+    }));
     const navigate = useNavigate();
-
+    const onClickPasswordChangeButton = () => {
+        navigate('/find-password');
+    };
     const formatPhoneNumber = (value) => {
         const numericValue = value.replace(/\D/g, '');
 
@@ -122,32 +58,22 @@ const ProfileUpdate = () => {
         }
         return numericValue;
     };
-
     const validateInput = (name, value) => {
         let message = '';
         const nicknameRegex = /^[ㄱ-ㅎㅏ-ㅣ가-힣]{2,10}$/;
-        const phoneRegex = /^(010|011)-\d{4}-\d{4}$/;
+        const phoneRegex = /^010-\d{4}-\d{4}$/;
 
         if (name === 'nickname') {
             if (value.length !== 0 && !nicknameRegex.test(value)) {
                 message = '2 ~ 10자 내 한국어로 입력해야 합니다.';
-                setIsValid(false);
-            } else {
-                setIsValid(true);
             }
         } else if (name === 'emergencyCall') {
             if (value.length !== 0 && !phoneRegex.test(value)) {
                 message = '올바른 전화번호 양식이 아닙니다.';
-                setIsValid(false);
-            } else {
-                setIsValid(true);
             }
         } else if (name === 'phone') {
             if (value.length !== 0 && !phoneRegex.test(value)) {
                 message = '올바른 전화번호 양식이 아닙니다.';
-                setIsValid(false);
-            } else {
-                setIsValid(true);
             }
         }
 
@@ -184,6 +110,49 @@ const ProfileUpdate = () => {
         // tmpUser 업데이트
     };
 
+    // 소주, 맥주 마신 양 선택 모달
+    const [selectedSojuBottleCount, setSelectedSojuBottleCount] = useState(
+        0, // Math.floor(plan.sojuAmount / 8),
+    );
+    const [selectedSojuGlassCount, setSelectedSojuGlassCount] = useState(
+        0,
+        //plan.sojuAmount % 8,
+    );
+    const [selectedBeerBottleCount, setSelectedBeerBottleCount] = useState(
+        0, //   Math.floor(plan.beerAmount / 500),
+    );
+    const [selectedBeerGlassCount, setSelectedBeerGlassCount] = useState(
+        0, //   Math.round((plan.beerAmount % 500) / 355),
+    );
+
+    const handleSelectedSojuBottleCount = (sojuBottleCount) => {
+        setSelectedSojuBottleCount(sojuBottleCount);
+    };
+
+    const handleSelectedSojuGlassCount = (sojuGlassCount) => {
+        setSelectedSojuGlassCount(sojuGlassCount);
+    };
+
+    const handleSelectedBeerBottleCount = (beerBottleCount) => {
+        setSelectedBeerBottleCount(beerBottleCount);
+    };
+
+    const handleSelectedBeerGlassCount = (beerGlassCount) => {
+        setSelectedBeerGlassCount(beerGlassCount);
+    };
+    const submitSelectedAlcohol = () => {
+        console.log(
+            selectedSojuBottleCount,
+            selectedSojuGlassCount,
+            selectedBeerGlassCount,
+        );
+        // setPlan({
+        //     sojuAmount: selectedSojuBottleCount * 8 + selectedSojuGlassCount,
+        //     beerAmount:
+        //         selectedBeerBottleCount * 500 + selectedBeerGlassCount * 355,
+        // });
+        closeModal('alcoholModal');
+    };
     useEffect(() => {
         if (user) {
             setInputValues({
@@ -195,24 +164,15 @@ const ProfileUpdate = () => {
                 detailedAddress: user.detailedAddress || '',
                 postalCode: user.postalCode || '',
                 emergencyCall: user.emergencyCall || '',
+                beerCapacity: user.beerCapacity || 0,
+                sojuCapacity: user.sojuCapacity || 0,
                 latitude: user.latitude || '',
                 longitude: user.longitude || '',
-                beerCapacity: user.beerCapacity,
-                sojuCapacity: user.sojuCapacity,
-                sojuUnsure: user.sojuUnsure || false,
-                beerUnsure: user.beerUnsure || false,
+                unsure: !user.unsure ? user.unsure : true,
+                voice: user.voice || '',
             });
-            setSelectedBeerBottleCount(user.beerCapacity / 500);
-            setSelectedBeerGlassCount((user.beerCapacity % 500) / 355);
-            setSelectedSojuBottleCount(user.sojuCapacity / 8);
-            setSelectedSojuGlassCount(user.sojuCapacity % 8);
         }
-    }, []);
-
-    // inputValues 변경 시 tmpUser 업데이트(추후 API 요청시 tmpUser 데이터로 진행)
-    useEffect(() => {
-        setTmpUser(inputValues);
-    }, [inputValues, setTmpUser]);
+    }, [user]);
 
     return (
         <>
@@ -265,24 +225,14 @@ const ProfileUpdate = () => {
                                     src={sojuBottleImage}
                                     alt={`so`}
                                 />
-                                <St.Text>
-                                    {' '}
-                                    {inputValues.sojuUnsure
-                                        ? `모름`
-                                        : `${Math.floor((inputValues.sojuCapacity / 8) * 10) / 10} 병`}
-                                </St.Text>
+                                <St.Text>{inputValues.sojuCapacity} 병</St.Text>
                             </St.SojuBox>
                             <St.BeerBox>
                                 <St.StyledStepperImage
                                     src={beerBottleImage}
                                     alt={`be`}
                                 />
-                                <St.Text>
-                                    {' '}
-                                    {inputValues.beerUnsure
-                                        ? `모름`
-                                        : `${Math.floor((inputValues.beerCapacity / 500) * 10) / 10} 병`}
-                                </St.Text>
+                                <St.Text>{inputValues.beerCapacity} 병</St.Text>
                             </St.BeerBox>
                         </St.AlcolBox>
                     </St.AlcoholCapacityBox>
@@ -328,8 +278,31 @@ const ProfileUpdate = () => {
                         name="emergencyCall"
                         alertContents={alertMessages.emergencyCall}
                     />
+                    <St.VoiceBox
+                        onClick={(e) => {
+                            openProfileEditModal(e, 'voiceModal');
+                        }}
+                    >
+                        <St.StyledH6>목소리</St.StyledH6>
+                        <St.VoiceButton />
+                    </St.VoiceBox>
                 </St.InfoContainer>
+                <St.ButtonContainer>
+                    <MiniButton text="회원탈퇴" iconname="bin" isRed={false} />
+                    <MiniButton
+                        text="로그아웃"
+                        iconname="signout"
+                        isRed={false}
+                    />
+                    <MiniButton
+                        text="비밀번호 변경"
+                        iconname="key"
+                        isRed={true}
+                        onClick={onClickPasswordChangeButton}
+                    />
+                </St.ButtonContainer>
             </St.ProfileContainer>
+
             <Modal
                 modalId="postalCodeModal"
                 contents={
@@ -340,25 +313,9 @@ const ProfileUpdate = () => {
                 buttonText={'저장하기'}
             />
             <Modal
-                modalId="alcoholModal"
-                contents={
-                    <ModalEditDrinkingCapacity
-                        selectedSojuBottleCount={selectedSojuBottleCount}
-                        setSelectedSojuBottleCount={setSelectedSojuBottleCount}
-                        selectedSojuGlassCount={selectedSojuGlassCount}
-                        setSelectedSojuGlassCount={setSelectedSojuGlassCount}
-                        selectedBeerBottleCount={selectedBeerBottleCount}
-                        setSelectedBeerBottleCount={setSelectedBeerBottleCount}
-                        selectedBeerGlassCount={selectedBeerGlassCount}
-                        setSelectedBeerGlassCount={setSelectedBeerGlassCount}
-                        toggleSojuUnsure={toggleSojuUnsure}
-                        toggleBeerUnsure={toggleBeerUnsure}
-                        sojuUnsure={inputValues.sojuUnsure}
-                        beerUnsure={inputValues.beerUnsure}
-                    />
-                }
+                modalId="voiceModal"
+                contents={<ModalVoice />}
                 buttonText={'저장하기'}
-                onButtonClick={handleModalEditDrinkingCapacity}
             />
         </>
     );

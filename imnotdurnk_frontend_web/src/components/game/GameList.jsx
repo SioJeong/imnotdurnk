@@ -11,9 +11,7 @@ const GameList = () => {
     const goToBalanceGame = () => {
         navigate('/game/balancegame');
     };
-    const goToTypingGame = () => {
-        navigate('/game/typinggame');
-    };
+
     return (
         <St.GameContainer>
             <St.GameItem onClick={goToVoiceGame} $type={'voice'}>
@@ -24,7 +22,7 @@ const GameList = () => {
                 <St.GameImage src={icons['balanceWhite']} alt="balance" />
                 <St.GameText $isDark={false}>밸런스 게임</St.GameText>
             </St.GameItem>
-            <St.GameItem onClick={goToTypingGame} $type={'keyboard'}>
+            <St.GameItem $type={'keyboard'}>
                 <St.GameImage src={icons['keyboardWhite']} alt="keyboard" />
                 <St.GameText $isDark={false}>타이핑 게임</St.GameText>
             </St.GameItem>
