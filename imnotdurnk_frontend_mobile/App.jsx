@@ -8,7 +8,6 @@ import * as TaskManager from 'expo-task-manager';
 import { useEffect } from 'react';
 import { SafeAreaView, StyleSheet, Text } from 'react-native';
 import { ThemeProvider } from 'styled-components/native';
-import Layout from './components/_layout/Layout';
 import Router from './Router';
 import theme from './shared/styles/theme';
 import useLocationStore from './stores/useLocationStore';
@@ -107,9 +106,7 @@ const App = () => {
                 <QueryClientProvider client={queryClient}>
                     <ThemeProvider theme={theme}>
                         <NavigationContainer theme={theme}>
-                            <Layout>
-                                <Router />
-                            </Layout>
+                            <Router />
                         </NavigationContainer>
                     </ThemeProvider>
                 </QueryClientProvider>

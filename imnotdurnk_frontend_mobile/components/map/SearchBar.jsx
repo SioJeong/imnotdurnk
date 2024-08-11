@@ -3,14 +3,12 @@ import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplet
 import { useTheme } from 'styled-components/native';
 import { SearchBarContainer } from './SearchBar.style';
 
-const SearchBar = ({ placeholder, onPress }) => {
+const SearchBar = ({ placeholder, onPress, zIndex }) => {
     const theme = useTheme();
     const searchBarRef = useRef(null);
 
     const autoCompleteStyles = {
-        textInputContainer: {
-            zIndex: 2,
-        },
+        textInputContainer: {},
         textInput: {
             backgroundColor: 'transparent',
             height: 25,
@@ -19,12 +17,10 @@ const SearchBar = ({ placeholder, onPress }) => {
             color: theme.colors.green3,
         },
         listView: {
-            borderRadius: 10,
             position: 'absolute',
             top: 40,
             width: '100%',
-            zIndex: 3,
-            elevation: 3,
+            backgroundColor: theme.colors.white2,
         },
         row: {
             height: 35,
@@ -47,7 +43,7 @@ const SearchBar = ({ placeholder, onPress }) => {
     };
 
     return (
-        <SearchBarContainer>
+        <SearchBarContainer style={{ zIndex: zIndex }}>
             <GooglePlacesAutocomplete
                 ref={searchBarRef}
                 placeholder={placeholder}
