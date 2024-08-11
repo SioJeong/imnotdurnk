@@ -84,18 +84,7 @@ export const BeerBox = styled.div`
     border-radius: 10px;
     background: var(--color-white1, #fff);
 `;
-export const VoiceBox = styled.div`
-    display: flex;
-    height: 2.8571rem;
-    padding: 0.3571rem 1.7143rem;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: center;
-    align-self: stretch;
-    border-radius: 10px;
-    gap: 5.9286rem;
-    background: var(--color-green2, #465a54);
-`;
+
 export const StyledH6 = styled.h6`
     color: var(--color-white1, #fff);
 `;

@@ -3,13 +3,8 @@ import { useEffect, useState } from 'react';
 import { Bar, BarChart, ResponsiveContainer, XAxis } from 'recharts';
 import { styled } from 'styled-components';
 import { getAlcoholStaticsticsData } from '../../services/statistics';
-const AlcoholStatistics = () => {
+const AlcoholStatistics = ({ today, formattedDate }) => {
     //날짜 관련 변수- 오늘 통계 불러오기 위한 formattedDate용, 음주량 계산용
-    const today = new Date();
-    const year = today.getFullYear(); // 연도
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const date = String(today.getDate()).padStart(2, '0');
-    const formattedDate = `${year}-${month}-${date}`;
 
     //두번째 통계 탭
     const [activeIndex, setActiveIndex] = useState(2);
@@ -91,16 +86,12 @@ const AlcoholStatistics = () => {
     const [formattedPlanForMonths, setFormattedPlanForMonths] = useState([]);
 
     useEffect(() => {
-        const fetchUserProfile = async () => {
+        const fetchAlcoholStatistics = async () => {
             try {
                 const getStatisticsResult =
                     await getAlcoholStaticsticsData(formattedDate);
 
                 if (getStatisticsResult.isSuccess) {
-                    console.log(
-                        'getStatisticsResult',
-                        getStatisticsResult.data,
-                    );
                     calculateAlcoholStatistics(getStatisticsResult.data);
                     const updatedData = convertFormatOfMonth(
                         getStatisticsResult.data.planForMonths,
@@ -116,7 +107,7 @@ const AlcoholStatistics = () => {
                 console.error('Error fetching user data:', error);
             }
         };
-        fetchUserProfile();
+        fetchAlcoholStatistics();
     }, []);
 
     return (
@@ -124,7 +115,8 @@ const AlcoholStatistics = () => {
             <StatisticsVisualization>
                 <MainTitle>월별 음주 통계</MainTitle>
                 <SubTitle>
-                    지난 달보다 이번 달 {Math.abs(differenceOfSchedule)}번
+                    지난 달보다 이번 달{' '}
+                    <Highlight>{Math.abs(differenceOfSchedule)}번 </Highlight>
                     {differenceOfSchedule < 0 ? ' 더 적게' : ' 더 많이 '}{' '}
                     마셨습니다.
                 </SubTitle>
@@ -180,8 +172,9 @@ const AlcoholStatistics = () => {
                 <Analysis>
                     {tabContentsList[activeIndex].comment}
                     <br />
-                    소주 {avgData[activeIndex].soju}병, 맥주
-                    {avgData[activeIndex].beer} 병입니다.
+                    소주<Highlight> {avgData[activeIndex].soju}</Highlight>병,
+                    맥주
+                    <Highlight>{avgData[activeIndex].beer}</Highlight> 병입니다.
                 </Analysis>
             </StatisticsText>
         </StatisticsBox>
@@ -254,6 +247,9 @@ const Analysis = styled.div`
     color: var(--color-white1, #fff);
 
     font-size: var(--font-body-h2);
+`;
+const Highlight = styled.span`
+    color: var(--color-red);
 `;
 
 export default AlcoholStatistics;
