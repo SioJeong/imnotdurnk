@@ -10,13 +10,17 @@ import * as St from './BalanceGame.style';
 const getRandomTargetPosition = (
     windowWidth,
     windowHeight,
-    minDistance = 100,
+    duckPosition,
+    minDistance = 200,
 ) => {
     let x, y;
     do {
-        x = Math.random() * (windowWidth - 80) + 40; // 타겟이 뷰포트의 좌우로 벗어나지 않도록 수정
-        y = Math.random() * (windowHeight - 80) + 40; // 타겟이 뷰포트의 상하로 벗어나지 않도록 수정
-    } while (x ** 2 + y ** 2 < minDistance ** 2);
+        x = Math.random() * (windowWidth - 120) + 40; // 타겟이 뷰포트의 좌우로 벗어나지 않도록 수정
+        y = Math.random() * (windowHeight - 120) + 40; // 타겟이 뷰포트의 상하로 벗어나지 않도록 수정
+    } while (
+        Math.sqrt((x - duckPosition.x) ** 2 + (y - duckPosition.y) ** 2) <
+        minDistance
+    );
     return { x, y };
 };
 
@@ -26,19 +30,23 @@ const getRandomTargetImage = () => {
 };
 
 const BalanceGame = () => {
-    const [position, setPosition] = useState({ x: 0, y: 0 });
+    const windowWidth = window.innerWidth;
+    const windowHeight = window.innerHeight;
+
+    const duckSize = 74; // 오리의 크기
+    const [position, setPosition] = useState({
+        x: windowWidth / 2 - duckSize / 2, // 중앙으로 설정
+        y: windowHeight / 2 - duckSize / 2, // 중앙으로 설정
+    });
     const [target, setTarget] = useState(null);
     const [score, setScore] = useState(0);
     const [timeLeft, setTimeLeft] = useState(30);
     const [isGameActive, setIsGameActive] = useState(false);
 
-    const windowWidth = window.innerWidth;
-    const windowHeight = window.innerHeight;
-
     const updatePosition = ({ beta, gamma }) => {
         setPosition((prevPosition) => {
-            let newX = prevPosition.x + gamma / 10;
-            let newY = prevPosition.y + beta / 10;
+            let newX = prevPosition.x + gamma / 3;
+            let newY = prevPosition.y + beta / 3;
 
             newX = Math.max(0, Math.min(newX, windowWidth - 40));
             newY = Math.max(0, Math.min(newY, windowHeight - 40));
@@ -52,7 +60,7 @@ const BalanceGame = () => {
             return;
         }
 
-        const duckCenter = { x: position.x + 20, y: position.y + 20 }; // 오리 중심 계산
+        const duckCenter = { x: position.x + 37, y: position.y + 37 }; // 오리 중심 계산
         const targetCenter = {
             x: target.position.x + 20,
             y: target.position.y + 20,
@@ -116,18 +124,37 @@ const BalanceGame = () => {
         setTimeLeft(30);
         setIsGameActive(true);
         const initialTarget = {
-            position: getRandomTargetPosition(windowWidth, windowHeight),
+            position: getRandomTargetPosition(
+                windowWidth,
+                windowHeight,
+                position,
+            ),
             Component: getRandomTargetImage(),
         };
         setTarget(initialTarget);
     };
 
     const resetGame = () => {
+        const initialDuckPosition = {
+            x: windowWidth / 2 - duckSize / 2,
+            y: windowHeight / 2 - duckSize / 2,
+        };
+
         setScore(0);
         setTimeLeft(30);
         setIsGameActive(false);
         setTarget(null);
-        setPosition({ x: 0, y: 0 });
+        setPosition(initialDuckPosition);
+
+        const initialTarget = {
+            position: getRandomTargetPosition(
+                windowWidth,
+                windowHeight,
+                initialDuckPosition,
+            ),
+            Component: getRandomTargetImage(),
+        };
+        setTarget(initialTarget);
     };
 
     const handleButtonClick = () => {
@@ -171,7 +198,7 @@ const BalanceGame = () => {
                     style={{
                         position: 'absolute',
                         transform: `translate(${position.x}px, ${position.y}px) ${position.x > windowWidth / 2 ? 'scaleX(-1)' : 'scaleX(1)'}`,
-                        transition: 'transform 0.1s ease-out',
+                        zIndex: 20,
                     }}
                 />
                 {target && (
@@ -181,7 +208,7 @@ const BalanceGame = () => {
                         style={{
                             position: 'absolute',
                             transform: `translate(${target.position.x}px, ${target.position.y}px)`,
-                            transition: 'transform 0.1s ease-out',
+                            zIndex: 20,
                         }}
                     />
                 )}

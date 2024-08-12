@@ -109,7 +109,7 @@ public class CalendarServiceImpl implements CalendarService {
      * @throws Exception 데이터베이스 저장 과정에서 발생할 수 있는 예외
      */
     @Override
-    public void addCalendar(String token, CalendarDto calendarDto) throws EntitySaveFailedException {
+    public CalendarDto addCalendar(String token, CalendarDto calendarDto) throws EntitySaveFailedException {
 
         CalendarEntity calendar = calendarDto.toEntity();
         calendar.setUserEntity(userRepository.findByEmail(jwtUtil.getUserEmail(token, TokenType.ACCESS)));
@@ -117,6 +117,7 @@ public class CalendarServiceImpl implements CalendarService {
 
         if(calendar == null) throw new EntitySaveFailedException("저장에 실패하였습니다.");
 
+        return calendar.toDto();
     }
 
     /**
