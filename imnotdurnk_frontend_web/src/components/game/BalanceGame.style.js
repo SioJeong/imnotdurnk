@@ -16,7 +16,7 @@ const ObjectContainer = styled.div`
     position: absolute;
     left: 0;
     width: 100%;
-    height: 90%;
+    height: 85%;
 `;
 
 const Notice = styled.div`
