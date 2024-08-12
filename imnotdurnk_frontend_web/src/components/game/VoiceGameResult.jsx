@@ -1,16 +1,18 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { styled } from 'styled-components';
+import useAuthStore from '../../stores/useAuthStore';
 import useGameStore from '../../stores/useGameStore';
 import useNavigationStore from '../../stores/useNavigationStore';
 import Button from '../_button/Button';
 import { InfoConfirmModal, ToastSuccess, ToastWarning } from '../_common/alert';
+import * as St from './VoiceGameResult.style';
 
 const VoiceGameResult = () => {
     const navigate = useNavigate();
     const setNavigation = useNavigationStore((state) => state.setNavigation);
 
     const { voiceGameResult } = useGameStore();
+    const { accessToken } = useAuthStore();
 
     useEffect(() => {
         setNavigation({
@@ -21,8 +23,13 @@ const VoiceGameResult = () => {
         });
     }, []);
 
-    // TODO: 로그인 안 한 경우 로그인 페이지로 바로 라우팅 (ToastWarning 함께)
+    // TODO: Alert 위치 UI 나오면 다시 체크
     const handleSubmit = () => {
+        if (!accessToken) {
+            ToastWarning('로그인이 필요합니다.');
+            navigate('/account');
+            return;
+        }
         InfoConfirmModal(
             '오늘 등록한 일정이 있나요?',
             '예',
@@ -69,9 +76,9 @@ const VoiceGameResult = () => {
     };
 
     return (
-        <ResultContainer>
+        <St.ResultContainer>
             <h3>당신의 발음 평가 점수는 {voiceGameResult.score}점 입니다.</h3>
-            <ButtonDiv>
+            <St.ButtonDiv>
                 <Button
                     text="게임 기록 저장하기"
                     isRed={false}
@@ -83,24 +90,9 @@ const VoiceGameResult = () => {
                     isRed={true}
                     onClick={goToGameList}
                 />
-            </ButtonDiv>
-        </ResultContainer>
+            </St.ButtonDiv>
+        </St.ResultContainer>
     );
 };
 
 export default VoiceGameResult;
-
-const ResultContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 3rem;
-`;
-
-const ButtonDiv = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-
-    width: 100%;
-`;
