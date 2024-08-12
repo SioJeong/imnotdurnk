@@ -11,7 +11,7 @@ const getRandomTargetPosition = (
     windowWidth,
     windowHeight,
     duckPosition,
-    minDistance = 160,
+    minDistance = 200,
 ) => {
     let x, y;
     do {
@@ -45,8 +45,8 @@ const BalanceGame = () => {
 
     const updatePosition = ({ beta, gamma }) => {
         setPosition((prevPosition) => {
-            let newX = prevPosition.x + gamma / 5;
-            let newY = prevPosition.y + beta / 5;
+            let newX = prevPosition.x + gamma / 3;
+            let newY = prevPosition.y + beta / 3;
 
             newX = Math.max(0, Math.min(newX, windowWidth - 40));
             newY = Math.max(0, Math.min(newY, windowHeight - 40));
@@ -60,7 +60,7 @@ const BalanceGame = () => {
             return;
         }
 
-        const duckCenter = { x: position.x + 20, y: position.y + 20 }; // 오리 중심 계산
+        const duckCenter = { x: position.x + 37, y: position.y + 37 }; // 오리 중심 계산
         const targetCenter = {
             x: target.position.x + 20,
             y: target.position.y + 20,
