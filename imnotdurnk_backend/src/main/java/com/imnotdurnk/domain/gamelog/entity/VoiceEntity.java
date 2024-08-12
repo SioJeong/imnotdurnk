@@ -21,7 +21,7 @@ public class VoiceEntity {
     @JoinColumn(name = "log_id", nullable = false)
     private GameLogEntity gameLogEntity;
 
-    @Column(name = "file_name", nullable = false, length = 20)
+    @Column(name = "file_name", nullable = false, length = 100)
     private String fileName;
 
     @Lob

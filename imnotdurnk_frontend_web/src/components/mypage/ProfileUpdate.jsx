@@ -177,13 +177,7 @@ const ProfileUpdate = () => {
     return (
         <>
             <St.ProfileContainer>
-                <St.Title
-                    onClick={() => {
-                        console.log(tmpUser); // tmpUser의 현재 상태를 콘솔에 출력합니다.
-                    }}
-                >
-                    원하시는 정보를 변경해주세요.
-                </St.Title>
+                <St.Title>원하시는 정보를 변경해주세요.</St.Title>
                 <St.InfoContainer>
                     <InputBox
                         labelText="이름"

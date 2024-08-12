@@ -12,19 +12,22 @@ public class GameStatistic {
 
     private double totalAverage;
     private double monthAverage;
-    private int lowerCount;
+    private int lowerCountThanMonthAvg;
+    private int lowerCountThanYearAvg;
 
     public GameStatistic() {}
 
     @Builder
-    public GameStatistic(double totalAverage, double monthAverage, int lowerCount) {
+    public GameStatistic(double totalAverage, double monthAverage, int lowerCountThanMonthAvg, int lowerCountThanYearAvg) {
         this.totalAverage = totalAverage;
         this.monthAverage = monthAverage;
-        this.lowerCount = lowerCount;
+        this.lowerCountThanMonthAvg = lowerCountThanMonthAvg;
+        this.lowerCountThanYearAvg = lowerCountThanYearAvg;
     }
 
     @Override
     public String toString() {
-        return "전체 평균: " + totalAverage + ", 이번달 평균: " + monthAverage + ", 이번달 평균보다 점수가 낮은 일수" + lowerCount;
+        return "전체 평균: " + totalAverage + ", 이번달 평균: " + monthAverage
+                + ", 이번달 평균보다 점수가 낮은 일수: " + lowerCountThanMonthAvg + ", 올해 평균보다 점수가 낮은 일수: " + lowerCountThanYearAvg;
     }
 }

@@ -16,8 +16,14 @@ const InputBox = ({
     isProfileViewPage,
     onClickInputBox,
 }) => {
-    const iconSrc = icons[iconName];
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+    //const iconSrc = icons[iconName];
+    const iconSrc =
+        inputType === 'password'
+            ? isPasswordVisible
+                ? icons.visible
+                : icons.invisible
+            : icons[iconName] || icons.empty;
     // 가시성 설정 토글
     const handleToggleVisibility = (event) => {
         event.preventDefault();
@@ -60,7 +66,7 @@ const InputBox = ({
                         onClick={handleToggleVisibility}
                     >
                         <St.InputIcon
-                            src={`src/assets/icons/size_24/Icon-${isPasswordVisible ? 'visible' : 'invisible'}.svg`}
+                            src={iconSrc}
                             alt={
                                 isPasswordVisible
                                     ? 'Hide password'

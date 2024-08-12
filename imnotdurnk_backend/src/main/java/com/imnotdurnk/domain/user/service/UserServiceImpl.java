@@ -307,8 +307,10 @@ public class UserServiceImpl implements UserService {
         UserEntity user = userRepository.findByEmail(jwtUtil.getUserEmail(token, TokenType.ACCESS));
         if (user == null) throw new BadRequestException("일치하는 회원 없음");
         UserDto profile = user.toDto();
-        BeanUtils.copyProperties(profile, user, systemUtil.getNullPropertyNames(profile));
-        userRepository.save(user);
+
+        //비밀번호는 전송되지 않도록 null 처리
+        profile.setPassword(null);
+
         return profile;
     }
 
