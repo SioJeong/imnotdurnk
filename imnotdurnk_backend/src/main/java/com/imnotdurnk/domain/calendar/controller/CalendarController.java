@@ -95,17 +95,16 @@ public class CalendarController {
             description ="제목: 30자 이하, 메모: 200자 이하, 날짜: yyyy-MM-ddThh:ss 형식의 문자열"
     )
     @PostMapping
-    public ResponseEntity<?> addCalendar(@RequestAttribute(value = "AccessToken", required = true) String token, @RequestBody CalendarDto calendarDto) throws BadRequestException{
+    public ResponseEntity<SingleResponse> addCalendar(@RequestAttribute(value = "AccessToken", required = true) String token, @RequestBody CalendarDto calendarDto) throws BadRequestException{
 
         if(!checkTitle(calendarDto.getTitle())) throw new BadRequestException("제목이 없거나 30자를 초과했습니다.");
         if(!checkDateTime(calendarDto.getDate())) throw new BadRequestException("날짜는 yyyy-MM-ddThh:ss 형식의 문자열이어야 합니다.");
         if(!checkMemo(calendarDto.getMemo())) throw new BadRequestException("메모가 200자를 초과했습니다.");
-        CommonResponse response = new CommonResponse();
 
-        calendarService.addCalendar(token, calendarDto);
+        CalendarDto calendar = calendarService.addCalendar(token, calendarDto);
 
-        response.setStatusCode(HttpStatus.CREATED.value());
-        response.setMessage("일정 등록이 완료되었습니다.");
+        SingleResponse<CalendarDto> response =
+                new SingleResponse<>(HttpStatus.CREATED.value(), "일정 등록이 완료되었습니다.", calendar);
 
         return ResponseEntity.status(response.getHttpStatus()).body(response);
 
