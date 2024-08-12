@@ -34,8 +34,12 @@ import Voice from '../../assets/icons/size_24/Icon-voice.svg';
 import BeerBottle from '../../assets/images/beerbottle.webp';
 import BeerGlass from '../../assets/images/beerglass.webp';
 import Bezel from '../../assets/images/bezel.svg';
+import HomeCalendar from '../../assets/images/calendar.webp';
+import HomeChart from '../../assets/images/chart.webp';
+import HomeLocation from '../../assets/images/location.webp';
 import MiniBeerBottle from '../../assets/images/mini-beer-bottle.webp';
 import MiniSojuBottle from '../../assets/images/mini-soju-bottle.webp';
+import HomeMiniGame from '../../assets/images/minigame.webp';
 import SojuBottle from '../../assets/images/sojubottle.webp';
 import SojuGlass from '../../assets/images/sojuglass.webp';
 
@@ -80,6 +84,10 @@ const icons = {
     beerGlass: BeerGlass,
     empty: Empty,
     emptyWhite2: EmptyWhite2,
+    homeCalendar: HomeCalendar,
+    homeMiniGame: HomeMiniGame,
+    homeLocation: HomeLocation,
+    homeChart: HomeChart,
 };
 
 export { icons };

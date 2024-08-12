@@ -2,6 +2,7 @@ import useNavigationStore from '@/stores/useNavigationStore';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
+import { icons } from '../shared/constants/icons';
 import useAuthStore from '../stores/useAuthStore';
 
 const Home = () => {
@@ -30,28 +31,28 @@ const Home = () => {
 
     const tabContentsList = [
         {
-            iconName: 'calendar',
+            iconName: 'homeCalendar',
             text: '음주 기록 캘린더',
             onClick: goToCalender,
             backgroundColor: 'var(--color-white2)',
             fontColor: 'var(--color-green2)',
         },
         {
-            iconName: 'minigame',
+            iconName: 'homeMiniGame',
             text: '만취 판단 미니 게임',
             onClick: goToGame,
             backgroundColor: 'var(--color-red)',
             fontColor: 'var(--color-white1)',
         },
         {
-            iconName: 'location',
+            iconName: 'homeLocation',
             text: '최소 택시비 길찾기',
             onClick: goToNavigation,
             backgroundColor: 'var(--color-white2)',
             fontColor: 'var(--color-green2)',
         },
         {
-            iconName: 'chart',
+            iconName: 'homeChart',
             text: '나의 음주 통계',
             onClick: goToMyPage,
             backgroundColor: 'var(--color-green2)',
@@ -69,7 +70,7 @@ const Home = () => {
                     $backgroundColor={item.backgroundColor}
                 >
                     <StyledImage
-                        src={`/src/assets/images/${item.iconName}.webp`}
+                        src={icons[`${item.iconName}`]}
                         alt={item.text}
                     />
                     <StyledH3 $fontColor={item.fontColor}>{item.text}</StyledH3>
