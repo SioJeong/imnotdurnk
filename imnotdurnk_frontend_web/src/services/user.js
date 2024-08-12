@@ -106,36 +106,11 @@ const checkCertificationNumber = async (email, inputCertNum) => {
     }
 };
 //유저 추가 정보 저장
-const putUserDetailedInfo = async (
-    nickname,
-    postalCode,
-    address,
-    detailedAddress,
-    emergencyCall,
-    name,
-    phone,
-    beerCapacity,
-    sojuCapacity,
-    unsure,
-    voice,
-) => {
+const putUserDetailedInfo = async (editProfile) => {
     try {
-        const response = await api.put(`/users/profile`, {
-            nickname: nickname,
-            postalCode: postalCode,
-            address: address,
-            detailedAddress: detailedAddress,
-            emergencyCall: emergencyCall,
-            name: name,
-            phone: phone,
-            beerCapacity: beerCapacity,
-            sojuCapacity: sojuCapacity,
-            unsure: unsure,
-            voice: voice,
-        });
+        const response = await api.put(`/users/profile`, editProfile);
         const { statusCode, httpStatus, message } = response.data;
         // apiErrorHandler(statusCode, httpStatus, message);
-
         return {
             isSuccess: statusCode === 200,
             message: '프로필 업데이트 성공',
@@ -188,11 +163,72 @@ const sendNewPassword = async (email) => {
         };
     }
 };
+
+const logout = async () => {
+    try {
+        const response = await api.post(`/users/logout`);
+
+        const { statusCode, httpStatus } = response.data;
+
+        return {
+            isSuccess: statusCode === 200,
+            message: '로그인 성공',
+        };
+    } catch (err) {
+        return {
+            isSuccess: false,
+            message: err.message || '데이터 가져오는 중 오류 발생',
+        };
+    }
+};
+const deleteAccount = async (passwordForDelete) => {
+    try {
+        const response = await api.post(`/users/delete-account`, {
+            password: passwordForDelete,
+        });
+
+        const { statusCode, httpStatus } = response.data;
+
+        return {
+            isSuccess: statusCode === 200,
+            message: '회원탈퇴 성공',
+        };
+    } catch (err) {
+        return {
+            isSuccess: false,
+            message: err.message || '데이터 가져오는 중 오류 발생',
+        };
+    }
+};
+
+const changePassword = async (currentPassword, newpassword) => {
+    try {
+        const response = await api.post(`/users/update-password`, {
+            prevPassword: currentPassword,
+            newPassword: newpassword,
+        });
+
+        const { statusCode, httpStatus } = response.data;
+
+        return {
+            isSuccess: statusCode === 200,
+            message: '로그인 성공',
+        };
+    } catch (err) {
+        return {
+            isSuccess: false,
+            message: err.message || '데이터 가져오는 중 오류 발생',
+        };
+    }
+};
 export {
+    changePassword,
     checkCertificationNumber,
+    deleteAccount,
     getUser,
     getUserProfile,
     login,
+    logout,
     putUserDetailedInfo,
     sendCertificationNumber,
     sendNewPassword,

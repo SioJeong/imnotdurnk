@@ -10,6 +10,8 @@ import Check from '../../assets/icons/size_24/Icon-check.svg';
 import Clock from '../../assets/icons/size_24/Icon-clock.svg';
 import Down from '../../assets/icons/size_24/Icon-down.svg';
 import Email from '../../assets/icons/size_24/Icon-email.svg';
+import Empty from '../../assets/icons/size_24/Icon-empty.svg';
+import EmptyWhite2 from '../../assets/icons/size_24/Icon-emptywhite2.svg';
 import GameLog from '../../assets/icons/size_24/Icon-gamelog.svg';
 import Health from '../../assets/icons/size_24/Icon-health.svg';
 import Invisible from '../../assets/icons/size_24/Icon-invisible.svg';
@@ -76,6 +78,8 @@ const icons = {
     sojuBottle: SojuBottle,
     sojuGlass: SojuGlass,
     beerGlass: BeerGlass,
+    empty: Empty,
+    emptyWhite2: EmptyWhite2,
 };
 
 export { icons };

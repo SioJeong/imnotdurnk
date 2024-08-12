@@ -17,6 +17,7 @@ import Minus from '../../assets/icons/size_24/Icon-minus.svg';
 import Modify from '../../assets/icons/size_24/Icon-modify.svg';
 import Phone from '../../assets/icons/size_24/Icon-phone.svg';
 import Plus from '../../assets/icons/size_24/Icon-plus.svg';
+import Profile from '../../assets/icons/size_24/Icon-profile.svg';
 import Visible from '../../assets/icons/size_24/Icon-visible.svg';
 import Voice from '../../assets/icons/size_24/Icon-voice.svg';
 import X from '../../assets/icons/size_24/Icon-x.svg';
@@ -44,6 +45,7 @@ const icons = {
     visible: Visible,
     voice: Voice,
     x: X,
+    profile: Profile,
 };
 
 export { icons };

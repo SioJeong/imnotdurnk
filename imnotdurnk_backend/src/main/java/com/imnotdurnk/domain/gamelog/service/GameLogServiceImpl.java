@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -45,15 +46,18 @@ public class GameLogServiceImpl implements GameLogService {
 
         UserEntity user = userRepository.findByEmail(jwtUtil.getUserEmail(AccessToken, TokenType.ACCESS));
         LocalDate date = LocalDate.parse(dateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+//        List<GameLogEntity> gameLogs =
 
-        double monthAverage = gameLogRepository.selectMonthAverage(gameType, date.getMonthValue(), date.getYear());
+        double monthAverage = gameLogRepository.selectMonthAverage(user.getId(), gameType, date.getMonthValue(), date.getYear());
 
-        System.out.println(monthAverage);
+//        System.out.println(monthAverage);
         return GameStatistic.builder()
                 .totalAverage(gameLogRepository.selectTotalAverage(user.getId(), gameType))
                 .monthAverage(monthAverage)
-                .lowerCount(gameLogRepository.countDaysWithLowScores(
-                        gameType, date.getMonthValue(), date.getYear(), monthAverage))
+                .lowerCountThanMonthAvg(gameLogRepository.countDaysWithLowScoresInMonth(
+                        user.getId(), gameType, date.getMonthValue(), date.getYear(), monthAverage))
+                .lowerCountThanYearAvg(gameLogRepository.countDaysWithLowScoresInYear(
+                        user.getId(), gameType, date.getYear(), gameLogRepository.selectYearAverage(user.getId(), gameType, date.getYear())))
                 .build();
     }
 

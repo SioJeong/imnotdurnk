@@ -1,6 +1,6 @@
 package com.imnotdurnk.domain.calendar.dto;
 
-import com.imnotdurnk.domain.calendar.entity.CalendarEntity;
+import com.imnotdurnk.domain.gamelog.dto.GameLogDto;
 import com.imnotdurnk.domain.gamelog.entity.GameLogEntity;
 import lombok.*;
 
@@ -31,7 +31,7 @@ public class PlanDetailDto {
 
     private Integer sojuAmount;
 
-    private List<GameLogEntity> gameLogEntities;
+    private List<GameLogDto> gameLogDtos;
 
     @Builder
     public PlanDetailDto(Integer id,
@@ -43,7 +43,7 @@ public class PlanDetailDto {
                          String memo,
                          Integer beerAmount,
                          Integer sojuAmount,
-                         List<GameLogEntity> gameLogEntities) {
+                         List<GameLogDto> gameLogDtos) {
         this.id = id;
         this.userId = userId;
         this.date = date;
@@ -53,7 +53,7 @@ public class PlanDetailDto {
         this.memo = memo;
         this.beerAmount = beerAmount;
         this.sojuAmount = sojuAmount;
-        this.gameLogEntities = gameLogEntities;
+        this.gameLogDtos = gameLogDtos;
     }
 }
 

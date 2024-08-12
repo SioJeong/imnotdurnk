@@ -1,5 +1,7 @@
 import { useFocusEffect } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
+import { ActivityIndicator } from 'react-native';
+import { useTheme } from 'styled-components';
 import * as St from '../components/_layout/globalStyle';
 import PathOption from '../components/map/PathOption';
 import { fetchTaxiDirections, fetchTransitDirections } from '../services/map';
@@ -10,6 +12,9 @@ const PathFinder = () => {
     const { setNavigation } = useNavigationStore();
     const { departure, stopover, destination } = useLocationStore();
     const [pathInfos, setPathInfos] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    const theme = useTheme();
 
     useFocusEffect(
         React.useCallback(() => {
@@ -31,6 +36,7 @@ const PathFinder = () => {
                 stopover.length < 1 ||
                 stopover.length > 3
             ) {
+                setIsLoading(false);
                 return;
             }
 
@@ -50,7 +56,6 @@ const PathFinder = () => {
                     }),
                 );
 
-                // 택시비 가장 적은 곳에 최저 비용 chipdata 추가
                 newPathInfos.sort(
                     (a, b) => a.taxiPathInfo.fee - b.taxiPathInfo.fee,
                 );
@@ -58,14 +63,12 @@ const PathFinder = () => {
                     newPathInfos[0].chipdata.push('최저 비용');
                 }
 
-                // 대중교통 도보 시간 가장 적은 곳에 최소 도보 chipdata 추가
                 const minWalkTime = Math.min(
                     ...newPathInfos.map(
                         (path) => path.transitInfo.totalWalkTime,
                     ),
                 );
 
-                // 대중교통 탑승 시간 + 택시 탑승 시간 가장 적은 곳에 최단 시간 chipdata 추가
                 newPathInfos.forEach((path) => {
                     if (path.transitInfo.totalWalkTime === minWalkTime) {
                         path.chipdata.push('최소 도보');
@@ -92,6 +95,9 @@ const PathFinder = () => {
                 setPathInfos(newPathInfos);
             } catch (error) {
                 console.error('Failed to fetch directions', error);
+            } finally {
+                // 데이터 로드 완료 시 로딩 중지
+                setIsLoading(false);
             }
         };
 
@@ -101,11 +107,20 @@ const PathFinder = () => {
     return (
         <St.Container2>
             <St.GlobalText fontSize={'H3'} weight={'medium'}>
-                마음에 드는 옵션을 선택하세요
+                {isLoading
+                    ? '최적 경로를 찾는 중입니다'
+                    : pathInfos.length === 0
+                      ? '찾을 수 있는 경로가 없습니다'
+                      : '마음에 드는 옵션을 선택하세요'}
             </St.GlobalText>
-            {pathInfos.map((pathInfo, index) => (
-                <PathOption key={index} pathInfo={pathInfo} index={index} />
-            ))}
+            {isLoading ? (
+                <ActivityIndicator size={100} color={theme.colors.red} />
+            ) : (
+                pathInfos.length > 0 &&
+                pathInfos.map((pathInfo, index) => (
+                    <PathOption key={index} pathInfo={pathInfo} index={index} />
+                ))
+            )}
         </St.Container2>
     );
 };

@@ -15,6 +15,7 @@ const ModalAlcohol = ({
     handleSelectedBeerBottleCount,
     selectedBeerGlassCount,
     handleSelectedBeerGlassCount,
+    isForProfileCreatePage,
 }) => {
     const [bottleCount, setBottleCount] = useState(0);
     const [glassCount, setGlassCount] = useState(0);
