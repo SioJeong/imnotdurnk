@@ -53,7 +53,7 @@ const BalanceGame = () => {
                 let newY = prevPosition.y + beta / 3;
 
                 newX = Math.max(0, Math.min(newX, windowWidth - 40));
-                newY = Math.max(0, Math.min(newY, windowHeight - 40));
+                newY = Math.max(0, Math.min(newY, windowHeight - 80));
 
                 return { x: newX, y: newY };
             });
