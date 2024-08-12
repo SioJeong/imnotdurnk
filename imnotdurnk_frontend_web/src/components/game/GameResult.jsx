@@ -1,6 +1,9 @@
 import useUserStore from '@/stores/useUserStore.js';
+import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
+import useAuthStore from '../../stores/useAuthStore';
+import useNavigationStore from '../../stores/useNavigationStore';
 import Button from '../_button/Button';
 import { InfoConfirmModal, ToastSuccess, ToastWarning } from '../_common/alert';
 
@@ -8,13 +11,28 @@ const GameResult = () => {
     const { user } = useUserStore((state) => ({
         user: state.user,
     }));
+    const { accessToken } = useAuthStore();
+
+    const setNavigation = useNavigationStore((state) => state.setNavigation);
 
     const navigate = useNavigate();
     const location = useLocation();
+
+    useEffect(() => {
+        setNavigation({
+            isVisible: true,
+            icon1: { iconname: 'backarrow', path: '-1' },
+            title: '게임 결과',
+            icon2: { iconname: 'empty' },
+        });
+    }, []);
+
     const standard = 70;
+
     // 2. location.state 에서 파라미터 취득
     const gameName = location.state.gameName;
     const gameScore = location.state.gameScore;
+
     const drunkenLevelContentsList = [
         {
             image: '이미지 파일 이름',
@@ -28,7 +46,14 @@ const GameResult = () => {
             ],
         },
     ];
+
+    // TODO: Alert 위치 UI 나오면 다시 체크
     const handleSubmit = () => {
+        if (!accessToken) {
+            ToastWarning('로그인이 필요합니다.');
+            navigate('/account');
+            return;
+        }
         InfoConfirmModal(
             '오늘 등록한 일정이 있나요?',
             '예',
@@ -49,7 +74,8 @@ const GameResult = () => {
                             '예',
                             '아니오',
                             () => {
-                                ToastSuccess('일정 등록 페이지로');
+                                ToastSuccess('일정 등록 페이지로 이동합니다.');
+                                navigate('/calendar/create-plan');
                             },
                             () => {
                                 ToastWarning(
@@ -69,7 +95,8 @@ const GameResult = () => {
         );
     };
     const onClickGameListButton = () => {
-        navigate('/');
+        // TODO: 저장하지 않음을 알리는 API 요청 필요 (파일 명과 함께)
+        navigate('/game');
     };
 
     return (
@@ -78,7 +105,7 @@ const GameResult = () => {
                 <Title>
                     {user.nickname !== '' ? user.nickname : user.name}님의{' '}
                     {gameName ? gameName : '00'} 게임 점수는
-                    <br />{' '}
+                    <br />
                     <Highlight>
                         {gameScore ? Math.floor(gameScore) : 0}
                     </Highlight>{' '}
@@ -104,7 +131,7 @@ const GameResult = () => {
                     onClick={handleSubmit}
                 />
                 <Button
-                    text="게임 목록으로 돌아가기"
+                    text="게임 목록으로"
                     size="big"
                     isRed={true}
                     onClick={onClickGameListButton}

@@ -104,7 +104,13 @@ const VoiceGame = () => {
                 if (dataResult) {
                     console.log('dataResult ---- 전송 받은 결과', dataResult);
                     setVoiceGameResult(dataResult);
-                    navigate('/game/voicegame/result');
+                    navigate('/game/game-result', {
+                        state: {
+                            gameName: '발음',
+                            gameScore: dataResult.score,
+                        },
+                    });
+                    // navigate('/game/voicegame/result');
                 }
             } catch (error) {
                 console.error('음성 파일 제출 오류: ', error);
