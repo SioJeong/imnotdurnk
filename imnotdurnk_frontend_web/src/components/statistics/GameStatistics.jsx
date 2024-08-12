@@ -19,8 +19,8 @@ const GameStatistics = ({ formattedDate }) => {
     //두번째 통계 월,년 고르는 탭
     const [activeIndex, setActiveIndex] = useState(0);
     const tabContentsList = [
-        { text: 'Month', comment1: ' 달', comment2: '은 ' },
-        { text: 'Year', comment1: ' 해', comment2: '는 ' },
+        { text: 'Month', comment1: '이번 달', comment2: '은 ' },
+        { text: 'Year', comment1: '올해', comment2: '는 ' },
     ];
     //두번째 탭 이동
     const handleButtonClick = (index) => {
@@ -235,7 +235,6 @@ const GameStatistics = ({ formattedDate }) => {
                     ))}
                 </ButtonBox>
                 <Analysis>
-                    이번
                     <Highlight>
                         {tabContentsList[activeIndex].comment1}
                     </Highlight>
@@ -248,7 +247,7 @@ const GameStatistics = ({ formattedDate }) => {
                                   .lowerCountThanYearAvg}
                         일
                     </Highlight>
-                    은 평균보다 낮아요. <br />
+                    이 평균보다 낮아요. <br />
                     <Highlight>
                         {' '}
                         {gameStatisticsList !== undefined && activeIndex === 0
