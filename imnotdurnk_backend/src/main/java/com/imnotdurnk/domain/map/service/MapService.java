@@ -8,10 +8,10 @@ import com.imnotdurnk.domain.map.entity.StopEntity;
 import java.util.List;
 
 public interface MapService {
-    public List<MapDto> getStopsAndRoutesInArea(double destLat, double destLon, double startlat, double startlon , String time);
+    public List<MapDto> getStopsAndRoutesInArea(double destlat, double destlon, double startlat, double startlon , String time);
 
     public List<RouteDto> getRoutes(String routeId, int seq1, int seq2);
 
-    public List<MapDto> getStopsAndRoutesInAreaWithTaxi(double destLat, double destLon, double startlat, double startlon , String time);
+    public List<MapDto> getStopsAndRoutesInAreaWithTaxi(double destlat, double destlon, double startlat, double startlon , String time);
 }
 
