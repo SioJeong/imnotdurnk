@@ -14,8 +14,8 @@ const getRandomTargetPosition = (
 ) => {
     let x, y;
     do {
-        x = Math.random() * (windowWidth - 40);
-        y = Math.random() * (windowHeight - 40);
+        x = Math.random() * (windowWidth - 80) + 40; // 타겟이 뷰포트의 좌우로 벗어나지 않도록 수정
+        y = Math.random() * (windowHeight - 80) + 40; // 타겟이 뷰포트의 상하로 벗어나지 않도록 수정
     } while (x ** 2 + y ** 2 < minDistance ** 2);
     return { x, y };
 };
@@ -154,25 +154,23 @@ const BalanceGame = () => {
         <St.BalanceGameContainer>
             <St.Notice>
                 <St.Description>
-                    <p>새끼들을 잃어버린 어미 오리가 있습니다</p>
-                    <p>균형 감각을 발휘해보세요!</p>
+                    <h3>새끼들을 잃어버린 어미 오리가 있습니다</h3>
+                    <h3>균형 감각을 발휘해보세요!</h3>
                 </St.Description>
-                <St.Description>
-                    <h3>점수 : {score}</h3>
-                </St.Description>
+                <St.Description>점수 : {score}</St.Description>
                 <Button
                     isRed={true}
                     onClick={handleButtonClick}
                     text={isGameActive ? `${timeLeft}s` : 'Start'}
                 />
             </St.Notice>
-            <St.ObjectContainer>
+            <St.CircleContainer>
                 <img
                     src={Duck}
                     alt="Duck"
                     style={{
                         position: 'absolute',
-                        transform: `translate(${position.x}px, ${position.y}px)`,
+                        transform: `translate(${position.x}px, ${position.y}px) ${position.x > windowWidth / 2 ? 'scaleX(-1)' : 'scaleX(1)'}`,
                         transition: 'transform 0.1s ease-out',
                     }}
                 />
@@ -187,7 +185,7 @@ const BalanceGame = () => {
                         }}
                     />
                 )}
-            </St.ObjectContainer>
+            </St.CircleContainer>
         </St.BalanceGameContainer>
     );
 };
