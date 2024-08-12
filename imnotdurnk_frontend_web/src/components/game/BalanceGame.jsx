@@ -164,7 +164,7 @@ const BalanceGame = () => {
                     text={isGameActive ? `${timeLeft}s` : 'Start'}
                 />
             </St.Notice>
-            <St.CircleContainer>
+            <St.ObjectContainer>
                 <img
                     src={Duck}
                     alt="Duck"
@@ -185,7 +185,7 @@ const BalanceGame = () => {
                         }}
                     />
                 )}
-            </St.CircleContainer>
+            </St.ObjectContainer>
         </St.BalanceGameContainer>
     );
 };
