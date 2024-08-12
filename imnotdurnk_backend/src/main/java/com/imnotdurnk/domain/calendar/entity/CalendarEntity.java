@@ -56,7 +56,7 @@ public class CalendarEntity extends BaseEntity {
     @Column(name = "soju_amount")
     private Integer sojuAmount;
 
-    @OneToMany(mappedBy = "calendarEntity")
+    @OneToMany(mappedBy = "calendarEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<GameLogEntity> gameLogEntities;
 
     public CalendarEntity() {}
