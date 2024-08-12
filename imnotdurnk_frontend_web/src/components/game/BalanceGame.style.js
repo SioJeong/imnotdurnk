@@ -12,7 +12,7 @@ const Description = styled.div`
     text-align: center;
 `;
 
-const CircleContainer = styled.div`
+const ObjectContainer = styled.div`
     position: absolute;
     top: 50%;
     left: 50%;
@@ -37,4 +37,4 @@ const Notice = styled.div`
     background-color: var(--color-white2);
 `;
 
-export { BalanceGameContainer, CircleContainer, Description, Notice };
+export { BalanceGameContainer, Description, Notice, ObjectContainer };
