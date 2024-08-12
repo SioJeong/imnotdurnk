@@ -4,8 +4,10 @@ import Target1 from '../../assets/images/Target1.svg';
 import Target2 from '../../assets/images/Target2.svg';
 import Target3 from '../../assets/images/Target3.svg';
 import Button from '../_button/Button';
-import { ToastError } from '../_common/alert';
+import { ToastError, ToastWarning } from '../_common/alert';
 import * as St from './BalanceGame.style';
+
+import { useNavigate } from 'react-router-dom';
 
 const getRandomTargetPosition = (
     windowWidth,
@@ -32,8 +34,9 @@ const getRandomTargetImage = () => {
 const BalanceGame = () => {
     const windowWidth = window.innerWidth;
     const windowHeight = window.innerHeight;
-
     const duckSize = 74;
+
+    const navigate = useNavigate();
     const [position, setPosition] = useState({
         x: windowWidth / 2 - duckSize / 2,
         y: windowHeight / 2 - duckSize / 2,
@@ -159,6 +162,19 @@ const BalanceGame = () => {
         }
     };
 
+    const handleFinishGame = async () => {
+        ToastWarning('게임 끝', true);
+
+        const gameScore = score >= 25 ? 100 : score * 4;
+
+        navigate('/game/game-result', {
+            state: {
+                gameName: '밸런스',
+                gameScore: gameScore,
+            },
+        });
+    };
+
     useEffect(() => {
         if (isGameActive && timeLeft > 0) {
             const timer = setInterval(() => {
@@ -167,7 +183,7 @@ const BalanceGame = () => {
 
             return () => clearInterval(timer);
         } else if (timeLeft === 0) {
-            resetGame();
+            handleFinishGame();
         }
     }, [isGameActive, timeLeft]);
 
