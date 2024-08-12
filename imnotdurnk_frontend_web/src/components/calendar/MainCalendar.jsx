@@ -8,8 +8,8 @@ import ReactCalendar from './ReactCalendar';
 const MainCalendar = () => {
     const [view, setView] = useState('month'); // 초기 값 month 뷰
 
-    // TODO: 여유 생기면 selectedDate도 전역에 저장하고, '오늘' 버튼 만들기
-    const [selectedDate, setSelectedDate] = useState(new Date()); // 초기 값 오늘
+    // TODO: 여유 생기면 '오늘' 버튼 만들기
+
     const [eventListOnSelectedDate, setEventListOnSelectedDate] = useState([]);
     const [statusOnDate, setStatusOnDate] = useState(0);
 
@@ -28,8 +28,6 @@ const MainCalendar = () => {
         <St.MainContainer>
             <ReactCalendar
                 onChangeView={setView}
-                selectedDate={selectedDate}
-                setSelectedDate={setSelectedDate}
                 setEventListOnSelectedDate={setEventListOnSelectedDate}
                 setStatusOnDate={setStatusOnDate}
             />
@@ -38,7 +36,6 @@ const MainCalendar = () => {
                 <EventCard
                     alcoholLevel={statusOnDate}
                     onItemClick={handleItemClick}
-                    selectedDate={selectedDate}
                     parentComponent="mainCalendar"
                 >
                     {eventListOnSelectedDate.length > 0 ? (

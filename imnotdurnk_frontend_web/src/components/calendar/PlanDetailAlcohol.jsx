@@ -1,29 +1,23 @@
-import { icons } from '@/shared/constants/icons';
 import { alcoholLevelToString } from '../../hooks/useAlcoholLevelFormatter';
 import { formatTime } from '../../hooks/useDateTimeFormatter';
-import useCalendarStore from '../../stores/useCalendarStore';
-import * as St from './CreatePlanAlcohol.style';
+import { icons } from '../../shared/constants/icons';
+import * as St from './PlanDetailAlcohol.style';
 
-const EditPlanAlcohol = ({
-    openAlcoholModal,
-    openAlcoholLevelModal,
-    openArrivalTimeModal,
-    selectedSojuBottleCount,
-    selectedSojuGlassCount,
-    selectedBeerBottleCount,
-    selectedBeerGlassCount,
+const PlanDetailAlcohol = ({
+    sojuBottle,
+    sojuGlass,
+    beerBottle,
+    beerGlass,
+    arrivalTime,
+    alcoholLevel,
 }) => {
-    const { planDetail } = useCalendarStore();
-
-    const formattedArrivalTime = planDetail.arrivalTime
-        ? formatTime(planDetail.arrivalTime)
-        : '-';
+    const arrivalTimeString = arrivalTime ? formatTime(arrivalTime) : '-';
 
     return (
         <St.AlcoholContainer>
             <St.AlcoholTitle>음주 기록</St.AlcoholTitle>
             <St.InputContainer>
-                <St.DrinkInputBox onClick={openAlcoholModal}>
+                <St.DrinkInputBox>
                     <St.InputItemBox $alcoholCount={true}>
                         <St.AlcoholCountImage
                             src={icons['miniSojuBottle']}
@@ -31,8 +25,7 @@ const EditPlanAlcohol = ({
                             $isSoju={true}
                         />
                         <h4>
-                            {selectedSojuBottleCount}병 {selectedSojuGlassCount}
-                            잔
+                            {sojuBottle}병 {sojuGlass}잔
                         </h4>
                     </St.InputItemBox>
                     <St.InputItemBox $alcoholCount={true}>
@@ -42,29 +35,28 @@ const EditPlanAlcohol = ({
                             $isSoju={false}
                         />
                         <h4>
-                            {selectedBeerBottleCount}병 {selectedBeerGlassCount}
-                            잔
+                            {beerBottle}병 {beerGlass}잔
                         </h4>
                     </St.InputItemBox>
                 </St.DrinkInputBox>
 
-                <St.InputItemBox onClick={openAlcoholLevelModal}>
+                <St.InputItemBox>
                     <St.InputItemBoxTitle>
                         <img src={icons['health']} alt="alcohol-level" />
                         <h4>만취 정도</h4>
                     </St.InputItemBoxTitle>
-                    <h4>{alcoholLevelToString(planDetail.alcoholLevel)}</h4>
+                    <h4>{alcoholLevelToString(alcoholLevel)}</h4>
                 </St.InputItemBox>
-                <St.InputItemBox onClick={openArrivalTimeModal}>
+                <St.InputItemBox>
                     <St.InputItemBoxTitle>
                         <img src={icons['clock']} alt="arrival-time" />
                         <h4>귀가 시간</h4>
                     </St.InputItemBoxTitle>
-                    <h4>{formattedArrivalTime}</h4>
+                    <h4>{arrivalTimeString}</h4>
                 </St.InputItemBox>
             </St.InputContainer>
         </St.AlcoholContainer>
     );
 };
 
-export default EditPlanAlcohol;
+export default PlanDetailAlcohol;
