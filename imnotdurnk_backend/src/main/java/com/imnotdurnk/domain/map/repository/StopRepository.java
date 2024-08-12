@@ -25,9 +25,10 @@ public interface StopRepository extends JpaRepository<StopEntity, String> {
             "FROM stop_time st2 "+
             "JOIN stop s2 ON st2.stop_id = s2.stop_id "+
             "WHERE ST_Distance_Sphere(point(s2.stop_lon, s2.stop_lat), point(:startlon, :startlat))<500 "+
+            "AND st2.departure_time>:time "+
             ")) "+
             "SELECT DISTINCT f.route_short_name AS route, f.stop_name AS destStop, "+
-            "ST_Distance_Sphere(point(s.stop_lon, s.stop_lat), point(@startlon, @startlat)) AS startDistance, "+
+            "ST_Distance_Sphere(point(s.stop_lon, s.stop_lat), point(:startlon, :startlat)) AS startDistance, "+
             "f.stop_lat as destLat, f.stop_lon as destLon, s.stop_name AS startStop,  f.distance AS distance, "+
             "abs(time(f.departure_time)-time(st.departure_time)) as duration, "+
             "st.route_id as routeId, st.stop_sequence as seq1, f.stop_sequence as seq2, "+
@@ -37,11 +38,13 @@ public interface StopRepository extends JpaRepository<StopEntity, String> {
             "JOIN stop s ON st.stop_id = s.stop_id "+
             "WHERE ST_Distance_Sphere(point(s.stop_lon, s.stop_lat), point(:startlon, :startlat))<500 "+
             "AND st.stop_sequence < f.stop_sequence "+
+            "AND st.departure_time>:time "+
             "ORDER BY f.distance asc", nativeQuery = true)
     List<MapResult> findStop(       @Param("startlat") Double startlat,
                                     @Param("startlon") Double startlon,
                                     @Param("destlat") Double destlat,
-                                    @Param("destlon") Double destlon);
+                                    @Param("destlon") Double destlon,
+                                    @Param("time") String time);
 
     @Query(value="select s.stop_name, s.stop_lat as lat, s.stop_lon as lon " +
             "from stop s " +
