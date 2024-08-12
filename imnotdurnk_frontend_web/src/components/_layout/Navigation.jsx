@@ -28,7 +28,7 @@ const Navigation = () => {
             setUserFromTmp: state.setUserFromTmp,
         }),
     );
-    const { voiceGameResult } = useGameStore();
+    const { voiceGameResult, resetVoiceGameResult } = useGameStore();
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -38,10 +38,9 @@ const Navigation = () => {
         if (path === '-1') {
             navigate(-1);
         } else if (path === 'submitPlan') {
-            let [year, month, day] = dateStringToUrl(plan.date).split('-');
-            month = parseInt(month);
-            const todayUrl = `${year}-${month}-${day}`;
-            console.log('todayUrl', todayUrl);
+            const [year, monthStr, day] = dateStringToUrl(plan.date).split('-');
+            const month = parseInt(monthStr);
+            const todayUrl = `${year}-${monthStr}-${day}`;
 
             // 제목 필수! 빈 값이면 반환
             if (!plan.title || plan.title.trim() === '') {
@@ -58,12 +57,16 @@ const Navigation = () => {
 
             console.log('voiceGameResultData', voiceGameResultData);
 
+            // 일정 제출 함수 호출
             const success = await submitPlan(
                 voiceGameResultData,
                 navigate,
                 todayUrl,
                 resetPlan,
-            ); // 일정 제출 함수 호출
+                resetVoiceGameResult,
+            );
+
+            console.log('success', success);
 
             if (success) {
                 // 쿼리 무효화

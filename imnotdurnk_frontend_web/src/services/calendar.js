@@ -51,7 +51,7 @@ const getDailyEventList = async ({ date }) => {
                     const { _, formattedTime } = formatDateTime(e.date);
 
                     return {
-                        id: e.planId,
+                        id: e.id,
                         title: e.title,
                         alcoholLevel: e.alcoholLevel,
                         time: formattedTime,
@@ -73,11 +73,11 @@ const createEvent = async ({ plan }) => {
     try {
         const response = await api.post('/calendars', plan, {});
 
-        const { statusCode, httpStatus, message, dataList } = response.data;
+        const { statusCode, httpStatus, message, data } = response.data;
         apiErrorHandler(statusCode, httpStatus, message);
 
         if (statusCode === 201) {
-            return dataList;
+            return data.id;
         }
     } catch (error) {
         throw new Error(error.message || '일정 등록 중 오류 발생');
