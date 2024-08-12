@@ -16,7 +16,6 @@ public class MapDto {
     private Optional<String> destStop;
     private Optional<Double> distance;
     private Optional<Double> duration;
-    private Optional<Integer> walkingTime;
     private Optional<Integer> seq1;
     private Optional<Integer> seq2;
     private Optional<String> routeId;
@@ -28,7 +27,7 @@ public class MapDto {
     public MapDto(Optional<String> destLat, Optional<String> destLon,
                   Optional<String> startStop, Optional<Double> startDistance,
                   Optional<String> route, Optional<String> destStop,
-                  Optional<Double> distance, Optional<Double> duration, Optional<Integer> walkingTime,
+                  Optional<Double> distance, Optional<Double> duration,
                   Optional<Integer> seq1, Optional<Integer> seq2, Optional<String> routeId,
                   Optional<String> startLat, Optional<String> startLon, String taxi) {
         this.destLat = destLat;
@@ -39,7 +38,6 @@ public class MapDto {
         this.destStop = destStop;
         this.distance = distance;
         this.duration = duration;
-        this.walkingTime = walkingTime;
         this.seq1 =seq1;
         this.seq2 = seq2;
         this.routeId = routeId;
@@ -51,13 +49,17 @@ public class MapDto {
     public MapDto() {
     }
 
-    public MapDto(Optional<String> destLat, Optional<String> destLon, Optional<String> startStop, Optional<Double> startDistance, Optional<String> route, Optional<String> destStop, Optional<Double> distance, Optional<Double> duration, Optional<Integer> walkingTime, Optional<Integer> seq1, Optional<Integer> seq2, Optional<String> routeId, Optional<String> startLat, Optional<String> startLon) {
+    public MapDto(Optional<String> destLat, Optional<String> destLon,
+                  Optional<String> startStop, Optional<Double> startDistance,
+                  Optional<String> route, Optional<String> destStop,
+                  Optional<Double> distance, Optional<Double> duration,
+                  Optional<Integer> seq1, Optional<Integer> seq2, Optional<String> routeId,
+                  Optional<String> startLat, Optional<String> startLon) {
         this.startLon = startLon;
         this.startLat = startLat;
         this.routeId = routeId;
         this.seq2 = seq2;
         this.seq1 = seq1;
-        this.walkingTime = walkingTime;
         this.duration = duration;
         this.distance = distance;
         this.destStop = destStop;

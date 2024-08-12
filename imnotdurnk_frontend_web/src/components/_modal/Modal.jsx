@@ -1,5 +1,6 @@
 import Button from '@/components/_button/Button';
 import { useStoreWithEqualityFn } from 'zustand/traditional';
+import { icons } from '../../shared/constants/icons';
 import useModalStore from '../../stores/useModalStore';
 import * as St from './Modal.style';
 
@@ -33,7 +34,7 @@ const Modal = ({
             {isModalOpened && (
                 <St.ModalBackground onClick={closeModalByBackground}>
                     <St.ModalContainer onClick={(e) => e.stopPropagation()}>
-                        <img src="/src/assets/images/bezel.svg" alt="Bezel" />
+                        <img src={icons['bezel']} alt="bazel" />
                         <div>{contents}</div>
                         <Button
                             text={buttonText}

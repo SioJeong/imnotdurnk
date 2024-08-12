@@ -1,9 +1,9 @@
 import SelectButton from '@/components/_button/SelectButton';
+import { icons } from '@/shared/constants/icons';
 import { useEffect, useState } from 'react';
 import { Cell, Pie, PieChart, ResponsiveContainer } from 'recharts';
 import { styled } from 'styled-components';
 import { getGameStaticsticsData } from '../../services/statistics';
-
 const GameStatistics = ({ formattedDate }) => {
     //첫번째 게임 종류 고르는 탭
     const [activeGameTypeIndex, setActiveGameTypeIndex] = useState(0);
@@ -12,18 +12,47 @@ const GameStatistics = ({ formattedDate }) => {
         setActiveGameTypeIndex(index);
     };
 
+    const iconNames = ['voice', 'balance', 'keyboard', 'memorize'];
+
+    const iconSrc = icons[iconNames[activeGameTypeIndex]];
+
     //두번째 통계 월,년 고르는 탭
     const [activeIndex, setActiveIndex] = useState(0);
     const tabContentsList = [
-        { text: 'Month', comment1: ' 달', comment2: '은 ' },
-        { text: 'Year', comment1: ' 해', comment2: '는 ' },
+        { text: 'Month', comment1: '이번 달', comment2: '은 ' },
+        { text: 'Year', comment1: '올해', comment2: '는 ' },
     ];
     //두번째 탭 이동
     const handleButtonClick = (index) => {
         setActiveIndex(index);
     };
     //게임 4개의 데이터 결과 담긴 배열
-    const [gameStatisticsList, setGameStatisticsList] = useState([]);
+    const [gameStatisticsList, setGameStatisticsList] = useState([
+        {
+            totalAverage: 0,
+            monthAverage: 0,
+            lowerCountThanMonthAvg: 0,
+            lowerCountThanYearAvg: 0,
+        },
+        {
+            totalAverage: 0,
+            monthAverage: 0,
+            lowerCountThanMonthAvg: 0,
+            lowerCountThanYearAvg: 0,
+        },
+        {
+            totalAverage: 0,
+            monthAverage: 0,
+            lowerCountThanMonthAvg: 0,
+            lowerCountThanYearAvg: 0,
+        },
+        {
+            totalAverage: 0,
+            monthAverage: 0,
+            lowerCountThanMonthAvg: 0,
+            lowerCountThanYearAvg: 0,
+        },
+    ]);
     //Pie Chart에서 필요한 데이터 형식으로 변경한 게임 데이터
     const [monthAverageForPieChart, setMonthAverageForPieChart] = useState([]);
     const [totalAverageForPieChart, setTotalAverageForPieChart] = useState([]);
@@ -126,6 +155,7 @@ const GameStatistics = ({ formattedDate }) => {
                 }
                 setGameStatisticsList(results);
                 convertGameStatisticsResult(results);
+                console.log(getGameStaticsticsResult1, 'r1');
             } catch (error) {
                 console.error('Error fetching user data:', error);
             }
@@ -141,7 +171,13 @@ const GameStatistics = ({ formattedDate }) => {
                         key={index}
                         $isClicked={activeGameTypeIndex === index}
                         onClick={() => handleGameTypeClick(index)}
-                    />
+                    >
+                        <StyledIcon
+                            src={icons[iconNames[index]]}
+                            alt={`${iconNames[index]} `}
+                            isActive={activeGameTypeIndex === index}
+                        />
+                    </Game>
                 ))}
             </GameListBox>
             <StatisticsVisualization>
@@ -199,23 +235,22 @@ const GameStatistics = ({ formattedDate }) => {
                     ))}
                 </ButtonBox>
                 <Analysis>
-                    이번
                     <Highlight>
                         {tabContentsList[activeIndex].comment1}
                     </Highlight>
                     {tabContentsList[activeIndex].comment2}
                     <Highlight>
-                        {gameStatisticsList === undefined && activeIndex === 0
+                        {gameStatisticsList !== undefined && activeIndex === 0
                             ? gameStatisticsList[activeGameTypeIndex]
                                   .lowerCountThanMonthAvg
                             : gameStatisticsList[activeGameTypeIndex]
                                   .lowerCountThanYearAvg}
                         일
                     </Highlight>
-                    은 평균보다 낮아요. <br />
+                    이 평균보다 낮아요. <br />
                     <Highlight>
                         {' '}
-                        {gameStatisticsList === undefined && activeIndex === 0
+                        {gameStatisticsList !== undefined && activeIndex === 0
                             ? gameStatisticsList[activeGameTypeIndex]
                                   .lowerCountThanMonthAvg
                             : gameStatisticsList[activeGameTypeIndex]
@@ -243,17 +278,7 @@ const GameListBox = styled.div`
     gap: 2.1429rem;
     align-self: stretch;
 `;
-const Game = styled.div`
-    width: 4.1429rem;
-    height: 4.1429rem;
-    flex-shrink: 0;
-    border-radius: 50%;
-    // background-color: var(--color-green2, #465a54);
-    background-color: ${(props) =>
-        props.$isClicked
-            ? 'var(--color-green2, #465a54)'
-            : 'var(--color-white2, #f7f7ec)'};
-`;
+
 const StatisticsVisualization = styled.div`
     display: flex;
     padding: 1.7143rem 2rem;
@@ -308,9 +333,29 @@ const Highlight = styled.span`
 `;
 const Graph = styled.div`
     display: flex;
-    flex-direction: row;
+    justify-content: center; /* 수평 중앙 정렬 */
+    align-items: center;
     gap: 0.7143rem;
     flex: 1 0 0;
     align-self: stretch;
+`;
+
+const Game = styled.div`
+    display: flex;
+    justify-content: center; /* 수평 중앙 정렬 */
+    align-items: center;
+    width: 4.1429rem;
+    height: 4.1429rem;
+    flex-shrink: 0;
+    border-radius: 50%;
+    // background-color: var(--color-green2, #465a54);
+    background-color: ${(props) =>
+        props.$isClicked
+            ? 'var(--color-green2, #465a54)'
+            : 'var(--color-white2, #f7f7ec)'};
+`;
+const StyledIcon = styled.img`
+    filter: ${({ isActive }) =>
+        isActive ? 'brightness(0) invert(1)' : 'none'};
 `;
 export default GameStatistics;

@@ -5,6 +5,7 @@ import com.imnotdurnk.domain.calendar.dto.CalendarStatisticDto;
 import com.imnotdurnk.domain.calendar.dto.DiaryDto;
 import com.imnotdurnk.domain.calendar.dto.PlanDetailDto;
 import com.imnotdurnk.domain.calendar.entity.CalendarEntity;
+import com.imnotdurnk.domain.calendar.repository.mapping.PlanForMonthImpl;
 import com.imnotdurnk.global.exception.EntitySaveFailedException;
 import com.imnotdurnk.global.exception.ResourceNotFoundException;
 import org.apache.coyote.BadRequestException;
@@ -19,11 +20,13 @@ public interface CalendarService {
 
     void updateFeedback(String accessToken, int planId, CalendarDto calendarDto) throws BadRequestException, ResourceNotFoundException, EntitySaveFailedException;
 
-    void addCalendar(String token, CalendarDto calendarDto) throws EntitySaveFailedException;
+    CalendarDto addCalendar(String token, CalendarDto calendarDto) throws EntitySaveFailedException;
 
-    List<CalendarDto> getCalendar( String token, String date);
+    List<CalendarDto> getCalendar(String token, String date);
 
     CalendarStatisticDto getCalendarStatistic(String dateStr, String token);
+
+    List<PlanForMonthImpl> getMonthlyPlanList(String accessToken, LocalDate today);
 
     void updateArrivalTime(String accessToken, int planId, String arrivalTime) throws BadRequestException, ResourceNotFoundException, EntitySaveFailedException;
 

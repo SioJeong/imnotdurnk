@@ -3,10 +3,10 @@ import Checkbox from '@/components/_common/Checkbox';
 import InputBox from '@/components/_common/InputBox';
 import useUserStore from '@/stores/useUserStore';
 import { useEffect, useState } from 'react';
+import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
 import { ToastWarning } from '../_common/alert';
 import * as St from './Signup.style';
-
 const Signup = () => {
     const { user, setUser } = useUserStore((state) => ({
         user: state.user,
@@ -42,7 +42,7 @@ const Signup = () => {
         });
     }, [user]);
     const navigate = useNavigate();
-
+    const [cookies, setCookie, removeCookie] = useCookies(['isNewUser']);
     //전역상태로 저장
     const handleSignup = async () => {
         setUser({
@@ -53,6 +53,7 @@ const Signup = () => {
             passwordCheck: inputValues.passwordCheck,
             agreeCheckBox: inputValues.agreeCheckBox,
         });
+        setCookie('isNewUser', true, { path: '/' });
         navigate('/check-email');
     };
 
@@ -66,8 +67,7 @@ const Signup = () => {
             /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[~!@#$%^&*])[A-Za-z\d~!@#$%^&*]{8,16}$/;
 
         const nameRegex = /^[ㄱ-ㅎㅏ-ㅣ가-힣]{2,10}$/;
-        const phoneRegex = /^01[0|1]-\d{3,4}-\d{4}$/;
-
+        const phoneRegex = /^(010|011)-\d{4}-\d{4}$/;
         //이름 유효성 검사
         if (!nameRegex.test(inputValues.name)) {
             isValid = false;

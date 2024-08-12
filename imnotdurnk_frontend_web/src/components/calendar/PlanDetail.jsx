@@ -1,19 +1,20 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { alcoholLevelToString } from '../../hooks/useAlcoholLevelFormatter';
 import {
     convertDateToString,
     convertTimeToString,
-    formatTime,
 } from '../../hooks/useDateTimeFormatter';
 import { deleteEvent, getEventDetail } from '../../services/calendar';
+import { icons } from '../../shared/constants/icons';
 import useCalendarStore from '../../stores/useCalendarStore';
 import useNavigationStore from '../../stores/useNavigationStore';
 import Button from '../_button/Button';
 import { DeleteConfirmModal, ToastSuccess } from '../_common/alert';
 import CalendarStatusBar from './CalendarStatusBar';
 import * as St from './PlanDetail.style';
+import PlanDetailAlcohol from './PlanDetailAlcohol';
+import PlanDetailGame from './PlanDetailGame';
 
 const PlanDetail = () => {
     const navigate = useNavigate();
@@ -24,6 +25,8 @@ const PlanDetail = () => {
 
     const setNavigation = useNavigationStore((state) => state.setNavigation);
     const { setFullPlanDetail, resetPlanDetail } = useCalendarStore();
+
+    const [selectedGameType, setSelectedGameType] = useState(1); // 최초 발음 게임
 
     const {
         data: planDetail,
@@ -40,6 +43,7 @@ const PlanDetail = () => {
     // PlanDetail 컴포넌트 렌더링 후에 Navigation 컴포넌트 상태 업데이트 해야 함
     useEffect(() => {
         if (planDetail) {
+            console.log(planDetail.gameLogDtos);
             const date = convertDateToString(new Date(planDetail.date));
             const time = convertTimeToString(new Date(planDetail.date));
             setFullPlanDetail({ ...planDetail, date, time }); // 전역에 저장해서 수정 시 데이터 사용..
@@ -59,10 +63,6 @@ const PlanDetail = () => {
     const sojuGlass = planDetail?.sojuAmount % 8;
     const beerBottle = Math.floor(planDetail?.beerAmount / 500);
     const beerGlass = Math.round((planDetail?.beerAmount % 500) / 355);
-
-    const arrivalTimeString = planDetail?.arrivalTime
-        ? formatTime(planDetail?.arrivalTime)
-        : '-';
 
     const deletePlan = async () => {
         const [year, month] = planDetail.date.split('T')[0].split('-');
@@ -127,10 +127,7 @@ const PlanDetail = () => {
                             </St.ScheduleTitle>
                             <St.InputContainer>
                                 <St.InputItemBox>
-                                    <img
-                                        src="/src/assets/icons/size_24/Icon-calendar.svg"
-                                        alt="date"
-                                    />
+                                    <img src={icons['calendar']} alt="date" />
                                     <h4>
                                         {convertDateToString(
                                             new Date(planDetail?.date),
@@ -138,10 +135,7 @@ const PlanDetail = () => {
                                     </h4>
                                 </St.InputItemBox>
                                 <St.InputItemBox>
-                                    <img
-                                        src="/src/assets/icons/size_24/Icon-clock.svg"
-                                        alt="time"
-                                    />
+                                    <img src={icons['clock']} alt="time" />
                                     <h4>
                                         {convertTimeToString(
                                             new Date(planDetail?.date),
@@ -149,17 +143,14 @@ const PlanDetail = () => {
                                     </h4>
                                 </St.InputItemBox>
                                 <St.InputItemBox>
-                                    <img
-                                        src="/src/assets/icons/size_24/Icon-title.svg"
-                                        alt="title"
-                                    />
+                                    <img src={icons['title']} alt="title" />
                                     <St.TitleAndMemo>
                                         {planDetail?.title}
                                     </St.TitleAndMemo>
                                 </St.InputItemBox>
                                 <St.InputItemBox $boxSize="long">
                                     <St.MemoIconImage
-                                        src="/src/assets/icons/size_24/Icon-memo.svg"
+                                        src={icons['memo']}
                                         alt="memo"
                                     />
                                     <St.TitleAndMemo>
@@ -168,58 +159,21 @@ const PlanDetail = () => {
                                 </St.InputItemBox>
                             </St.InputContainer>
                         </St.ScheduleContainer>
-                        <St.AlcoholContainer>
-                            <St.AlcoholTitle>음주 기록</St.AlcoholTitle>
-                            <St.InputContainer>
-                                <St.DrinkInputBox>
-                                    <St.InputItemBox $alcoholCount={true}>
-                                        <St.AlcoholCountImage
-                                            src="/src/assets/images/mini-soju-bottle.webp"
-                                            alt="soju"
-                                            $isSoju={true}
-                                        />
-                                        <h4>
-                                            {sojuBottle}병 {sojuGlass}잔
-                                        </h4>
-                                    </St.InputItemBox>
-                                    <St.InputItemBox $alcoholCount={true}>
-                                        <St.AlcoholCountImage
-                                            src="/src/assets/images/mini-beer-bottle.webp"
-                                            alt="beer"
-                                            $isSoju={false}
-                                        />
-                                        <h4>
-                                            {beerBottle}병 {beerGlass}잔
-                                        </h4>
-                                    </St.InputItemBox>
-                                </St.DrinkInputBox>
 
-                                <St.InputItemBox>
-                                    <St.InputItemBoxTitle>
-                                        <img
-                                            src="/src/assets/icons/size_24/Icon-health.svg"
-                                            alt="alcohol-level"
-                                        />
-                                        <h4>만취 정도</h4>
-                                    </St.InputItemBoxTitle>
-                                    <h4>
-                                        {alcoholLevelToString(
-                                            planDetail?.alcoholLevel,
-                                        )}
-                                    </h4>
-                                </St.InputItemBox>
-                                <St.InputItemBox>
-                                    <St.InputItemBoxTitle>
-                                        <img
-                                            src="/src/assets/icons/size_24/Icon-clock.svg"
-                                            alt="arrival-time"
-                                        />
-                                        <h4>귀가 시간</h4>
-                                    </St.InputItemBoxTitle>
-                                    <h4>{arrivalTimeString}</h4>
-                                </St.InputItemBox>
-                            </St.InputContainer>
-                        </St.AlcoholContainer>
+                        <PlanDetailAlcohol
+                            sojuBottle={sojuBottle}
+                            sojuGlass={sojuGlass}
+                            beerBottle={beerBottle}
+                            beerGlass={beerGlass}
+                            arrivalTime={planDetail?.arrivalTime}
+                            alcoholLevel={planDetail?.alcoholLevel}
+                        />
+
+                        <PlanDetailGame
+                            selectedGameType={selectedGameType}
+                            setSelectedGameType={setSelectedGameType}
+                            gameLogs={planDetail.gameLogDtos}
+                        />
                         <Button
                             text={'일정 삭제하기'}
                             isRed={false}
