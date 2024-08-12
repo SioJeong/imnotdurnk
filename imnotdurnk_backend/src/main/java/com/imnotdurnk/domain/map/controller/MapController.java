@@ -32,7 +32,7 @@ public class MapController {
             @RequestParam(required = true) double destlat, @RequestParam(required = true) double destlon,
             @RequestParam(required = true) String time) {
         ListResponse<MapDto> response = new ListResponse<>();
-        List<MapDto> result = mapService.getStopsAndRoutesInArea(destlat, destlon, startlat, startlon, time);
+        List<MapDto> result = mapService.getStopsAndRoutesInArea(startlat, startlon, destlat, destlon, time);
         response.setDataList(result);
         response.setMessage("결과 반환 성공");
         return ResponseEntity.ok(response);
@@ -40,7 +40,7 @@ public class MapController {
 
     @Operation(
             summary = "대중교통 경로 조회",
-            description = "현재 시간에 환승없이 도달 가능한 도착지와 가장 가까운 대중교통 경로를 조회합니다."
+            description = "현재 시간에 환승없이 도달 가능한 도착지와 가장 가까운 대중교통 경로와 택시비를 조회합니다."
     )
     @GetMapping("/detail")
     public ResponseEntity<ListResponse<?>> getPath(
