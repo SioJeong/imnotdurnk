@@ -18,7 +18,7 @@ const VoiceGameResult = () => {
         setNavigation({
             isVisible: true,
             icon1: { iconname: 'backarrow', path: '/game/voicegame' },
-            title: '발음 평가 결과',
+            title: '게임 결과',
             icon2: { iconname: 'empty' },
         });
     }, []);
