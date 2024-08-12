@@ -10,13 +10,17 @@ import * as St from './BalanceGame.style';
 const getRandomTargetPosition = (
     windowWidth,
     windowHeight,
-    minDistance = 100,
+    duckPosition,
+    minDistance = 160,
 ) => {
     let x, y;
     do {
-        x = Math.random() * (windowWidth - 80) + 40; // 타겟이 뷰포트의 좌우로 벗어나지 않도록 수정
-        y = Math.random() * (windowHeight - 80) + 40; // 타겟이 뷰포트의 상하로 벗어나지 않도록 수정
-    } while (x ** 2 + y ** 2 < minDistance ** 2);
+        x = Math.random() * (windowWidth - 120) + 40; // 타겟이 뷰포트의 좌우로 벗어나지 않도록 수정
+        y = Math.random() * (windowHeight - 120) + 40; // 타겟이 뷰포트의 상하로 벗어나지 않도록 수정
+    } while (
+        Math.sqrt((x - duckPosition.x) ** 2 + (y - duckPosition.y) ** 2) <
+        minDistance
+    );
     return { x, y };
 };
 
@@ -38,15 +42,29 @@ const BalanceGame = () => {
     const [score, setScore] = useState(0);
     const [timeLeft, setTimeLeft] = useState(30);
     const [isGameActive, setIsGameActive] = useState(false);
+    const [velocity, setVelocity] = useState({ x: 0, y: 0 });
 
     const updatePosition = ({ beta, gamma }) => {
         setPosition((prevPosition) => {
-            let newX = prevPosition.x + gamma / 10;
-            let newY = prevPosition.y + beta / 10;
+            // 새로운 속도를 계산
+            const newVelocityX = velocity.x + gamma / 100;
+            const newVelocityY = velocity.y + beta / 100;
 
-            newX = Math.max(0, Math.min(newX, windowWidth - 40));
-            newY = Math.max(0, Math.min(newY, windowHeight - 40));
+            // 속도에 마찰력을 적용
+            const friction = 0.98; // 마찰력, 1에 가까울수록 미끄러지는 느낌이 강해짐
+            const velocityX = newVelocityX * friction;
+            const velocityY = newVelocityY * friction;
 
+            // 새로운 위치 계산
+            let newX = prevPosition.x + velocityX;
+            let newY = prevPosition.y + velocityY;
+
+            // 경계를 넘지 않도록 제한
+            newX = Math.max(0, Math.min(newX, windowWidth - duckSize));
+            newY = Math.max(0, Math.min(newY, windowHeight - duckSize));
+
+            // 상태 업데이트
+            setVelocity({ x: velocityX, y: velocityY });
             return { x: newX, y: newY };
         });
     };
@@ -120,25 +138,37 @@ const BalanceGame = () => {
         setTimeLeft(30);
         setIsGameActive(true);
         const initialTarget = {
-            position: getRandomTargetPosition(windowWidth, windowHeight),
+            position: getRandomTargetPosition(
+                windowWidth,
+                windowHeight,
+                position,
+            ),
             Component: getRandomTargetImage(),
         };
         setTarget(initialTarget);
     };
 
     const resetGame = () => {
-        const windowWidth = window.innerWidth;
-        const windowHeight = window.innerHeight;
-        const duckSize = 74;
+        const initialDuckPosition = {
+            x: windowWidth / 2 - duckSize / 2,
+            y: windowHeight / 2 - duckSize / 2,
+        };
 
         setScore(0);
         setTimeLeft(30);
         setIsGameActive(false);
         setTarget(null);
-        setPosition({
-            x: windowWidth / 2 - duckSize / 2,
-            y: windowHeight / 2 - duckSize / 2,
-        });
+        setPosition(initialDuckPosition);
+
+        const initialTarget = {
+            position: getRandomTargetPosition(
+                windowWidth,
+                windowHeight,
+                initialDuckPosition,
+            ),
+            Component: getRandomTargetImage(),
+        };
+        setTarget(initialTarget);
     };
 
     const handleButtonClick = () => {

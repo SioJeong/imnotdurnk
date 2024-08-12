@@ -14,10 +14,10 @@ const Description = styled.div`
 
 const ObjectContainer = styled.div`
     position: absolute;
-    top: 20;
+    top: 1.4286rem;
     left: 0;
     width: 100%;
-    height: 100%;
+    height: 90%;
 `;
 
 const Notice = styled.div`
