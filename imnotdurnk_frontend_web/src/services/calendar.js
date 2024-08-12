@@ -73,11 +73,11 @@ const createEvent = async ({ plan }) => {
     try {
         const response = await api.post('/calendars', plan, {});
 
-        const { statusCode, httpStatus, message } = response.data;
+        const { statusCode, httpStatus, message, dataList } = response.data;
         apiErrorHandler(statusCode, httpStatus, message);
 
         if (statusCode === 201) {
-            return true;
+            return dataList;
         }
     } catch (error) {
         throw new Error(error.message || '일정 등록 중 오류 발생');

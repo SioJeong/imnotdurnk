@@ -11,9 +11,9 @@ const useGameNavigation = () => {
     useEffect(() => {
         const path = location.pathname;
 
-        // VoiceGameResult, AddGameToPlan 경로일 경우 네비게이션 설정을 하지 않음
+        // GameResult, AddGameToPlan 경로일 경우 네비게이션 설정을 하지 않음
         if (
-            path.match('/game/voicegame/result') ||
+            path.match('/game/game-result') ||
             path.match('/game/voicegame/result/add-to-plan')
         ) {
             return;
