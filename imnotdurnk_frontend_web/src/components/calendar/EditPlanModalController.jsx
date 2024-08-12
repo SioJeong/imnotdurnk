@@ -9,8 +9,8 @@ import ModalDateDropdown from '../_modal/ModalDateDropdown';
 import ModalTimeDropdown from '../_modal/ModalTimeDropdown';
 
 const EditPlanModalController = ({
-    selectedDate,
-    setSelectedDate,
+    selectedDateInput,
+    setSelectedDateInput,
     selectedTime,
     setSelectedTime,
     selectedSojuBottleCount,
@@ -31,11 +31,11 @@ const EditPlanModalController = ({
 
     // 날짜 선택 모달
     const handleSelectedDate = (year, month, day) => {
-        setSelectedDate({ year, month, day });
+        setSelectedDateInput({ year, month, day });
     };
 
     const submitSelectedDate = () => {
-        const dateStr = `${selectedDate.year} ${selectedDate.month} ${selectedDate.day}`;
+        const dateStr = `${selectedDateInput.year} ${selectedDateInput.month} ${selectedDateInput.day}`;
         setPlanDetail({ date: dateStr });
         closeModal('dateModal');
     };
@@ -106,7 +106,7 @@ const EditPlanModalController = ({
                 modalId="dateModal"
                 contents={
                     <ModalDateDropdown
-                        selectedDate={selectedDate}
+                        selectedDateInput={selectedDateInput}
                         handleSelectedDate={handleSelectedDate}
                     />
                 }

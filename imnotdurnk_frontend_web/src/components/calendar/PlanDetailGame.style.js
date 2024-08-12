@@ -36,6 +36,8 @@ const GameTypeCircle = styled.div`
     border-radius: 50%;
     background-color: ${({ $selected }) =>
         $selected ? 'var(--color-red)' : 'var(--color-white1)'};
+
+    cursor: pointer;
 `;
 
 const GameLogBox = styled.ul`
