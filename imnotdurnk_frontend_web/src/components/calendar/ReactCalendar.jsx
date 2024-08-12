@@ -3,18 +3,19 @@ import { useCallback, useEffect, useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { getAllEventList } from '../../services/calendar';
+import useCalendarStore from '../../stores/useCalendarStore';
 import './ReactCalendar.css';
 import * as St from './ReactCalendar.style';
 
 const ReactCalendar = ({
     onChangeView,
-    selectedDate,
-    setSelectedDate,
     setEventListOnSelectedDate,
     setStatusOnDate,
 }) => {
     const [year, setYear] = useState(new Date().getFullYear());
     const [month, setMonth] = useState(new Date().getMonth() + 1);
+
+    const { selectedDate, setSelectedDate } = useCalendarStore();
 
     const {
         data: monthlyEventList,
@@ -26,6 +27,11 @@ const ReactCalendar = ({
         queryFn: () => getAllEventList({ year, month }),
         keepPreviousData: true, // 새 데이터 가져오는 동안 이전 데이터 유지
     });
+
+    // 초기 캘린더 렌더링 시 '오늘'로 설정
+    useEffect(() => {
+        setSelectedDate(new Date());
+    }, []);
 
     useEffect(() => {
         if (selectedDate && monthlyEventList) {

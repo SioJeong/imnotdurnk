@@ -52,11 +52,12 @@ public interface CalendarRepository extends JpaRepository<CalendarEntity, Intege
     @Query("""
         SELECT FUNCTION('YEAR', c.date) as year, FUNCTION('MONTH', c.date) as month, COUNT(c.id) as count
         FROM CalendarEntity c
-        WHERE c.date BETWEEN :startDate AND :endDate
+        WHERE c.userEntity.id = :userId
+        AND c.date BETWEEN :startDate AND :endDate
         GROUP BY FUNCTION('YEAR', c.date), FUNCTION('MONTH', c.date)
         ORDER BY FUNCTION('YEAR', c.date) DESC, FUNCTION('MONTH', c.date) DESC
         """)
-    List<PlanForMonth> findRecent12MonthsPlanCount(LocalDateTime startDate, LocalDateTime endDate);
+    List<PlanForMonth> findRecent12MonthsPlanCount(Integer userId, LocalDateTime startDate, LocalDateTime endDate);
 
 }
 

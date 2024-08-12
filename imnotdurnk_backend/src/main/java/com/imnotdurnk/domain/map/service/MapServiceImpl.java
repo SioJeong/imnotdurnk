@@ -18,9 +18,7 @@ import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
@@ -41,33 +39,26 @@ public class MapServiceImpl implements MapService {
      *
      * @param destLat 목적지의 위도
      * @param destLon 목적지의 경도
-     * @param latitude 현재 위치의 위도
-     * @param longitude 현재 위치의 경도
+     * @param startLat 현재 위치의 위도
+     * @param startLon 현재 위치의 경도
      * @param time 현재 시간
      * @return 가장 가까운 정류소와 경로 정보를 포함하는 MapResult 객체
      */
-    public List<MapDto> getStopsAndRoutesInArea(double destLat, double destLon,  double latitude, double longitude, String time) {
+    public List<MapDto> getStopsAndRoutesInArea(double startLat, double startLon,  double destLat, double destLon, String time) {
 
-        double d = 0.005;
         List<MapDto> mapResult = new ArrayList<MapDto>();
-        for(int t=1;t<=4;t++){
-            double latMin = latitude - d*t;
-            double latMax = latitude + d*t;
-            double lonMin = longitude - d*t;
-            double lonMax = longitude + d*t;
-            List<MapResult> stop = stopRepository.findStop(destLat, destLon, latitude, longitude, latMin, latMax, lonMin, lonMax, time);
-            if(!stop.getFirst().getRoute().isEmpty()){
-                for(MapResult result : stop){
-                    String slon = result.getStartLon().get();
-                    slon=slon.replace("\r", "");
-                    String dlon = result.getDestLon().get();
-                    dlon=dlon.replace("\r", "");
-
-                    mapResult.add(new MapDto(result.getDestLat(), Optional.of(dlon),result.getStartStop(),result.getStartDistance(),result.getRoute(),result.getDestStop(),result.getDistance(),result.getDuration(), Optional.of(5 * t), result.getSeq1(), result.getSeq2(), result.getRouteId(), result.getStartLat(), Optional.of(slon)));
-                }
-                break;
+        List<MapResult> stop = stopRepository.findStop(startLat, startLon, destLat, destLon, time);
+        Set<String> set = new HashSet<String>();
+        for(MapResult result : stop){
+            if(set.contains(String.valueOf(result.getRoute()))) {
+                continue;
             }
-
+            String slon = result.getStartLon().get();
+            slon=slon.replace("\r", "");
+            String dlon = result.getDestLon().get();
+            dlon=dlon.replace("\r", "");
+            mapResult.add(new MapDto(result.getDestLat(), Optional.of(dlon),result.getStartStop(),result.getStartDistance(),result.getRoute(),result.getDestStop(),result.getDistance(),result.getDuration(), result.getSeq1(), result.getSeq2(), result.getRouteId(), result.getStartLat(), Optional.of(slon)));
+            set.add(String.valueOf(result.getRoute()));
         }
         return mapResult;
     }
@@ -81,67 +72,62 @@ public class MapServiceImpl implements MapService {
      * 가장 가까운 정류소를 반환
      * 비동기로 택시 요금 검색
      *
-     * @param destLat 목적지의 위도
-     * @param destLon 목적지의 경도
-     * @param latitude 현재 위치의 위도
-     * @param longitude 현재 위치의 경도
+     * @param destlat 목적지의 위도
+     * @param destlon 목적지의 경도
+     * @param startlat 현재 위치의 위도
+     * @param startlon 현재 위치의 경도
      * @param time 현재 시간
      * @return 가장 가까운 정류소와 경로 정보를 포함하는 MapResult 객체
      */
-    public List<MapDto> getStopsAndRoutesInAreaWithTaxi(double destLat, double destLon, double latitude, double longitude, String time) {
-        double d = 0.005;
+    public List<MapDto> getStopsAndRoutesInAreaWithTaxi(double destlat, double destlon, double startlat, double startlon, String time) {
         List<Mono<MapDto>> mapDtoList = new ArrayList<>();
 
-        for (int t = 1; t <= 4; t++) {
-            double latMin = latitude - d * t;
-            double latMax = latitude + d * t;
-            double lonMin = longitude - d * t;
-            double lonMax = longitude + d * t;
-
-            List<MapResult> stop = stopRepository.findStop(destLat, destLon, latitude, longitude, latMin, latMax, lonMin, lonMax, time);
-            if (!stop.isEmpty() && !stop.get(0).getRoute().isEmpty()) {
-                for (MapResult result : stop) {
-                    String slon = result.getStartLon().get().replace("\r", "");
-                    String dlon = result.getDestLon().get().replace("\r", "");
-                    String dlat = result.getDestLat().get();
-                    String origin = dlon + ", " + dlat;
-                    String destination = destLon + ", " + destLat;
-
-                    // fetchTaxiFare의 결과를 Mono로 받아서 처리
-                    Mono<Integer> taxiFareMono = fetchTaxiFare(origin, destination);
-
-                    // MapDto를 생성하는 부분을 Mono로 감싸기
-                    int finalT = t;
-                    mapDtoList.add(taxiFareMono.map(taxiFare -> new MapDto(
-                            result.getDestLat(),
-                            Optional.of(dlon),
-                            result.getStartStop(),
-                            result.getStartDistance(),
-                            result.getRoute(),
-                            result.getDestStop(),
-                            result.getDistance(),
-                            result.getDuration(),
-                            Optional.of(5 * finalT),
-                            result.getSeq1(),
-                            result.getSeq2(),
-                            result.getRouteId(),
-                            result.getStartLat(),
-                            Optional.of(slon),
-                            taxiFare.toString()
-                    )));
+        List<MapResult> stop = stopRepository.findStop(startlat, startlon, destlat, destlon, time);
+        Set<String> set = new HashSet<String>();
+        if (!stop.isEmpty() && !stop.get(0).getRoute().isEmpty()) {
+            for (MapResult result : stop) {
+                if(set.contains(String.valueOf(result.getRoute()))) {
+                    continue;
                 }
+                set.add(String.valueOf(result.getRoute()));
+                String slon = result.getStartLon().get().replace("\r", "");
+                String dlon = result.getDestLon().get().replace("\r", "");
+                String dlat = result.getDestLat().get();
+                String origin = slon + ", " + startlat;
+                String destination = dlon + ", " + dlat;
 
-                // 모든 Mono를 합쳐서 결과를 처리하고 block()을 사용하여 동기적으로 결과를 가져옴
-                List<MapDto> resultList = Mono.zip(mapDtoList, results -> {
-                    List<MapDto> tempResultList = new ArrayList<>();
-                    for (Object obj : results) {
-                        tempResultList.add((MapDto) obj);
-                    }
-                    return tempResultList;
-                }).block(); // 결과를 동기적으로 가져옴
+                // fetchTaxiFare의 결과를 Mono로 받아서 처리
+                Mono<Integer> taxiFareMono = fetchTaxiFare(origin, destination);
 
-                return resultList;
+                // MapDto를 생성하는 부분을 Mono로 감싸기
+                mapDtoList.add(taxiFareMono.map(taxiFare -> new MapDto(
+                        result.getDestLat(),
+                        Optional.of(dlon),
+                        result.getStartStop(),
+                        result.getStartDistance(),
+                        result.getRoute(),
+                        result.getDestStop(),
+                        result.getDistance(),
+                        result.getDuration(),
+                        result.getSeq1(),
+                        result.getSeq2(),
+                        result.getRouteId(),
+                        result.getStartLat(),
+                        Optional.of(slon),
+                        taxiFare.toString()
+                )));
             }
+
+            // 모든 Mono를 합쳐서 결과를 처리하고 block()을 사용하여 동기적으로 결과를 가져옴
+            List<MapDto> resultList = Mono.zip(mapDtoList, results -> {
+                List<MapDto> tempResultList = new ArrayList<>();
+                for (Object obj : results) {
+                    tempResultList.add((MapDto) obj);
+                }
+                return tempResultList;
+            }).block(); // 결과를 동기적으로 가져옴
+
+            return resultList;
         }
         // 만약 조건이 충족되지 않으면 빈 리스트 반환
         return new ArrayList<>();

@@ -91,7 +91,11 @@ const usePersistentStore = create(
 
 // 로컬 스토리지에 저장 X
 const useNonPersistentStore = create((set, get) => ({
-    // 1. 일정 등록
+    // 1. 캘린더에서 선택한 날짜
+    selectedDate: new Date(), // 초기 값 오늘
+    setSelectedDate: (date) => set({ selectedDate: date }),
+
+    // 2. 일정 등록
     plan: {
         date: convertDateToString(new Date()),
         time: convertTimeToString(new Date()),

@@ -122,7 +122,25 @@ const dateStringToUrl = (dateString) => {
     return `${year}-${formatterMonth}-${formattedDay}`;
 };
 
+// backend에서 받아온 데이터 frontend 형식으로 변환
+// timeLog 형식: hh:mm:ss.nanosecond (01:49:04.247)
+// -> 오전 10시 49분 (timeZone 안 맞아서 +9시간 처리함)
+const adjustTimeZone = (timeLog) => {
+    const [hours, minutes, seconds] = timeLog.split(':').map(Number);
+
+    let adjustedHours = hours + 9; // 9시간 더하기
+    if (adjustedHours >= 24) {
+        adjustedHours = adjustedHours % 24; // 만약 24시를 넘어가면, 24로 나눈 나머지를 취함
+    }
+
+    // 다시 문자열로 조합 (10:49:04)
+    const adjustedTimeLog = `${String(adjustedHours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+    return formatTime(adjustedTimeLog); // 변환 함수 적용해서 return
+};
+
 export {
+    adjustTimeZone,
     convertDateToString,
     convertTimeToString,
     dateStringToUrl,
