@@ -42,29 +42,15 @@ const BalanceGame = () => {
     const [score, setScore] = useState(0);
     const [timeLeft, setTimeLeft] = useState(30);
     const [isGameActive, setIsGameActive] = useState(false);
-    const [velocity, setVelocity] = useState({ x: 0, y: 0 });
 
     const updatePosition = ({ beta, gamma }) => {
         setPosition((prevPosition) => {
-            // 새로운 속도를 계산
-            const newVelocityX = velocity.x + gamma / 100;
-            const newVelocityY = velocity.y + beta / 100;
+            let newX = prevPosition.x + gamma / 5;
+            let newY = prevPosition.y + beta / 5;
 
-            // 속도에 마찰력을 적용
-            const friction = 0.98; // 마찰력, 1에 가까울수록 미끄러지는 느낌이 강해짐
-            const velocityX = newVelocityX * friction;
-            const velocityY = newVelocityY * friction;
+            newX = Math.max(0, Math.min(newX, windowWidth - 40));
+            newY = Math.max(0, Math.min(newY, windowHeight - 40));
 
-            // 새로운 위치 계산
-            let newX = prevPosition.x + velocityX;
-            let newY = prevPosition.y + velocityY;
-
-            // 경계를 넘지 않도록 제한
-            newX = Math.max(0, Math.min(newX, windowWidth - duckSize));
-            newY = Math.max(0, Math.min(newY, windowHeight - duckSize));
-
-            // 상태 업데이트
-            setVelocity({ x: velocityX, y: velocityY });
             return { x: newX, y: newY };
         });
     };
