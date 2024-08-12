@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { icons } from '../../shared/constants/icons';
 import StepperButton from '../_button/StepperButton';
 import Checkbox from '../_common/Checkbox';
 import * as St from './Modal.style';
@@ -93,7 +94,7 @@ const ModalAlcohol = ({
                 <St.StyledStepperElement>
                     <St.StyledImageAndAmount>
                         <St.StyledStepperImage
-                            src={`/src/assets/images/${drink}bottle.webp`}
+                            src={icons[`${drink}Bottle`]}
                             alt={`${drink} bottle image`}
                         />
                         {drinkType === '맥주' ? <h5>500ml</h5> : <></>}
@@ -109,7 +110,7 @@ const ModalAlcohol = ({
                 <St.StyledStepperElement>
                     <St.StyledImageAndAmount>
                         <St.StyledStepperImage
-                            src={`/src/assets/images/${drink}glass.webp`}
+                            src={icons[`${drink}Glass`]}
                             alt={`${drink} glass image`}
                         />
                         {drinkType === '맥주' ? <h5>355ml</h5> : <></>}

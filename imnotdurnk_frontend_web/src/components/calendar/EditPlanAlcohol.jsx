@@ -1,3 +1,4 @@
+import { icons } from '@/shared/constants/icons';
 import { alcoholLevelToString } from '../../hooks/useAlcoholLevelFormatter';
 import { formatTime } from '../../hooks/useDateTimeFormatter';
 import useCalendarStore from '../../stores/useCalendarStore';
@@ -25,7 +26,7 @@ const EditPlanAlcohol = ({
                 <St.DrinkInputBox onClick={openAlcoholModal}>
                     <St.InputItemBox $alcoholCount={true}>
                         <St.AlcoholCountImage
-                            src="/src/assets/images/mini-soju-bottle.webp"
+                            src={icons['miniSojuBottle']}
                             alt="soju"
                             $isSoju={true}
                         />
@@ -36,7 +37,7 @@ const EditPlanAlcohol = ({
                     </St.InputItemBox>
                     <St.InputItemBox $alcoholCount={true}>
                         <St.AlcoholCountImage
-                            src="/src/assets/images/mini-beer-bottle.webp"
+                            src={icons['miniBeerBottle']}
                             alt="beer"
                             $isSoju={false}
                         />
@@ -49,20 +50,14 @@ const EditPlanAlcohol = ({
 
                 <St.InputItemBox onClick={openAlcoholLevelModal}>
                     <St.InputItemBoxTitle>
-                        <img
-                            src="/src/assets/icons/size_24/Icon-health.svg"
-                            alt="alcohol-level"
-                        />
+                        <img src={icons['health']} alt="alcohol-level" />
                         <h4>만취 정도</h4>
                     </St.InputItemBoxTitle>
                     <h4>{alcoholLevelToString(planDetail.alcoholLevel)}</h4>
                 </St.InputItemBox>
                 <St.InputItemBox onClick={openArrivalTimeModal}>
                     <St.InputItemBoxTitle>
-                        <img
-                            src="/src/assets/icons/size_24/Icon-clock.svg"
-                            alt="arrival-time"
-                        />
+                        <img src={icons['clock']} alt="arrival-time" />
                         <h4>귀가 시간</h4>
                     </St.InputItemBoxTitle>
                     <h4>{formattedArrivalTime}</h4>

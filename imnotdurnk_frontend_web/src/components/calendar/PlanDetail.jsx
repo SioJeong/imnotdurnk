@@ -6,6 +6,7 @@ import {
     convertTimeToString,
 } from '../../hooks/useDateTimeFormatter';
 import { deleteEvent, getEventDetail } from '../../services/calendar';
+import { icons } from '../../shared/constants/icons';
 import useCalendarStore from '../../stores/useCalendarStore';
 import useNavigationStore from '../../stores/useNavigationStore';
 import Button from '../_button/Button';
@@ -126,10 +127,7 @@ const PlanDetail = () => {
                             </St.ScheduleTitle>
                             <St.InputContainer>
                                 <St.InputItemBox>
-                                    <img
-                                        src="/src/assets/icons/size_24/Icon-calendar.svg"
-                                        alt="date"
-                                    />
+                                    <img src={icons['calendar']} alt="date" />
                                     <h4>
                                         {convertDateToString(
                                             new Date(planDetail?.date),
@@ -137,10 +135,7 @@ const PlanDetail = () => {
                                     </h4>
                                 </St.InputItemBox>
                                 <St.InputItemBox>
-                                    <img
-                                        src="/src/assets/icons/size_24/Icon-clock.svg"
-                                        alt="time"
-                                    />
+                                    <img src={icons['clock']} alt="time" />
                                     <h4>
                                         {convertTimeToString(
                                             new Date(planDetail?.date),
@@ -148,17 +143,14 @@ const PlanDetail = () => {
                                     </h4>
                                 </St.InputItemBox>
                                 <St.InputItemBox>
-                                    <img
-                                        src="/src/assets/icons/size_24/Icon-title.svg"
-                                        alt="title"
-                                    />
+                                    <img src={icons['title']} alt="title" />
                                     <St.TitleAndMemo>
                                         {planDetail?.title}
                                     </St.TitleAndMemo>
                                 </St.InputItemBox>
                                 <St.InputItemBox $boxSize="long">
                                     <St.MemoIconImage
-                                        src="/src/assets/icons/size_24/Icon-memo.svg"
+                                        src={icons['memo']}
                                         alt="memo"
                                     />
                                     <St.TitleAndMemo>

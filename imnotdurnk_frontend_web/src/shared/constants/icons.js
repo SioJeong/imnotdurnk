@@ -29,6 +29,13 @@ import Title from '../../assets/icons/size_24/Icon-title.svg';
 import Visible from '../../assets/icons/size_24/Icon-visible.svg';
 import VoiceWhite from '../../assets/icons/size_24/Icon-voice-white.svg';
 import Voice from '../../assets/icons/size_24/Icon-voice.svg';
+import BeerBottle from '../../assets/images/beerbottle.webp';
+import BeerGlass from '../../assets/images/beerglass.webp';
+import Bezel from '../../assets/images/bezel.svg';
+import MiniBeerBottle from '../../assets/images/mini-beer-bottle.webp';
+import MiniSojuBottle from '../../assets/images/mini-soju-bottle.webp';
+import SojuBottle from '../../assets/images/sojubottle.webp';
+import SojuGlass from '../../assets/images/sojuglass.webp';
 
 const icons = {
     address: Address,
@@ -62,6 +69,13 @@ const icons = {
     signout: Signout,
     profile: Profile,
     gameLog: GameLog,
+    miniSojuBottle: MiniSojuBottle,
+    miniBeerBottle: MiniBeerBottle,
+    bezel: Bezel,
+    beerBottle: BeerBottle,
+    sojuBottle: SojuBottle,
+    sojuGlass: SojuGlass,
+    beerGlass: BeerGlass,
 };
 
 export { icons };

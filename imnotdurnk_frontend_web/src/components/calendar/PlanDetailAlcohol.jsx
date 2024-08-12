@@ -1,5 +1,6 @@
 import { alcoholLevelToString } from '../../hooks/useAlcoholLevelFormatter';
 import { formatTime } from '../../hooks/useDateTimeFormatter';
+import { icons } from '../../shared/constants/icons';
 import * as St from './PlanDetailAlcohol.style';
 
 const PlanDetailAlcohol = ({
@@ -19,7 +20,7 @@ const PlanDetailAlcohol = ({
                 <St.DrinkInputBox>
                     <St.InputItemBox $alcoholCount={true}>
                         <St.AlcoholCountImage
-                            src="/src/assets/images/mini-soju-bottle.webp"
+                            src={icons['miniSojuBottle']}
                             alt="soju"
                             $isSoju={true}
                         />
@@ -29,7 +30,7 @@ const PlanDetailAlcohol = ({
                     </St.InputItemBox>
                     <St.InputItemBox $alcoholCount={true}>
                         <St.AlcoholCountImage
-                            src="/src/assets/images/mini-beer-bottle.webp"
+                            src={icons['miniBeerBottle']}
                             alt="beer"
                             $isSoju={false}
                         />
@@ -41,20 +42,14 @@ const PlanDetailAlcohol = ({
 
                 <St.InputItemBox>
                     <St.InputItemBoxTitle>
-                        <img
-                            src="/src/assets/icons/size_24/Icon-health.svg"
-                            alt="alcohol-level"
-                        />
+                        <img src={icons['health']} alt="alcohol-level" />
                         <h4>만취 정도</h4>
                     </St.InputItemBoxTitle>
                     <h4>{alcoholLevelToString(alcoholLevel)}</h4>
                 </St.InputItemBox>
                 <St.InputItemBox>
                     <St.InputItemBoxTitle>
-                        <img
-                            src="/src/assets/icons/size_24/Icon-clock.svg"
-                            alt="arrival-time"
-                        />
+                        <img src={icons['clock']} alt="arrival-time" />
                         <h4>귀가 시간</h4>
                     </St.InputItemBoxTitle>
                     <h4>{arrivalTimeString}</h4>

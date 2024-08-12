@@ -1,3 +1,4 @@
+import { icons } from '@/shared/constants/icons';
 import { calendarMinmax } from '@/shared/constants/minmaxLength';
 import { useEffect, useRef, useState } from 'react';
 import { alcoholLevelToString } from '../../hooks/useAlcoholLevelFormatter';
@@ -105,27 +106,18 @@ const EditPlan = () => {
                             onClick={() => openModal('dateModal')}
                             $cursor={true}
                         >
-                            <img
-                                src="/src/assets/icons/size_24/Icon-calendar.svg"
-                                alt="date"
-                            />
+                            <img src={icons['calendar']} alt="date" />
                             <h4>{planDetail.date}</h4>
                         </St.InputItemBox>
                         <St.InputItemBox
                             onClick={() => openModal('timeModal')}
                             $cursor={true}
                         >
-                            <img
-                                src="/src/assets/icons/size_24/Icon-clock.svg"
-                                alt="time"
-                            />
+                            <img src={icons['clock']} alt="time" />
                             <h4>{planDetail.time}</h4>
                         </St.InputItemBox>
                         <St.InputItemBox>
-                            <img
-                                src="/src/assets/icons/size_24/Icon-title.svg"
-                                alt="title"
-                            />
+                            <img src={icons['title']} alt="title" />
                             <St.InputTitleText
                                 ref={titleRef}
                                 value={title}
@@ -136,10 +128,7 @@ const EditPlan = () => {
                             />
                         </St.InputItemBox>
                         <St.InputItemBox $boxSize="long">
-                            <img
-                                src="/src/assets/icons/size_24/Icon-memo.svg"
-                                alt="memo"
-                            />
+                            <img src={icons['memo']} alt="memo" />
                             <St.InputMemoText
                                 ref={memoRef}
                                 value={memo}
