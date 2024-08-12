@@ -47,7 +47,7 @@ public class MapServiceImpl implements MapService {
     public List<MapDto> getStopsAndRoutesInArea(double startLat, double startLon,  double destLat, double destLon, String time) {
 
         List<MapDto> mapResult = new ArrayList<MapDto>();
-        List<MapResult> stop = stopRepository.findStop(startLat, startLon, destLat, destLon);
+        List<MapResult> stop = stopRepository.findStop(startLat, startLon, destLat, destLon, time);
         Set<String> set = new HashSet<String>();
         for(MapResult result : stop){
             if(set.contains(String.valueOf(result.getRoute()))) {
@@ -82,7 +82,7 @@ public class MapServiceImpl implements MapService {
     public List<MapDto> getStopsAndRoutesInAreaWithTaxi(double destlat, double destlon, double startlat, double startlon, String time) {
         List<Mono<MapDto>> mapDtoList = new ArrayList<>();
 
-        List<MapResult> stop = stopRepository.findStop(startlat, startlon, destlat, destlon);
+        List<MapResult> stop = stopRepository.findStop(startlat, startlon, destlat, destlon, time);
         Set<String> set = new HashSet<String>();
         if (!stop.isEmpty() && !stop.get(0).getRoute().isEmpty()) {
             for (MapResult result : stop) {

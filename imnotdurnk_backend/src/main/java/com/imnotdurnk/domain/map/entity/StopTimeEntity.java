@@ -34,10 +34,7 @@ public class StopTimeEntity {
     @Column(name = "stop_sequence")
     private Integer stopSequence;
 
-    @Column(name = "time_to_next")
-    private Integer timeToNext;
-
-    public StopTimeEntity(Integer id, StopEntity stop, RouteEntity route, Integer pickupType, Integer dropoffType, String departureTime, Integer stopSequence, Integer timeToNext) {
+    public StopTimeEntity(Integer id, StopEntity stop, RouteEntity route, Integer pickupType, Integer dropoffType, String departureTime, Integer stopSequence) {
         this.id = id;
         this.stop = stop;
         this.route = route;
@@ -45,7 +42,6 @@ public class StopTimeEntity {
         this.dropoffType = dropoffType;
         this.departureTime = departureTime;
         this.stopSequence = stopSequence;
-        this.timeToNext = timeToNext;
     }
 
     public StopTimeEntity() {
