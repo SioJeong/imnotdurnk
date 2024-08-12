@@ -12,7 +12,7 @@ const GameStatistics = ({ formattedDate }) => {
         setActiveGameTypeIndex(index);
     };
 
-    const iconNames = ['voice', 'balance', 'memorize', 'keyboard'];
+    const iconNames = ['voice', 'balance', 'keyboard', 'memorize'];
 
     const iconSrc = icons[iconNames[activeGameTypeIndex]];
 
