@@ -2,6 +2,7 @@ import useUserStore from '@/stores/useUserStore.js';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 import Button from '../_button/Button';
+import { InfoConfirmModal, ToastSuccess, ToastWarning } from '../_common/alert';
 
 const GameResult = () => {
     const { user } = useUserStore((state) => ({
@@ -27,9 +28,50 @@ const GameResult = () => {
             ],
         },
     ];
+    const handleSubmit = () => {
+        InfoConfirmModal(
+            '오늘 등록한 일정이 있나요?',
+            '예',
+            '아니오',
+            () => {
+                ToastSuccess('오늘의 일정 리스트로 이동합니다.');
+                navigate('/game/voicegame/result/add-to-plan');
+            },
+            () => {
+                InfoConfirmModal(
+                    '지금 술을 드시고 계신가요?',
+                    '예',
+                    '아니오',
+                    () => {
+                        InfoConfirmModal(
+                            `게임 기록을 저장하려면 일정이 필요합니다. <br/> 
+                            새로운 일정을 생성할까요?`,
+                            '예',
+                            '아니오',
+                            () => {
+                                ToastSuccess('일정 등록 페이지로');
+                            },
+                            () => {
+                                ToastWarning(
+                                    '기록을 저장하려면 일정이 필요합니다.',
+                                );
+                            },
+                            // '게임 기록이 등록 되었습니다.',
+                        );
+                    },
+                    () => {
+                        ToastWarning('술을 마신 경우에만 기록이 저장됩니다.');
+                    },
+                    // '게임 기록이 등록 되었습니다.',
+                );
+            },
+            // '게임 기록이 등록 되었습니다.',
+        );
+    };
     const onClickGameListButton = () => {
         navigate('/');
     };
+
     return (
         <ResultContainer>
             <TitleContainer>
@@ -55,7 +97,12 @@ const GameResult = () => {
                     : drunkenLevelContentsList[1].image}
             </StyledImage>
             <ButtonBox>
-                <Button text="게임 기록 저장하기" size="big" isRed={false} />
+                <Button
+                    text="게임 기록 저장하기"
+                    size="big"
+                    isRed={false}
+                    onClick={handleSubmit}
+                />
                 <Button
                     text="게임 목록으로 돌아가기"
                     size="big"
@@ -86,7 +133,7 @@ const TitleContainer = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 7px;
+    gap: 0.5rem;
 `;
 const Title = styled.h2`
     text-align: center;
@@ -100,18 +147,18 @@ const SubTitle = styled.p`
 
 const StyledImage = styled.div`
     display: flex;
-    height: 199px;
+    height: 14.2143rem;
     justify-content: center;
     align-items: center;
     align-self: stretch;
 `;
 const ButtonBox = styled.div`
     display: flex;
-    height: 129px;
-    padding: 0px 14px;
+    height: 9.2143rem;
+    padding: 0rem 1rem;
     flex-direction: column;
     align-items: center;
-    gap: 10px;
+    gap: 0.7143rem;
     align-self: stretch;
 `;
 const Highlight = styled.span`
