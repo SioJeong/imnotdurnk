@@ -76,7 +76,7 @@ const GameResult = () => {
         <ResultContainer>
             <TitleContainer>
                 <Title>
-                    {user.name ? user.name : '00'}님의{' '}
+                    {user.nickname !== '' ? user.nickname : user.name}님의{' '}
                     {gameName ? gameName : '00'} 게임 점수는
                     <br />{' '}
                     <Highlight>

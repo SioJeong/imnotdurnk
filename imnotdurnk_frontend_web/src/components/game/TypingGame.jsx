@@ -111,8 +111,8 @@ const TypingGame = () => {
             <St.TitleContainer>
                 <St.Title>아래의 글을 따라 입력해주세요!</St.Title>
                 <St.SubTitle>
-                    {user.nickname ? user.nickname : user.name}님의 타자를 보고
-                    취했는지 판단해드릴게요.
+                    {user.nickname !== '' ? user.nickname : user.name}님의
+                    타자를 보고 취했는지 판단해드릴게요.
                 </St.SubTitle>
             </St.TitleContainer>
             <St.TimerBox>
