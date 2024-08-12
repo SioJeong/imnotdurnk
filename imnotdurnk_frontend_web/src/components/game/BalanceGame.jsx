@@ -182,7 +182,6 @@ const BalanceGame = () => {
                     style={{
                         position: 'absolute',
                         transform: `translate(${position.x}px, ${position.y}px) ${position.x > windowWidth / 2 ? 'scaleX(-1)' : 'scaleX(1)'}`,
-                        transition: 'transform 0.1s ease-out',
                         zIndex: 20,
                     }}
                 />
@@ -193,7 +192,6 @@ const BalanceGame = () => {
                         style={{
                             position: 'absolute',
                             transform: `translate(${target.position.x}px, ${target.position.y}px)`,
-                            transition: 'transform 0.1s ease-out',
                             zIndex: 20,
                         }}
                     />
