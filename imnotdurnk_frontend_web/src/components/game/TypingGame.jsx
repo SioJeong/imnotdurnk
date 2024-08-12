@@ -88,12 +88,15 @@ const TypingGame = () => {
         ToastWarning('게임 끝', true);
 
         const gameScore = await calculateGameScore();
+
+        console.log('배포에서 이동안하는 이유 찾기위한거 .. 1');
         navigate('/game/game-result', {
             state: {
                 gameName: '타이핑',
                 gameScore: gameScore,
             },
         });
+        console.log('배포에서 이동안하는 이유 찾기위한거 .. 2');
         // return { shouldRepeat: true, delay: 1.5 };
     };
     useEffect(() => {
@@ -139,6 +142,12 @@ const TypingGame = () => {
                 onChange={handleInputChange}
                 name="inputTyping"
                 autoComplete="off"
+                onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault(); // 기본 폼 제출 방지
+                        handleFinishGame(); // 엔터 키가 눌릴 때 handleFinishGame 호출
+                    }
+                }}
             />
             <St.ButtonBox>
                 <Button
