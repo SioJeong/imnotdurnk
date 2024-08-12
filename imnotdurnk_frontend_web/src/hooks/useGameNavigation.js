@@ -33,13 +33,6 @@ const useGameNavigation = () => {
                 title: '밸런스 게임',
                 icon2: { iconname: 'empty' },
             });
-        } else if (path.match('/game/typinggame')) {
-            setNavigation({
-                isVisible: true,
-                icon1: { iconname: 'backarrow', path: '/game' },
-                title: '타이핑 게임',
-                icon2: { iconname: 'empty' },
-            });
         } else {
             setNavigation({
                 isVisible: true,
