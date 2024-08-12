@@ -22,7 +22,7 @@ const EditPlan = () => {
         formattedArrivalTime.split(' '); // arrivalTime이 null인 경우 기본값 설정
 
     // input 영역 상태 관리
-    const [selectedDate, setSelectedDate] = useState({
+    const [selectedDateInput, setSelectedDateInput] = useState({
         year,
         month,
         day,
@@ -152,8 +152,8 @@ const EditPlan = () => {
                 />
             </St.Container>
             <EditPlanModalController
-                selectedDate={selectedDate}
-                setSelectedDate={setSelectedDate}
+                selectedDateInput={selectedDateInput}
+                setSelectedDateInput={setSelectedDateInput}
                 selectedTime={selectedTime}
                 setSelectedTime={setSelectedTime}
                 selectedSojuBottleCount={selectedSojuBottleCount}
