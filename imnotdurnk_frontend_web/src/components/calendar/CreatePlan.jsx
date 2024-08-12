@@ -1,6 +1,7 @@
 import { icons } from '@/shared/constants/icons';
 import { calendarMinmax } from '@/shared/constants/minmaxLength';
 import { useEffect, useRef, useState } from 'react';
+import { convertDateToString } from '../../hooks/useDateTimeFormatter';
 import useCalendarStore from '../../stores/useCalendarStore';
 import useModalStore from '../../stores/useModalStore';
 import * as St from './CreatePlan.style';
@@ -8,14 +9,14 @@ import CreatePlanAlcohol from './CreatePlanAlcohol';
 import CreatePlanModalController from './CreatePlanModalController';
 
 const CreatePlan = () => {
-    const { plan, setPlan } = useCalendarStore();
+    const { selectedDate, plan, setPlan } = useCalendarStore();
     const { openModal } = useModalStore();
 
-    const [year, month, day] = plan.date.split(' ');
+    const [year, month, day] = convertDateToString(selectedDate).split(' ');
     const [ampm, hour, minute] = plan.time.split(' ');
 
     // input 영역 상태 관리
-    const [selectedDate, setSelectedDate] = useState({
+    const [selectedDateInput, setSelectedDateInput] = useState({
         year,
         month,
         day,
@@ -52,6 +53,11 @@ const CreatePlan = () => {
 
     const memoRef = useRef(null);
     const titleRef = useRef(null);
+
+    // CreatePlan 컴포넌트 최초 렌더링 시, selectedDate를 초기값으로 설정
+    useEffect(() => {
+        setPlan({ date: convertDateToString(selectedDate) });
+    }, [selectedDate]);
 
     useEffect(() => {
         if (titleRef.current) {
@@ -142,8 +148,8 @@ const CreatePlan = () => {
                 />
             </St.Container>
             <CreatePlanModalController
-                selectedDate={selectedDate}
-                setSelectedDate={setSelectedDate}
+                selectedDateInput={selectedDateInput}
+                setSelectedDateInput={setSelectedDateInput}
                 selectedTime={selectedTime}
                 setSelectedTime={setSelectedTime}
                 selectedSojuBottleCount={selectedSojuBottleCount}

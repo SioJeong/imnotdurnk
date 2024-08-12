@@ -5,6 +5,7 @@ import {
     dateStringToUrl,
 } from '../../hooks/useDateTimeFormatter';
 import { saveVoiceGameResult } from '../../services/game';
+import useCalendarStore from '../../stores/useCalendarStore';
 import useGameStore from '../../stores/useGameStore';
 import { ToastSuccess } from '../_common/alert';
 import * as St from './EventCard.style';
@@ -12,13 +13,14 @@ import * as St from './EventCard.style';
 const EventCard = ({
     alcoholLevel,
     onItemClick,
-    selectedDate,
     parentComponent,
     eventId,
     children,
 }) => {
     const navigate = useNavigate();
     const location = useLocation();
+
+    const { selectedDate } = useCalendarStore();
 
     const [selectedDateFromPath, setSelectedDateFromPath] = useState(null);
     const today = new Date();
