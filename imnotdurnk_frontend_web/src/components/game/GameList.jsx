@@ -14,6 +14,9 @@ const GameList = () => {
     const goToTypingGame = () => {
         navigate('/game/typinggame');
     };
+    const goToMemorizeGame = () => {
+        navigate('/game/memorizegame');
+    };
     return (
         <St.GameContainer>
             <St.GameItem onClick={goToVoiceGame} $type={'voice'}>
@@ -28,7 +31,7 @@ const GameList = () => {
                 <St.GameImage src={icons['keyboardWhite']} alt="keyboard" />
                 <St.GameText $isDark={false}>타이핑 게임</St.GameText>
             </St.GameItem>
-            <St.GameItem $type={'memorize'}>
+            <St.GameItem onClick={goToMemorizeGame} $type={'memorize'}>
                 <St.GameImage src={icons['memorize']} alt="memorize" />
                 <St.GameText $isDark={true}>기억력 게임</St.GameText>
             </St.GameItem>

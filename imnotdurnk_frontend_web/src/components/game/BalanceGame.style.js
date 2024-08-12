@@ -14,12 +14,9 @@ const Description = styled.div`
 
 const ObjectContainer = styled.div`
     position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 50px;
-    height: 50px;
-    margin-left: -25px;
-    margin-top: -25px;
+    left: 0;
+    width: 100%;
+    height: 85%;
 `;
 
 const Notice = styled.div`
@@ -33,6 +30,7 @@ const Notice = styled.div`
     padding: 3rem;
     border-radius: 20px;
     width: 100%;
+    z-index: 10;
 
     background-color: var(--color-white2);
 `;
