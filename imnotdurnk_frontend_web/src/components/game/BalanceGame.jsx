@@ -61,10 +61,12 @@ const BalanceGame = () => {
         }
 
         const duckCenter = { x: position.x + 37, y: position.y + 37 }; // 오리 중심 계산
-        const targetCenter = {
-            x: target.position.x + 20,
-            y: target.position.y + 20,
-        }; // 타겟 중심 계산
+        const targetCenter = target
+            ? {
+                  x: target.position.x + 20,
+                  y: target.position.y + 20,
+              }
+            : { x: 0, y: 0 }; // 타겟 중심 계산, target이 null일 경우 기본값 사용
 
         const distance = Math.sqrt(
             (duckCenter.x - targetCenter.x) ** 2 +
