@@ -237,6 +237,7 @@ public class CalendarController {
     public ResponseEntity<?> getPlanDetail(@RequestAttribute(value = "AccessToken", required = true) String accessToken,
                                            @PathVariable int planId) throws BadRequestException {
 
+
         // 일정 조회
         PlanDetailDto planDetailDto = calendarService.getPlanDetail(accessToken, planId);
 

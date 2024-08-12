@@ -11,4 +11,7 @@ public interface MapService {
     public List<MapDto> getStopsAndRoutesInArea(double destLat, double destLon, double latitude, double longitude , String time);
 
     public List<RouteDto> getRoutes(String routeId, int seq1, int seq2);
+
+    public List<MapDto> getStopsAndRoutesInAreaWithTaxi(double destLat, double destLon, double latitude, double longitude, String time);
 }
+

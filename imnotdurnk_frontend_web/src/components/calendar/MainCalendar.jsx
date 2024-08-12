@@ -39,20 +39,23 @@ const MainCalendar = () => {
                     alcoholLevel={statusOnDate}
                     onItemClick={handleItemClick}
                     selectedDate={selectedDate}
-                    fromCalendar={true}
+                    parentComponent="mainCalendar"
                 >
                     {eventListOnSelectedDate.length > 0 ? (
                         <>
-                            {eventListOnSelectedDate.slice(0, 3).map((e) => {
-                                return (
-                                    <St.EventCardTitle
-                                        key={e.id}
-                                        $alcoholLevel={statusOnDate}
-                                    >
-                                        - {e.title}
-                                    </St.EventCardTitle>
-                                );
-                            })}
+                            {eventListOnSelectedDate
+                                .sort((a, b) => b.date - a.date)
+                                .slice(0, 3)
+                                .map((e) => {
+                                    return (
+                                        <St.EventCardTitle
+                                            key={e.id}
+                                            $alcoholLevel={statusOnDate}
+                                        >
+                                            - {e.title}
+                                        </St.EventCardTitle>
+                                    );
+                                })}
                             {eventListOnSelectedDate.length > 3 && (
                                 <St.EventCardMorePlan
                                     $alcoholLevel={statusOnDate}

@@ -3,6 +3,7 @@ import InformationContainer from '@/components/findpassword/InformationContainer
 import { sendNewPassword } from '@/services/user';
 import useNavigationStore from '@/stores/useNavigationStore';
 import { useEffect, useState } from 'react';
+import { ToastError, ToastSuccess } from '../components/_common/alert';
 const FindPassword = () => {
     const setNavigation = useNavigationStore((state) => state.setNavigation);
     const [isSent, setIsSent] = useState(false);
@@ -14,19 +15,17 @@ const FindPassword = () => {
     });
     const handleIsSent = () => {
         setIsSent(true);
-        console.log('hs', email);
     };
 
     const handleSendNewPassword = async () => {
-        console.log('Sending new password for email:', email); // 상태 확인
         if (email) {
             // 이메일이 유효한지 확인
             const sendNewPasswordResult = await sendNewPassword(email);
             if (sendNewPasswordResult.isSuccess) {
-                console.log(sendNewPasswordResult);
+                ToastSuccess('임시 비밀번호가 전송되었습니다.', true);
             }
         } else {
-            console.error('No email provided');
+            ToastError('임시 비밀번호가 전송에 실패했습니다.', true);
         }
     };
     const checkValidation = () => {
@@ -49,7 +48,6 @@ const FindPassword = () => {
     const onClickSendNewPasswordButton = (e) => {
         e.preventDefault();
         if (checkValidation()) {
-            console.log('유효성 검사 ㄱ성공', email);
             handleIsSent();
             handleSendNewPassword();
         }

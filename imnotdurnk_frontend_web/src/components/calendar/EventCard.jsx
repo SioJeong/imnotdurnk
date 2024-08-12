@@ -1,12 +1,19 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import {
+    convertDateToString,
+    dateStringToUrl,
+} from '../../hooks/useDateTimeFormatter';
+import { saveVoiceGameResult } from '../../services/game';
+import useGameStore from '../../stores/useGameStore';
+import { ToastSuccess } from '../_common/alert';
 import * as St from './EventCard.style';
 
 const EventCard = ({
     alcoholLevel,
     onItemClick,
     selectedDate,
-    fromCalendar,
+    parentComponent,
     eventId,
     children,
 }) => {
@@ -14,6 +21,10 @@ const EventCard = ({
     const location = useLocation();
 
     const [selectedDateFromPath, setSelectedDateFromPath] = useState(null);
+    const today = new Date();
+    const todayUrl = dateStringToUrl(convertDateToString(today));
+
+    const { voiceGameResult } = useGameStore();
 
     useEffect(() => {
         if (location.pathname.startsWith('/calendar/')) {
@@ -25,9 +36,12 @@ const EventCard = ({
         }
     }, [location.pathname]);
 
-    const selectedDateForDisplay = fromCalendar
-        ? selectedDate
-        : selectedDateFromPath;
+    const selectedDateForDisplay =
+        parentComponent === 'mainCalendar'
+            ? selectedDate
+            : parentComponent === 'calendarList'
+              ? selectedDateFromPath
+              : today;
 
     // 요일 index -> 문자열로 변환하는 함수
     const getDayName = (date) => {
@@ -36,12 +50,27 @@ const EventCard = ({
     };
 
     // 카드 클릭 시 페이지 이동 동작
-    const handleOnClick = () => {
-        if (fromCalendar) {
+    const handleOnClick = async () => {
+        if (parentComponent === 'mainCalendar') {
             onItemClick(selectedDate);
-        } else {
+        } else if (parentComponent === 'calendarList') {
             const currentPath = location.pathname;
             navigate(`${currentPath}/plan/${eventId}`);
+        } else if (parentComponent === 'addGameToPlan') {
+            const voiceGameResultData = {
+                planId: eventId,
+                score: voiceGameResult.score,
+                filename: voiceGameResult.filename,
+                script: voiceGameResult.script,
+            };
+            console.log('서버에 보낼 voiceGameResultData', voiceGameResultData);
+            const result = await saveVoiceGameResult({
+                data: voiceGameResultData,
+            });
+            if (result) {
+                ToastSuccess('게임 기록이 등록되었습니다!');
+                navigate(`/calendar/${todayUrl}/plan/${eventId}`);
+            }
         }
     };
 

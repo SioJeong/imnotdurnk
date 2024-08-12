@@ -29,7 +29,7 @@ public interface CalendarRepository extends JpaRepository<CalendarEntity, Intege
         """)
     List<DiaryDto> findAllDiary(Integer user, Integer year, Integer month);
 
-    @Query("SELECT c FROM CalendarEntity c WHERE c.userEntity.id = :userId AND DATE(c.date) = :date")
+    @Query("SELECT c FROM CalendarEntity c WHERE c.userEntity.id = :userId AND DATE(c.date) = :date ORDER BY TIMESTAMP(c.date) DESC")
     List<CalendarEntity> findByUserEntity_IdAndDate(Integer userId, LocalDate date);
 
     @Query("""
@@ -59,3 +59,4 @@ public interface CalendarRepository extends JpaRepository<CalendarEntity, Intege
     List<PlanForMonth> findRecent12MonthsPlanCount(LocalDateTime startDate, LocalDateTime endDate);
 
 }
+
