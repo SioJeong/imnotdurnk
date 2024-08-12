@@ -4,12 +4,11 @@ import useUserStore from '@/stores/useUserStore.js';
 import { useEffect, useState } from 'react';
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import { useNavigate } from 'react-router-dom';
-import { getTestSentence } from '../../services/game';
 import useModalStore from '../../stores/useModalStore';
 import { ToastWarning } from '../_common/alert';
 import ModalTextBox from '../_modal/ModalTextBox';
-import * as St from './TypingGame.style';
-const TypingGame = () => {
+import * as St from './MemorizeGame.style';
+const MemorizeGame = () => {
     const { user } = useUserStore((state) => ({
         user: state.user,
     }));
@@ -92,7 +91,7 @@ const TypingGame = () => {
         console.log('배포에서 이동안하는 이유 찾기위한거 .. 1');
         navigate('/game/game-result', {
             state: {
-                gameName: '타이핑',
+                gameName: '기억력',
                 gameScore: gameScore,
             },
         });
@@ -100,11 +99,6 @@ const TypingGame = () => {
         // return { shouldRepeat: true, delay: 1.5 };
     };
     useEffect(() => {
-        const getTestText = async () => {
-            const getTestTextResult = await getTestSentence();
-            setTestText(getTestTextResult);
-        };
-        getTestText();
         console.log('Opening modal');
         openModal(modalId);
     }, [openModal]);
@@ -112,19 +106,20 @@ const TypingGame = () => {
     return (
         <St.TypingGameContainer>
             <St.TitleContainer>
-                <St.Title>아래의 글을 따라 입력해주세요!</St.Title>
+                <St.Title>카드의 뒷면을 기억해보세요!</St.Title>
                 <St.SubTitle>
-                    {user.nickname !== '' ? user.nickname : user.name}님의
-                    타자를 보고 취했는지 판단해드릴게요.
+                    카드의 뒷면을 5초간 보여드릴 테니 <br /> 카드를 다시 뒤집은
+                    후, 카드 쌍을 맞춰보세요.
                 </St.SubTitle>
             </St.TitleContainer>
             <St.TimerBox>
                 {' '}
                 <CountdownCircleTimer
-                    duration={30}
+                    duration={5}
                     colors={['#004777', '#F7B801', '#A30000', '#A30000']}
-                    colorsTime={[30, 15, 10, 0]}
-                    size={120}
+                    colorsTime={[5, 3, 2, 0]}
+                    size={50}
+                    strokeWidth={5}
                     isSmoothColorTransition={true}
                     isPlaying={isGameStarted}
                     onComplete={handleFinishGame}
@@ -132,23 +127,8 @@ const TypingGame = () => {
                     {({ remainingTime }) => remainingTime}
                 </CountdownCircleTimer>
             </St.TimerBox>
-            <St.TestTextDiv $isVisible={isVisible}>
-                {' '}
-                {getStyledText()}
-            </St.TestTextDiv>
-            <St.TypingGameInput
-                type="text"
-                value={inputTyping}
-                onChange={handleInputChange}
-                name="inputTyping"
-                autoComplete="off"
-                onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                        e.preventDefault(); // 기본 폼 제출 방지
-                        handleFinishGame(); // 엔터 키가 눌릴 때 handleFinishGame 호출
-                    }
-                }}
-            />
+            <St.TestDiv $isVisible={isVisible}> {getStyledText()}</St.TestDiv>
+
             <St.ButtonBox>
                 <Button
                     text="다 지우기"
@@ -166,7 +146,7 @@ const TypingGame = () => {
             <Modal
                 modalId="typingGameNoticeModal"
                 contents={
-                    <ModalTextBox text="30초 안에 주어진 문장을 입력하세요!" />
+                    <ModalTextBox text="30초 안에 같은 그림의 카드를 찾으세요!" />
                 }
                 buttonText={'시작하기'}
                 onButtonClick={closeHandler}
@@ -175,4 +155,4 @@ const TypingGame = () => {
     );
 };
 
-export default TypingGame;
+export default MemorizeGame;
