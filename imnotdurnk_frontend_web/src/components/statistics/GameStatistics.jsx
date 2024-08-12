@@ -155,6 +155,7 @@ const GameStatistics = ({ formattedDate }) => {
                 }
                 setGameStatisticsList(results);
                 convertGameStatisticsResult(results);
+                console.log(getGameStaticsticsResult1, 'r1');
             } catch (error) {
                 console.error('Error fetching user data:', error);
             }
@@ -240,7 +241,7 @@ const GameStatistics = ({ formattedDate }) => {
                     </Highlight>
                     {tabContentsList[activeIndex].comment2}
                     <Highlight>
-                        {gameStatisticsList === undefined && activeIndex === 0
+                        {gameStatisticsList !== undefined && activeIndex === 0
                             ? gameStatisticsList[activeGameTypeIndex]
                                   .lowerCountThanMonthAvg
                             : gameStatisticsList[activeGameTypeIndex]
@@ -250,7 +251,7 @@ const GameStatistics = ({ formattedDate }) => {
                     은 평균보다 낮아요. <br />
                     <Highlight>
                         {' '}
-                        {gameStatisticsList === undefined && activeIndex === 0
+                        {gameStatisticsList !== undefined && activeIndex === 0
                             ? gameStatisticsList[activeGameTypeIndex]
                                   .lowerCountThanMonthAvg
                             : gameStatisticsList[activeGameTypeIndex]

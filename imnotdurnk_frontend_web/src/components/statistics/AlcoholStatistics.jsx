@@ -174,7 +174,7 @@ const AlcoholStatistics = ({ today, formattedDate }) => {
                     <br />
                     소주<Highlight> {avgData[activeIndex].soju}</Highlight>병,
                     맥주
-                    <Highlight> {avgData[activeIndex].beer}</Highlight>{' '}
+                    <Highlight> {avgData[activeIndex].beer}</Highlight>
                     병입니다.
                 </Analysis>
             </StatisticsText>
