@@ -1,0 +1,104 @@
+/* 캘린더 전체 */
+.react-calendar {
+    width: auto;
+    padding: 1rem;
+    border: none;
+    border-radius: 20px;
+    background: var(--color-green2);
+    line-height: 2.5rem;
+}
+
+.react-calendar button {
+    /* border: 1px solid black; */
+    color: var(--color-white1);
+    font-size: var(--font-title-h3);
+    font-weight: 500;
+}
+
+/* 캘린더 월/연도 선택 */
+.react-calendar__navigation {
+    height: 3.5rem;
+    text-align: center;
+}
+
+.react-calendar__navigation__label > span {
+    color: var(--color-white1);
+    font-size: var(--font-title-h2);
+    font-weight: 500;
+}
+
+.react-calendar__navigation__label:hover > span,
+.react-calendar__navigation__label:focus > span {
+    color: var(--color-white1);
+}
+
+.react-calendar__navigation button {
+    min-width: 5rem;
+}
+
+.react-calendar__navigation button:disabled {
+    background-color: transparent;
+}
+
+.react-calendar__navigation button:enabled:focus {
+    background-color: transparent;
+}
+
+.react-calendar__navigation button:enabled:hover {
+    border-radius: 10px;
+    background-color: var(--color-green3);
+    color: var(--color-white1);
+}
+
+/* 일 ~ 월 */
+.react-calendar__month-view__weekdays > div > abbr {
+    color: var(--color-white1);
+    font-size: var(--font-title-h3);
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.react-calendar__month-view__weekdays > div:nth-child(1) > abbr {
+    color: var(--color-red);
+}
+
+.react-calendar__month-view__weekdays > div:nth-child(7) > abbr {
+    color: var(--color-blue);
+}
+
+/* date 타일 */
+.react-calendar__month-view__days__day abbr {
+    display: none;
+}
+
+.react-calendar__tile {
+    padding: 0;
+}
+
+.react-calendar__tile--active,
+.react-calendar__tile--active:enabled:hover,
+.react-calendar__tile--active:enabled:focus {
+    background-color: transparent;
+}
+
+.react-calendar__tile:enabled:hover,
+.react-calendar__tile:enabled:focus {
+    border: none;
+    border-radius: 20px;
+    background-color: var(--color-green3);
+}
+
+.react-calendar__tile:enabled:hover:not(.react-calendar__tile--now),
+.react-calendar__tile:enabled:focus:not(.react-calendar__tile--now) {
+    opacity: 0.7;
+}
+
+.react-calendar__tile--now.react-calendar__tile {
+    border: none;
+    border-radius: 20px;
+    background-color: var(--color-green3);
+}
+
+.react-calendar__tile--hasActive {
+    background-color: transparent;
+}

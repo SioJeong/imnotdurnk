@@ -1,0 +1,100 @@
+/* ToastAlert 위치 설정 */
+.pt-with-navigation {
+    padding-top: 6rem !important; // navigation 있는 경우
+}
+
+.pt-without-navigation {
+    padding-top: 2rem !important; // navigation 없는 경우
+}
+
+.pt-with-navigation.specific-page {
+    padding-top: 3.5rem !important; // 특정 페이지에서 navigation 있는 경우 추가
+}
+
+/* 공통: 박스 및 폰트 */
+.swal2-toast {
+    display: flex !important;
+    width: auto !important;
+    padding: 1rem 1.5rem !important;
+    font-family: 'Pretendard' !important;
+}
+
+.swal2-title {
+    font-size: var(--font-title-h3) !important;
+}
+
+/* 성공 alert */
+.toast-success {
+    background-color: var(--color-white2) !important;
+    color: var(--color-green2) !important;
+}
+
+.toast-success .swal2-timer-progress-bar {
+    background: var(--color-green1) !important;
+}
+
+.toast-success .swal2-success-ring {
+    border-color: var(--color-green1) !important;
+}
+
+.toast-success .swal2-success-line-tip,
+.toast-success .swal2-success-line-long {
+    background-color: var(--color-green1) !important;
+}
+
+/* 경고 alert */
+.toast-warning {
+    background-color: var(--color-yellow) !important;
+    color: var(--color-green2) !important;
+}
+
+.toast-warning .swal2-timer-progress-bar {
+    background: var(--color-green2) !important;
+}
+
+.toast-warning .swal2-icon-content {
+    color: var(--color-green2) !important;
+}
+
+/* 오류 alert */
+.toast-error {
+    background-color: var(--color-red) !important;
+    color: var(--color-white1) !important;
+}
+
+.toast-error .swal2-x-mark-line-left,
+.toast-error .swal2-x-mark-line-right {
+    background-color: var(--color-white1) !important;
+}
+
+.toast-error .swal2-timer-progress-bar {
+    background: var(--color-white1) !important;
+}
+
+/* 삭제 modal */
+.delete-popup-class {
+    grid-row: 1 !important;
+    padding: 1rem 3rem !important;
+    width: auto;
+    background-color: var(--color-white1);
+    font-family: 'Pretendard' !important;
+}
+
+.delete-confirm-button-class {
+    background-color: var(--color-red);
+    color: var(--color-white1);
+}
+
+/* 인포 modal */
+.info-popup-class {
+    grid-row: 1 !important;
+    padding: 1rem 2rem !important;
+    width: auto;
+    background-color: var(--color-white1);
+    font-family: 'Pretendard' !important;
+}
+
+.info-confirm-button-class {
+    background-color: var(--color-blue);
+    color: var(--color-white1);
+}
