@@ -10,6 +10,8 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -37,6 +39,9 @@ public class GameLogEntity {
     @Column(name = "time_log")
     @Temporal(TemporalType.TIME)
     private LocalTime timeLog;
+
+    @OneToMany(mappedBy = "gameLogEntity", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<VoiceEntity> voiceEntities = new ArrayList<>();
 
     public GameLogEntity() {}
 
