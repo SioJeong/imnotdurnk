@@ -26,14 +26,18 @@ const getRandomTargetImage = () => {
 };
 
 const BalanceGame = () => {
-    const [position, setPosition] = useState({ x: 0, y: 0 });
+    const windowWidth = window.innerWidth;
+    const windowHeight = window.innerHeight;
+
+    const duckSize = 74; // 오리의 크기
+    const [position, setPosition] = useState({
+        x: windowWidth / 2 - duckSize / 2, // 중앙으로 설정
+        y: windowHeight / 2 - duckSize / 2, // 중앙으로 설정
+    });
     const [target, setTarget] = useState(null);
     const [score, setScore] = useState(0);
     const [timeLeft, setTimeLeft] = useState(30);
     const [isGameActive, setIsGameActive] = useState(false);
-
-    const windowWidth = window.innerWidth;
-    const windowHeight = window.innerHeight;
 
     const updatePosition = ({ beta, gamma }) => {
         setPosition((prevPosition) => {
@@ -123,11 +127,18 @@ const BalanceGame = () => {
     };
 
     const resetGame = () => {
+        const windowWidth = window.innerWidth;
+        const windowHeight = window.innerHeight;
+        const duckSize = 74;
+
         setScore(0);
         setTimeLeft(30);
         setIsGameActive(false);
         setTarget(null);
-        setPosition({ x: 0, y: 0 });
+        setPosition({
+            x: windowWidth / 2 - duckSize / 2,
+            y: windowHeight / 2 - duckSize / 2,
+        });
     };
 
     const handleButtonClick = () => {
@@ -172,6 +183,7 @@ const BalanceGame = () => {
                         position: 'absolute',
                         transform: `translate(${position.x}px, ${position.y}px) ${position.x > windowWidth / 2 ? 'scaleX(-1)' : 'scaleX(1)'}`,
                         transition: 'transform 0.1s ease-out',
+                        zIndex: 20,
                     }}
                 />
                 {target && (
@@ -182,6 +194,7 @@ const BalanceGame = () => {
                             position: 'absolute',
                             transform: `translate(${target.position.x}px, ${target.position.y}px)`,
                             transition: 'transform 0.1s ease-out',
+                            zIndex: 20,
                         }}
                     />
                 )}
