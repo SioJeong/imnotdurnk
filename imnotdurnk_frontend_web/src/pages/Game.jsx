@@ -6,6 +6,8 @@ import VoiceGame from '@/components/game/VoiceGame';
 import VoiceGameResult from '@/components/game/VoiceGameResult';
 import useGameNavigation from '@/hooks/useGameNavigation';
 import { Route, Routes } from 'react-router-dom';
+import GameResult from '../components/game/GameResult';
+
 const Game = () => {
     useGameNavigation();
 
@@ -20,6 +22,7 @@ const Game = () => {
             />
             <Route path="/balancegame" element={<BalanceGame />} />
             <Route path="/typinggame" element={<TypingGame />} />
+            <Route path="/game-result" element={<GameResult />} />
         </Routes>
     );
 };

@@ -3,6 +3,7 @@ import Modal from '@/components/_modal/Modal';
 import useUserStore from '@/stores/useUserStore.js';
 import { useEffect, useState } from 'react';
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
+import { useNavigate } from 'react-router-dom';
 import { getTestSentence } from '../../services/game';
 import useModalStore from '../../stores/useModalStore';
 import { ToastWarning } from '../_common/alert';
@@ -14,6 +15,7 @@ const TypingGame = () => {
     }));
     const { openModal, closeModal } = useModalStore();
     const modalId = 'typingGameNoticeModal';
+    const navigate = useNavigate();
     const [isGameStarted, setIsGameStarted] = useState(false);
     const [isVisible, setIsVisible] = useState(false);
     const closeHandler = (state) => {
@@ -27,10 +29,6 @@ const TypingGame = () => {
     const [inputTyping, setInputTyping] = useState('');
     const handleInputChange = (e) => {
         setInputTyping(e.target.value);
-        console.log(
-            inputTyping[inputTyping.length - 1],
-            testText[inputTyping.length - 1],
-        );
     };
     const getStyledText = () => {
         const typedChars = inputTyping.split(''); // 입력된 문자 배열
@@ -84,11 +82,18 @@ const TypingGame = () => {
             `일치하는 문자 수: ${matchCount} 전체 문자수 : `,
             testTextArray.length,
         );
+        return (matchCount / testTextArray.length) * 100;
     };
-    const handleTimeOut = () => {
-        ToastWarning('시간 끝', true);
+    const handleFinishGame = async () => {
+        ToastWarning('게임 끝', true);
 
-        calculateGameScore();
+        const gameScore = await calculateGameScore();
+        navigate('/game/game-result', {
+            state: {
+                gameName: '타이핑',
+                gameScore: gameScore,
+            },
+        });
         // return { shouldRepeat: true, delay: 1.5 };
     };
     useEffect(() => {
@@ -119,7 +124,7 @@ const TypingGame = () => {
                     size={120}
                     isSmoothColorTransition={true}
                     isPlaying={isGameStarted}
-                    onComplete={handleTimeOut}
+                    onComplete={handleFinishGame}
                 >
                     {({ remainingTime }) => remainingTime}
                 </CountdownCircleTimer>
@@ -146,7 +151,7 @@ const TypingGame = () => {
                     text="제출하기"
                     size="medium"
                     isRed={true}
-                    onClick={calculateGameScore}
+                    onClick={handleFinishGame}
                 />
             </St.ButtonBox>
             <Modal
