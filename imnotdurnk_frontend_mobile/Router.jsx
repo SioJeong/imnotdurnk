@@ -3,6 +3,7 @@ import Layout from './components/_layout/Layout';
 import Home from './pages/Home';
 import Map from './pages/Map';
 import PathDetail from './pages/PathDetail';
+import PathFinal from './pages/PathFinal';
 import PathFinder from './pages/PathFinder';
 import Test from './pages/Test';
 
@@ -36,6 +37,13 @@ const Router = () => {
                 {(props) => (
                     <Layout>
                         <PathDetail {...props} />
+                    </Layout>
+                )}
+            </Stack.Screen>
+            <Stack.Screen name="PathFinal" options={{ headerShown: false }}>
+                {() => (
+                    <Layout>
+                        <PathFinal />
                     </Layout>
                 )}
             </Stack.Screen>
