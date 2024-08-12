@@ -123,7 +123,13 @@ const useNonPersistentStore = create((set, get) => ({
                 arrivalTime: '-',
             },
         }),
-    submitPlan: async (voiceGameResultData, navigate, todayUrl, resetPlan) => {
+    submitPlan: async (
+        voiceGameResultData,
+        navigate,
+        todayUrl,
+        resetPlan,
+        resetVoiceGameResult,
+    ) => {
         const { plan } = get();
 
         const formattedDateTime = parseDateTime(plan.date, plan.time);
@@ -141,30 +147,32 @@ const useNonPersistentStore = create((set, get) => ({
 
         try {
             const eventId = await createEvent({ plan: formattedPlan });
-            console.log('일정 등록 후 받아온 eventId', eventId);
 
             if (eventId) {
                 // TODO: 게임 기록이 있는 경우 게임 기록 저장
-                if (voiceGameResultData) {
+                if (voiceGameResultData.filename !== '') {
                     voiceGameResultData.planId = eventId; // 생성된 일정 ID로 수정
+                    console.log(
+                        '서버로 보낼 voiceGameResultData',
+                        voiceGameResultData,
+                    );
 
                     const result = await saveVoiceGameResult({
                         data: voiceGameResultData,
                     });
 
                     if (result) {
+                        resetVoiceGameResult();
                         ToastSuccess('게임 기록이 등록되었습니다!', true, true);
                         navigate(`/calendar/${todayUrl}/plan/${eventId}`);
+                        return true;
                     }
-
-                    return true;
                 } else {
                     resetPlan();
                     ToastSuccess('일정이 등록되었습니다!', true);
                     navigate('/calendar');
+                    return true;
                 }
-
-                return true;
             }
         } catch (error) {
             console.error('일정 등록 중 오류 발생:', error.message);
