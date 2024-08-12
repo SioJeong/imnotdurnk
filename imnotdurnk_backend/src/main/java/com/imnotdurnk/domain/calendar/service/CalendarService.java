@@ -20,7 +20,7 @@ public interface CalendarService {
 
     void updateFeedback(String accessToken, int planId, CalendarDto calendarDto) throws BadRequestException, ResourceNotFoundException, EntitySaveFailedException;
 
-    void addCalendar(String token, CalendarDto calendarDto) throws EntitySaveFailedException;
+    CalendarDto addCalendar(String token, CalendarDto calendarDto) throws EntitySaveFailedException;
 
     List<CalendarDto> getCalendar(String token, String date);
 
