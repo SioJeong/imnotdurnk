@@ -43,7 +43,6 @@ const PlanDetail = () => {
     // PlanDetail 컴포넌트 렌더링 후에 Navigation 컴포넌트 상태 업데이트 해야 함
     useEffect(() => {
         if (planDetail) {
-            console.log(planDetail.gameLogDtos);
             const date = convertDateToString(new Date(planDetail.date));
             const time = convertTimeToString(new Date(planDetail.date));
             setFullPlanDetail({ ...planDetail, date, time }); // 전역에 저장해서 수정 시 데이터 사용..

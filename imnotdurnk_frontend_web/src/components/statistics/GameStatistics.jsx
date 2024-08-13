@@ -153,7 +153,6 @@ const GameStatistics = ({ formattedDate }) => {
                 }
                 setGameStatisticsList(results);
                 convertGameStatisticsResult(results);
-                console.log(getGameStaticsticsResult1, 'r1');
             } catch (error) {
                 console.error('Error fetching user data:', error);
             }

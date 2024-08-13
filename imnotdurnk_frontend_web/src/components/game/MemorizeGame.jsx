@@ -54,12 +54,9 @@ const MemorizeGame = () => {
     const [isClickDisabled, setIsClickDisabled] = useState(false); // 카드 클릭 비활성화 상태
     //타이머 조절용 변수 0 -> 5초 카운터 1 -> 30초 카운터
     const [activeTimer, setActiveTimer] = useState(0);
-    const check = () => {
-        console.log('check함수 내 제발 보여라ㅏㅏ', firstCard, secondCard);
-    };
+
     const handleCardClick = (id) => {
         if (isClickDisabled || isGameOver) {
-            //5초 & 게임 오버일 땐 건들 ㄴ
             return;
         }
 
@@ -96,7 +93,6 @@ const MemorizeGame = () => {
             const j = Math.floor(Math.random() * (i + 1));
             [array[i], array[j]] = [array[j], array[i]]; // Swap elements
         }
-        console.log('shuffleArray', array);
         return array;
     };
 
@@ -132,7 +128,6 @@ const MemorizeGame = () => {
     const handleFinishGame = async () => {
         ToastWarning('게임 끝', true);
         const gameScore = await calculateGameScore();
-        console.log('gameScore', gameScore);
         // 게임 결과 페이지로 이동
         navigate('/game/game-result', {
             state: {
@@ -148,7 +143,6 @@ const MemorizeGame = () => {
         setCardList(shffleResult);
     }, []);
     useEffect(() => {
-        console.log('Opening modal');
         openModal(modalId);
     }, [openModal, modalId]); // modalId를 의존성 배열에 추가
 
@@ -165,10 +159,8 @@ const MemorizeGame = () => {
         if (!firstCard || !secondCard) {
             return;
         }
-        console.log('useEffect', firstCard, secondCard);
         if (firstCard.imageName === secondCard.imageName) {
             //isMatched === true로 변경
-            console.log('맞');
             setCardList((prevCardList) =>
                 prevCardList.map((card) =>
                     card.id === firstCard.id || card.id === secondCard.id
@@ -181,7 +173,6 @@ const MemorizeGame = () => {
             setSecondCard(null);
             setIsClickDisabled(false);
         } else {
-            console.log('틀');
             //isFlipped === false로 변경
             setTimeout(() => {
                 setCardList((prevCardList) =>
