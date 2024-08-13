@@ -5,7 +5,6 @@ import Map from './pages/Map';
 import PathDetail from './pages/PathDetail';
 import PathFinal from './pages/PathFinal';
 import PathFinder from './pages/PathFinder';
-import Test from './pages/Test';
 
 const Stack = createNativeStackNavigator();
 
@@ -47,11 +46,6 @@ const Router = () => {
                     </Layout>
                 )}
             </Stack.Screen>
-            <Stack.Screen
-                name="Test"
-                component={Test}
-                options={{ headerShown: false }}
-            />
         </Stack.Navigator>
     );
 };

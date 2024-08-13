@@ -4,13 +4,17 @@ import { ActivityIndicator } from 'react-native';
 import { useTheme } from 'styled-components';
 import * as St from '../components/_layout/globalStyle';
 import PathOption from '../components/map/PathOption';
-import { fetchTaxiDirections, fetchTransitDirections } from '../services/map';
+import {
+    fetchTaxiDirections,
+    fetchTransitDirections,
+    getOptimalTransitStopover,
+} from '../services/map';
 import useLocationStore from '../stores/useLocationStore';
 import useNavigationStore from '../stores/useNavigationStore';
 
 const PathFinder = () => {
     const { setNavigation } = useNavigationStore();
-    const { departure, stopover, destination } = useLocationStore();
+    const { departure, setStopover, destination } = useLocationStore();
     const [pathInfos, setPathInfos] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -29,60 +33,82 @@ const PathFinder = () => {
 
     useEffect(() => {
         const getDirections = async () => {
-            if (
-                !departure ||
-                !destination ||
-                !stopover ||
-                stopover.length < 1 ||
-                stopover.length > 3
-            ) {
+            if (!departure || !destination) {
                 setIsLoading(false);
                 return;
             }
 
             try {
+                // 경유지 찾기
+                const stopoverPositions = await getOptimalTransitStopover(
+                    departure,
+                    destination,
+                );
+                setStopover(stopoverPositions);
+
+                if (
+                    !stopoverPositions ||
+                    stopoverPositions.length < 1 ||
+                    stopoverPositions.length > 3
+                ) {
+                    setIsLoading(false);
+                    return;
+                }
+
                 const newPathInfos = await Promise.all(
-                    stopover.map(async (stop) => {
+                    stopoverPositions.map(async (stop) => {
                         const transitInfo = await fetchTransitDirections(
                             departure,
                             stop,
                         );
+
+                        if (!transitInfo) {
+                            return null; // transitInfo가 null이면 null을 반환
+                        }
+
                         const taxiPathInfo = await fetchTaxiDirections(
                             departure,
                             stop,
                             destination,
                         );
+
                         return { transitInfo, taxiPathInfo, chipdata: [] };
                     }),
                 );
 
-                newPathInfos.sort(
+                const validPathInfos = newPathInfos.filter(
+                    (path) => path !== null,
+                );
+
+                validPathInfos.sort(
                     (a, b) => a.taxiPathInfo.fee - b.taxiPathInfo.fee,
                 );
-                if (newPathInfos.length > 0) {
-                    newPathInfos[0].chipdata.push('최저 비용');
+
+                if (validPathInfos.length > 0) {
+                    validPathInfos[0].chipdata.push('최저 비용');
                 }
 
                 const minWalkTime = Math.min(
-                    ...newPathInfos.map(
+                    ...validPathInfos.map(
                         (path) => path.transitInfo.totalWalkTime,
                     ),
                 );
 
-                newPathInfos.forEach((path) => {
+                validPathInfos.forEach((path) => {
                     if (path.transitInfo.totalWalkTime === minWalkTime) {
                         path.chipdata.push('최소 도보');
                     }
                 });
 
                 const minTotalTime = Math.min(
-                    ...newPathInfos.map(
+                    ...validPathInfos.map(
                         (path) =>
                             path.transitInfo.totalTime +
                             path.taxiPathInfo.totalTime,
                     ),
                 );
-                newPathInfos.forEach((path) => {
+
+                validPathInfos.forEach((path) => {
                     if (
                         path.transitInfo.totalTime +
                             path.taxiPathInfo.totalTime ===
@@ -92,17 +118,16 @@ const PathFinder = () => {
                     }
                 });
 
-                setPathInfos(newPathInfos);
+                setPathInfos(validPathInfos);
             } catch (error) {
-                console.error('Failed to fetch directions', error);
+                console.error('Failed to fetch directions or stopover', error);
             } finally {
-                // 데이터 로드 완료 시 로딩 중지
                 setIsLoading(false);
             }
         };
 
         getDirections();
-    }, [departure, destination, stopover]);
+    }, [departure, destination, setStopover]);
 
     return (
         <St.Container2>

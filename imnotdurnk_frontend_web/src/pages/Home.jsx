@@ -34,7 +34,13 @@ const Home = () => {
     const goToAccount = () => navigate('/account');
     const goToMyPage = () => navigate('/mypage');
     const goToGame = () => navigate('/game');
-    const goToNavigation = () => console.log('앱으로 이동');
+    const goToNavigation = () => {
+        // Map 열기
+        console.log('Sending message to React Native');
+        window.ReactNativeWebView.postMessage(JSON.stringify({
+            type: 'Map',
+        }));
+    };
 
     const tabContentsList = [
         {
