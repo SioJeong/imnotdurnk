@@ -28,7 +28,26 @@ const useVoiceGameStore = create((set) => ({
 
 // 밸런스 게임
 const useBalanceGameStore = create((set) => ({
-    // 전역 변수 및 함수들
+    balanceGameResult: {
+        planId: 0,
+        gameType: 2,
+        score: 0,
+    },
+    isBalanceGameResultSet: false,
+    setBalanceGameResult: (result) =>
+        set((state) => ({
+            balanceGameResult: { ...state.balanceGameResult, ...result },
+            isBalanceGameResultSet: true,
+        })),
+    resetBalanceGameResult: () =>
+        set({
+            balanceGameResult: {
+                planId: 0,
+                gameType: 2,
+                score: 0,
+            },
+            isBalanceGameResultSet: false,
+        }),
 }));
 
 // 타이핑 게임
@@ -56,12 +75,40 @@ const useTypingGameStore = create((set) => ({
 }));
 
 // 기억력 게임
+const useMemorizeGameStore = create((set) => ({
+    memorizeGameResult: {
+        planId: 0,
+        gameType: 4,
+        score: 0,
+    },
+    isMemorizeGameResultSet: false,
+    setMemorizeGameResult: (result) =>
+        set((state) => ({
+            memorizeGameResult: { ...state.memorizeGameResult, ...result },
+            isMemorizeGameResultSet: true,
+        })),
+    resetMemorizeGameResult: () =>
+        set({
+            memorizeGameResult: {
+                planId: 0,
+                gameType: 4,
+                score: 0,
+            },
+            isMemorizeGameResultSet: false,
+        }),
+}));
 
 const useGameStore = () => {
     const voiceGameState = useVoiceGameStore();
     const balanceGameState = useBalanceGameStore();
     const typingGameState = useTypingGameStore();
-    return { ...voiceGameState, ...balanceGameState, ...typingGameState };
+    const memorizeGameState = useMemorizeGameStore();
+    return {
+        ...voiceGameState,
+        ...balanceGameState,
+        ...typingGameState,
+        ...memorizeGameState,
+    };
 };
 
 export default useGameStore;

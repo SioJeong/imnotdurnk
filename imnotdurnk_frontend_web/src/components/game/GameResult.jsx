@@ -2,16 +2,20 @@ import { icons } from '@/shared/constants/icons';
 import useUserStore from '@/stores/useUserStore.js';
 import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { styled } from 'styled-components';
+import { deleteVoiceGameResult } from '../../services/game';
 import useAuthStore from '../../stores/useAuthStore';
+import useGameStore from '../../stores/useGameStore';
 import useNavigationStore from '../../stores/useNavigationStore';
 import Button from '../_button/Button';
 import { InfoConfirmModal, ToastSuccess, ToastWarning } from '../_common/alert';
+import * as St from './GameResult.style';
+
 const GameResult = () => {
     const { user } = useUserStore((state) => ({
         user: state.user,
     }));
     const { accessToken } = useAuthStore();
+    const { voiceGameResult } = useGameStore();
 
     const setNavigation = useNavigationStore((state) => state.setNavigation);
 
@@ -47,10 +51,9 @@ const GameResult = () => {
         },
     ];
 
-    // TODO: Alert 위치 UI 나오면 다시 체크
     const handleSubmit = () => {
         if (!accessToken) {
-            ToastWarning('로그인이 필요합니다.');
+            ToastWarning('로그인이 필요합니다.', false);
             navigate('/account');
             return;
         }
@@ -59,7 +62,7 @@ const GameResult = () => {
             '예',
             '아니오',
             () => {
-                ToastSuccess('오늘의 일정 리스트로 이동합니다.');
+                ToastSuccess('오늘의 일정 리스트로 이동합니다.', true, true);
                 navigate('/game/game-result/add-to-plan');
             },
             () => {
@@ -82,43 +85,42 @@ const GameResult = () => {
                                     '기록을 저장하려면 일정이 필요합니다.',
                                 );
                             },
-                            // '게임 기록이 등록 되었습니다.',
                         );
                     },
                     () => {
                         ToastWarning('술을 마신 경우에만 기록이 저장됩니다.');
                     },
-                    // '게임 기록이 등록 되었습니다.',
                 );
             },
-            // '게임 기록이 등록 되었습니다.',
         );
     };
     const onClickGameListButton = () => {
-        // TODO: 저장하지 않음을 알리는 API 요청 필요 (파일 명과 함께)
+        deleteVoiceGameResult({
+            data: voiceGameResult,
+        });
         navigate('/game');
     };
 
     return (
-        <ResultContainer>
-            <TitleContainer>
-                <Title>
+        <St.ResultContainer>
+            <St.TitleContainer>
+                <St.Title>
                     {user.name !== '' ? user.name : '손'}님의{' '}
                     {gameName ? gameName : '00'} 게임 점수는
                     <br />
-                    <Highlight>
+                    <St.Highlight>
                         {gameScore ? Math.floor(gameScore) : 0}
-                    </Highlight>{' '}
+                    </St.Highlight>{' '}
                     점 입니다!
-                </Title>
-                <SubTitle>
+                </St.Title>
+                <St.SubTitle>
                     {gameScore && gameScore >= standard
                         ? drunkenLevelContentsList[0].comment
                         : drunkenLevelContentsList[1].comment}
-                </SubTitle>
-            </TitleContainer>
-            <ImageWrapper>
-                <StyledImage
+                </St.SubTitle>
+            </St.TitleContainer>
+            <St.ImageWrapper>
+                <img
                     src={
                         gameScore && gameScore >= standard
                             ? icons[
@@ -141,8 +143,8 @@ const GameResult = () => {
                               ]
                     }
                 />
-            </ImageWrapper>
-            <ButtonBox>
+            </St.ImageWrapper>
+            <St.ButtonBox>
                 <Button
                     text="게임 기록 저장하기"
                     size="big"
@@ -155,60 +157,9 @@ const GameResult = () => {
                     isRed={true}
                     onClick={onClickGameListButton}
                 />
-            </ButtonBox>
-        </ResultContainer>
+            </St.ButtonBox>
+        </St.ResultContainer>
     );
 };
-
-const ResultContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    align-items: flex-start;
-    gap: 1.9857rem;
-
-    padding: 1.8571rem 1.7143rem;
-    width: 23.5rem;
-    border-radius: 20px;
-    background: var(--color-white2, #f7f7ec);
-`;
-const TitleContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 0.5rem;
-`;
-const Title = styled.h2`
-    text-align: center;
-`;
-const SubTitle = styled.p`
-    align-self: stretch;
-    color: var(--color-green2, #465a54);
-    text-align: center;
-    font-size: var(--font-body-h3);
-`;
-const ImageWrapper = styled.div`
-    display: flex;
-    height: 14.2143rem;
-    justify-content: center;
-    align-items: center;
-    align-self: stretch;
-`;
-const StyledImage = styled.img``;
-const ButtonBox = styled.div`
-    display: flex;
-    height: 9.2143rem;
-    padding: 0rem 1rem;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.7143rem;
-    align-self: stretch;
-`;
-const Highlight = styled.span`
-    color: var(--color-red);
-    font-size: var(--font-body-h2);
-`;
 
 export default GameResult;

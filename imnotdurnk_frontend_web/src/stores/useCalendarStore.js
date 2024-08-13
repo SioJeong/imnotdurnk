@@ -8,7 +8,7 @@ import {
     parseTime,
 } from '../hooks/useDateTimeFormatter';
 import { createEvent, updateEvent } from '../services/calendar';
-import { saveVoiceGameResult, saveRestGameResult } from '../services/game';
+import { saveRestGameResult, saveVoiceGameResult } from '../services/game';
 
 // 로컬 스토리지에 저장 O
 const usePersistentStore = create(
@@ -127,9 +127,15 @@ const useNonPersistentStore = create((set, get) => ({
         voiceGameResultData,
         resetVoiceGameResult,
         isVoiceGameResultSet,
+        balanceGameResultData,
+        resetBalanceGameResult,
+        isBalanceGameResultSet,
         typingGameResultData,
         resetTypingGameResult,
         isTypingGameResultSet,
+        memorizeGameResultData,
+        resetMemorizeGameResult,
+        isMemorizeGameResultSet,
         navigate,
         todayUrl,
         resetPlan,
@@ -154,14 +160,8 @@ const useNonPersistentStore = create((set, get) => ({
             const eventId = await createEvent({ plan: formattedPlan });
 
             if (eventId) {
-                // TODO: 게임 기록이 있는 경우 게임 기록 저장
                 if (isVoiceGameResultSet) {
                     voiceGameResultData.planId = eventId; // 생성된 일정 ID로 수정
-                    console.log(
-                        '서버로 보낼 voiceGameResultData',
-                        voiceGameResultData,
-                    );
-
                     const result = await saveVoiceGameResult({
                         data: voiceGameResultData,
                     });
@@ -174,19 +174,37 @@ const useNonPersistentStore = create((set, get) => ({
                         navigate(`/calendar/${todayUrl}/plan/${eventId}`);
                         return true;
                     }
+                } else if (isBalanceGameResultSet) {
+                    balanceGameResultData.planId = eventId; // 생성된 일정 ID로 수정
+                    const result = await saveRestGameResult({
+                        data: balanceGameResultData,
+                    });
+                    if (result) {
+                        resetBalanceGameResult();
+                        // 쿼리 무효화
+                        queryClient.invalidateQueries(['planDetail', eventId]);
+                        ToastSuccess('게임 기록이 등록되었습니다!', true, true);
+                        navigate(`/calendar/${todayUrl}/plan/${eventId}`);
+                    }
                 } else if (isTypingGameResultSet) {
                     typingGameResultData.planId = eventId; // 생성된 일정 ID로 수정
-                    console.log(
-                        '서버에 보낼 typingGameResultData',
-                        typingGameResultData,
-                    );
-
                     const result = await saveRestGameResult({
                         data: typingGameResultData,
                     });
-
                     if (result) {
                         resetTypingGameResult();
+                        // 쿼리 무효화
+                        queryClient.invalidateQueries(['planDetail', eventId]);
+                        ToastSuccess('게임 기록이 등록되었습니다!', true, true);
+                        navigate(`/calendar/${todayUrl}/plan/${eventId}`);
+                    }
+                } else if (isMemorizeGameResultSet) {
+                    memorizeGameResultData.planId = eventId; // 생성된 일정 ID로 수정
+                    const result = await saveRestGameResult({
+                        data: memorizeGameResultData,
+                    });
+                    if (result) {
+                        resetMemorizeGameResult();
                         // 쿼리 무효화
                         queryClient.invalidateQueries(['planDetail', eventId]);
                         ToastSuccess('게임 기록이 등록되었습니다!', true, true);

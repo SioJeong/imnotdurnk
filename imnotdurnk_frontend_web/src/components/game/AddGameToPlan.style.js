@@ -20,7 +20,7 @@ const CalendarListBox = styled.div`
     flex-direction: column;
     gap: 1rem;
 
-    width: 100%; // 이거 수정함
+    width: 100%;
 `;
 
 const LoadingAndErrorText = styled.h3`
