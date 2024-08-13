@@ -250,9 +250,19 @@ public class CalendarController {
         return ResponseEntity.status(response.getHttpStatus()).body(response);
     }
 
-    @PutMapping("/arrival")
+    /**
+     * 도착시간 등록 API
+     * @param accessToken
+     * @param datetimestr
+     * @throws BadRequestException
+     * 2024-11-11T11:11 형식의 datetimestr 받아서 24시간 전 일정 중 가장 가까운 일정에 해당 도착시간 저장함
+     */
+    @Operation(
+            summary = "도착 시간 자동 등록"
+    )
+    @PutMapping("/arrival/{datetimestr}")
     public ResponseEntity<?> getArrival(@RequestAttribute(value = "AccessToken", required = true) String accessToken,
-                                        @RequestBody(required = true) String datetimestr) throws BadRequestException {
+                                        @PathVariable  String datetimestr) throws BadRequestException {
         LocalDateTime arrivalTime = LocalDateTime.parse(datetimestr);
         CalendarEntity plan = calendarService.arrivedHome(accessToken, arrivalTime);
 
