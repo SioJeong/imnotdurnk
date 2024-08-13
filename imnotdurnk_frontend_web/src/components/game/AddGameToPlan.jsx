@@ -1,17 +1,21 @@
 import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
     convertDateToString,
     dateStringToUrl,
 } from '../../hooks/useDateTimeFormatter';
 import { getDailyEventList } from '../../services/calendar';
 import useNavigationStore from '../../stores/useNavigationStore';
+import Button from '../_button/Button';
+import { ToastSuccess } from '../_common/alert';
 import CalendarStatusBar from '../calendar/CalendarStatusBar';
 import EventCard from '../calendar/EventCard';
 import * as St from './AddGameToPlan.style';
 
 const AddGameToPlan = () => {
     const setNavigation = useNavigationStore((state) => state.setNavigation);
+    const navigate = useNavigate();
 
     const date = dateStringToUrl(convertDateToString(new Date()));
 
@@ -35,6 +39,11 @@ const AddGameToPlan = () => {
             icon2: { iconname: 'empty' },
         });
     }, []);
+
+    const goToCreatePlan = () => {
+        ToastSuccess('일정 등록 페이지로 이동합니다.');
+        navigate('/calendar/create-plan');
+    };
 
     return (
         <St.CalendarListContainer>
@@ -72,9 +81,14 @@ const AddGameToPlan = () => {
                         </EventCard>
                     ))
                 ) : (
-                    <St.StyledEmptyEvent>
-                        일정이 존재하지 않습니다.
-                    </St.StyledEmptyEvent>
+                    <St.EmptyEventBox>
+                        <h3>일정이 존재하지 않습니다.</h3>
+                        <Button
+                            text="일정 생성하기"
+                            isRed={true}
+                            onClick={goToCreatePlan}
+                        />
+                    </St.EmptyEventBox>
                 )}
             </St.CalendarListBox>
         </St.CalendarListContainer>

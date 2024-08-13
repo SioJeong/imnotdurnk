@@ -19,6 +19,8 @@ const CalendarListBox = styled.div`
     display: flex;
     flex-direction: column;
     gap: 1rem;
+
+    width: 100%; // 이거 수정함
 `;
 
 const LoadingAndErrorText = styled.h3`
@@ -35,8 +37,14 @@ const CalendarItemTime = styled.p`
         $alcoholLevel >= 2 ? 'var(--color-white1)' : 'var(--color-green3)'};
 `;
 
-const StyledEmptyEvent = styled.h3`
-    padding-top: 3rem;
+const EmptyEventBox = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4rem;
+
+    width: 100%;
+    padding-top: 4rem;
 `;
 
 export {
@@ -44,7 +52,7 @@ export {
     CalendarItemTitle,
     CalendarListBox,
     CalendarListContainer,
+    EmptyEventBox,
     LoadingAndErrorText,
     Notice,
-    StyledEmptyEvent,
 };
