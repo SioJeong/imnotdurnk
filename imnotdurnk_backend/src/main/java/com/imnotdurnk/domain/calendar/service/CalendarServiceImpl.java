@@ -34,8 +34,10 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
+
 
 @Service
 @AllArgsConstructor
@@ -339,4 +341,32 @@ public class CalendarServiceImpl implements CalendarService {
 
         return calendarEntity.get();
     }
+
+    @Override
+    public CalendarEntity arrivedHome(String token, LocalDateTime arrivalTime) throws BadRequestException {
+        // accessToken에 저장된 사용자 정보 받아옴
+        UserEntity user = userRepository.findByEmail(jwtUtil.getUserEmail(token, TokenType.ACCESS));
+        CalendarEntity calendarEntity = calendarRepository.findByUserIdAndDateTime(user, arrivalTime, Limit.of(1));
+
+        if(calendarEntity == null) throw new BadRequestException("등록할 일정이 없습니다.");
+
+        // 받아온 날짜와 시간
+        LocalDateTime dateTime = calendarEntity.getDate();
+
+        long hoursDifference = ChronoUnit.HOURS.between(arrivalTime, dateTime);
+        if(hoursDifference >-24 &&hoursDifference <= 0) {
+            // 저장
+            calendarEntity.setArrivalTime(arrivalTime.toLocalTime());
+
+            //DB에 피드백 기록
+            calendarEntity = calendarRepository.save(calendarEntity);
+
+            //피드백이 기록되지 않은 경우 예외처리
+            if(calendarEntity == null) throw new EntitySaveFailedException("도착 시간 저장에 실패하였습니다");
+
+        } else throw new BadRequestException("등록할 일정이 없습니다.");
+
+        return calendarEntity;
+    }
+
 }

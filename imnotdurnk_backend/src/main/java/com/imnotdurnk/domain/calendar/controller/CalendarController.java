@@ -4,6 +4,7 @@ import com.imnotdurnk.domain.calendar.dto.CalendarDto;
 import com.imnotdurnk.domain.calendar.dto.CalendarStatisticDto;
 import com.imnotdurnk.domain.calendar.dto.DiaryDto;
 import com.imnotdurnk.domain.calendar.dto.PlanDetailDto;
+import com.imnotdurnk.domain.calendar.entity.CalendarEntity;
 import com.imnotdurnk.domain.calendar.service.CalendarService;
 import com.imnotdurnk.global.commonClass.CommonResponse;
 import com.imnotdurnk.global.exception.InvalidDateException;
@@ -18,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
+import java.time.LocalDateTime;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
@@ -246,6 +248,22 @@ public class CalendarController {
         response.setData(planDetailDto);
 
         return ResponseEntity.status(response.getHttpStatus()).body(response);
+    }
+
+    @PutMapping("/arrival")
+    public ResponseEntity<?> getArrival(@RequestAttribute(value = "AccessToken", required = true) String accessToken,
+                                        @RequestParam(value = "arrivalTime", required = true) String datetimestr) throws BadRequestException {
+        LocalDateTime arrivalTime = LocalDateTime.parse(datetimestr);
+        CalendarEntity plan = calendarService.arrivedHome(accessToken, arrivalTime);
+
+        //응답 객체
+        SingleResponse response = new SingleResponse();
+        response.setStatusCode(HttpStatus.OK.value());
+        response.setData(plan.toDto());
+        response.setMessage("도착 시간이 등록되었습니다.");
+
+        return ResponseEntity.status(response.getHttpStatus()).body(response);
+
     }
 
     /***

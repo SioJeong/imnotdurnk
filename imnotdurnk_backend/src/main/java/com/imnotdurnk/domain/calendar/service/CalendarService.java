@@ -35,4 +35,6 @@ public interface CalendarService {
     CalendarEntity isSameUserAndGetCalendarEntity (String accessToken, int planId) throws ResourceNotFoundException, BadRequestException;
 
     void deletePlan(String accessToken, int planId) throws BadRequestException, ResourceNotFoundException;
+
+    CalendarEntity arrivedHome(String token, LocalDateTime datetimeStr) throws BadRequestException;
 }
