@@ -27,6 +27,7 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Limit;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
