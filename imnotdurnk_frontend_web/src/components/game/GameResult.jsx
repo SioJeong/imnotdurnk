@@ -1,41 +1,66 @@
+import { icons } from '@/shared/constants/icons';
 import useUserStore from '@/stores/useUserStore.js';
+import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
+import useAuthStore from '../../stores/useAuthStore';
+import useNavigationStore from '../../stores/useNavigationStore';
 import Button from '../_button/Button';
 import { InfoConfirmModal, ToastSuccess, ToastWarning } from '../_common/alert';
-
 const GameResult = () => {
     const { user } = useUserStore((state) => ({
         user: state.user,
     }));
+    const { accessToken } = useAuthStore();
+
+    const setNavigation = useNavigationStore((state) => state.setNavigation);
 
     const navigate = useNavigate();
     const location = useLocation();
+
+    useEffect(() => {
+        setNavigation({
+            isVisible: true,
+            icon1: { iconname: 'backarrow', path: '-1' },
+            title: '게임 결과',
+            icon2: { iconname: 'empty' },
+        });
+    }, []);
+
     const standard = 70;
+
     // 2. location.state 에서 파라미터 취득
     const gameName = location.state.gameName;
     const gameScore = location.state.gameScore;
+
     const drunkenLevelContentsList = [
         {
-            image: '이미지 파일 이름',
-            comment: ['점수가 몇점 이상일 때 멘트입니다.'],
+            imageList: ['winkingResult'],
+            comment: ['아직 안취하셨네요. 조절하는 모습 멋져요.'],
         },
         {
-            image: '이미지 파일 이름',
+            imageList: ['zanyResult', 'shakingResult', 'nauseatedResult'],
             comment: [
-                '많이 취하셨군요.',
+                '많이 취하셨네요!',
                 ' 경로 탐색 기능으로 집까지 안전하게 귀가해보세요.',
             ],
         },
     ];
+
+    // TODO: Alert 위치 UI 나오면 다시 체크
     const handleSubmit = () => {
+        if (!accessToken) {
+            ToastWarning('로그인이 필요합니다.');
+            navigate('/account');
+            return;
+        }
         InfoConfirmModal(
             '오늘 등록한 일정이 있나요?',
             '예',
             '아니오',
             () => {
                 ToastSuccess('오늘의 일정 리스트로 이동합니다.');
-                navigate('/game/voicegame/result/add-to-plan');
+                navigate('/game/game-result/add-to-plan');
             },
             () => {
                 InfoConfirmModal(
@@ -49,7 +74,8 @@ const GameResult = () => {
                             '예',
                             '아니오',
                             () => {
-                                ToastSuccess('일정 등록 페이지로');
+                                ToastSuccess('일정 등록 페이지로 이동합니다.');
+                                navigate('/calendar/create-plan');
                             },
                             () => {
                                 ToastWarning(
@@ -69,16 +95,17 @@ const GameResult = () => {
         );
     };
     const onClickGameListButton = () => {
-        navigate('/');
+        // TODO: 저장하지 않음을 알리는 API 요청 필요 (파일 명과 함께)
+        navigate('/game');
     };
 
     return (
         <ResultContainer>
             <TitleContainer>
                 <Title>
-                    {user.nickname !== '' ? user.nickname : user.name}님의{' '}
+                    {user.name !== '' ? user.name : '손'}님의
+                    <br />
                     {gameName ? gameName : '00'} 게임 점수는
-                    <br />{' '}
                     <Highlight>
                         {gameScore ? Math.floor(gameScore) : 0}
                     </Highlight>{' '}
@@ -90,12 +117,31 @@ const GameResult = () => {
                         : drunkenLevelContentsList[1].comment}
                 </SubTitle>
             </TitleContainer>
-            <StyledImage>
-                이미지 들어 갈 곳
-                {gameScore && gameScore >= standard
-                    ? drunkenLevelContentsList[0].imgage
-                    : drunkenLevelContentsList[1].image}
-            </StyledImage>
+            <ImageWrapper>
+                <StyledImage
+                    src={
+                        gameScore && gameScore >= standard
+                            ? icons[
+                                  drunkenLevelContentsList[0].imageList[
+                                      Math.floor(
+                                          Math.random() *
+                                              drunkenLevelContentsList[0]
+                                                  .imageList.length,
+                                      )
+                                  ]
+                              ]
+                            : icons[
+                                  drunkenLevelContentsList[1].imageList[
+                                      Math.floor(
+                                          Math.random() *
+                                              drunkenLevelContentsList[1]
+                                                  .imageList.length,
+                                      )
+                                  ]
+                              ]
+                    }
+                />
+            </ImageWrapper>
             <ButtonBox>
                 <Button
                     text="게임 기록 저장하기"
@@ -104,12 +150,11 @@ const GameResult = () => {
                     onClick={handleSubmit}
                 />
                 <Button
-                    text="게임 목록으로 돌아가기"
+                    text="게임 목록으로"
                     size="big"
                     isRed={true}
                     onClick={onClickGameListButton}
                 />
-                <Button text="집가는 경로 탐색하기" size="big" isRed={false} />
             </ButtonBox>
         </ResultContainer>
     );
@@ -144,14 +189,14 @@ const SubTitle = styled.p`
     text-align: center;
     font-size: var(--font-body-h3);
 `;
-
-const StyledImage = styled.div`
+const ImageWrapper = styled.div`
     display: flex;
     height: 14.2143rem;
     justify-content: center;
     align-items: center;
     align-self: stretch;
 `;
+const StyledImage = styled.img``;
 const ButtonBox = styled.div`
     display: flex;
     height: 9.2143rem;

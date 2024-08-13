@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { ToastSuccess } from '../components/_common/alert';
 import {
     convertDateToString,
     convertTimeToString,
@@ -7,6 +8,7 @@ import {
     parseTime,
 } from '../hooks/useDateTimeFormatter';
 import { createEvent, updateEvent } from '../services/calendar';
+import { saveVoiceGameResult, saveRestGameResult } from '../services/game';
 
 // 로컬 스토리지에 저장 O
 const usePersistentStore = create(
@@ -121,7 +123,18 @@ const useNonPersistentStore = create((set, get) => ({
                 arrivalTime: '-',
             },
         }),
-    submitPlan: async () => {
+    submitPlan: async (
+        voiceGameResultData,
+        resetVoiceGameResult,
+        isVoiceGameResultSet,
+        typingGameResultData,
+        resetTypingGameResult,
+        isTypingGameResultSet,
+        navigate,
+        todayUrl,
+        resetPlan,
+        queryClient,
+    ) => {
         const { plan } = get();
 
         const formattedDateTime = parseDateTime(plan.date, plan.time);
@@ -138,9 +151,53 @@ const useNonPersistentStore = create((set, get) => ({
         };
 
         try {
-            const success = await createEvent({ plan: formattedPlan });
-            if (success) {
-                return true;
+            const eventId = await createEvent({ plan: formattedPlan });
+
+            if (eventId) {
+                // TODO: 게임 기록이 있는 경우 게임 기록 저장
+                if (isVoiceGameResultSet) {
+                    voiceGameResultData.planId = eventId; // 생성된 일정 ID로 수정
+                    console.log(
+                        '서버로 보낼 voiceGameResultData',
+                        voiceGameResultData,
+                    );
+
+                    const result = await saveVoiceGameResult({
+                        data: voiceGameResultData,
+                    });
+
+                    if (result) {
+                        resetVoiceGameResult();
+                        // 쿼리 무효화
+                        queryClient.invalidateQueries(['planDetail', eventId]);
+                        ToastSuccess('게임 기록이 등록되었습니다!', true, true);
+                        navigate(`/calendar/${todayUrl}/plan/${eventId}`);
+                        return true;
+                    }
+                } else if (isTypingGameResultSet) {
+                    typingGameResultData.planId = eventId; // 생성된 일정 ID로 수정
+                    console.log(
+                        '서버에 보낼 typingGameResultData',
+                        typingGameResultData,
+                    );
+
+                    const result = await saveRestGameResult({
+                        data: typingGameResultData,
+                    });
+
+                    if (result) {
+                        resetTypingGameResult();
+                        // 쿼리 무효화
+                        queryClient.invalidateQueries(['planDetail', eventId]);
+                        ToastSuccess('게임 기록이 등록되었습니다!', true, true);
+                        navigate(`/calendar/${todayUrl}/plan/${eventId}`);
+                    }
+                } else {
+                    resetPlan();
+                    ToastSuccess('일정이 등록되었습니다!', true);
+                    navigate('/calendar');
+                    return true;
+                }
             }
         } catch (error) {
             console.error('일정 등록 중 오류 발생:', error.message);

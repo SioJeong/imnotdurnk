@@ -8,9 +8,11 @@ const useVoiceGameStore = create((set) => ({
         filename: '',
         script: '',
     },
+    isVoiceGameResultSet: false,
     setVoiceGameResult: (result) =>
         set((state) => ({
             voiceGameResult: { ...state.voiceGameResult, ...result },
+            isVoiceGameResultSet: true,
         })),
     resetVoiceGameResult: () =>
         set({
@@ -20,23 +22,9 @@ const useVoiceGameStore = create((set) => ({
                 filename: '',
                 script: '',
             },
+            isVoiceGameResultSet: false,
         }),
 }));
-
-// TODO : 전역으로 데이터 저장
-// game-los/save API 연결에 필요한 데이터
-// planID, gameType, score 세개 필요
-// {
-//     "planId": 0,
-//     "gameType": 0,
-//     "score": 0,
-//     "timeLog": { // 저장 따로 안해도 됨!
-//       "hour": 0,
-//       "minute": 0,
-//       "second": 0,
-//       "nano": 0
-//     }
-//   }
 
 // 밸런스 게임
 const useBalanceGameStore = create((set) => ({
@@ -47,20 +35,23 @@ const useBalanceGameStore = create((set) => ({
 const useTypingGameStore = create((set) => ({
     typingGameResult: {
         planId: 0,
-        gameType: 2,
+        gameType: 3,
         score: 0,
     },
+    isTypingGameResultSet: false,
     setTypingGameResult: (result) =>
         set((state) => ({
             typingGameResult: { ...state.typingGameResult, ...result },
+            isTypingGameResultSet: true,
         })),
     resetTypingGameResult: () =>
         set({
             typingGameResult: {
                 planId: 0,
-                gameType: 2,
+                gameType: 3,
                 score: 0,
             },
+            isTypingGameResultSet: false,
         }),
 }));
 
@@ -69,7 +60,8 @@ const useTypingGameStore = create((set) => ({
 const useGameStore = () => {
     const voiceGameState = useVoiceGameStore();
     const balanceGameState = useBalanceGameStore();
-    return { ...voiceGameState, ...balanceGameState };
+    const typingGameState = useTypingGameStore();
+    return { ...voiceGameState, ...balanceGameState, ...typingGameState };
 };
 
 export default useGameStore;

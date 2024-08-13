@@ -6,7 +6,7 @@ const ToggleButtonContainer = styled.div`
     align-items: center;
     gap: 1.4286rem;
 
-    height: 44.0006px;
+    height: 3.1429rem;
     padding: 0.7143rem 1.7857rem;
 
     border-radius: 45.0002px;
@@ -22,10 +22,10 @@ const ToggleButton = styled.div`
     align-items: center;
     gap: 0.7143rem;
 
-    height: 21px;
+    height: 1.5rem;
     padding: 0.3571rem 1.6429rem;
 
-    border-radius: 3.2143rem;
+    border-radius: 45.0002px;
     background: ${(props) =>
         props.$isSelected
             ? props.$isMono
