@@ -20,6 +20,7 @@ const Home = () => {
     const handleMessage = async (event) => {
         try {
             const data = JSON.parse(event.nativeEvent.data);
+            console.log(data); // 추후 삭제 예정
             if (data.type === 'login') {
                 // 로그인 토큰을 AsyncStorage에 저장
                 await AsyncStorage.setItem('authToken', data.accessToken);
@@ -31,6 +32,7 @@ const Home = () => {
                 await logout();
             } else if (data.type === 'Map') {
                 // Map 컴포넌트로 네비게이트
+                console.log('Map 버튼을 누름'); // 추후 삭제 예정
                 navi.navigate('Map');
             }
         } catch (error) {
