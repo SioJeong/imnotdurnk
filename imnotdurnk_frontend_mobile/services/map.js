@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { api } from './api';
+import { apiNoToken } from './api';
 
 // 좌표로 한글 주소 찾기
 const getReverseGeocoding = async (latitude, longitude) => {
@@ -50,7 +50,7 @@ const getOptimalTransitStopover = async (departure, destination) => {
         console.log(formattedTime);
         console.log(typeof formattedTime);
         // 백엔드로 좌표 및 시간 정보 전송하여 최적 경유지 정보 받기
-        const response = await api.get('/map', {
+        const response = await apiNoToken.get('/map', {
             params: {
                 startlat: depLat,
                 startlon: depLng,
@@ -245,5 +245,6 @@ export {
     fetchTaxiDirections,
     fetchTransitDirections,
     getOptimalTransitStopover,
-    getReverseGeocoding,
+    getReverseGeocoding
 };
+
