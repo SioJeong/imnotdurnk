@@ -11,6 +11,7 @@ import com.imnotdurnk.global.exception.ResourceNotFoundException;
 import org.apache.coyote.BadRequestException;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -35,4 +36,6 @@ public interface CalendarService {
     CalendarEntity isSameUserAndGetCalendarEntity (String accessToken, int planId) throws ResourceNotFoundException, BadRequestException;
 
     void deletePlan(String accessToken, int planId) throws BadRequestException, ResourceNotFoundException;
+
+    CalendarEntity arrivedHome(String token, LocalDateTime datetimeStr) throws BadRequestException;
 }

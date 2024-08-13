@@ -47,7 +47,11 @@ const AddGameToPlan = () => {
 
     return (
         <St.CalendarListContainer>
-            <St.Notice>게임 기록을 등록할 일정을 선택해주세요!</St.Notice>
+            {dailyEventList && dailyEventList.length > 0 ? (
+                <St.Notice>게임 기록을 등록할 일정을 선택해주세요!</St.Notice>
+            ) : (
+                <></>
+            )}
             <CalendarStatusBar />
             <St.CalendarListBox>
                 {isLoading ? (

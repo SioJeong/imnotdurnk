@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import RecordRTC from 'recordrtc';
 import { getTestSentence, sendVoiceRecord } from '../../services/game';
 import useGameStore from '../../stores/useGameStore';
-import { ToastSuccess } from '../_common/alert';
+import { ToastSuccess, ToastWarning } from '../_common/alert';
 import VoiceSvgAnimation from '../_common/VoiceSvgAnimation';
 import Button from './../_button/Button';
 import * as St from './VoiceGame.style';
@@ -106,7 +106,6 @@ const VoiceGame = () => {
 
                 const dataResult = await sendVoiceRecord({ formData });
                 if (dataResult) {
-                    console.log('dataResult ---- 전송 받은 결과', dataResult);
                     setVoiceGameResult(dataResult);
                     navigate('/game/game-result', {
                         state: {
@@ -115,11 +114,11 @@ const VoiceGame = () => {
                         },
                     });
                 }
-            } catch (error) {
-                console.error('음성 파일 제출 오류: ', error);
+            } catch (err) {
+                ToastWarning('음성 파일을 다시 녹음해주세요.');
             }
         } else {
-            console.log('전송할 오디오 파일이 없습니다.');
+            ToastWarning('음성 파일을 다시 녹음해주세요.');
         }
     };
 

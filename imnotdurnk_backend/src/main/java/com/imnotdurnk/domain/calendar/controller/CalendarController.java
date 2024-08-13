@@ -4,6 +4,7 @@ import com.imnotdurnk.domain.calendar.dto.CalendarDto;
 import com.imnotdurnk.domain.calendar.dto.CalendarStatisticDto;
 import com.imnotdurnk.domain.calendar.dto.DiaryDto;
 import com.imnotdurnk.domain.calendar.dto.PlanDetailDto;
+import com.imnotdurnk.domain.calendar.entity.CalendarEntity;
 import com.imnotdurnk.domain.calendar.service.CalendarService;
 import com.imnotdurnk.global.commonClass.CommonResponse;
 import com.imnotdurnk.global.exception.InvalidDateException;
@@ -18,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
+import java.time.LocalDateTime;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
@@ -246,6 +248,32 @@ public class CalendarController {
         response.setData(planDetailDto);
 
         return ResponseEntity.status(response.getHttpStatus()).body(response);
+    }
+
+    /**
+     * 도착시간 등록 API
+     * @param accessToken
+     * @param datetimestr
+     * @throws BadRequestException
+     * 2024-11-11T11:11 형식의 datetimestr 받아서 24시간 전 일정 중 가장 가까운 일정에 해당 도착시간 저장함
+     */
+    @Operation(
+            summary = "도착 시간 자동 등록"
+    )
+    @PutMapping("/arrival/{datetimestr}")
+    public ResponseEntity<?> getArrival(@RequestAttribute(value = "AccessToken", required = true) String accessToken,
+                                        @PathVariable  String datetimestr) throws BadRequestException {
+        LocalDateTime arrivalTime = LocalDateTime.parse(datetimestr);
+        CalendarEntity plan = calendarService.arrivedHome(accessToken, arrivalTime);
+
+        //응답 객체
+        SingleResponse response = new SingleResponse();
+        response.setStatusCode(HttpStatus.OK.value());
+        response.setData(plan.toDto());
+        response.setMessage("도착 시간이 등록되었습니다.");
+
+        return ResponseEntity.status(response.getHttpStatus()).body(response);
+
     }
 
     /***

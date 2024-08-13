@@ -25,7 +25,7 @@ const sendVoiceRecord = async ({ formData }) => {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
-            timeout: 10000, // 서버 요청 처리에 필요한 시간 10초로 설정
+            timeout: 5000, // 서버 요청 처리에 필요한 시간 5초로 설정
         });
 
         const { statusCode, httpStatus, message, data } = response.data;
@@ -54,6 +54,21 @@ const saveVoiceGameResult = async ({ data }) => {
     }
 };
 
+const deleteVoiceGameResult = async ({ data }) => {
+    try {
+        const response = await api.post('/voice/pronounce/not-save', data, {});
+
+        const { statusCode, httpStatus, message } = response.data;
+        apiErrorHandler(statusCode, httpStatus, message);
+
+        if (statusCode === 200) {
+            return true;
+        }
+    } catch (error) {
+        throw new Error(error.message || '음성 게임 결과 저장 중 오류 발생');
+    }
+};
+
 const saveRestGameResult = async ({ data }) => {
     try {
         const response = await api.post('/game-logs/save', data, {});
@@ -70,6 +85,7 @@ const saveRestGameResult = async ({ data }) => {
 };
 
 export {
+    deleteVoiceGameResult,
     getTestSentence,
     saveRestGameResult,
     saveVoiceGameResult,

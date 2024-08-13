@@ -4,6 +4,7 @@ import { icons } from '@/shared/constants/icons';
 import { useEffect, useState } from 'react';
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import { useNavigate } from 'react-router-dom';
+import useGameStore from '../../stores/useGameStore';
 import useModalStore from '../../stores/useModalStore';
 import { ToastWarning } from '../_common/alert';
 import ModalTextBox from '../_modal/ModalTextBox';
@@ -26,6 +27,7 @@ import * as St from './MemorizeGame.style';
 // 8. 맞춘 카드 쌍의 수 * 16 = 총 점수 (만약 6쌍을 맞췄으면 100점 줌)
 
 const MemorizeGame = () => {
+    const { setMemorizeGameResult } = useGameStore();
     const { openModal, closeModal } = useModalStore();
     const modalId = 'memorizeGameNoticeModal';
     const navigate = useNavigate();
@@ -124,10 +126,17 @@ const MemorizeGame = () => {
         let gameScore = matchedPairs === 6 ? 100 : matchedPairs * 16;
         return gameScore;
     };
+
     //게임 끝났을 때 함수
     const handleFinishGame = async () => {
         ToastWarning('게임 끝', true);
+
         const gameScore = await calculateGameScore();
+
+        setMemorizeGameResult({
+            score: gameScore,
+        });
+
         // 게임 결과 페이지로 이동
         navigate('/game/game-result', {
             state: {
