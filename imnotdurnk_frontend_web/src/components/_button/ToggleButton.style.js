@@ -25,7 +25,7 @@ const ToggleButton = styled.div`
     height: 1.5rem;
     padding: 0.3571rem 1.6429rem;
 
-    border-radius: 3.2143rem;
+    border-radius: 45.0002px;
     background: ${(props) =>
         props.$isSelected
             ? props.$isMono

@@ -45,7 +45,7 @@ const GameResult = () => {
         {
             imageList: ['zanyResult', 'shakingResult', 'nauseatedResult'],
             comment: [
-                '많이 취하셨군요.',
+                '많이 취하셨네요!',
                 ' 경로 탐색 기능으로 집까지 안전하게 귀가해보세요.',
             ],
         },
