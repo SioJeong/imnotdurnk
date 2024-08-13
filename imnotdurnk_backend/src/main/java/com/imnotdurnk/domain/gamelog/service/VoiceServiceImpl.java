@@ -123,8 +123,8 @@ public class VoiceServiceImpl implements VoiceService {
             con.setRequestProperty("Authorization", accessKey);
 
             // 타임아웃 설정
-            con.setConnectTimeout(30000); // 30초 연결 타임아웃
-            con.setReadTimeout(30000);    // 30초 읽기 타임아웃
+            con.setConnectTimeout(5000); // 5초 연결 타임아웃
+            con.setReadTimeout(5000);    // 5초 읽기 타임아웃
 
             DataOutputStream wr = new DataOutputStream(con.getOutputStream());
             wr.write(gson.toJson(request).getBytes("UTF-8"));
