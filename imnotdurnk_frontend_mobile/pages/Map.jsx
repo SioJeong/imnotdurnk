@@ -126,30 +126,7 @@ const Map = () => {
                     fontSize={'H4'}
                     weight={'medium'}
                     isRed={true}
-                    onPress={() => {
-                        // To-do: 나중에 알고리즘 나오면 수정해야 함
-                        if (destination) {
-                            const tempStopoverPositions = [
-                                {
-                                    // 시청역
-                                    latitude: 37.565355308413714,
-                                    longitude: 126.97720386719465,
-                                },
-                                {
-                                    // 잠실역
-                                    latitude: 37.513812282356945,
-                                    longitude: 127.10202562031904,
-                                },
-                                {
-                                    // 도봉산역
-                                    latitude: 37.689900823978476,
-                                    longitude: 127.04625796639714,
-                                },
-                            ];
-                            setStopover(tempStopoverPositions);
-                            navi.navigate('PathFinder');
-                        }
-                    }}
+                    onPress={() => navi.navigate('PathFinder')}
                 />
             </St.MapSearchContainer>
             <CustomMap />
