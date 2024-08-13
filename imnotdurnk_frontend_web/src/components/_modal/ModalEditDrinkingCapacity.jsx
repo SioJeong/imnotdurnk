@@ -2,6 +2,8 @@ import * as St from '@/components/mypage/ProfileCreateAlcoholCapacity.style';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import StepperButton from '../_button/StepperButton';
+
+import { icons } from '../../shared/constants/icons';
 import Checkbox from '../_common/Checkbox';
 const ModalEditDrinkingCapacity = ({
     selectedSojuBottleCount,
@@ -91,7 +93,7 @@ const ModalEditDrinkingCapacity = ({
                 <St.AlcoholInputContainer>
                     <St.AlcoholInputBox>
                         <St.AlcoholImage
-                            src={`/src/assets/images/sojubottle.webp`}
+                            src={icons['sojuBottle']}
                             alt={`soju bottle image`}
                         />
                         <StepperButton
@@ -103,7 +105,7 @@ const ModalEditDrinkingCapacity = ({
                     </St.AlcoholInputBox>
                     <St.AlcoholInputBox>
                         <St.AlcoholImage
-                            src={`/src/assets/images/sojuglass.webp`}
+                            src={icons['sojuGlass']}
                             alt={`soju glass image`}
                         />
                         <StepperButton
@@ -134,7 +136,7 @@ const ModalEditDrinkingCapacity = ({
                 <St.AlcoholInputContainer>
                     <St.AlcoholInputBox>
                         <St.AlcoholImage
-                            src={`/src/assets/images/beerbottle.webp`}
+                            src={icons['beerBottle']}
                             alt={`beer bottle image`}
                         />
                         <StepperButton
@@ -146,7 +148,7 @@ const ModalEditDrinkingCapacity = ({
                     </St.AlcoholInputBox>
                     <St.AlcoholInputBox>
                         <St.AlcoholImage
-                            src={`/src/assets/images/beerglass.webp`}
+                            src={icons['beerGlass']}
                             alt={`beer glass image`}
                         />
                         <StepperButton

@@ -82,11 +82,11 @@ const GameStatistics = ({ formattedDate }) => {
                 },
             ]);
             if (value.totalAverage === value.monthAverage) {
-                compareScoreForChartTmpList.push(' 같습니다.');
+                compareScoreForChartTmpList.push('과 같습니다.');
             } else if (value.totalAverage < value.monthAverage) {
-                compareScoreForChartTmpList.push(' 높습니다.');
+                compareScoreForChartTmpList.push('보다 높습니다.');
             } else {
-                compareScoreForChartTmpList.push(' 낮습니다.');
+                compareScoreForChartTmpList.push('보다 낮습니다.');
             }
         });
         setMonthAverageForPieChart(monthDataForChartTmpList);
@@ -153,7 +153,6 @@ const GameStatistics = ({ formattedDate }) => {
                 }
                 setGameStatisticsList(results);
                 convertGameStatisticsResult(results);
-                console.log(getGameStaticsticsResult1, 'r1');
             } catch (error) {
                 console.error('Error fetching user data:', error);
             }
@@ -181,7 +180,7 @@ const GameStatistics = ({ formattedDate }) => {
             <StatisticsVisualization>
                 <MainTitle>점수 통계</MainTitle>
                 <SubTitle>
-                    이번 달은 점수 전체 평균보다{' '}
+                    이번 달은 점수 전체 평균
                     <Highlight>
                         {compareScoreList[activeGameTypeIndex]}
                     </Highlight>
@@ -245,7 +244,8 @@ const GameStatistics = ({ formattedDate }) => {
                                   .lowerCountThanYearAvg}
                         일
                     </Highlight>
-                    이 평균보다 낮아요. <br />
+                    이 <br /> 평균보다 낮아요. <br />
+                    <br />
                     <Highlight>
                         {' '}
                         {gameStatisticsList !== undefined && activeIndex === 0
@@ -309,7 +309,7 @@ const StatisticsText = styled.div`
     align-items: center;
     gap: 1.7143rem;
     align-self: stretch;
-    border-radius: 1.4286rem;
+    border-radius: 20.0004px;
     background: var(--color-green2, #465a54);
 `;
 const ButtonBox = styled.div`
@@ -319,7 +319,6 @@ const ButtonBox = styled.div`
     align-self: stretch;
 `;
 const Analysis = styled.div`
-    height: 3.4286rem;
     align-self: stretch;
     color: var(--color-white1, #fff);
 

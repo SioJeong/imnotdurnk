@@ -65,21 +65,6 @@ const ProfileUpdate = () => {
         }));
     };
     const handleModalEditDrinkingCapacity = () => {
-        console.log(
-            '결과는?',
-            selectedBeerBottleCount,
-            selectedBeerGlassCount,
-            selectedSojuBottleCount,
-            selectedSojuGlassCount,
-        );
-        console.log(
-            '잔단위로 계산 값',
-            selectedBeerBottleCount * 500 + selectedBeerGlassCount * 355,
-        );
-        console.log(
-            '잔단위로 계산 값',
-            selectedSojuBottleCount * 8 + selectedSojuGlassCount,
-        );
         if (!inputValues.beerUnsure) {
             setInputValues((prevValues) => ({
                 ...prevValues, // 현재 상태를 유지

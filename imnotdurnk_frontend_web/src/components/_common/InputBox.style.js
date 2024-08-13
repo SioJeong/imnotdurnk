@@ -36,7 +36,7 @@ const TextContainer = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
-    gap: ${(props) => (props.$size === 'small' ? '0.2143rem' : '0.3571rem')};
+    gap: ${(props) => (props.$size === 'small' ? '0.2143rem' : '0.2071rem')};
 
     width: ${(props) =>
         props.$size === 'small' ? '4.0714rem ' : '13.5714rem'};

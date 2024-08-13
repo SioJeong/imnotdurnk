@@ -122,7 +122,7 @@ const AlcoholStatistics = ({ today, formattedDate }) => {
                 </SubTitle>
 
                 <Graph>
-                    <ResponsiveContainer width="100%" height={300}>
+                    <ResponsiveContainer width="100%" height={215}>
                         <BarChart
                             width={300}
                             height={150}
@@ -195,9 +195,9 @@ const StatisticsVisualization = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 0.9286rem;
+    gap: 0.4286rem;
     align-self: stretch;
-    border-radius: 1.4286rem;
+    border-radius: 20.0004px;
     background: var(--color-white2, #f7f7ec);
 `;
 const StatisticsText = styled.div`
@@ -208,7 +208,7 @@ const StatisticsText = styled.div`
     align-items: center;
     gap: 1.7143rem;
     align-self: stretch;
-    border-radius: 1.4286rem;
+    border-radius: 20.0004px;
     background: var(--color-green2, #465a54);
 `;
 

@@ -89,8 +89,6 @@ const Navigation = () => {
                 queryClient,
             );
 
-            console.log('success', success);
-
             if (success) {
                 // 쿼리 무효화
                 queryClient.invalidateQueries([

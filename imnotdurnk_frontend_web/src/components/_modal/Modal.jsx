@@ -10,6 +10,7 @@ const Modal = ({
     buttonText,
     onButtonClick,
     customCloseModal,
+    isGame,
 }) => {
     // modals, closeModal 변경 시에만 리렌더링 (성능 최적화)
     const { modals, closeModal } = useStoreWithEqualityFn(
@@ -23,6 +24,9 @@ const Modal = ({
     const isModalOpened = modals[modalId] || false; // 기본값 false
 
     const closeModalByBackground = () => {
+        if (isGame) {
+            return;
+        }
         if (customCloseModal) {
             customCloseModal(modalId);
         }
