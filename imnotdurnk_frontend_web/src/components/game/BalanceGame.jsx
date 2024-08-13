@@ -1,14 +1,16 @@
+import Modal from '@/components/_modal/Modal';
 import { useCallback, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Duck from '../../assets/images/Duck.svg';
 import Target1 from '../../assets/images/Target1.svg';
 import Target2 from '../../assets/images/Target2.svg';
 import Target3 from '../../assets/images/Target3.svg';
-import Button from '../_button/Button';
+import useModalStore from '../../stores/useModalStore';
 import { ToastError, ToastWarning } from '../_common/alert';
+import ModalTextBox from '../_modal/ModalTextBox';
+
+import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import * as St from './BalanceGame.style';
-
-import { useNavigate } from 'react-router-dom';
-
 const getRandomTargetPosition = (
     windowWidth,
     windowHeight,
@@ -32,6 +34,15 @@ const getRandomTargetImage = () => {
 };
 
 const BalanceGame = () => {
+    //////// 모달
+    const { openModal, closeModal } = useModalStore();
+    const modalId = 'balanceGameNoticeModal';
+    useEffect(() => {
+        openModal(modalId);
+    }, [openModal, modalId]);
+
+    ////////
+
     const windowWidth = window.innerWidth;
     const windowHeight = window.innerHeight;
     const duckSize = 74;
@@ -155,6 +166,7 @@ const BalanceGame = () => {
     };
 
     const handleButtonClick = () => {
+        closeModal(modalId);
         if (isGameActive) {
             resetGame();
         } else {
@@ -189,18 +201,21 @@ const BalanceGame = () => {
 
     return (
         <St.BalanceGameContainer>
-            <St.Notice>
-                <St.Description>
-                    <h3>새끼들을 잃어버린 어미 오리가 있습니다</h3>
-                    <h3>균형 감각을 발휘해보세요!</h3>
-                </St.Description>
+            <St.GameConditionContainer>
                 <St.Description>점수 : {score}</St.Description>
-                <Button
-                    isRed={true}
-                    onClick={handleButtonClick}
-                    text={isGameActive ? `${timeLeft}s` : 'Start'}
-                />
-            </St.Notice>
+                <CountdownCircleTimer
+                    duration={30}
+                    colors={['#004777', '#F7B801', '#A30000', '#A30000']}
+                    colorsTime={[30, 15, 10, 0]}
+                    size={50}
+                    strokeWidth={5}
+                    isSmoothColorTransition={true}
+                    isPlaying={isGameActive}
+                    onComplete={handleFinishGame}
+                >
+                    {({ remainingTime }) => remainingTime}
+                </CountdownCircleTimer>
+            </St.GameConditionContainer>
             <St.ObjectContainer>
                 <img
                     src={Duck}
@@ -223,6 +238,15 @@ const BalanceGame = () => {
                     />
                 )}
             </St.ObjectContainer>
+            <Modal
+                isGame={true}
+                modalId="balanceGameNoticeModal"
+                contents={
+                    <ModalTextBox text=" 새끼 오리들을 잃어버린 어미 오리 한마리가 있습니다. 균형 감각을 발휘해보세요!" />
+                }
+                buttonText={'시작하기'}
+                onButtonClick={handleButtonClick}
+            />
         </St.BalanceGameContainer>
     );
 };

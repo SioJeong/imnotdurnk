@@ -67,6 +67,7 @@ api.interceptors.response.use(
                     isTokenRefreshing = false;
                     return api(originalRequest);
                 } catch (error) {
+                    window.location.href = '/account';
                     return Promise.reject(error);
                 }
             }
