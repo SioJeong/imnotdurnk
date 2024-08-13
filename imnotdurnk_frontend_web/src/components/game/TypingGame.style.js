@@ -52,7 +52,7 @@ export const TypingGameInput = styled.input`
     align-items: center;
     gap: 0.7143rem;
     align-self: stretch;
-    border-radius: 0.7143rem;
+    border-radius: 10.0002px;
     background: var(--color-white1, #fff);
     font-size: var(--font-title-h2: 1.43rem);
 `;

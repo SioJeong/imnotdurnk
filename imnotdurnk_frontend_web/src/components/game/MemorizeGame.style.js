@@ -79,7 +79,7 @@ export const TestDiv = styled.h2`
 export const Card = styled.div`
     width: 4.3571rem;
     height: 6.1429rem;
-    border-radius: 0.3571rem;
+    border-radius: 4.9994px;
     perspective: 1000px;
     cursor: pointer;
     position: relative;

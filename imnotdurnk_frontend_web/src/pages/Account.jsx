@@ -47,7 +47,7 @@ const AccountContainer = styled.div`
     align-items: center;
     padding: 1.8571rem 1.7143rem;
     gap: 1.8125rem;
-    border-radius: 1.25rem;
+    border-radius: 17.5px;
     background: var(--color-white2, #f7f7ec);
 `;
 

@@ -115,7 +115,7 @@ const TypingGame = () => {
                 <St.Title>아래의 글을 따라 입력해주세요!</St.Title>
                 <St.SubTitle>
                     {user.nickname !== '' ? user.nickname : user.name}님의
-                    타자를 보고 취했는지 판단해드릴게요.
+                    타자로 취했는지 판단해드릴게요.
                 </St.SubTitle>
             </St.TitleContainer>
             <St.TimerBox>
@@ -164,6 +164,7 @@ const TypingGame = () => {
                 />
             </St.ButtonBox>
             <Modal
+                isGame={true}
                 modalId="typingGameNoticeModal"
                 contents={
                     <ModalTextBox text="30초 안에 주어진 문장을 입력하세요!" />

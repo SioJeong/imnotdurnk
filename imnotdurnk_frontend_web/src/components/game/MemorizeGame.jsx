@@ -200,7 +200,7 @@ const MemorizeGame = () => {
             </St.TitleContainer>
             <St.TimerBox>
                 <CountdownCircleTimer
-                    duration={activeTimer === 0 ? 3 : 35}
+                    duration={activeTimer === 0 ? 5 : 35}
                     colors={['#004777', '#F7B801', '#A30000', '#A30000']}
                     colorsTime={
                         activeTimer === 0 ? [5, 3, 2, 0] : [30, 15, 5, 0]
@@ -252,7 +252,7 @@ const MemorizeGame = () => {
                 />
             </St.ButtonBox>
             <Modal
-                isForGame
+                isGame={true}
                 modalId="memorizeGameNoticeModal"
                 contents={
                     <ModalTextBox text="30초 안에 같은 그림의 카드를 찾으세요!" />

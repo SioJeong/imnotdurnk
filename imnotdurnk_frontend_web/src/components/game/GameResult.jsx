@@ -41,7 +41,7 @@ const GameResult = () => {
         {
             imageList: ['zanyResult', 'shakingResult', 'nauseatedResult'],
             comment: [
-                '많이 취하셨군요.',
+                '많이 취하셨네요!',
                 ' 경로 탐색 기능으로 집까지 안전하게 귀가해보세요.',
             ],
         },
@@ -103,9 +103,9 @@ const GameResult = () => {
         <ResultContainer>
             <TitleContainer>
                 <Title>
-                    {user.name !== '' ? user.name : '손'}님의{' '}
-                    {gameName ? gameName : '00'} 게임 점수는
+                    {user.name !== '' ? user.name : '손'}님의
                     <br />
+                    {gameName ? gameName : '00'} 게임 점수는
                     <Highlight>
                         {gameScore ? Math.floor(gameScore) : 0}
                     </Highlight>{' '}
