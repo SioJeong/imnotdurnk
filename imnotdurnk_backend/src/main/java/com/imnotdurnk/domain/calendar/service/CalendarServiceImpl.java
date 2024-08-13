@@ -11,7 +11,6 @@ import com.imnotdurnk.domain.calendar.repository.mapping.AlcoholAmount;
 import com.imnotdurnk.domain.calendar.repository.mapping.AlcoholAmountImpl;
 import com.imnotdurnk.domain.calendar.repository.mapping.PlanForMonth;
 import com.imnotdurnk.domain.calendar.repository.mapping.PlanForMonthImpl;
-import com.imnotdurnk.domain.gamelog.dto.GameLogDto;
 import com.imnotdurnk.domain.gamelog.entity.GameLogEntity;
 import com.imnotdurnk.domain.gamelog.entity.VoiceEntity;
 import com.imnotdurnk.domain.gamelog.repository.GameLogRepository;
@@ -19,14 +18,21 @@ import com.imnotdurnk.domain.gamelog.repository.VoiceRepository;
 import com.imnotdurnk.domain.gamelog.service.S3FileUploadService;
 import com.imnotdurnk.domain.user.entity.UserEntity;
 import com.imnotdurnk.domain.user.repository.UserRepository;
+import com.imnotdurnk.global.commonClass.CommonResponse;
 import com.imnotdurnk.global.exception.EntitySaveFailedException;
+import com.imnotdurnk.global.exception.InvalidDateException;
+import com.imnotdurnk.global.exception.InvalidTokenException;
 import com.imnotdurnk.global.exception.ResourceNotFoundException;
 import com.imnotdurnk.global.util.JwtUtil;
 import com.imnotdurnk.global.util.SystemUtil;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.apache.coyote.BadRequestException;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Limit;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -34,6 +40,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -109,7 +116,7 @@ public class CalendarServiceImpl implements CalendarService {
      * @throws Exception 데이터베이스 저장 과정에서 발생할 수 있는 예외
      */
     @Override
-    public CalendarDto addCalendar(String token, CalendarDto calendarDto) throws EntitySaveFailedException {
+    public void addCalendar(String token, CalendarDto calendarDto) throws EntitySaveFailedException {
 
         CalendarEntity calendar = calendarDto.toEntity();
         calendar.setUserEntity(userRepository.findByEmail(jwtUtil.getUserEmail(token, TokenType.ACCESS)));
@@ -117,7 +124,6 @@ public class CalendarServiceImpl implements CalendarService {
 
         if(calendar == null) throw new EntitySaveFailedException("저장에 실패하였습니다.");
 
-        return calendar.toDto();
     }
 
     /**
@@ -146,11 +152,10 @@ public class CalendarServiceImpl implements CalendarService {
      */
     @Override
     public CalendarStatisticDto getCalendarStatistic(String dateStr, String token) {
-
         UserEntity user = userRepository.findByEmail(jwtUtil.getUserEmail(token, TokenType.ACCESS));
         LocalDate date = LocalDate.parse(dateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
-        List<PlanForMonthImpl> planForMonths = getMonthlyPlanList(token, date);
+        List<PlanForMonthImpl> planForMonths = getMonthlyPlanList(date);
 
         AlcoholAmount
                 yearTotal = calendarRepository.sumAlcoholByYear(user.getId(), date.getYear());
@@ -175,14 +180,12 @@ public class CalendarServiceImpl implements CalendarService {
      * @param today
      * @return 년, 월, 일정횟수를 필드로 갖는 {@link PlanForMonthImpl} 객체를 순서대로 리스트화 하여 반환
      */
-    @Override
-    public List<PlanForMonthImpl> getMonthlyPlanList(String accessToken, LocalDate today) {
+    private List<PlanForMonthImpl> getMonthlyPlanList(LocalDate today) {
 
-        UserEntity user = userRepository.findByEmail(jwtUtil.getUserEmail(accessToken, TokenType.ACCESS));
         LocalDateTime endDate = today.withDayOfMonth(today.lengthOfMonth()).atStartOfDay(); // 현재 월의 마지막 날
         LocalDateTime startDate = today.minusMonths(11).withDayOfMonth(1).atTime(LocalTime.MAX); // 11개월 전의 첫 번째 날
 
-        List<PlanForMonth> planList = calendarRepository.findRecent12MonthsPlanCount(user.getId(), startDate, endDate);
+        List<PlanForMonth> planList = calendarRepository.findRecent12MonthsPlanCount(startDate, endDate);
 
         // 결과를 월, 연도별로 매핑
         Map<YearMonth, Integer> planMap = new HashMap<>();
@@ -263,11 +266,7 @@ public class CalendarServiceImpl implements CalendarService {
         CalendarEntity calendarEntity = isSameUserAndGetCalendarEntity(accessToken, planId);
 
         // 게임 로그 조회
-        List<GameLogDto> gameLogDtos = gameLogRepository.findByCalendarEntity_Id(planId)
-                .map(gameLogEntities -> gameLogEntities.stream()
-                        .map(GameLogEntity::toDto) // toDto 메서드를 사용하여 변환
-                        .collect(Collectors.toList()))
-                .orElseGet(Collections::emptyList);
+        calendarEntity.setGameLogEntities(gameLogRepository.findByCalendarEntity_Id(planId).get());
 
         return PlanDetailDto.builder()
                 .memo(calendarEntity.getMemo())
@@ -278,7 +277,6 @@ public class CalendarServiceImpl implements CalendarService {
                 .id(calendarEntity.getId())
                 .userId(calendarEntity.getUserEntity().getId())
 		        .alcoholLevel(calendarEntity.getAlcoholLevel())
-                .gameLogDtos(gameLogDtos)
                 .date(calendarEntity.getDate())
                 .build();
     }
@@ -313,9 +311,13 @@ public class CalendarServiceImpl implements CalendarService {
         for(GameLogEntity gameLogEntity : gameLogEntities.get()) {
             VoiceEntity voice = voiceRepository.findByLogId(gameLogEntity.getId());
             s3FileUploadService.deleteFile(voice.getFileName());
+            voiceRepository.deleteById(gameLogEntity.getId());
         }
 
-        // 일정 삭제, 해당하는 게임기록과 음성기록 모두 삭제(cascade)
+        // 연관된 게임 ID 삭제
+        gameLogRepository.deleteByCalendarEntity(calendarEntity);
+
+        // 일정 삭제
         calendarRepository.deleteById(planId);
 
     }
@@ -337,4 +339,33 @@ public class CalendarServiceImpl implements CalendarService {
 
         return calendarEntity.get();
     }
+
+    @Override
+    public CalendarEntity arrivedHome(String token, LocalDateTime arrivalTime) throws BadRequestException {
+        // accessToken에 저장된 사용자 정보 받아옴
+        UserEntity user = userRepository.findByEmail(jwtUtil.getUserEmail(token, TokenType.ACCESS));
+        CalendarEntity calendarEntity = calendarRepository.findByUserIdAndDateTime(user, arrivalTime, Limit.of(1));
+
+        if(calendarEntity == null) throw new BadRequestException("등록할 일정이 없습니다.");
+
+        // 받아온 날짜와 시간
+        LocalDateTime dateTime = calendarEntity.getDate();
+
+        long hoursDifference = ChronoUnit.HOURS.between(arrivalTime, dateTime);
+        if(hoursDifference >-24 &&hoursDifference <= 0) {
+            // 저장
+            calendarEntity.setArrivalTime(arrivalTime.toLocalTime());
+
+            //DB에 피드백 기록
+            calendarEntity = calendarRepository.save(calendarEntity);
+
+            //피드백이 기록되지 않은 경우 예외처리
+            if(calendarEntity == null) throw new EntitySaveFailedException("도착 시간 저장에 실패하였습니다");
+
+        } else throw new BadRequestException("등록할 일정이 없습니다.");
+
+        return calendarEntity;
+    }
+
+
 }

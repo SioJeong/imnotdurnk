@@ -5,13 +5,13 @@ import com.imnotdurnk.domain.calendar.repository.mapping.AlcoholAmount;
 import com.imnotdurnk.domain.calendar.entity.CalendarEntity;
 import com.imnotdurnk.domain.calendar.repository.mapping.PlanForMonth;
 import com.imnotdurnk.domain.user.entity.UserEntity;
+import org.springframework.data.domain.Limit;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -29,7 +29,7 @@ public interface CalendarRepository extends JpaRepository<CalendarEntity, Intege
         """)
     List<DiaryDto> findAllDiary(Integer user, Integer year, Integer month);
 
-    @Query("SELECT c FROM CalendarEntity c WHERE c.userEntity.id = :userId AND DATE(c.date) = :date ORDER BY TIMESTAMP(c.date) DESC")
+    @Query("SELECT c FROM CalendarEntity c WHERE c.userEntity.id = :userId AND DATE(c.date) = :date")
     List<CalendarEntity> findByUserEntity_IdAndDate(Integer userId, LocalDate date);
 
     @Query("""
@@ -52,12 +52,13 @@ public interface CalendarRepository extends JpaRepository<CalendarEntity, Intege
     @Query("""
         SELECT FUNCTION('YEAR', c.date) as year, FUNCTION('MONTH', c.date) as month, COUNT(c.id) as count
         FROM CalendarEntity c
-        WHERE c.userEntity.id = :userId
-        AND c.date BETWEEN :startDate AND :endDate
+        WHERE c.date BETWEEN :startDate AND :endDate
         GROUP BY FUNCTION('YEAR', c.date), FUNCTION('MONTH', c.date)
         ORDER BY FUNCTION('YEAR', c.date) DESC, FUNCTION('MONTH', c.date) DESC
         """)
-    List<PlanForMonth> findRecent12MonthsPlanCount(Integer userId, LocalDateTime startDate, LocalDateTime endDate);
+    List<PlanForMonth> findRecent12MonthsPlanCount(LocalDateTime startDate, LocalDateTime endDate);
+
+    @Query("SELECT c FROM CalendarEntity c WHERE c.userEntity = :user AND c.date <= :datetime ORDER BY c.date DESC")
+    CalendarEntity findByUserIdAndDateTime(UserEntity user, LocalDateTime datetime, Limit limit);
 
 }
-

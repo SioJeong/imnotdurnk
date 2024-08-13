@@ -4,6 +4,7 @@ import com.imnotdurnk.domain.calendar.dto.CalendarDto;
 import com.imnotdurnk.domain.calendar.dto.CalendarStatisticDto;
 import com.imnotdurnk.domain.calendar.dto.DiaryDto;
 import com.imnotdurnk.domain.calendar.dto.PlanDetailDto;
+import com.imnotdurnk.domain.calendar.entity.CalendarEntity;
 import com.imnotdurnk.domain.calendar.service.CalendarService;
 import com.imnotdurnk.global.commonClass.CommonResponse;
 import com.imnotdurnk.global.exception.InvalidDateException;
@@ -18,7 +19,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -95,16 +97,17 @@ public class CalendarController {
             description ="제목: 30자 이하, 메모: 200자 이하, 날짜: yyyy-MM-ddThh:ss 형식의 문자열"
     )
     @PostMapping
-    public ResponseEntity<SingleResponse> addCalendar(@RequestAttribute(value = "AccessToken", required = true) String token, @RequestBody CalendarDto calendarDto) throws BadRequestException{
+    public ResponseEntity<?> addCalendar(@RequestAttribute(value = "AccessToken", required = true) String token, @RequestBody CalendarDto calendarDto) throws BadRequestException{
 
         if(!checkTitle(calendarDto.getTitle())) throw new BadRequestException("제목이 없거나 30자를 초과했습니다.");
         if(!checkDateTime(calendarDto.getDate())) throw new BadRequestException("날짜는 yyyy-MM-ddThh:ss 형식의 문자열이어야 합니다.");
         if(!checkMemo(calendarDto.getMemo())) throw new BadRequestException("메모가 200자를 초과했습니다.");
+        CommonResponse response = new CommonResponse();
 
-        CalendarDto calendar = calendarService.addCalendar(token, calendarDto);
+        calendarService.addCalendar(token, calendarDto);
 
-        SingleResponse<CalendarDto> response =
-                new SingleResponse<>(HttpStatus.CREATED.value(), "일정 등록이 완료되었습니다.", calendar);
+        response.setStatusCode(HttpStatus.CREATED.value());
+        response.setMessage("일정 등록이 완료되었습니다.");
 
         return ResponseEntity.status(response.getHttpStatus()).body(response);
 
@@ -236,7 +239,6 @@ public class CalendarController {
     public ResponseEntity<?> getPlanDetail(@RequestAttribute(value = "AccessToken", required = true) String accessToken,
                                            @PathVariable int planId) throws BadRequestException {
 
-
         // 일정 조회
         PlanDetailDto planDetailDto = calendarService.getPlanDetail(accessToken, planId);
 
@@ -246,6 +248,22 @@ public class CalendarController {
         response.setData(planDetailDto);
 
         return ResponseEntity.status(response.getHttpStatus()).body(response);
+    }
+
+    @PutMapping("/arrival")
+    public ResponseEntity<?> getArrival(@RequestAttribute(value = "AccessToken", required = true) String accessToken,
+                                        @RequestParam(value = "arrivalTime", required = true) String datetimestr) throws BadRequestException {
+        LocalDateTime arrivalTime = LocalDateTime.parse(datetimestr);
+        CalendarEntity plan = calendarService.arrivedHome(accessToken, arrivalTime);
+
+        //응답 객체
+        SingleResponse response = new SingleResponse();
+        response.setStatusCode(HttpStatus.OK.value());
+        response.setData(plan.toDto());
+        response.setMessage("도착 시간이 등록되었습니다.");
+
+        return ResponseEntity.status(response.getHttpStatus()).body(response);
+
     }
 
     /***
