@@ -1,11 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Duck from '../../assets/images/Duck.svg';
 import Target1 from '../../assets/images/Target1.svg';
 import Target2 from '../../assets/images/Target2.svg';
 import Target3 from '../../assets/images/Target3.svg';
 import Button from '../_button/Button';
-import { ToastError } from '../_common/alert';
+import { ToastError, ToastWarning } from '../_common/alert';
 import * as St from './BalanceGame.style';
+
+import { useNavigate } from 'react-router-dom';
 
 const getRandomTargetPosition = (
     windowWidth,
@@ -15,8 +17,8 @@ const getRandomTargetPosition = (
 ) => {
     let x, y;
     do {
-        x = Math.random() * (windowWidth - 120) + 40; // 타겟이 뷰포트의 좌우로 벗어나지 않도록 수정
-        y = Math.random() * (windowHeight - 120) + 40; // 타겟이 뷰포트의 상하로 벗어나지 않도록 수정
+        x = Math.random() * (windowWidth - 120) + 40;
+        y = Math.random() * (windowHeight - 160) + 40;
     } while (
         Math.sqrt((x - duckPosition.x) ** 2 + (y - duckPosition.y) ** 2) <
         minDistance
@@ -32,39 +34,54 @@ const getRandomTargetImage = () => {
 const BalanceGame = () => {
     const windowWidth = window.innerWidth;
     const windowHeight = window.innerHeight;
+    const duckSize = 74;
 
-    const duckSize = 74; // 오리의 크기
+    const navigate = useNavigate();
     const [position, setPosition] = useState({
-        x: windowWidth / 2 - duckSize / 2, // 중앙으로 설정
-        y: windowHeight / 2 - duckSize / 2, // 중앙으로 설정
+        x: windowWidth / 2 - duckSize / 2,
+        y: windowHeight / 2 - duckSize / 2,
     });
     const [target, setTarget] = useState(null);
     const [score, setScore] = useState(0);
     const [timeLeft, setTimeLeft] = useState(30);
     const [isGameActive, setIsGameActive] = useState(false);
 
-    const updatePosition = ({ beta, gamma }) => {
-        setPosition((prevPosition) => {
-            let newX = prevPosition.x + gamma / 3;
-            let newY = prevPosition.y + beta / 3;
+    const updatePosition = useCallback(
+        ({ beta, gamma }) => {
+            setPosition((prevPosition) => {
+                let newX = prevPosition.x + gamma / 3;
+                let newY = prevPosition.y + beta / 3;
 
-            newX = Math.max(0, Math.min(newX, windowWidth - 40));
-            newY = Math.max(0, Math.min(newY, windowHeight - 40));
+                newX = Math.max(0, Math.min(newX, windowWidth - 40));
+                newY = Math.max(0, Math.min(newY, windowHeight - 80));
 
-            return { x: newX, y: newY };
-        });
-    };
+                return { x: newX, y: newY };
+            });
+        },
+        [windowWidth, windowHeight],
+    );
 
-    const checkIfTargetReached = () => {
+    const createNewTarget = useCallback(() => {
+        return {
+            position: getRandomTargetPosition(
+                windowWidth,
+                windowHeight,
+                position,
+            ),
+            Component: getRandomTargetImage(),
+        };
+    }, [windowWidth, windowHeight, position]);
+
+    const checkIfTargetReached = useCallback(() => {
         if (!target || !isGameActive) {
             return;
         }
 
-        const duckCenter = { x: position.x + 37, y: position.y + 37 }; // 오리 중심 계산
+        const duckCenter = { x: position.x + 37, y: position.y + 37 };
         const targetCenter = {
             x: target.position.x + 20,
             y: target.position.y + 20,
-        }; // 타겟 중심 계산
+        };
 
         const distance = Math.sqrt(
             (duckCenter.x - targetCenter.x) ** 2 +
@@ -72,24 +89,22 @@ const BalanceGame = () => {
         );
 
         if (distance < 40) {
-            // 오리와 타겟의 중심 사이의 거리가 40 이하이면 점수 추가
             setScore((prevScore) => prevScore + 1);
-            const newTarget = {
-                position: getRandomTargetPosition(windowWidth, windowHeight),
-                Component: getRandomTargetImage(),
-            };
-            setTarget(newTarget);
+            setTarget(createNewTarget());
         }
-    };
+    }, [target, isGameActive, position, createNewTarget]);
 
     useEffect(() => {
         checkIfTargetReached();
-    }, [position]);
+    }, [position, checkIfTargetReached]);
 
-    const handleOrientation = (event) => {
-        const { beta, gamma } = event;
-        updatePosition({ beta, gamma });
-    };
+    const handleOrientation = useCallback(
+        (event) => {
+            const { beta, gamma } = event;
+            updatePosition({ beta, gamma });
+        },
+        [updatePosition],
+    );
 
     const requestPermission = async () => {
         if (typeof DeviceOrientationEvent.requestPermission === 'function') {
@@ -117,21 +132,13 @@ const BalanceGame = () => {
         return () => {
             window.removeEventListener('deviceorientation', handleOrientation);
         };
-    }, []);
+    }, [handleOrientation]);
 
     const startGame = () => {
         setScore(0);
         setTimeLeft(30);
         setIsGameActive(true);
-        const initialTarget = {
-            position: getRandomTargetPosition(
-                windowWidth,
-                windowHeight,
-                position,
-            ),
-            Component: getRandomTargetImage(),
-        };
-        setTarget(initialTarget);
+        setTarget(createNewTarget());
     };
 
     const resetGame = () => {
@@ -145,16 +152,6 @@ const BalanceGame = () => {
         setIsGameActive(false);
         setTarget(null);
         setPosition(initialDuckPosition);
-
-        const initialTarget = {
-            position: getRandomTargetPosition(
-                windowWidth,
-                windowHeight,
-                initialDuckPosition,
-            ),
-            Component: getRandomTargetImage(),
-        };
-        setTarget(initialTarget);
     };
 
     const handleButtonClick = () => {
@@ -165,6 +162,19 @@ const BalanceGame = () => {
         }
     };
 
+    const handleFinishGame = async () => {
+        ToastWarning('게임 끝', true);
+
+        const gameScore = score >= 25 ? 100 : score * 4;
+
+        navigate('/game/game-result', {
+            state: {
+                gameName: '밸런스',
+                gameScore: gameScore,
+            },
+        });
+    };
+
     useEffect(() => {
         if (isGameActive && timeLeft > 0) {
             const timer = setInterval(() => {
@@ -173,7 +183,7 @@ const BalanceGame = () => {
 
             return () => clearInterval(timer);
         } else if (timeLeft === 0) {
-            resetGame();
+            handleFinishGame();
         }
     }, [isGameActive, timeLeft]);
 

@@ -2,7 +2,11 @@ import { icons } from '@/shared/constants/icons';
 import { calendarMinmax } from '@/shared/constants/minmaxLength';
 import { useEffect, useRef, useState } from 'react';
 import { alcoholLevelToString } from '../../hooks/useAlcoholLevelFormatter';
-import { formatTime } from '../../hooks/useDateTimeFormatter';
+import {
+    convertDateToString,
+    formatTime,
+    parseDateTime,
+} from '../../hooks/useDateTimeFormatter';
 import useCalendarStore from '../../stores/useCalendarStore';
 import useModalStore from '../../stores/useModalStore';
 import * as St from './CreatePlan.style';
@@ -60,6 +64,15 @@ const EditPlan = () => {
 
     const memoRef = useRef(null);
     const titleRef = useRef(null);
+
+    const today = parseDateTime(
+        convertDateToString(new Date()),
+        '오전 12시 00분',
+    );
+    const planDetailDate = parseDateTime(planDetail.date, '오전 12시 00분');
+
+    // 오늘 이전(오늘 포함)에 등록하는 경우에만 알코올 관련 기록 수정 가능
+    const shouldRenderAlcoholComponent = planDetailDate <= today;
 
     useEffect(() => {
         if (titleRef.current) {
@@ -141,15 +154,21 @@ const EditPlan = () => {
                         </St.InputItemBox>
                     </St.InputContainer>
                 </St.ScheduleContainerForEdit>
-                <EditPlanAlcohol
-                    openAlcoholModal={() => openModal('alcoholModal')}
-                    openAlcoholLevelModal={() => openModal('alcoholLevelModal')}
-                    openArrivalTimeModal={() => openModal('arrivalTimeModal')}
-                    selectedSojuBottleCount={selectedSojuBottleCount}
-                    selectedSojuGlassCount={selectedSojuGlassCount}
-                    selectedBeerBottleCount={selectedBeerBottleCount}
-                    selectedBeerGlassCount={selectedBeerGlassCount}
-                />
+                {shouldRenderAlcoholComponent && (
+                    <EditPlanAlcohol
+                        openAlcoholModal={() => openModal('alcoholModal')}
+                        openAlcoholLevelModal={() =>
+                            openModal('alcoholLevelModal')
+                        }
+                        openArrivalTimeModal={() =>
+                            openModal('arrivalTimeModal')
+                        }
+                        selectedSojuBottleCount={selectedSojuBottleCount}
+                        selectedSojuGlassCount={selectedSojuGlassCount}
+                        selectedBeerBottleCount={selectedBeerBottleCount}
+                        selectedBeerGlassCount={selectedBeerGlassCount}
+                    />
+                )}
             </St.Container>
             <EditPlanModalController
                 selectedDateInput={selectedDateInput}

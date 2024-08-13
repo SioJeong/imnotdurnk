@@ -49,6 +49,7 @@ public class MapServiceImpl implements MapService {
         List<MapDto> mapResult = new ArrayList<MapDto>();
         List<MapResult> stop = stopRepository.findStop(startLat, startLon, destLat, destLon, time);
         Set<String> set = new HashSet<String>();
+        int cnt=0;
         for(MapResult result : stop){
             if(set.contains(String.valueOf(result.getRoute()))) {
                 continue;
@@ -59,6 +60,7 @@ public class MapServiceImpl implements MapService {
             dlon=dlon.replace("\r", "");
             mapResult.add(new MapDto(result.getDestLat(), Optional.of(dlon),result.getStartStop(),result.getStartDistance(),result.getRoute(),result.getDestStop(),result.getDistance(),result.getDuration(), result.getSeq1(), result.getSeq2(), result.getRouteId(), result.getStartLat(), Optional.of(slon)));
             set.add(String.valueOf(result.getRoute()));
+            if(++cnt==4) break;
         }
         return mapResult;
     }
@@ -84,11 +86,13 @@ public class MapServiceImpl implements MapService {
 
         List<MapResult> stop = stopRepository.findStop(startlat, startlon, destlat, destlon, time);
         Set<String> set = new HashSet<String>();
+        int cnt=0;
         if (!stop.isEmpty() && !stop.get(0).getRoute().isEmpty()) {
             for (MapResult result : stop) {
                 if(set.contains(String.valueOf(result.getRoute()))) {
                     continue;
                 }
+                if(++cnt==4) break;
                 set.add(String.valueOf(result.getRoute()));
                 String slon = result.getStartLon().get().replace("\r", "");
                 String dlon = result.getDestLon().get().replace("\r", "");
