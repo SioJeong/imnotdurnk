@@ -89,14 +89,14 @@ const TypingGame = () => {
 
         const gameScore = await calculateGameScore();
 
-        console.log('배포에서 이동안하는 이유 찾기위한거 .. 1');
+        // GameResult 페이지로 이동하는 방법
         navigate('/game/game-result', {
             state: {
                 gameName: '타이핑',
                 gameScore: gameScore,
             },
         });
-        console.log('배포에서 이동안하는 이유 찾기위한거 .. 2');
+        // 여기까지
         // return { shouldRepeat: true, delay: 1.5 };
     };
     useEffect(() => {

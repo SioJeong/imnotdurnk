@@ -31,6 +31,12 @@ import Title from '../../assets/icons/size_24/Icon-title.svg';
 import Visible from '../../assets/icons/size_24/Icon-visible.svg';
 import VoiceWhite from '../../assets/icons/size_24/Icon-voice-white.svg';
 import Voice from '../../assets/icons/size_24/Icon-voice.svg';
+import Chicken from '../../assets/icons/size_40/Icon-chicken.svg';
+import Heart from '../../assets/icons/size_40/Icon-heart.svg';
+import Nauseated from '../../assets/icons/size_40/Icon-nauseated.svg';
+import Wine from '../../assets/icons/size_40/Icon-wine.svg';
+import Woozy from '../../assets/icons/size_40/Icon-woozy.svg';
+import Zanny from '../../assets/icons/size_40/Icon-zanny.svg';
 import BeerBottle from '../../assets/images/beerbottle.webp';
 import BeerGlass from '../../assets/images/beerglass.webp';
 import Bezel from '../../assets/images/bezel.svg';
@@ -40,9 +46,12 @@ import HomeLocation from '../../assets/images/location.webp';
 import MiniBeerBottle from '../../assets/images/mini-beer-bottle.webp';
 import MiniSojuBottle from '../../assets/images/mini-soju-bottle.webp';
 import HomeMiniGame from '../../assets/images/minigame.webp';
+import NauseatedResult from '../../assets/images/nauseated-result.svg';
+import ShakingResult from '../../assets/images/shaking-result.svg';
 import SojuBottle from '../../assets/images/sojubottle.webp';
 import SojuGlass from '../../assets/images/sojuglass.webp';
-
+import WinkingResult from '../../assets/images/winking-result.svg';
+import ZanyResult from '../../assets/images/zany-result.svg';
 const icons = {
     address: Address,
     backarrow: BackArrow,
@@ -88,6 +97,16 @@ const icons = {
     homeMiniGame: HomeMiniGame,
     homeLocation: HomeLocation,
     homeChart: HomeChart,
+    chicken: Chicken,
+    heart: Heart,
+    nauseated: Nauseated,
+    wine: Wine,
+    woozy: Woozy,
+    zanny: Zanny,
+    nauseatedResult: NauseatedResult,
+    shakingResult: ShakingResult,
+    winkingResult: WinkingResult,
+    zanyResult: ZanyResult,
 };
 
 export { icons };

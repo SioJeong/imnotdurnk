@@ -14,8 +14,6 @@ const GameStatistics = ({ formattedDate }) => {
 
     const iconNames = ['voice', 'balance', 'keyboard', 'memorize'];
 
-    const iconSrc = icons[iconNames[activeGameTypeIndex]];
-
     //두번째 통계 월,년 고르는 탭
     const [activeIndex, setActiveIndex] = useState(0);
     const tabContentsList = [
