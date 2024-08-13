@@ -84,7 +84,7 @@ const HomeContainer = styled.div`
     display: flex;
     width: 25.7143rem;
     height: 38.7143rem;
-    padding: 14px 14px 28px 14px;
+    padding: 1rem 1rem 2rem 1rem;
     flex-direction: column;
     align-items: center;
     gap: 0.7143rem;
