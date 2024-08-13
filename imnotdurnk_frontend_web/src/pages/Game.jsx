@@ -14,14 +14,14 @@ const Game = () => {
         <Routes>
             <Route path="/" element={<GameList />} />
             <Route path="/voicegame" element={<VoiceGame />} />
-            <Route
-                path="/voicegame/result/add-to-plan"
-                element={<AddGameToPlan />}
-            />
             <Route path="/balancegame" element={<BalanceGame />} />
             <Route path="/typinggame" element={<TypingGame />} />
             <Route path="/memorizegame" element={<MemorizeGame />} />
             <Route path="/game-result" element={<GameResult />} />
+            <Route
+                path="/game-result/add-to-plan"
+                element={<AddGameToPlan />}
+            />
         </Routes>
     );
 };

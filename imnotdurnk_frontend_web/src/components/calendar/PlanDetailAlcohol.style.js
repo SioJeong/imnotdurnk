@@ -62,6 +62,12 @@ const InputItemBoxTitle = styled.div`
     gap: 0.7143rem;
 `;
 
+const NoDrinkRecord = styled.h3`
+    padding: 1rem;
+    color: var(--color-white1);
+    text-align: center;
+`;
+
 export {
     AlcoholContainer,
     AlcoholCountImage,
@@ -70,4 +76,5 @@ export {
     InputContainer,
     InputItemBox,
     InputItemBoxTitle,
+    NoDrinkRecord,
 };

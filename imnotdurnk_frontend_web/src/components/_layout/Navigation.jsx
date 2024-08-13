@@ -28,7 +28,14 @@ const Navigation = () => {
             setUserFromTmp: state.setUserFromTmp,
         }),
     );
-    const { voiceGameResult, resetVoiceGameResult } = useGameStore();
+    const {
+        voiceGameResult,
+        resetVoiceGameResult,
+        isVoiceGameResultSet,
+        typingGameResult,
+        resetTypingGameResult,
+        isTypingGameResultSet,
+    } = useGameStore();
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -55,15 +62,31 @@ const Navigation = () => {
                 script: voiceGameResult.script,
             };
 
-            console.log('voiceGameResultData', voiceGameResultData);
+            console.log('서버에 보낼 voiceGameResultData', voiceGameResultData);
+
+            const typingGameResultData = {
+                planId: typingGameResult.planId, // 아직 일정 생성 전 (0)
+                gameType: typingGameResult.gameType,
+                score: typingGameResult.score,
+            };
+
+            console.log(
+                '서버에 보낼 typingGameResultData',
+                typingGameResultData,
+            );
 
             // 일정 제출 함수 호출
             const success = await submitPlan(
                 voiceGameResultData,
+                resetVoiceGameResult,
+                isVoiceGameResultSet,
+                typingGameResultData,
+                resetTypingGameResult,
+                isTypingGameResultSet,
                 navigate,
                 todayUrl,
                 resetPlan,
-                resetVoiceGameResult,
+                queryClient,
             );
 
             console.log('success', success);
