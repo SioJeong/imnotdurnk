@@ -155,15 +155,16 @@ const MemorizeGame = () => {
         openModal(modalId);
     }, [openModal, modalId]); // modalId를 의존성 배열에 추가
 
-    useEffect(() => {
-        setTimeout(() => {
-            if (matchedPairs === cardList.length / 2) {
-                // 모든 카드 쌍이 매칭되었을 때
-                setIsGameOver(true);
-                handleFinishGame();
-            }
-        }, 2000);
-    }, [matchedPairs]);
+    // useEffect(() => {
+    //     setTimeout(() => {
+    //         if (matchedPairs === cardList.length / 2) {
+    //             // 모든 카드 쌍이 매칭되었을 때
+    //             setIsGameOver(true);
+    //             handleFinishGame();
+    //         }
+    //     }, 2000);
+    // }, [matchedPairs]);
+
     useEffect(() => {
         if (!firstCard || !secondCard) {
             return;
