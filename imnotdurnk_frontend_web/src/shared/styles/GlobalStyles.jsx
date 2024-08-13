@@ -24,14 +24,14 @@ const GlobalStyles = createGlobalStyle`
 
     @font-face {
         font-family: 'Pretendard';
-        src: url('/src/assets/fonts/PretendardVariable.woff2') format('woff2');
+        src: url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/woff2/Pretendard-Thin.woff2') format('woff2');
         font-weight: 300; /* Light */
         font-display: swap;
     }
 
     @font-face {
         font-family: 'Pretendard';
-        src: url('/src/assets/fonts/PretendardVariable.woff2') format('woff2');
+        src: url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/woff2/Pretendard-Medium.woff2') format('woff2');
         font-weight: 500; /* Medium */
         font-display: swap;
     }
