@@ -252,7 +252,7 @@ public class CalendarController {
 
     @PutMapping("/arrival")
     public ResponseEntity<?> getArrival(@RequestAttribute(value = "AccessToken", required = true) String accessToken,
-                                        @RequestParam(value = "arrivalTime", required = true) String datetimestr) throws BadRequestException {
+                                        @RequestBody(required = true) String datetimestr) throws BadRequestException {
         LocalDateTime arrivalTime = LocalDateTime.parse(datetimestr);
         CalendarEntity plan = calendarService.arrivedHome(accessToken, arrivalTime);
 
