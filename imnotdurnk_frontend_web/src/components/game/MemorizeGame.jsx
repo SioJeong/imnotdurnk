@@ -1,6 +1,6 @@
 import Button from '@/components/_button/Button';
 import Modal from '@/components/_modal/Modal';
-import useUserStore from '@/stores/useUserStore.js';
+import { icons } from '@/shared/constants/icons';
 import { useEffect, useState } from 'react';
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import { useNavigate } from 'react-router-dom';
@@ -8,100 +8,195 @@ import useModalStore from '../../stores/useModalStore';
 import { ToastWarning } from '../_common/alert';
 import ModalTextBox from '../_modal/ModalTextBox';
 import * as St from './MemorizeGame.style';
+// 게임 로직
+////// 준비 과정
+// 0. 이미지 랜덤 배치
+// 1. 모달 닫기
+//2. 게임 시작 true로 바꾸기
+// 3. 카드 뒤집어서 5초간 뒷면 보여주기
+// 4. 모두 앞면으로 뒤집기
+// 5. 1초후 새로운 타이머 가동
+////// 게임 과정
+// 6. 첫번째 선택, 두번째 선택 고르기
+// 6.1만약 같으면 isMatched = true
+// 6.2 matchedPaires +=2
+// 6.3 이미 isMatched된 카드는 isFlipped안되게 바꾸기
+////// 게임 끝난 후
+// 7. timer 시간 초과 or 제출하기 버튼을 눌렀을 때
+// 8. 맞춘 카드 쌍의 수 * 16 = 총 점수 (만약 6쌍을 맞췄으면 100점 줌)
+
 const MemorizeGame = () => {
-    const { user } = useUserStore((state) => ({
-        user: state.user,
-    }));
     const { openModal, closeModal } = useModalStore();
-    const modalId = 'typingGameNoticeModal';
+    const modalId = 'memorizeGameNoticeModal';
     const navigate = useNavigate();
-    const [isGameStarted, setIsGameStarted] = useState(false);
+    const notRandomCardList = [
+        { id: 0, imageName: 'chicken', isFlipped: false, isMatched: false },
+        { id: 1, imageName: 'chicken', isFlipped: false, isMatched: false },
+        { id: 2, imageName: 'heart', isFlipped: false, isMatched: false },
+        { id: 3, imageName: 'heart', isFlipped: false, isMatched: false },
+        { id: 4, imageName: 'nauseated', isFlipped: false, isMatched: false },
+        { id: 5, imageName: 'nauseated', isFlipped: false, isMatched: false },
+        { id: 6, imageName: 'wine', isFlipped: false, isMatched: false },
+        { id: 7, imageName: 'wine', isFlipped: false, isMatched: false },
+        { id: 8, imageName: 'woozy', isFlipped: false, isMatched: false },
+        { id: 9, imageName: 'woozy', isFlipped: false, isMatched: false },
+        { id: 10, imageName: 'zanny', isFlipped: false, isMatched: false },
+        { id: 11, imageName: 'zanny', isFlipped: false, isMatched: false },
+    ];
     const [isVisible, setIsVisible] = useState(false);
-    const closeHandler = (state) => {
+    const [isGameStarted2, setIsGameStarted2] = useState(false);
+    const [isGameStarted, setIsGameStarted] = useState(false); //게임 시작
+    const [cardList, setCardList] = useState(notRandomCardList);
+    const [firstCard, setFirstCard] = useState(null);
+    const [secondCard, setSecondCard] = useState(null);
+    const [isGameOver, setIsGameOver] = useState(false);
+    const [matchedPairs, setMatchedPairs] = useState(0); // 맞춘 쌍의 횟수
+    const [isClickDisabled, setIsClickDisabled] = useState(false); // 카드 클릭 비활성화 상태
+    //타이머 조절용 변수 0 -> 5초 카운터 1 -> 30초 카운터
+    const [activeTimer, setActiveTimer] = useState(0);
+    const check = () => {
+        console.log('check함수 내 제발 보여라ㅏㅏ', firstCard, secondCard);
+    };
+    const handleCardClick = (id) => {
+        if (isClickDisabled || isGameOver) {
+            //5초 & 게임 오버일 땐 건들 ㄴ
+            return;
+        }
+
+        const clickedCard = cardList.find((card) => card.id === id);
+
+        // 이미 매칭된 카드나 뒤집혀 있는 카드라면 리턴
+        if (clickedCard.isMatched || clickedCard.isFlipped) {
+            return;
+        }
+
+        // 카드 뒤집기
+        setCardList((prevCardList) =>
+            prevCardList.map((card) =>
+                card.id === id ? { ...card, isFlipped: true } : card,
+            ),
+        );
+
+        // 첫번째 카드가 선택안되어있으면 -> 지금 고른게 첫 번째 카드
+        if (!firstCard) {
+            setFirstCard(clickedCard);
+            return;
+        }
+
+        // 두 번째 카드 선택
+        setSecondCard(clickedCard);
+        setIsClickDisabled(true);
+    };
+
+    // 0. 카드 랜덤 생성
+    // TODO : 게임용 이미지 추가, 지금은 그냥 아이콘에 있는 이미지명 사용함
+    const shuffleArray = (array) => {
+        //Fisher-Yates Shuffle
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]]; // Swap elements
+        }
+        console.log('shuffleArray', array);
+        return array;
+    };
+
+    // 1. 모달 닫기 2. 게임 시작 isFlipped= truel로 바꾸기 3. 타이머 시작
+    const closeHandler = () => {
         closeModal(modalId);
+        //setIsGameStarted(true);
         setIsVisible(true);
+        setCardList((prevCardList) =>
+            prevCardList.map((card) => ({ ...card, isFlipped: true })),
+        );
+        setIsClickDisabled(true);
         setIsGameStarted(true);
     };
-    const [testText, setTestText] = useState('');
-    //const testText = '달나라에서 온 토끼가 땅콩버터를 좋아한다는 소문이 있다.';
-
-    const [inputTyping, setInputTyping] = useState('');
-    const handleInputChange = (e) => {
-        setInputTyping(e.target.value);
-    };
-    const getStyledText = () => {
-        const typedChars = inputTyping.split(''); // 입력된 문자 배열
-        const testChars = testText.split(''); // 주어진 문자 배열
-
-        return testChars.map((char, index) => {
-            const typedChar = typedChars[index] || ''; // 입력된 문자가 부족할 경우 빈 문자열
-
-            const isMatch = typedChar === char;
-            const isSpace = testChars[index] === ' ';
-            const isPast = index < typedChars.length;
-
-            let color = 'var(--color-green3)'; // 기본 색상
-            if (isPast) {
-                if (isMatch) {
-                    color = 'var(--color-green1)'; // 맞는 글자
-                } else {
-                    color = 'var( --color-red)'; // 틀린 글자
-                }
-            }
-            return (
-                <St.StyledSpan
-                    key={index}
-                    $isSpace={isSpace}
-                    $isPast={isPast}
-                    $color={color}
-                >
-                    {char}
-                </St.StyledSpan>
-            );
-        });
-    };
-    const onClickRemoveButton = () => {
-        setInputTyping('');
-    };
-    const calculateGameScore = () => {
-        // e.prventDefault();
-        const testTextArray = testText.split('');
-        const inputTextArray = inputTyping.split('');
-
-        let matchCount = 0;
-
-        // 공백도 포함해서 문자 비교
-        for (let i = 0; i < testTextArray.length; i++) {
-            if (inputTextArray[i] === testTextArray[i]) {
-                matchCount++;
-            }
-        }
-        // setInputTyping('');
-        console.log(
-            `일치하는 문자 수: ${matchCount} 전체 문자수 : `,
-            testTextArray.length,
+    //4.모두 앞면으로 뒤집기 & 카드 비활성화 풀기
+    const handleFinishShowCardImage = () => {
+        setCardList((prevCardList) =>
+            prevCardList.map((card) => ({ ...card, isFlipped: false })),
         );
-        return (matchCount / testTextArray.length) * 100;
+        setIsClickDisabled(false);
+        setActiveTimer(1);
+        setIsGameStarted2(true);
+
+        return { shouldRepeat: true, delay: 1.5 };
     };
+
+    //점수 계산 함수
+    const calculateGameScore = () => {
+        let gameScore = matchedPairs === 6 ? 100 : matchedPairs * 16;
+        return gameScore;
+    };
+    //게임 끝났을 때 함수
     const handleFinishGame = async () => {
         ToastWarning('게임 끝', true);
-
         const gameScore = await calculateGameScore();
-
-        console.log('배포에서 이동안하는 이유 찾기위한거 .. 1');
+        console.log('gameScore', gameScore);
+        // 게임 결과 페이지로 이동
         navigate('/game/game-result', {
             state: {
                 gameName: '기억력',
                 gameScore: gameScore,
             },
         });
-        console.log('배포에서 이동안하는 이유 찾기위한거 .. 2');
-        // return { shouldRepeat: true, delay: 1.5 };
     };
+
+    //0.카드 랜덤 생성
+    useEffect(() => {
+        const shffleResult = shuffleArray(notRandomCardList);
+        setCardList(shffleResult);
+    }, []);
     useEffect(() => {
         console.log('Opening modal');
         openModal(modalId);
-    }, [openModal]);
+    }, [openModal, modalId]); // modalId를 의존성 배열에 추가
+
+    useEffect(() => {
+        setTimeout(() => {
+            if (matchedPairs === cardList.length / 2) {
+                // 모든 카드 쌍이 매칭되었을 때
+                setIsGameOver(true);
+                handleFinishGame();
+            }
+        }, 2000);
+    }, [matchedPairs]);
+    useEffect(() => {
+        if (!firstCard || !secondCard) {
+            return;
+        }
+        console.log('useEffect', firstCard, secondCard);
+        if (firstCard.imageName === secondCard.imageName) {
+            //isMatched === true로 변경
+            console.log('맞');
+            setCardList((prevCardList) =>
+                prevCardList.map((card) =>
+                    card.id === firstCard.id || card.id === secondCard.id
+                        ? { ...card, isMatched: true }
+                        : card,
+                ),
+            );
+            setMatchedPairs(matchedPairs + 1);
+            setFirstCard(null);
+            setSecondCard(null);
+            setIsClickDisabled(false);
+        } else {
+            console.log('틀');
+            //isFlipped === false로 변경
+            setTimeout(() => {
+                setCardList((prevCardList) =>
+                    prevCardList.map((card) =>
+                        card.id === firstCard.id || card.id === secondCard.id
+                            ? { ...card, isFlipped: false }
+                            : card,
+                    ),
+                );
+                setFirstCard(null);
+                setSecondCard(null);
+                setTimeout(() => setIsClickDisabled(false), 20);
+            }, 1000);
+        }
+    }, [secondCard]);
 
     return (
         <St.TypingGameContainer>
@@ -113,38 +208,61 @@ const MemorizeGame = () => {
                 </St.SubTitle>
             </St.TitleContainer>
             <St.TimerBox>
-                {' '}
                 <CountdownCircleTimer
-                    duration={5}
+                    duration={activeTimer === 0 ? 3 : 35}
                     colors={['#004777', '#F7B801', '#A30000', '#A30000']}
-                    colorsTime={[5, 3, 2, 0]}
+                    colorsTime={
+                        activeTimer === 0 ? [5, 3, 2, 0] : [30, 15, 5, 0]
+                    }
                     size={50}
                     strokeWidth={5}
                     isSmoothColorTransition={true}
-                    isPlaying={isGameStarted}
-                    onComplete={handleFinishGame}
+                    isPlaying={
+                        activeTimer === 0 ? isGameStarted : isGameStarted2
+                    }
+                    onComplete={
+                        activeTimer === 0
+                            ? handleFinishShowCardImage
+                            : handleFinishGame
+                    }
                 >
                     {({ remainingTime }) => remainingTime}
                 </CountdownCircleTimer>
             </St.TimerBox>
-            <St.TestDiv $isVisible={isVisible}> {getStyledText()}</St.TestDiv>
+            <St.TestDiv $isVisible={isVisible}>
+                {cardList.map((card) => (
+                    <St.Card
+                        key={card.id}
+                        id={card.id}
+                        value={card.value}
+                        isFlipped={card.isFlipped || card.isMatched}
+                        onClick={() => handleCardClick(card.id)}
+                    >
+                        {' '}
+                        <St.CardInner isFlipped={card.isFlipped}>
+                            <St.CardFront />
+                            <St.CardBack>
+                                <St.CardImage
+                                    src={icons[card.imageName]}
+                                    alt={card.imageName}
+                                />
+                            </St.CardBack>{' '}
+                        </St.CardInner>
+                    </St.Card>
+                ))}
+            </St.TestDiv>
 
             <St.ButtonBox>
                 <Button
-                    text="다 지우기"
-                    size="medium"
-                    isRed={false}
-                    onClick={onClickRemoveButton}
-                />
-                <Button
                     text="제출하기"
-                    size="medium"
+                    size="large"
                     isRed={true}
                     onClick={handleFinishGame}
                 />
             </St.ButtonBox>
             <Modal
-                modalId="typingGameNoticeModal"
+                isForGame
+                modalId="memorizeGameNoticeModal"
                 contents={
                     <ModalTextBox text="30초 안에 같은 그림의 카드를 찾으세요!" />
                 }

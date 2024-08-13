@@ -9,7 +9,11 @@ import VoiceSvgAnimation from '../_common/VoiceSvgAnimation';
 import Button from './../_button/Button';
 import * as St from './VoiceGame.style';
 
+import useUserStore from '@/stores/useUserStore.js';
 const VoiceGame = () => {
+    const { user } = useUserStore((state) => ({
+        user: state.user,
+    }));
     const navigate = useNavigate();
     const { setVoiceGameResult } = useGameStore();
 
@@ -123,7 +127,10 @@ const VoiceGame = () => {
         <St.VoiceGameContainer>
             <St.Notice>
                 <h2>아래의 글을 따라 읽어주세요!</h2>
-                <h4>말술님의 혀가 꼬였는지 저희가 들어볼게요.</h4>
+                <h4>
+                    {user.name !== '' ? user.name : '손'}님의 혀가 꼬였는지
+                    저희가 들어볼게요.
+                </h4>
             </St.Notice>
             {isLoading ? (
                 <h3>문장을 가져오는 중입니다.</h3>

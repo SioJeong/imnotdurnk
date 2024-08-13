@@ -10,7 +10,7 @@ export const ProfileCreateContainer = styled.form`
     align-self: stretch;
     border-radius: 20px;
     background: var(--color-white2, #f7f7ec);
-    gap: 20px;
+    gap: 1.4286rem;
 `;
 export const Title = styled.h2``;
 export const SubTitle = styled.p`
@@ -54,7 +54,7 @@ export const AlcoholInputContainer = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 30px;
+    gap: 2.1429rem;
     align-self: stretch;
 `;
 export const AlcoholInputBox = styled.div`
