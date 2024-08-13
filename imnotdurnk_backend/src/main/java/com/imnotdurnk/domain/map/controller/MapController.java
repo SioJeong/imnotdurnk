@@ -34,7 +34,7 @@ public class MapController {
             @RequestParam(required = true) double startlat, @RequestParam(required = true) double startlon,
             @RequestParam(required = true) double destlat, @RequestParam(required = true) double destlon,
             @RequestParam(required = true) String time) {
-        log.info("경로 탐색 "+startlat+" "+startlon+" "+destlat+" "+destlon+" "+time);
+        log.info("경로 탐색 "+startlat+" "+startlon+" "+destlat+" "+destlon+" "+time+" "+time.length());
         ListResponse<MapDto> response = new ListResponse<>();
         List<MapDto> result = mapService.getStopsAndRoutesInArea(startlat, startlon, destlat, destlon, time);
         response.setDataList(result);
