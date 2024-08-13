@@ -1,4 +1,3 @@
-import Button from '@/components/_button/Button';
 import Modal from '@/components/_modal/Modal';
 import { icons } from '@/shared/constants/icons';
 import { useEffect, useState } from 'react';
@@ -155,15 +154,15 @@ const MemorizeGame = () => {
         openModal(modalId);
     }, [openModal, modalId]); // modalId를 의존성 배열에 추가
 
-    // useEffect(() => {
-    //     setTimeout(() => {
-    //         if (matchedPairs === cardList.length / 2) {
-    //             // 모든 카드 쌍이 매칭되었을 때
-    //             setIsGameOver(true);
-    //             handleFinishGame();
-    //         }
-    //     }, 2000);
-    // }, [matchedPairs]);
+    useEffect(() => {
+        setTimeout(() => {
+            if (matchedPairs === cardList.length / 2) {
+                // 모든 카드 쌍이 매칭되었을 때
+                setIsGameOver(true);
+                handleFinishGame();
+            }
+        }, 500);
+    }, [matchedPairs]);
 
     useEffect(() => {
         if (!firstCard || !secondCard) {
@@ -253,14 +252,6 @@ const MemorizeGame = () => {
                 ))}
             </St.TestDiv>
 
-            <St.ButtonBox>
-                <Button
-                    text="제출하기"
-                    size="large"
-                    isRed={true}
-                    onClick={handleFinishGame}
-                />
-            </St.ButtonBox>
             <Modal
                 isGame={true}
                 modalId="memorizeGameNoticeModal"
