@@ -1,4 +1,4 @@
-import jwtDecode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 import { api, apiNoToken } from './api';
 import apiErrorHandler from './apiErrorHandler';
 // response body 형식 : httpStatus, message, statusCode, dataList
