@@ -28,7 +28,8 @@ const Home = () => {
     const goToMyPage = () => navigate('/mypage');
     const goToGame = () => navigate('/game');
     const goToNavigation = () => {
-        // 로그인 성공 시 네이티브 앱에 메시지 전송
+        // Map 열기
+        console.log('Sending message to React Native');
         window.ReactNativeWebView.postMessage(JSON.stringify({
             type: 'Map',
         }));

@@ -31,6 +31,8 @@ const login = async (email, password) => {
             // 토큰 디코딩 
             const decodedToken = jwtDecode(accessToken);
             const expiryTime = decodedToken.exp * 1000; // 초 단위를 밀리초로 변환
+            console.log(expiryTime);
+            console.log('로그인 성공');
 
             // 로그인 성공 시 네이티브 앱에 메시지 전송
             window.ReactNativeWebView.postMessage(JSON.stringify({
@@ -38,6 +40,8 @@ const login = async (email, password) => {
                 accessToken: accessToken,
                 expiryTime: expiryTime,
             }));
+
+            console.log('여기까지 옴');
         }
 
         return {
