@@ -10,6 +10,8 @@ import com.imnotdurnk.global.response.ListResponse;
 import com.imnotdurnk.global.response.SingleResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +22,7 @@ import java.util.List;
 @AllArgsConstructor
 public class MapController {
 
+    private static final Logger log = LoggerFactory.getLogger(MapController.class);
     private MapService mapService;
 
     @Operation(
@@ -31,6 +34,7 @@ public class MapController {
             @RequestParam(required = true) double startlat, @RequestParam(required = true) double startlon,
             @RequestParam(required = true) double destlat, @RequestParam(required = true) double destlon,
             @RequestParam(required = true) String time) {
+        log.info("경로 탐색 "+startlat+" "+startlon+" "+destlat+" "+destlon+" "+time);
         ListResponse<MapDto> response = new ListResponse<>();
         List<MapDto> result = mapService.getStopsAndRoutesInArea(startlat, startlon, destlat, destlon, time);
         response.setDataList(result);
@@ -47,6 +51,7 @@ public class MapController {
                                                      @RequestParam(required = true) double startlat, @RequestParam(required = true) double startlon,
                                                      @RequestParam(required = true) double destlat, @RequestParam(required = true) double destlon,
                                                     @RequestParam(required = true) String time){
+        log.info("경로 탐색 "+startlat+" "+startlon+" "+destlat+" "+destlon+" "+time);
         ListResponse<MapDto> response = new ListResponse<>();
         List<MapDto> result = mapService.getStopsAndRoutesInAreaWithTaxi(destlat,destlon,startlat, startlon, time);
         response.setDataList(result);
@@ -62,6 +67,7 @@ public class MapController {
     public ResponseEntity<ListResponse<?>> getRoute(
                                                    @RequestParam(required = true) int seq1, @RequestParam(required = true) int seq2,
                                                    @RequestParam(required = true) String routeId){
+
         ListResponse<RouteDto> response = new ListResponse<>();
         List<RouteDto> result = mapService.getRoutes(routeId,seq1,seq2);
         response.setDataList(result);
