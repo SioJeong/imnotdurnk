@@ -114,7 +114,6 @@ const VoiceGame = () => {
                             gameScore: dataResult.score,
                         },
                     });
-                    // navigate('/game/voicegame/result');
                 }
             } catch (error) {
                 console.error('음성 파일 제출 오류: ', error);

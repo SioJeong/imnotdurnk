@@ -312,7 +312,9 @@ public class CalendarServiceImpl implements CalendarService {
         Optional<List<GameLogEntity>> gameLogEntities = gameLogRepository.findByCalendarEntity_Id(planId);
         for(GameLogEntity gameLogEntity : gameLogEntities.get()) {
             VoiceEntity voice = voiceRepository.findByLogId(gameLogEntity.getId());
-            s3FileUploadService.deleteFile(voice.getFileName());
+            if(voice != null) {
+                s3FileUploadService.deleteFile(voice.getFileName());
+            }
         }
 
         // 일정 삭제, 해당하는 게임기록과 음성기록 모두 삭제(cascade)

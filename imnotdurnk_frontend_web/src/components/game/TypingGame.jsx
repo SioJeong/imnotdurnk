@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import { useNavigate } from 'react-router-dom';
 import { getTestSentence } from '../../services/game';
+import useGameStore from '../../stores/useGameStore';
 import useModalStore from '../../stores/useModalStore';
 import { ToastWarning } from '../_common/alert';
 import ModalTextBox from '../_modal/ModalTextBox';
@@ -13,11 +14,14 @@ const TypingGame = () => {
     const { user } = useUserStore((state) => ({
         user: state.user,
     }));
+    const { setTypingGameResult } = useGameStore();
     const { openModal, closeModal } = useModalStore();
     const modalId = 'typingGameNoticeModal';
+
     const navigate = useNavigate();
     const [isGameStarted, setIsGameStarted] = useState(false);
     const [isVisible, setIsVisible] = useState(false);
+
     const closeHandler = (state) => {
         closeModal(modalId);
         setIsVisible(true);
@@ -84,12 +88,16 @@ const TypingGame = () => {
         );
         return (matchCount / testTextArray.length) * 100;
     };
+
     const handleFinishGame = async () => {
         ToastWarning('게임 끝', true);
 
         const gameScore = await calculateGameScore();
 
-        // GameResult 페이지로 이동하는 방법
+        setTypingGameResult({
+            score: gameScore,
+        });
+
         navigate('/game/game-result', {
             state: {
                 gameName: '타이핑',
@@ -99,6 +107,7 @@ const TypingGame = () => {
         // 여기까지
         // return { shouldRepeat: true, delay: 1.5 };
     };
+
     useEffect(() => {
         const getTestText = async () => {
             const getTestTextResult = await getTestSentence();

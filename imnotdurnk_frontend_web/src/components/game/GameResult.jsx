@@ -60,7 +60,7 @@ const GameResult = () => {
             '아니오',
             () => {
                 ToastSuccess('오늘의 일정 리스트로 이동합니다.');
-                navigate('/game/voicegame/result/add-to-plan');
+                navigate('/game/game-result/add-to-plan');
             },
             () => {
                 InfoConfirmModal(

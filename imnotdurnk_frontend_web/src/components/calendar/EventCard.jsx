@@ -1,10 +1,11 @@
+import { useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
     convertDateToString,
     dateStringToUrl,
 } from '../../hooks/useDateTimeFormatter';
-import { saveVoiceGameResult } from '../../services/game';
+import { saveRestGameResult, saveVoiceGameResult } from '../../services/game';
 import useCalendarStore from '../../stores/useCalendarStore';
 import useGameStore from '../../stores/useGameStore';
 import { ToastSuccess } from '../_common/alert';
@@ -19,6 +20,7 @@ const EventCard = ({
 }) => {
     const navigate = useNavigate();
     const location = useLocation();
+    const queryClient = useQueryClient();
 
     const { selectedDate } = useCalendarStore();
 
@@ -26,7 +28,14 @@ const EventCard = ({
     const today = new Date();
     const todayUrl = dateStringToUrl(convertDateToString(today));
 
-    const { voiceGameResult } = useGameStore();
+    const {
+        voiceGameResult,
+        resetVoiceGameResult,
+        isVoiceGameResultSet,
+        typingGameResult,
+        resetTypingGameResult,
+        isTypingGameResultSet,
+    } = useGameStore();
 
     useEffect(() => {
         if (location.pathname.startsWith('/calendar/')) {
@@ -59,19 +68,53 @@ const EventCard = ({
             const currentPath = location.pathname;
             navigate(`${currentPath}/plan/${eventId}`);
         } else if (parentComponent === 'addGameToPlan') {
-            const voiceGameResultData = {
-                planId: eventId,
-                score: voiceGameResult.score,
-                filename: voiceGameResult.filename,
-                script: voiceGameResult.script,
-            };
-            console.log('서버에 보낼 voiceGameResultData', voiceGameResultData);
-            const result = await saveVoiceGameResult({
-                data: voiceGameResultData,
-            });
-            if (result) {
-                ToastSuccess('게임 기록이 등록되었습니다!', true, true);
-                navigate(`/calendar/${todayUrl}/plan/${eventId}`);
+            if (isVoiceGameResultSet) {
+                const voiceGameResultData = {
+                    planId: eventId,
+                    score: voiceGameResult.score,
+                    filename: voiceGameResult.filename,
+                    script: voiceGameResult.script,
+                };
+                console.log(
+                    '서버에 보낼 voiceGameResultData',
+                    voiceGameResultData,
+                );
+                const result = await saveVoiceGameResult({
+                    data: voiceGameResultData,
+                });
+
+                if (result) {
+                    resetVoiceGameResult();
+
+                    // 쿼리 무효화
+                    queryClient.invalidateQueries(['planDetail', eventId]);
+                    ToastSuccess('게임 기록이 등록되었습니다!', true, true);
+                    navigate(`/calendar/${todayUrl}/plan/${eventId}`);
+                }
+            }
+
+            if (isTypingGameResultSet) {
+                const typingGameResultData = {
+                    planId: eventId,
+                    gameType: typingGameResult.gameType,
+                    score: typingGameResult.score,
+                };
+                console.log(
+                    '서버에 보낼 typingGameResultData',
+                    typingGameResultData,
+                );
+                const result = await saveRestGameResult({
+                    data: typingGameResultData,
+                });
+
+                if (result) {
+                    resetTypingGameResult();
+
+                    // 쿼리 무효화
+                    queryClient.invalidateQueries(['planDetail', eventId]);
+                    ToastSuccess('게임 기록이 등록되었습니다!', true, true);
+                    navigate(`/calendar/${todayUrl}/plan/${eventId}`);
+                }
             }
         }
     };

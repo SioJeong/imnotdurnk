@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import useCalendarNavigation from '../../hooks/useCalendarNavigation';
+import useCalendarStore from '../../stores/useCalendarStore';
 import CalendarStatusBar from './CalendarStatusBar';
 import EventCard from './EventCard';
 import * as St from './MainCalendar.style';
@@ -14,6 +15,7 @@ const MainCalendar = () => {
     const [statusOnDate, setStatusOnDate] = useState(0);
 
     const { navigate } = useCalendarNavigation();
+    const { setSelectedDate } = useCalendarStore();
 
     const handleItemClick = (date) => {
         // date를 UTC로 변환
@@ -23,6 +25,13 @@ const MainCalendar = () => {
         const formattedDate = utcDate.toISOString().split('T')[0]; // 날짜를 YYYY-MM-DD 형식으로 변환
         navigate(`/calendar/${formattedDate}`);
     };
+
+    // 캘린더를 나갈 때 selectedDate 상태를 오늘로 변경
+    useEffect(() => {
+        return () => {
+            setSelectedDate(new Date());
+        };
+    }, []);
 
     return (
         <St.MainContainer>

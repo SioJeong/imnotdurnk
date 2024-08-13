@@ -160,6 +160,7 @@ const PlanDetail = () => {
                         </St.ScheduleContainer>
 
                         <PlanDetailAlcohol
+                            planDetailDate={planDetail.date}
                             sojuBottle={sojuBottle}
                             sojuGlass={sojuGlass}
                             beerBottle={beerBottle}
