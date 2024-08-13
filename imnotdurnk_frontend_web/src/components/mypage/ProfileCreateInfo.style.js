@@ -10,7 +10,7 @@ export const ProfileCreateContainer = styled.form`
     align-self: stretch;
     border-radius: 20px;
     background: var(--color-white2, #f7f7ec);
-    gap: 20px;
+    gap: 1.4286rem;
 `;
 
 export const MessageWrapper = styled.div`

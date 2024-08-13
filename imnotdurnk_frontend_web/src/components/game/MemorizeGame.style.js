@@ -97,7 +97,6 @@ export const CardFront = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 30px;
     border-radius: 10px;
     color: white;
     font-weight: bold;
@@ -114,7 +113,6 @@ export const CardBack = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 30px; //없
     border-radius: 10px;
     color: white;
     font-weight: bold;
