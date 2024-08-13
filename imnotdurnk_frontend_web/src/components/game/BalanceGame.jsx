@@ -8,6 +8,7 @@ import { ToastError, ToastWarning } from '../_common/alert';
 import * as St from './BalanceGame.style';
 
 import { useNavigate } from 'react-router-dom';
+import useGameStore from '../../stores/useGameStore';
 
 const getRandomTargetPosition = (
     windowWidth,
@@ -35,6 +36,8 @@ const BalanceGame = () => {
     const windowWidth = window.innerWidth;
     const windowHeight = window.innerHeight;
     const duckSize = 74;
+
+    const { setBalanceGameResult } = useGameStore();
 
     const navigate = useNavigate();
     const [position, setPosition] = useState({
@@ -166,6 +169,10 @@ const BalanceGame = () => {
         ToastWarning('게임 끝', true);
 
         const gameScore = score >= 25 ? 100 : score * 4;
+
+        setBalanceGameResult({
+            score: gameScore,
+        });
 
         navigate('/game/game-result', {
             state: {
