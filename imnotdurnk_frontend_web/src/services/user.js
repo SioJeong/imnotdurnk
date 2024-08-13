@@ -1,3 +1,4 @@
+import jwtDecode from 'jwt-decode';
 import { api, apiNoToken } from './api';
 import apiErrorHandler from './apiErrorHandler';
 // response body 형식 : httpStatus, message, statusCode, dataList
@@ -25,6 +26,19 @@ const login = async (email, password) => {
         const accessToken = response.headers['authorization'];
 
         const { statusCode, httpStatus } = response.data;
+
+        if (statusCode === 200) {
+            // 토큰 디코딩 
+            const decodedToken = jwtDecode(accessToken);
+            const expiryTime = decodedToken.exp * 1000; // 초 단위를 밀리초로 변환
+
+            // 로그인 성공 시 네이티브 앱에 메시지 전송
+            window.ReactNativeWebView.postMessage(JSON.stringify({
+                type: 'login',
+                accessToken: accessToken,
+                expiryTime: expiryTime,
+            }));
+        }
 
         return {
             isSuccess: statusCode === 200,
@@ -125,7 +139,7 @@ const putUserDetailedInfo = async (editProfile) => {
 
 const getUserProfile = async () => {
     try {
-        const response = await api.get(`/users/profile`);
+        const response = await api.get(`/users/profile`,{});
         const { statusCode, httpStatus, message, data } = response.data;
         //apiErrorHandler(statusCode, httpStatus, message);
         return {
@@ -170,9 +184,16 @@ const logout = async () => {
 
         const { statusCode, httpStatus } = response.data;
 
+        if (statusCode === 200) {
+            // 로그아웃 성공 시 네이티브 앱에 메시지 전송
+            window.ReactNativeWebView.postMessage(JSON.stringify({
+                type: 'logout',
+            }));
+        }
+
         return {
             isSuccess: statusCode === 200,
-            message: '로그인 성공',
+            message: '로그아웃 성공',
         };
     } catch (err) {
         return {
@@ -181,6 +202,7 @@ const logout = async () => {
         };
     }
 };
+
 const deleteAccount = async (passwordForDelete) => {
     try {
         const response = await api.post(`/users/delete-account`, {
@@ -232,5 +254,6 @@ export {
     putUserDetailedInfo,
     sendCertificationNumber,
     sendNewPassword,
-    signup,
+    signup
 };
+

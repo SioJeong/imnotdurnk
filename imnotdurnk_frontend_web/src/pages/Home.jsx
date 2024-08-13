@@ -27,7 +27,12 @@ const Home = () => {
     const goToAccount = () => navigate('/account');
     const goToMyPage = () => navigate('/mypage');
     const goToGame = () => navigate('/game');
-    const goToNavigation = () => console.log('앱으로 이동');
+    const goToNavigation = () => {
+        // 로그인 성공 시 네이티브 앱에 메시지 전송
+        window.ReactNativeWebView.postMessage(JSON.stringify({
+            type: 'Map',
+        }));
+    };
 
     const tabContentsList = [
         {

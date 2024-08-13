@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { apiNoToken } from './api';
 
 // 좌표로 한글 주소 찾기
 const getReverseGeocoding = async (latitude, longitude) => {
@@ -20,10 +21,74 @@ const getReverseGeocoding = async (latitude, longitude) => {
     }
 };
 
+// 현재 시간으로 이용 가능한 대중교통 경유지 찾기
+const getOptimalTransitStopover = async (departure, destination) => {
+    const { latitude: depLat, longitude: depLng } = departure;
+    const { latitude: destLat, longitude: destLng } = destination;
+
+    // 현재 시간을 구해서 요청 파라미터로 사용
+    const currentTime = new Date();
+    currentTime.setMinutes(currentTime.getMinutes() + 5); // 현재 시간에 5분 더하기
+
+    let hours = currentTime.getHours();
+    const minutes = currentTime.getMinutes().toString().padStart(2, '0');
+    const seconds = currentTime.getSeconds().toString().padStart(2, '0');
+
+    // 04:00 이전이면 24시간을 더하기
+    if (hours < 4) {
+        hours += 24;
+    }
+
+    // "HH:MM:SS" 형식으로 시간 변환
+    const formattedTime = `${hours.toString().padStart(2, '0')}:${minutes}:${seconds}`;
+
+    try {
+        console.log(depLat);
+        console.log(depLng);
+        console.log(destLat);
+        console.log(destLng);
+        console.log(formattedTime);
+        console.log(typeof formattedTime);
+        // 백엔드로 좌표 및 시간 정보 전송하여 최적 경유지 정보 받기
+        const response = await apiNoToken.get('/map', {
+            params: {
+                startlat: depLat,
+                startlon: depLng,
+                destlat: destLat,
+                destlon: destLng,
+                time: formattedTime,
+            },
+            headers: {
+                accept: 'application/json',
+            },
+        });
+
+        // 서버 응답에서 데이터 추출
+        const { statusCode, dataList } = response.data;
+
+        if (statusCode === 0 && dataList && dataList.length > 0) {
+            // 최대 3개의 destLat과 destLon 쌍을 추출
+            const coordinates = dataList.slice(0, 3).map((item) => ({
+                latitude: parseFloat(item.destLat),
+                longitude: parseFloat(item.destLon),
+            }));
+
+            return coordinates;
+        } else {
+            throw new Error('적절한 경유지 데이터를 받지 못했습니다.');
+        }
+    } catch (error) {
+        console.error('최적 경유지 요청 중 오류 발생', error);
+        throw new Error('최적 경유지 요청 중 오류 발생');
+    }
+};
+
 // 대중교통 경로 찾기
 const fetchTransitDirections = async (departure, stopover) => {
     const { latitude: depLat, longitude: depLng } = departure;
     const { latitude: destLat, longitude: destLng } = stopover;
+
+    console.log(stopover);
 
     const directionsUrl = `https://api.odsay.com/v1/api/searchPubTransPathT?SX=${depLng}&SY=${depLat}&EX=${destLng}&EY=${destLat}&apiKey=yPtxRPMa8thnw9UFLUnu5vholrViOMIYNolIXPJ1Pvo`;
     try {
@@ -31,7 +96,11 @@ const fetchTransitDirections = async (departure, stopover) => {
         if (response.status === 200) {
             const data = response.data;
 
+            console.log(data);
+
             const firstPath = data.result.path[0];
+
+            console.log(firstPath);
 
             const transitPathInfo = extractTransitCoordinates(firstPath);
             const summaryCoordinates = transitPathInfo.reduce(
@@ -60,7 +129,7 @@ const fetchTransitDirections = async (departure, stopover) => {
         }
     } catch (error) {
         console.error('fetch 실패', error);
-        throw error;
+        return null;
     }
 };
 
@@ -114,6 +183,7 @@ const fetchTaxiDirections = async (departure, stopover, destination) => {
     }
 };
 
+// 대중교통 길찾기에서 좌표 추출
 function extractTransitCoordinates(firstPath) {
     const routes = [];
 
@@ -151,6 +221,7 @@ function extractTransitCoordinates(firstPath) {
     return routes;
 }
 
+// 택시 경로 찾기에서 좌표 추출
 const extractTaxiCoordinates = (response) => {
     const taxiCoordinates = [];
 
@@ -170,4 +241,10 @@ const extractTaxiCoordinates = (response) => {
     return taxiCoordinates;
 };
 
-export { fetchTaxiDirections, fetchTransitDirections, getReverseGeocoding };
+export {
+    fetchTaxiDirections,
+    fetchTransitDirections,
+    getOptimalTransitStopover,
+    getReverseGeocoding
+};
+
