@@ -5,17 +5,22 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.imnotdurnk.domain.map.dto.MapDto;
 import com.imnotdurnk.domain.map.dto.RouteDto;
+import com.imnotdurnk.domain.map.dto.TransitDto;
 import com.imnotdurnk.domain.map.entity.MapResult;
 import com.imnotdurnk.domain.map.entity.RouteResult;
+import com.imnotdurnk.domain.map.entity.TransitResult;
 import com.imnotdurnk.domain.map.repository.StopRepository;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import java.time.Duration;
 import java.util.*;
@@ -29,13 +34,17 @@ public class MapServiceImpl implements MapService {
     @Autowired
     StopRepository stopRepository;
 
+    @Value("${odsay.apikey}")
+    private String odsayApiKey;
+    @Autowired
+    private RestTemplate restTemplate;
+
     /**
      * 지정된 지역 내에서 가장 가까운 정류소와 경로 정보를 검색
      *
      * 주어진 위도 및 경도 범위 내에서 가장 가까운 정류소를 찾기 위해
      * 최소 및 최대 위도 및 경도 값을 계산한 다음, 해당 범위 내의 정류소를 검색하고
      * 가장 가까운 정류소를 반환
-     * 비동기
      *
      * @param destLat 목적지의 위도
      * @param destLon 목적지의 경도
@@ -203,5 +212,78 @@ public class MapServiceImpl implements MapService {
                 .doOnError(error -> {
                     System.err.println("Error fetching taxi fare: " + error.getMessage());
                 });
+    }
+
+    @Override
+    public JsonNode requestOdsayApi(String depLng, String depLat, String destLng, String destLat) {
+        String url = String.format("https://api.odsay.com/v1/api/searchPubTransPathT?SX=%s&SY=%s&EX=%s&EY=%s&apiKey=%s",depLng, depLat, destLng, destLat, odsayApiKey);
+
+        try {
+            // Odsay API 호출 및 JsonNode로 반환
+            return restTemplate.getForObject(url, JsonNode.class);
+        } catch (RestClientException e) {
+            throw new RuntimeException("API 호출 중 오류 발생: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public List<TransitDto> getOptimizeRoute(double destlat, double destlon, double startlat, double startlon, String time){
+        String url = String.format("https://api.odsay.com/v1/api/searchPubTransPathT?SX=%s&SY=%s&EX=%s&EY=%s&apiKey=%s",startlon, startlat, destlon, destlat, odsayApiKey);
+
+        JsonNode response = restTemplate.getForObject(url, JsonNode.class);
+        List<TransitDto> result = new ArrayList<>();
+        String curTime = time;
+        // Odsay api 호출을 통해 환승 지점을 구한다
+        if (response != null && response.has("result")) {
+            JsonNode path = response.get("result").get("path").get(0);
+
+            JsonNode subPath = path.get("subPath");
+            for(JsonNode transfer:subPath) {
+                int trafficType = transfer.get("trafficType").asInt();
+                int sectionTime = transfer.get("sectionTime").asInt();
+
+                // 버스나 지하철일 때
+                if (trafficType == 1 || trafficType == 2) {
+                    double slat = transfer.get("startY").asDouble();
+                    double slon = transfer.get("startX").asDouble();
+                    double dlat = transfer.get("endY").asDouble();
+                    double dlon = transfer.get("endX").asDouble();
+                    // 시간을 고려했을 때 해당 시작점부터 끝점까지 갈 수 있는 경로가 있는지 DB에서 찾음
+                    List<TransitResult> routes = stopRepository.findTransitRoute(slat,slon,dlat,dlon,curTime);
+                    if(!routes.isEmpty()){
+                        TransitResult route = routes.get(0);
+                        result.add(new TransitDto(route.getRoute(),route.getStart(),route.getEnd(),slat,slon,dlat,dlon));
+                    }else{
+                        // 경로가 없다면 목적지까지 최대한 가까이 가서 택시 탑승해야 함
+                        List<MapResult> stops = stopRepository.findStop(slat, slon, destlat, destlon, curTime);
+                        if(!stops.isEmpty()){
+                            MapResult stop = stops.get(0);
+                            result.add(new TransitDto(String.valueOf(stop.getRoute().orElse("택시")),String.valueOf(stop.getStartStop().orElse("0")),String.valueOf(stop.getDestStop().orElse("0")),Double.valueOf(stop.getStartLat().orElse("0").toString()),Double.valueOf(stop.getStartLon().orElse("0").toString()),Double.valueOf(stop.getDestLat().orElse("0").toString()),Double.valueOf(stop.getDestLon().orElse("0").toString())));
+                        }
+                        break;
+                    }
+                }
+                curTime = addMinutes(curTime,sectionTime);
+            }
+        }
+        return result;
+    }
+
+    public String addMinutes(String time, int minutesToAdd) {
+        // 시간, 분, 초를 분리
+        String[] timeParts = time.split(":");
+        int hours = Integer.parseInt(timeParts[0]);
+        int minutes = Integer.parseInt(timeParts[1]);
+        int seconds = Integer.parseInt(timeParts[2]);
+
+        // 분 추가
+        minutes += minutesToAdd;
+
+        // 추가된 분으로 시간과 분 계산
+        hours += minutes / 60;  // 전체 분에서 시간으로 변환
+        minutes = minutes % 60;  // 남은 분
+
+        // 결과 문자열 형식화 (00:00:00 형식)
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
     }
 }
