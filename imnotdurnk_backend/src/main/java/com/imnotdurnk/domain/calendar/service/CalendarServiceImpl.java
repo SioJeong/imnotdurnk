@@ -310,8 +310,9 @@ public class CalendarServiceImpl implements CalendarService {
         Optional<List<GameLogEntity>> gameLogEntities = gameLogRepository.findByCalendarEntity_Id(planId);
         for(GameLogEntity gameLogEntity : gameLogEntities.get()) {
             VoiceEntity voice = voiceRepository.findByLogId(gameLogEntity.getId());
-            s3FileUploadService.deleteFile(voice.getFileName());
-            voiceRepository.deleteById(gameLogEntity.getId());
+            if(voice != null) {
+                s3FileUploadService.deleteFile(voice.getFileName());
+            }
         }
 
         // 연관된 게임 ID 삭제

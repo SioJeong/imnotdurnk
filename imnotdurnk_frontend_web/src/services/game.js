@@ -54,4 +54,24 @@ const saveVoiceGameResult = async ({ data }) => {
     }
 };
 
-export { getTestSentence, saveVoiceGameResult, sendVoiceRecord };
+const saveRestGameResult = async ({ data }) => {
+    try {
+        const response = await api.post('/game-logs/save', data, {});
+
+        const { statusCode, httpStatus, message } = response.data;
+        apiErrorHandler(statusCode, httpStatus, message);
+
+        if (statusCode === 200) {
+            return true;
+        }
+    } catch (error) {
+        throw new Error(error.message || '음성 게임 결과 저장 중 오류 발생');
+    }
+};
+
+export {
+    getTestSentence,
+    saveRestGameResult,
+    saveVoiceGameResult,
+    sendVoiceRecord,
+};
