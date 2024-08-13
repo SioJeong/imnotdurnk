@@ -11,7 +11,6 @@ import com.imnotdurnk.global.exception.ResourceNotFoundException;
 import org.apache.coyote.BadRequestException;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -21,13 +20,13 @@ public interface CalendarService {
 
     void updateFeedback(String accessToken, int planId, CalendarDto calendarDto) throws BadRequestException, ResourceNotFoundException, EntitySaveFailedException;
 
-    void addCalendar(String token, CalendarDto calendarDto) throws EntitySaveFailedException;
+    CalendarDto addCalendar(String token, CalendarDto calendarDto) throws EntitySaveFailedException;
 
     List<CalendarDto> getCalendar(String token, String date);
 
     CalendarStatisticDto getCalendarStatistic(String dateStr, String token);
 
-    //List<PlanForMonthImpl> getMonthlyPlanList(String accessToken, LocalDate today);
+    List<PlanForMonthImpl> getMonthlyPlanList(String accessToken, LocalDate today);
 
     void updateArrivalTime(String accessToken, int planId, String arrivalTime) throws BadRequestException, ResourceNotFoundException, EntitySaveFailedException;
 
