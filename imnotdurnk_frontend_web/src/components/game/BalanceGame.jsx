@@ -12,7 +12,6 @@ import ModalTextBox from '../_modal/ModalTextBox';
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import * as St from './BalanceGame.style';
 
-import { useNavigate } from 'react-router-dom';
 import useGameStore from '../../stores/useGameStore';
 
 const getRandomTargetPosition = (

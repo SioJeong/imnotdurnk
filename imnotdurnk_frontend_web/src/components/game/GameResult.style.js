@@ -5,7 +5,6 @@ const ResultContainer = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    align-items: flex-start;
     gap: 1.9857rem;
 
     padding: 1.8571rem 1.7143rem;
