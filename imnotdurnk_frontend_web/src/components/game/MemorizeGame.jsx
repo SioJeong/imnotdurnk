@@ -41,8 +41,8 @@ const MemorizeGame = () => {
         { id: 7, imageName: 'wine', isFlipped: false, isMatched: false },
         { id: 8, imageName: 'woozy', isFlipped: false, isMatched: false },
         { id: 9, imageName: 'woozy', isFlipped: false, isMatched: false },
-        { id: 10, imageName: 'zanny', isFlipped: false, isMatched: false },
-        { id: 11, imageName: 'zanny', isFlipped: false, isMatched: false },
+        { id: 10, imageName: 'zany', isFlipped: false, isMatched: false },
+        { id: 11, imageName: 'zany', isFlipped: false, isMatched: false },
     ];
     const [isVisible, setIsVisible] = useState(false);
     const [isGameStarted2, setIsGameStarted2] = useState(false);
@@ -251,7 +251,6 @@ const MemorizeGame = () => {
                     </St.Card>
                 ))}
             </St.TestDiv>
-
             <Modal
                 isGame={true}
                 modalId="memorizeGameNoticeModal"

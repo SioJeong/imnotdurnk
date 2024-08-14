@@ -1,5 +1,4 @@
 import { icons } from '@/shared/constants/icons';
-import useUserStore from '@/stores/useUserStore.js';
 import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { deleteVoiceGameResult } from '../../services/game';
@@ -11,9 +10,6 @@ import { InfoConfirmModal, ToastSuccess, ToastWarning } from '../_common/alert';
 import * as St from './GameResult.style';
 
 const GameResult = () => {
-    const { user } = useUserStore((state) => ({
-        user: state.user,
-    }));
     const { accessToken } = useAuthStore();
     const { voiceGameResult } = useGameStore();
 
@@ -107,7 +103,6 @@ const GameResult = () => {
         <St.ResultContainer>
             <St.TitleContainer>
                 <St.Title>
-                    {user.name !== '' ? user.name : '손'}님의{' '}
                     {gameName ? gameName : '00'} 게임 점수는
                     <br />
                     <St.Highlight>

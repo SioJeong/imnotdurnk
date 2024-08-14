@@ -36,7 +36,7 @@ import Heart from '../../assets/icons/size_40/Icon-heart.svg';
 import Nauseated from '../../assets/icons/size_40/Icon-nauseated.svg';
 import Wine from '../../assets/icons/size_40/Icon-wine.svg';
 import Woozy from '../../assets/icons/size_40/Icon-woozy.svg';
-import Zanny from '../../assets/icons/size_40/Icon-zanny.svg';
+import Zany from '../../assets/icons/size_40/Icon-zanny.svg';
 import BeerBottle from '../../assets/images/beerbottle.webp';
 import BeerGlass from '../../assets/images/beerglass.webp';
 import Bezel from '../../assets/images/bezel.svg';
@@ -102,7 +102,7 @@ const icons = {
     nauseated: Nauseated,
     wine: Wine,
     woozy: Woozy,
-    zanny: Zanny,
+    zany: Zany,
     nauseatedResult: NauseatedResult,
     shakingResult: ShakingResult,
     winkingResult: WinkingResult,
