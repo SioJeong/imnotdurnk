@@ -8,9 +8,12 @@ import {
 import { deleteEvent, getEventDetail } from '../../services/calendar';
 import { icons } from '../../shared/constants/icons';
 import useCalendarStore from '../../stores/useCalendarStore';
+import useModalStore from '../../stores/useModalStore';
 import useNavigationStore from '../../stores/useNavigationStore';
 import Button from '../_button/Button';
-import { DeleteConfirmModal, ToastSuccess } from '../_common/alert';
+import { ToastSuccess } from '../_common/alert';
+import Modal from '../_modal/Modal';
+import ModalTextBox from '../_modal/ModalTextBox';
 import CalendarStatusBar from './CalendarStatusBar';
 import * as St from './PlanDetail.style';
 import PlanDetailAlcohol from './PlanDetailAlcohol';
@@ -23,6 +26,7 @@ const PlanDetail = () => {
     const location = useLocation();
     const planId = location.pathname.split('/')[4];
 
+    const { openModal, closeModal } = useModalStore();
     const setNavigation = useNavigationStore((state) => state.setNavigation);
     const { setFullPlanDetail, resetPlanDetail } = useCalendarStore();
 
@@ -88,18 +92,13 @@ const PlanDetail = () => {
         return false;
     };
 
-    const handleDelete = () => {
-        DeleteConfirmModal(
-            '일정을 삭제 하시겠습니까?',
-            '삭제',
-            '취소',
-            async () => {
-                const result = await deletePlan();
-                return result;
-            },
-            () => {},
-            '일정이 삭제 되었습니다.',
-        );
+    const onClickDeletePlanButton = () => {
+        openModal('deletePlanModal');
+    };
+
+    const onClickConfirmDeletePlanButton = async () => {
+        await deletePlan();
+        closeModal('deletePlanModal');
     };
 
     return (
@@ -178,11 +177,17 @@ const PlanDetail = () => {
                             text={'일정 삭제하기'}
                             isRed={false}
                             border={true}
-                            onClick={handleDelete}
+                            onClick={onClickDeletePlanButton}
                         />
                     </>
                 )}
             </St.PlanDetailBox>
+            <Modal
+                modalId="deletePlanModal"
+                contents={<ModalTextBox text="일정을 삭제 하시겠습니까?" />}
+                buttonText={'삭제하기'}
+                onButtonClick={onClickConfirmDeletePlanButton}
+            />
         </St.PlanDetailContainer>
     );
 };

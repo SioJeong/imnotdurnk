@@ -74,7 +74,9 @@ const GameResult = () => {
                             '아니오',
                             () => {
                                 ToastSuccess('일정 등록 페이지로 이동합니다.');
-                                navigate('/calendar/create-plan');
+                                navigate('/calendar/create-plan', {
+                                    state: { isFromGame: true }, // 게임 기록 가지고 일정 등록
+                                });
                             },
                             () => {
                                 ToastWarning(

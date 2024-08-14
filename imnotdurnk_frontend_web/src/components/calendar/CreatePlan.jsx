@@ -1,6 +1,7 @@
 import { icons } from '@/shared/constants/icons';
 import { calendarMinmax } from '@/shared/constants/minmaxLength';
 import { useEffect, useRef, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import {
     convertDateToString,
     parseDateTime,
@@ -12,6 +13,10 @@ import CreatePlanAlcohol from './CreatePlanAlcohol';
 import CreatePlanModalController from './CreatePlanModalController';
 
 const CreatePlan = () => {
+    // 게임 기록과 함께 일정 등록하는 지 확인 (날짜/시간 수정 불가하도록 처리하기 위해)
+    const location = useLocation();
+    const isFromGame = location.state?.isFromGame || false;
+
     const { selectedDate, plan, setPlan } = useCalendarStore();
     const { openModal } = useModalStore();
 
@@ -107,19 +112,27 @@ const CreatePlan = () => {
     return (
         <>
             <St.Container>
-                <St.ScheduleContainer>
+                <St.ScheduleContainer
+                    $alcoholLevel={Number(plan.alcoholLevel.split(':')[0])}
+                >
                     <h3>일정 정보</h3>
                     <St.InputContainer>
                         <St.InputItemBox
-                            onClick={() => openModal('dateModal')}
-                            $cursor={true}
+                            // 게임 기록 등록(isFromGame)이라면 날짜 변경 불가 !!
+                            onClick={() =>
+                                !isFromGame && openModal('dateModal')
+                            }
+                            $cursor={!isFromGame}
                         >
                             <img src={icons['calendar']} alt="date" />
                             <h4>{plan.date}</h4>
                         </St.InputItemBox>
                         <St.InputItemBox
-                            onClick={() => openModal('timeModal')}
-                            $cursor={true}
+                            // 게임 기록 등록(isFromGame)이라면 시간 변경 불가 !!
+                            onClick={() =>
+                                !isFromGame && openModal('timeModal')
+                            }
+                            $cursor={!isFromGame}
                         >
                             <img src={icons['clock']} alt="time" />
                             <h4>{plan.time}</h4>

@@ -161,8 +161,9 @@ const MemorizeGame = () => {
                 setIsGameOver(true);
                 handleFinishGame();
             }
-        }, 2000);
+        }, 500);
     }, [matchedPairs]);
+
     useEffect(() => {
         if (!firstCard || !secondCard) {
             return;
@@ -250,15 +251,6 @@ const MemorizeGame = () => {
                     </St.Card>
                 ))}
             </St.TestDiv>
-            {/* 
-            <St.ButtonBox>
-                <Button
-                    text="제출하기"
-                    size="large"
-                    isRed={true}
-                    onClick={handleFinishGame}
-                />
-            </St.ButtonBox> */}
             <Modal
                 isGame={true}
                 modalId="memorizeGameNoticeModal"

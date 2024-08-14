@@ -4,11 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { icons } from '../shared/constants/icons';
 import useAuthStore from '../stores/useAuthStore';
+import useCalendarStore from '../stores/useCalendarStore';
 
 const Home = () => {
     const setNavigation = useNavigationStore((state) => state.setNavigation);
     const navigate = useNavigate();
     const { accessToken } = useAuthStore();
+    const { setSelectedDate } = useCalendarStore();
 
     useEffect(() => {
         setNavigation({
@@ -22,6 +24,11 @@ const Home = () => {
             },
         });
     }, [setNavigation]);
+
+    // 홈으로 오면 selectedDate 상태를 오늘로 변경 (게임 기록 등록 시 날짜 위해)
+    useEffect(() => {
+        setSelectedDate(new Date());
+    }, []);
 
     const goToCalender = () => navigate('/calendar');
     const goToAccount = () => navigate('/account');

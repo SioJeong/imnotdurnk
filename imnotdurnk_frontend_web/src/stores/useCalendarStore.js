@@ -167,6 +167,7 @@ const useNonPersistentStore = create((set, get) => ({
                     });
 
                     if (result) {
+                        resetPlan();
                         resetVoiceGameResult();
                         // 쿼리 무효화
                         queryClient.invalidateQueries(['planDetail', eventId]);
@@ -180,6 +181,7 @@ const useNonPersistentStore = create((set, get) => ({
                         data: balanceGameResultData,
                     });
                     if (result) {
+                        resetPlan();
                         resetBalanceGameResult();
                         // 쿼리 무효화
                         queryClient.invalidateQueries(['planDetail', eventId]);
@@ -192,6 +194,7 @@ const useNonPersistentStore = create((set, get) => ({
                         data: typingGameResultData,
                     });
                     if (result) {
+                        resetPlan();
                         resetTypingGameResult();
                         // 쿼리 무효화
                         queryClient.invalidateQueries(['planDetail', eventId]);
@@ -204,6 +207,7 @@ const useNonPersistentStore = create((set, get) => ({
                         data: memorizeGameResultData,
                     });
                     if (result) {
+                        resetPlan();
                         resetMemorizeGameResult();
                         // 쿼리 무효화
                         queryClient.invalidateQueries(['planDetail', eventId]);
