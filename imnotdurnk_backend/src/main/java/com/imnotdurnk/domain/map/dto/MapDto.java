@@ -18,6 +18,7 @@ public class MapDto {
     private Optional<Double> duration;
     private Optional<Integer> seq1;
     private Optional<Integer> seq2;
+    private Optional<Integer> stopCnt; ;
     private Optional<String> routeId;
     private Optional<String> startLat;
     private Optional<String> startLon;
@@ -40,6 +41,11 @@ public class MapDto {
         this.duration = duration;
         this.seq1 =seq1;
         this.seq2 = seq2;
+        if (seq1.isPresent() && seq2.isPresent()) {
+            this.stopCnt = Optional.of(seq2.get() - seq1.get());
+        } else {
+            this.stopCnt = Optional.empty();
+        }
         this.routeId = routeId;
         this.startLat = startLat;
         this.startLon = startLon;
@@ -60,6 +66,11 @@ public class MapDto {
         this.routeId = routeId;
         this.seq2 = seq2;
         this.seq1 = seq1;
+        if (seq1.isPresent() && seq2.isPresent()) {
+            this.stopCnt = Optional.of(seq2.get() - seq1.get());
+        } else {
+            this.stopCnt = Optional.empty();
+        }
         this.duration = duration;
         this.distance = distance;
         this.destStop = destStop;

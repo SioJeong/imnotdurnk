@@ -92,7 +92,6 @@ public class MapServiceImpl implements MapService {
      */
     public List<MapDto> getStopsAndRoutesInAreaWithTaxi(double destlat, double destlon, double startlat, double startlon, String time) {
         List<Mono<MapDto>> mapDtoList = new ArrayList<>();
-
         List<MapResult> stop = stopRepository.findStop(startlat, startlon, destlat, destlon, time);
         Set<String> set = new HashSet<String>();
         int cnt=0;
@@ -228,55 +227,95 @@ public class MapServiceImpl implements MapService {
 
     @Override
     public List<List<TransitDto>> getOptimizeRoute(double destlat, double destlon, double startlat, double startlon, String time){
-        String url = String.format("https://api.odsay.com/v1/api/searchPubTransPathT?SX=%s&SY=%s&EX=%s&EY=%s&apiKey=%s",startlon, startlat, destlon, destlat, odsayApiKey);
+        String url = String.format("https://api.odsay.com/v1/api/searchPubTransPathT?SX=%s&SY=%s&EX=%s&EY=%s&apiKey=%s", startlon, startlat, destlon, destlat, odsayApiKey);
 
         JsonNode response = restTemplate.getForObject(url, JsonNode.class);
         List<List<TransitDto>> result = new ArrayList<>();
         String curTime = time;
-        // Odsay api 호출을 통해 환승 지점을 구한다
-        if (response != null && response.has("result")) {
-            int cnt=0;
-            for(JsonNode path : response.get("result").get("path")){
-                result.add(new ArrayList<TransitDto>());
-                JsonNode subPath = path.get("subPath");
-                for(JsonNode transfer:subPath) {
-                    int trafficType = transfer.get("trafficType").asInt();
-                    int sectionTime = transfer.get("sectionTime").asInt();
+        String dup[] = {"", "", "", ""};
 
-                    // 버스나 지하철일 때
-                    if (trafficType == 1 || trafficType == 2) {
-                        double slat = transfer.get("startY").asDouble();
-                        double slon = transfer.get("startX").asDouble();
-                        double dlat = transfer.get("endY").asDouble();
-                        double dlon = transfer.get("endX").asDouble();
-                        // 시간을 고려했을 때 해당 시작점부터 끝점까지 갈 수 있는 경로가 있는지 DB에서 찾음
-                        List<TransitResult> routes = stopRepository.findTransitRoute(slat, slon, dlat, dlon, curTime);
-                        if (!routes.isEmpty()) {
-                            TransitResult route = routes.get(0);
-                            result.get(cnt).add(new TransitDto(route.getRoute(), route.getStart(), route.getEnd(), slat, slon, dlat, dlon, route.getDuration()));
-                            sectionTime = route.getDuration();
-                        } else {
-                            // 경로가 없다면 목적지까지 최대한 가까이 가서 택시 탑승해야 함
-                            List<MapResult> stops = stopRepository.findStop(slat, slon, destlat, destlon, curTime);
-                            if (!stops.isEmpty()) {
-                                MapResult stop = stops.get(0);
-                                result.get(cnt).add(new TransitDto(
-                                        stop.getRoute().orElse("택시"),
-                                        stop.getStartStop().orElse("0"),
-                                        stop.getDestStop().orElse("0"),
-                                        stop.getStartLat().map(Double::parseDouble).orElse(0.0), 
-                                        stop.getStartLon().map(Double::parseDouble).orElse(0.0), 
-                                        stop.getDestLat().map(Double::parseDouble).orElse(0.0),
-                                        stop.getDestLon().map(Double::parseDouble).orElse(0.0),
-                                        stop.getDuration().map(Double::intValue).orElse(0)
-                                ));
-                            }
+// Odsay api 호출을 통해 환승 지점을 구한다
+        if (response != null && response.has("result")) {
+            int cnt = 0;
+            for (JsonNode path : response.get("result").get("path")) {
+                JsonNode info = path.get("info");
+                int totalTransit = info.get("busTransitCount").asInt() + info.get("subwayTransitCount").asInt();
+
+                if (totalTransit > 2) {
+                    continue;
+                }
+
+                boolean isDup = false;
+                if (totalTransit == 1) {
+                    if (dup[0].equals("1")) continue;
+                    else dup[0] = "1";
+                } else {
+                    for (int i = 1; i <= 3; i++) {
+                        if (dup[i].equals("")) {
+                            dup[i] = path.get("subPath").get(0).get("trafficType").asInt() == 3
+                                    ? path.get("subPath").get(1).get("endY").toString()
+                                    : path.get("subPath").get(0).get("endY").toString();
                             break;
+                        } else {
+                            if (path.get("subPath").get(0).get("trafficType").asInt() == 3) {
+                                if (dup[i].equals(path.get("subPath").get(1).get("endY").toString())) {
+                                    isDup = true; // 중복 처리
+                                } else {
+                                    dup[i] = path.get("subPath").get(1).get("endY").toString();
+                                }
+                            } else if (dup[i].equals(path.get("subPath").get(0).get("endY").toString())) {
+                                break;
+                            }
                         }
                     }
-                    curTime = addMinutes(curTime, sectionTime+10);
+                    if (isDup) continue; // 중복일 경우 다음 경로로 넘어감
                 }
-                if(++cnt==4) break;
+
+                result.add(new ArrayList<TransitDto>());
+                JsonNode subPath = path.get("subPath");
+                for (JsonNode transfer : subPath) {
+                    if (transfer.has("trafficType")) {
+                        int trafficType = transfer.get("trafficType").asInt();
+                        int sectionTime = transfer.has("sectionTime") ? transfer.get("sectionTime").asInt() : 0;
+
+                        if (trafficType == 1 || trafficType == 2) { // 버스나 지하철일 때
+                            double slat = transfer.get("startY").asDouble();
+                            double slon = transfer.get("startX").asDouble();
+                            double dlat = transfer.get("endY").asDouble();
+                            double dlon = transfer.get("endX").asDouble();
+
+                            List<TransitResult> routes = stopRepository.findTransitRoute(slat, slon, dlat, dlon, curTime);
+
+                            if (!routes.isEmpty()) {
+                                TransitResult route = routes.get(0);
+                                result.get(cnt).add(new TransitDto(route.getRoute(), route.getStart(), route.getEnd(), slat, slon, dlat, dlon, route.getDuration(), route.getSeq1(), route.getSeq2(), route.getType(), route.getRouteId()));
+                                sectionTime = route.getDuration();
+                            } else {
+                                List<MapResult> stops = stopRepository.findStop(slat, slon, destlat, destlon, curTime);
+                                if (!stops.isEmpty()) {
+                                    MapResult stop = stops.get(0);
+                                    result.get(cnt).add(new TransitDto(
+                                            stop.getRoute().orElse("택시"),
+                                            stop.getStartStop().orElse("0"),
+                                            stop.getDestStop().orElse("0"),
+                                            stop.getStartLat().map(Double::parseDouble).orElse(0.0),
+                                            stop.getStartLon().map(Double::parseDouble).orElse(0.0),
+                                            stop.getDestLat().map(Double::parseDouble).orElse(0.0),
+                                            stop.getDestLon().map(Double::parseDouble).orElse(0.0),
+                                            stop.getDuration().map(Double::intValue).orElse(0),
+                                            stop.getSeq1().orElse(0),
+                                            stop.getSeq2().orElse(0),
+                                            stop.getType().orElse(0),
+                                            stop.getRouteId().orElse("0")
+                                    ));
+                                }
+                                break;
+                            }
+                        }
+                        curTime = addMinutes(curTime, sectionTime + 10);
+                    }
+                }
+                if (++cnt == 3) break; // 최대 3개 경로만 추가
             }
         }
         return result;
