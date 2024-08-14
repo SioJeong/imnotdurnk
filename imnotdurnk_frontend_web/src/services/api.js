@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { ToastError } from '../components/_common/alert';
 import useAuthStore from '../stores/useAuthStore';
 
 // 게임 등 로그인이 필요없는 api 요청시 사용(토큰없이도 요청 가능한 용)
@@ -68,6 +69,7 @@ api.interceptors.response.use(
                     return api(originalRequest);
                 } catch (error) {
                     window.location.href = '/account';
+                    ToastError('로그인이 필요합니다', true);
                     return Promise.reject(error);
                 }
             }
