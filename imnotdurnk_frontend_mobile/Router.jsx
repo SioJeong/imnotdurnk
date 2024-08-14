@@ -13,9 +13,7 @@ const Router = () => {
         <Stack.Navigator initialRouteName="Home">
             <Stack.Screen name="Home" options={{ headerShown: false }}>
                 {() => (
-                    <Layout>
-                        <Home />
-                    </Layout>
+                    <Home />
                 )}
             </Stack.Screen>
             <Stack.Screen name="Map" options={{ headerShown: false }}>
