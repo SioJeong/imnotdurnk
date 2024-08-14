@@ -4,14 +4,24 @@ import React from 'react';
 import WebView from 'react-native-webview';
 import { logout } from '../services/user';
 import useLocationStore from '../stores/useLocationStore';
+import useNavigationStore from '../stores/useNavigationStore';
 
 
 const Home = () => {
     const { resetDepartureAndDestination } = useLocationStore();
+    const { setNavigation } = useNavigationStore();
     const navi = useNavigation();
 
     useFocusEffect(
         React.useCallback(() => {
+            // 네비게이션 제거
+            setNavigation({
+                isVisible: false,
+                icon1: { iconname: 'empty', isRed: false },
+                title: '',
+                icon2: { iconname: 'empty', isRed: false },
+            });
+
             // Home 화면으로 오면 전역의 출발지와 목적지 초기화
             resetDepartureAndDestination();
         }, [ resetDepartureAndDestination]),
@@ -40,7 +50,12 @@ const Home = () => {
         }
     };
 
-    return <WebView source={{ uri: 'https://i11a609.p.ssafy.io' }} onMessage={handleMessage} />;
+    return <WebView source={{ uri: 'https://i11a609.p.ssafy.io' }} onMessage={handleMessage} injectedJavaScript={`
+        const style = document.createElement('style');
+        style.type = 'text/css';
+        style.innerHTML = 'body { overflow-x: hidden; }';
+        document.head.appendChild(style);
+    `}/>;
 };
 
 export default Home;
