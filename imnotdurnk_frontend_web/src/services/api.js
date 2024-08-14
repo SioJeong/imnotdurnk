@@ -38,10 +38,10 @@ let isTokenRefreshing = false; //토큰 요청 상태 저장
 //api 요청 후의 처리
 api.interceptors.response.use(
     (response) => {
-        // const accessToken = response.headers['authorization'];
-        // if (accessToken) {
-        //     useAuthStore.getState().setAccessToken(accessToken);
-        // }
+        const accessToken = response.headers['authorization'];
+        if (accessToken) {
+            useAuthStore.getState().setAccessToken(accessToken);
+        }
         return response;
     },
     async (error) => {
@@ -79,3 +79,4 @@ api.interceptors.response.use(
 );
 
 export { api, apiNoToken };
+
