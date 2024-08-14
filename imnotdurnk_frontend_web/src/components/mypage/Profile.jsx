@@ -52,6 +52,7 @@ const Profile = () => {
         const logoutResult = await logout();
         if (logoutResult.isSuccess) {
             ToastSuccess('로그아웃 되었습니다!', true);
+
             navigate('/account');
         } else {
             ToastError('로그아웃에 실패하였습니다.', true);
