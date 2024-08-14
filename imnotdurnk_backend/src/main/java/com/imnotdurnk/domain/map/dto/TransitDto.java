@@ -16,6 +16,7 @@ public class TransitDto {
     Integer duration;
     Integer seq1;
     Integer seq2;
+    Integer stopCnt;
     Integer type;
     String routeId;
 
@@ -32,6 +33,7 @@ public class TransitDto {
         this.seq2=seq2;
         this.type = type;
         this.routeId=routeId;
+        this.stopCnt=seq2-seq1;
     }
 
     public TransitDto() {}
