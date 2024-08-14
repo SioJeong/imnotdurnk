@@ -201,7 +201,7 @@ const MemorizeGame = () => {
                 );
                 setFirstCard(null);
                 setSecondCard(null);
-                setMismatchedCnt(mismatchedCnt + 1);
+                setMismatchedCnt(mismatchedCnt + 1); //틀린 횟수 추가
                 setTimeout(() => setIsClickDisabled(false), 20);
             }, 1000);
         }
