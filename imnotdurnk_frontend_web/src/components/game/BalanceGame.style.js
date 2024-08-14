@@ -6,10 +6,21 @@ const BalanceGameContainer = styled.div`
     align-items: center;
     justify-content: flex-start;
     height: 100vh;
+    border-radius: 15px;
+    background: #caeaf7;
 `;
 
 const Description = styled.div`
     text-align: center;
+    display: flex;
+    width: 6.2857rem;
+    height: 3rem;
+    justify-content: center;
+    align-items: center;
+    border-radius: 45px;
+    margin: 10px;
+    background: var(--color-red, #ff6a5f);
+    color: var(--color-white1);
 `;
 
 const ObjectContainer = styled.div`
@@ -34,5 +45,16 @@ const Notice = styled.div`
 
     background-color: var(--color-white2);
 `;
-
-export { BalanceGameContainer, Description, Notice, ObjectContainer };
+const GameConditionContainer = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+`;
+export {
+    BalanceGameContainer,
+    Description,
+    GameConditionContainer,
+    Notice,
+    ObjectContainer,
+};

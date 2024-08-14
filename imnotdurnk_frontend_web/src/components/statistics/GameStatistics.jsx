@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { Cell, Pie, PieChart, ResponsiveContainer } from 'recharts';
 import { styled } from 'styled-components';
 import { getGameStaticsticsData } from '../../services/statistics';
+import { ToastError } from '../_common/alert';
 const GameStatistics = ({ formattedDate }) => {
     //첫번째 게임 종류 고르는 탭
     const [activeGameTypeIndex, setActiveGameTypeIndex] = useState(0);
@@ -154,6 +155,7 @@ const GameStatistics = ({ formattedDate }) => {
                 setGameStatisticsList(results);
                 convertGameStatisticsResult(results);
             } catch (error) {
+                ToastError('데이터를 불러오는데 실패했습니다.', true);
                 console.error('Error fetching user data:', error);
             }
         };
