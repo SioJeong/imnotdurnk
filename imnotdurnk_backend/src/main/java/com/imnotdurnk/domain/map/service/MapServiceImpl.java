@@ -264,11 +264,11 @@ public class MapServiceImpl implements MapService {
                                         stop.getRoute().orElse("택시"),
                                         stop.getStartStop().orElse("0"),
                                         stop.getDestStop().orElse("0"),
-                                        stop.getStartLat().map(Double::parseDouble).orElse(0.0), // 수정된 부분
-                                        stop.getStartLon().map(Double::parseDouble).orElse(0.0), // 수정된 부분
-                                        stop.getDestLat().map(Double::parseDouble).orElse(0.0), // 수정된 부분
-                                        stop.getDestLon().map(Double::parseDouble).orElse(0.0), // 수정된 부분
-                                        stop.getDuration().map(Double::intValue).orElse(0) // 수정된 부분
+                                        stop.getStartLat().map(Double::parseDouble).orElse(0.0), 
+                                        stop.getStartLon().map(Double::parseDouble).orElse(0.0), 
+                                        stop.getDestLat().map(Double::parseDouble).orElse(0.0),
+                                        stop.getDestLon().map(Double::parseDouble).orElse(0.0),
+                                        stop.getDuration().map(Double::intValue).orElse(0)
                                 ));
                             }
                             break;
