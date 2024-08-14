@@ -72,6 +72,9 @@ jwt:
 etri:
   accessKey: ${ETRI_ACCESS_KEY}
 
+Odsay:
+  apikey: ${ODSAY_API_KEY}
+
 logging:
   level:
     root: ${LOG_LEVEL_ROOT}
@@ -85,9 +88,6 @@ logging:
           user: ${LOG_LEVEL_USER}
         global:
           util: ${LOG_LEVEL_UTIL}
-
-Odsay:
-  apikey: ${ODSAY_API_KEY}
 
 springdoc:
   swagger-ui:
