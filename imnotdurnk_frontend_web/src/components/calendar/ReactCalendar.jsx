@@ -146,17 +146,20 @@ const ReactCalendar = ({
     // 일정 dot 커스텀 및 날짜 텍스트 숫자로 변환
     const tileContent = useCallback(
         ({ date, view }) => {
-            if (view === 'month' && allEventList.length > 0) {
-                const topAlcoholLevelDataForMonth = allEventList
-                    .filter((e) => {
-                        const eventDate = new Date(e.date);
-                        return (
-                            eventDate.getFullYear() === date.getFullYear() &&
-                            eventDate.getMonth() === date.getMonth() &&
-                            eventDate.getDate() === date.getDate()
-                        );
-                    })
-                    .sort((a, b) => b.alcoholLevel - a.alcoholLevel)[0];
+            if (view === 'month') {
+                const topAlcoholLevelDataForMonth =
+                    allEventList.length > 0 &&
+                    allEventList
+                        .filter((e) => {
+                            const eventDate = new Date(e.date);
+                            return (
+                                eventDate.getFullYear() ===
+                                    date.getFullYear() &&
+                                eventDate.getMonth() === date.getMonth() &&
+                                eventDate.getDate() === date.getDate()
+                            );
+                        })
+                        .sort((a, b) => b.alcoholLevel - a.alcoholLevel)[0];
 
                 return (
                     <St.DateTile>
