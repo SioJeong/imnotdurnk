@@ -1,25 +1,40 @@
-import api from './api';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-// TODO: 추후 backend 데이터 형식 및 프론트 컨벤션 맞게 수정하여 사용
-// [임시] response body 형식 : connect/process/data
-// [예시] 사용자 정보 가져오는 함수
-const getUser = async (token) => {
-    const response = await api.get(`/users`, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-    });
-    const { connect, process, data } = response.data;
-
-    if (connect.status !== 'success') {
-        throw new Error('네트워크 에러');
+// 로그아웃 처리 함수
+const logout = async () => {
+    try {
+        await AsyncStorage.removeItem('accessToken');
+        await AsyncStorage.removeItem('expiryTime');
+        console.log('로그아웃되었습니다.');
+    } catch (error) {
+        console.error('로그아웃 중 오류 발생:', error);
     }
-
-    if (process.errorCode !== 0) {
-        throw new Error(process.message);
-    }
-
-    return data;
 };
 
-export { getUser };
+// Async Storage에 accessToken이 있는지, 그리고 만료되지 않았는지 확인
+const checkLoginStatus = async () => {
+    try {
+        const token = await AsyncStorage.getItem('accessToken');
+        const expiryTime = await AsyncStorage.getItem('expiryTime');
+
+        if (!token || !expiryTime) {
+            return false; // 토큰이나 만료 시간이 없으면 로그아웃 상태로 간주
+        }
+
+        const currentTime = Date.now(); // 현재 시간 (밀리초)
+        
+        if (currentTime >= parseInt(expiryTime, 10)) {
+            // 토큰이 만료되었으면 로그아웃 처리
+            await logout();
+            return false; // 로그아웃 상태로 반환
+        }
+
+        return true; // 토큰이 있고, 만료되지 않았으면 로그인 상태
+    } catch (error) {
+        console.error('Error checking login status:', error);
+        return false; // 오류가 발생하면 로그아웃 상태로 간주
+    }
+};
+
+export { checkLoginStatus, logout };
+

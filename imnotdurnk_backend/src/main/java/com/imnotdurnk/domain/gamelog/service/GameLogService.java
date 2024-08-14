@@ -17,4 +17,6 @@ public interface GameLogService {
     GameLogEntity savePronounceGameLog(String accessToken, VoiceResultDto voiceResultDto) throws BadRequestException;
 
     void saveGameResult(String accessToken, GameLogDto gameResult) throws BadRequestException;
+
+    void deleteGameLogByPlanId(String accessToken, int planId) throws BadRequestException;
 }

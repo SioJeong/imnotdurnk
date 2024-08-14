@@ -19,9 +19,9 @@ const Account = () => {
     useEffect(() => {
         setNavigation({
             isVisible: false,
-            icon1: { iconname: 'address' },
-            title: 'Home',
-            icon2: { iconname: 'check', isRed: true },
+            icon1: { iconname: 'address', path: '/' },
+            title: '로그인/회원가입',
+            icon2: { iconname: 'empty' },
         });
     }, [setNavigation]);
 

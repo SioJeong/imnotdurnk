@@ -4,11 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { icons } from '../shared/constants/icons';
 import useAuthStore from '../stores/useAuthStore';
+import useCalendarStore from '../stores/useCalendarStore';
 
 const Home = () => {
     const setNavigation = useNavigationStore((state) => state.setNavigation);
     const navigate = useNavigate();
     const { accessToken } = useAuthStore();
+    const { setSelectedDate } = useCalendarStore();
 
     useEffect(() => {
         setNavigation({
@@ -23,11 +25,24 @@ const Home = () => {
         });
     }, [setNavigation]);
 
+    // 홈으로 오면 selectedDate 상태를 오늘로 변경 (게임 기록 등록 시 날짜 위해)
+    useEffect(() => {
+        setSelectedDate(new Date());
+    }, []);
+
     const goToCalender = () => navigate('/calendar');
     const goToAccount = () => navigate('/account');
     const goToMyPage = () => navigate('/mypage');
     const goToGame = () => navigate('/game');
-    const goToNavigation = () => console.log('앱으로 이동');
+    const goToNavigation = () => {
+        // 웹 뷰 환경이라면 Map 메시지 전송
+        if (window.ReactNativeWebView && typeof window.ReactNativeWebView.postMessage === 'function') {
+            console.log('Sending message to React Native');
+            window.ReactNativeWebView.postMessage(JSON.stringify({
+                type: 'Map',
+            }));
+        }
+    };
 
     const tabContentsList = [
         {
@@ -82,7 +97,7 @@ const Home = () => {
 
 const HomeContainer = styled.div`
     display: flex;
-    width: 25.7143rem;
+
     height: 38.7143rem;
     padding: 1rem 1rem 2rem 1rem;
     flex-direction: column;

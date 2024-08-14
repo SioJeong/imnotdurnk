@@ -1,14 +1,20 @@
 import IconButton from '@/components/_button/IconButton.jsx';
-import { dateStringToUrl } from '@/hooks/useDateTimeFormatter.js';
+import {
+    convertDateToString,
+    dateStringToUrl,
+    parseDateTime,
+} from '@/hooks/useDateTimeFormatter.js';
 import useCalendarStore from '@/stores/useCalendarStore.js';
 import useNavigationStore from '@/stores/useNavigationStore.js';
 import useUserStore from '@/stores/useUserStore.js';
 import { useQueryClient } from '@tanstack/react-query';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { deleteGameFromPlan } from '../../services/game.js';
 import { putUserDetailedInfo } from '../../services/user.js';
 import useGameStore from '../../stores/useGameStore.js';
 import { ToastError, ToastSuccess, ToastWarning } from '../_common/alert.js';
 import * as St from './Navigation.style.js';
+
 const Navigation = () => {
     const { navigation } = useNavigationStore((state) => state);
     const {
@@ -16,6 +22,7 @@ const Navigation = () => {
         resetPlan,
         submitPlan,
         planDetail,
+        setPlanDetail,
         resetPlanDetail,
         editPlan,
     } = useCalendarStore();
@@ -125,6 +132,31 @@ const Navigation = () => {
             if (!planDetail.title || planDetail.title.trim() === '') {
                 ToastWarning('제목을 입력해야 합니다.', true);
                 return;
+            }
+
+            // planDetail.date가 내일 이후라면 -> 음주 관련 기록은 모두 초기화
+            const today = parseDateTime(
+                convertDateToString(new Date()),
+                '오전 12시 00분',
+            );
+            const planDetailDate = parseDateTime(
+                planDetail.date,
+                '오전 12시 00분',
+            );
+
+            // 미래 일정으로 수정한 경우, 음주 및 게임 기록 제거 및 초기화
+            if (planDetailDate > today) {
+                console.log(planDetail);
+                if (planDetail.gameLogDtos.length > 0) {
+                    await deleteGameFromPlan({ planId: planDetail.id });
+                }
+                setPlanDetail({
+                    sojuAmount: 0,
+                    beerAmount: 0,
+                    alcoholLevel: 0,
+                    arrivalTime: '',
+                    gameLogEntities: [],
+                });
             }
 
             const success = await editPlan(); // 일정 수정 함수 호출

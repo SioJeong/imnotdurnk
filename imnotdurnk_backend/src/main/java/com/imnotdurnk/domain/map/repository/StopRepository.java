@@ -47,12 +47,12 @@ public interface StopRepository extends JpaRepository<StopEntity, String> {
                                     @Param("destlon") Double destlon,
                                     @Param("time") String time);
 
-    @Query(value="select s.stop_name, s.stop_lat as lat, s.stop_lon as lon " +
-            "from stop s " +
-            "JOIN stop_time st ON s.stop_id=st.stop_id " +
-            "where st.route_id=:routeId " +
-            "and st.stop_sequence between :seq1 and :seq2 " +
-            "order by stop_sequence", nativeQuery = true)
+    @Query(value = "SELECT s.stop_name, ST_Y(s.location) AS lat, ST_X(s.location) AS lon " +
+            "FROM station s " +
+            "JOIN stop_time st ON s.stop_id = st.stop_id " +
+            "WHERE st.route_id = :routeId " +
+            "AND st.stop_sequence BETWEEN :seq1 AND :seq2 " +
+            "ORDER BY st.stop_sequence", nativeQuery = true)
     List<RouteResult> findRoute(@Param("seq1") int seq1, @Param("seq2") int seq2, @Param("routeId") String routeId);
 
     @Query(value="select distinct s.route_short_name as route, s.stop_name as start, s2.stop_name as end, s.stop_sequence as seq1, s2.stop_sequence as seq2, s.route_type as type, abs(time(s.departure_time)-time(s2.departure_time))/60 as duration, s.route_id as routeId " +

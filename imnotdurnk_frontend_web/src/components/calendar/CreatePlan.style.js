@@ -14,18 +14,10 @@ const ScheduleContainer = styled.div`
     padding: 1.7143rem;
 
     border-radius: 20px;
-    background-color: var(--color-white2);
-`;
-
-const ScheduleContainerForEdit = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 0.8571rem;
-
-    padding: 1.7143rem;
-
-    border-radius: 20px;
-    background-color: ${({ $alcoholLevel }) => {
+    background-color: ${({ $alcoholLevel, $isFuturePlan }) => {
+        if ($isFuturePlan) {
+            return 'var(--color-white2)';
+        }
         switch ($alcoholLevel) {
             case 1:
                 return 'var(--color-yellow)';
@@ -82,12 +74,16 @@ const InputMemoText = styled.textarea`
     scrollbar-width: none; /* Firefox */
 `;
 
+const NoticeAboutFuturePlan = styled.h4`
+    text-align: center;
+`;
+
 export {
     Container,
     InputContainer,
     InputItemBox,
     InputMemoText,
     InputTitleText,
+    NoticeAboutFuturePlan,
     ScheduleContainer,
-    ScheduleContainerForEdit,
 };

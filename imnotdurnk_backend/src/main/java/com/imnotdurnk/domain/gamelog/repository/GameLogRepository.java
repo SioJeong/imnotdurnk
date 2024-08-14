@@ -77,7 +77,7 @@ public interface GameLogRepository extends JpaRepository<GameLogEntity, Integer>
                                      @Param("year") int year,
                                      @Param("averageScore") double averageScore);
 
-    void deleteByCalendarEntity(Optional<CalendarEntity> calendarEntity);
+    void deleteByCalendarEntity(CalendarEntity calendarEntity);
     Optional<List<GameLogEntity>> findByCalendarEntity_Id(int planId);
 
     GameLogEntity findById(int id);

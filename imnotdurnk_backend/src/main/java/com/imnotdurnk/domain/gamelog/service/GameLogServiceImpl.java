@@ -5,29 +5,38 @@ import com.imnotdurnk.domain.calendar.entity.CalendarEntity;
 import com.imnotdurnk.domain.calendar.service.CalendarService;
 import com.imnotdurnk.domain.gamelog.dto.GameLogDto;
 import com.imnotdurnk.domain.gamelog.dto.GameStatistic;
-import com.imnotdurnk.domain.gamelog.dto.VoiceDto;
 import com.imnotdurnk.domain.gamelog.dto.VoiceResultDto;
 import com.imnotdurnk.domain.gamelog.entity.GameLogEntity;
+import com.imnotdurnk.domain.gamelog.entity.VoiceEntity;
 import com.imnotdurnk.domain.gamelog.repository.GameLogRepository;
+import com.imnotdurnk.domain.gamelog.repository.VoiceRepository;
 import com.imnotdurnk.domain.user.entity.UserEntity;
 import com.imnotdurnk.domain.user.repository.UserRepository;
 import com.imnotdurnk.global.exception.EntitySaveFailedException;
 import com.imnotdurnk.global.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class GameLogServiceImpl implements GameLogService {
 
+    private static final Logger log = LoggerFactory.getLogger(GameLogServiceImpl.class);
+
     private final GameLogRepository gameLogRepository;
     private final UserRepository userRepository;
     private final CalendarService calendarService;
+    private final VoiceRepository voiceRepository;
+    private final S3FileUploadService s3FileUploadService;
     private final JwtUtil jwtUtil;
 
     //게임타입
@@ -109,6 +118,36 @@ public class GameLogServiceImpl implements GameLogService {
         gameLogEntity = gameLogRepository.save(gameLogEntity);
 
         if(gameLogEntity == null) throw new EntitySaveFailedException("DB에 게임 결과 저장 실패");
+    }
+
+    /**
+     * 일정 이이디를 입력 받고 해당하는 게임 기록들을 전부 지움
+     * @param accessToken
+     * @param planId
+     */
+    @Transactional
+    @Override
+    public void deleteGameLogByPlanId(String accessToken, int planId) throws BadRequestException {
+
+        //access token에 저장된 유저 정보와 지우고자 하는 일정 아이디의 유저 정보가 일치되는지 확인
+        CalendarEntity plan = calendarService.isSameUserAndGetCalendarEntity(accessToken, planId);
+
+        // 연관된 Voice 삭제
+        Optional<List<GameLogEntity>> gameLogEntities = gameLogRepository.findByCalendarEntity_Id(planId);
+        for(GameLogEntity gameLogEntity : gameLogEntities.get()) {
+            VoiceEntity voice = voiceRepository.findByLogId(gameLogEntity.getId());
+            if(voice != null) {
+                s3FileUploadService.deleteFile(voice.getFileName());
+            }
+        }
+
+        log.debug("plan Id: " + planId + "와 연관된 voice 삭제 완료");
+        
+        //지우기
+        gameLogRepository.deleteByCalendarEntity(plan);
+
+        log.debug("plan Id: " + planId + "에 해당하는 게임 기록 삭제 완료");
+
     }
 
 
