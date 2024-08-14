@@ -14,11 +14,13 @@ const PathFinal = () => {
 
     const sendArrivalTime = async () => {
         try {
-            const currentTime = new Date().toISOString().replace(/[:.]/g, '');
-            const datetimestr = currentTime.slice(0, -4); // 밀리초 제거
+            const currentTime = new Date();
+            const datetimestr = currentTime.toISOString().slice(0, 16);
             console.log(datetimestr)
+
             await api.put(`/calendars/arrival/${datetimestr}`);
             console.log('도착 시간이 성공적으로 전송되었습니다.');
+            
         } catch (error) {
             console.error('도착 시간 전송 중 오류 발생:', error);
         }
