@@ -73,7 +73,7 @@ const ToastError = (message, hasNavigation = true, isSpecificPage = false) => {
     createToast(message, 'error', 'toast-error', hasNavigation, isSpecificPage);
 };
 
-// 2. ConfirmModal (Delete / Info 2가지 타입 - button 색상 차이 ? 삭제는 red, 인포는 blue)
+// 2. ConfirmModal
 const createConfirmModal = (
     title,
     confirmButtonText,
@@ -107,31 +107,6 @@ const createConfirmModal = (
             cancelCallback();
         }
     });
-};
-
-const DeleteConfirmModal = (
-    title,
-    confirmButtonText = '삭제',
-    cancelButtonText = '취소',
-    confirmCallback = () => {},
-    cancelCallback = () => {},
-    titleAfterConfirm,
-    reverseButtons = true,
-) => {
-    createConfirmModal(
-        title,
-        confirmButtonText,
-        cancelButtonText,
-        confirmCallback,
-        cancelCallback,
-        titleAfterConfirm,
-        reverseButtons,
-        {
-            popup: 'delete-popup-class',
-            confirmButton: 'delete-confirm-button-class',
-            cancelButton: 'delete-cancel-button-class',
-        },
-    );
 };
 
 const InfoConfirmModal = (
@@ -169,19 +144,6 @@ const InfoConfirmModal = (
 // ToastWarning('제목을 입력해야 합니다.', true, true);
 // ToastSuccess('일정이 등록되었습니다!', true, true);
 
-// DeleteConfirmModal(
-//     '일정을 삭제 하시겠습니까?',
-//     '삭제',
-//     '취소',
-//     () => {
-//         // 컨펌 시 수행 할 동작
-//     },
-//     () => {
-//         // 취소 시 수행 할 동작
-//     },
-//     '일정이 삭제 되었습니다.',
-// );
-
 // InfoConfirmModal(
 //     '게임 기록을 일정에 등록하시겠습니까?',
 //     '예',
@@ -195,10 +157,4 @@ const InfoConfirmModal = (
 //     '게임 기록이 등록 되었습니다.',
 // );
 
-export {
-    DeleteConfirmModal,
-    InfoConfirmModal,
-    ToastError,
-    ToastSuccess,
-    ToastWarning,
-};
+export { InfoConfirmModal, ToastError, ToastSuccess, ToastWarning };

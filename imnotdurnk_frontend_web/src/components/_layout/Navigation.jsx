@@ -1,5 +1,9 @@
 import IconButton from '@/components/_button/IconButton.jsx';
-import { dateStringToUrl } from '@/hooks/useDateTimeFormatter.js';
+import {
+    convertDateToString,
+    dateStringToUrl,
+    parseDateTime,
+} from '@/hooks/useDateTimeFormatter.js';
 import useCalendarStore from '@/stores/useCalendarStore.js';
 import useNavigationStore from '@/stores/useNavigationStore.js';
 import useUserStore from '@/stores/useUserStore.js';
@@ -9,6 +13,7 @@ import { putUserDetailedInfo } from '../../services/user.js';
 import useGameStore from '../../stores/useGameStore.js';
 import { ToastError, ToastSuccess, ToastWarning } from '../_common/alert.js';
 import * as St from './Navigation.style.js';
+
 const Navigation = () => {
     const { navigation } = useNavigationStore((state) => state);
     const {
@@ -16,6 +21,7 @@ const Navigation = () => {
         resetPlan,
         submitPlan,
         planDetail,
+        setPlanDetail,
         resetPlanDetail,
         editPlan,
     } = useCalendarStore();
@@ -32,9 +38,15 @@ const Navigation = () => {
         voiceGameResult,
         resetVoiceGameResult,
         isVoiceGameResultSet,
+        balanceGameResult,
+        resetBalanceGameResult,
+        isBalanceGameResultSet,
         typingGameResult,
         resetTypingGameResult,
         isTypingGameResultSet,
+        memorizeGameResult,
+        resetMemorizeGameResult,
+        isMemorizeGameResultSet,
     } = useGameStore();
 
     const navigate = useNavigate();
@@ -62,7 +74,11 @@ const Navigation = () => {
                 script: voiceGameResult.script,
             };
 
-            console.log('서버에 보낼 voiceGameResultData', voiceGameResultData);
+            const balanceGameResultData = {
+                planId: balanceGameResult.planId, // 아직 일정 생성 전 (0)
+                gameType: balanceGameResult.gameType,
+                score: balanceGameResult.score,
+            };
 
             const typingGameResultData = {
                 planId: typingGameResult.planId, // 아직 일정 생성 전 (0)
@@ -70,19 +86,26 @@ const Navigation = () => {
                 score: typingGameResult.score,
             };
 
-            console.log(
-                '서버에 보낼 typingGameResultData',
-                typingGameResultData,
-            );
+            const memorizeGameResultData = {
+                planId: memorizeGameResult.planId, // 아직 일정 생성 전 (0)
+                gameType: memorizeGameResult.gameType,
+                score: memorizeGameResult.score,
+            };
 
             // 일정 제출 함수 호출
             const success = await submitPlan(
                 voiceGameResultData,
                 resetVoiceGameResult,
                 isVoiceGameResultSet,
+                balanceGameResultData,
+                resetBalanceGameResult,
+                isBalanceGameResultSet,
                 typingGameResultData,
                 resetTypingGameResult,
                 isTypingGameResultSet,
+                memorizeGameResultData,
+                resetMemorizeGameResult,
+                isMemorizeGameResultSet,
                 navigate,
                 todayUrl,
                 resetPlan,
@@ -108,6 +131,26 @@ const Navigation = () => {
             if (!planDetail.title || planDetail.title.trim() === '') {
                 ToastWarning('제목을 입력해야 합니다.', true);
                 return;
+            }
+
+            // planDetail.date가 내일 이후라면 -> 음주 관련 기록은 모두 초기화
+            const today = parseDateTime(
+                convertDateToString(new Date()),
+                '오전 12시 00분',
+            );
+            const planDetailDate = parseDateTime(
+                planDetail.date,
+                '오전 12시 00분',
+            );
+
+            if (planDetailDate > today) {
+                setPlanDetail({
+                    sojuAmount: 0,
+                    beerAmount: 0,
+                    alcoholLevel: 0,
+                    arrivalTime: '',
+                    // gameLogEntities: [], // TODO: 게임 기록 지우는 API 필요할 듯
+                });
             }
 
             const success = await editPlan(); // 일정 수정 함수 호출

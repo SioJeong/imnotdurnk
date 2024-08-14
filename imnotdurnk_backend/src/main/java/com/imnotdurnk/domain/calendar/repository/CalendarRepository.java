@@ -5,6 +5,7 @@ import com.imnotdurnk.domain.calendar.repository.mapping.AlcoholAmount;
 import com.imnotdurnk.domain.calendar.entity.CalendarEntity;
 import com.imnotdurnk.domain.calendar.repository.mapping.PlanForMonth;
 import com.imnotdurnk.domain.user.entity.UserEntity;
+import org.springframework.data.domain.Limit;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -59,5 +60,7 @@ public interface CalendarRepository extends JpaRepository<CalendarEntity, Intege
         """)
     List<PlanForMonth> findRecent12MonthsPlanCount(Integer userId, LocalDateTime startDate, LocalDateTime endDate);
 
-}
+    @Query("SELECT c FROM CalendarEntity c WHERE c.userEntity = :user AND c.date <= :datetime ORDER BY c.date DESC")
+    CalendarEntity findByUserIdAndDateTime(UserEntity user, LocalDateTime datetime, Limit limit);
 
+}

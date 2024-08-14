@@ -32,9 +32,15 @@ const EventCard = ({
         voiceGameResult,
         resetVoiceGameResult,
         isVoiceGameResultSet,
+        balanceGameResult,
+        resetBalanceGameResult,
+        isBalanceGameResultSet,
         typingGameResult,
         resetTypingGameResult,
         isTypingGameResultSet,
+        memorizeGameResult,
+        resetMemorizeGameResult,
+        isMemorizeGameResultSet,
     } = useGameStore();
 
     useEffect(() => {
@@ -75,17 +81,29 @@ const EventCard = ({
                     filename: voiceGameResult.filename,
                     script: voiceGameResult.script,
                 };
-                console.log(
-                    '서버에 보낼 voiceGameResultData',
-                    voiceGameResultData,
-                );
                 const result = await saveVoiceGameResult({
                     data: voiceGameResultData,
                 });
-
                 if (result) {
                     resetVoiceGameResult();
+                    // 쿼리 무효화
+                    queryClient.invalidateQueries(['planDetail', eventId]);
+                    ToastSuccess('게임 기록이 등록되었습니다!', true, true);
+                    navigate(`/calendar/${todayUrl}/plan/${eventId}`);
+                }
+            }
 
+            if (isBalanceGameResultSet) {
+                const balanceGameResultData = {
+                    planId: eventId,
+                    gameType: balanceGameResult.gameType,
+                    score: balanceGameResult.score,
+                };
+                const result = await saveRestGameResult({
+                    data: balanceGameResultData,
+                });
+                if (result) {
+                    resetBalanceGameResult();
                     // 쿼리 무효화
                     queryClient.invalidateQueries(['planDetail', eventId]);
                     ToastSuccess('게임 기록이 등록되었습니다!', true, true);
@@ -99,17 +117,29 @@ const EventCard = ({
                     gameType: typingGameResult.gameType,
                     score: typingGameResult.score,
                 };
-                console.log(
-                    '서버에 보낼 typingGameResultData',
-                    typingGameResultData,
-                );
                 const result = await saveRestGameResult({
                     data: typingGameResultData,
                 });
-
                 if (result) {
                     resetTypingGameResult();
+                    // 쿼리 무효화
+                    queryClient.invalidateQueries(['planDetail', eventId]);
+                    ToastSuccess('게임 기록이 등록되었습니다!', true, true);
+                    navigate(`/calendar/${todayUrl}/plan/${eventId}`);
+                }
+            }
 
+            if (isMemorizeGameResultSet) {
+                const memorizeGameResultData = {
+                    planId: eventId,
+                    gameType: memorizeGameResult.gameType,
+                    score: memorizeGameResult.score,
+                };
+                const result = await saveRestGameResult({
+                    data: memorizeGameResultData,
+                });
+                if (result) {
+                    resetMemorizeGameResult();
                     // 쿼리 무효화
                     queryClient.invalidateQueries(['planDetail', eventId]);
                     ToastSuccess('게임 기록이 등록되었습니다!', true, true);

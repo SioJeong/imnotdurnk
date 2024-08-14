@@ -5,8 +5,8 @@ spring:
   security: ignored=/**   # 일단 비활성화
 
   # ------이거 있으면 오류나유--------
-  #  config:
-  #    import: application-secret.yml
+  #config:
+  #  import: application-secret.yml
   #---------------------------------
 
   # DB Setting
@@ -85,6 +85,9 @@ logging:
           user: ${LOG_LEVEL_USER}
         global:
           util: ${LOG_LEVEL_UTIL}
+
+Odsay:
+  apikey: ${ODSAY_API_KEY}
 
 springdoc:
   swagger-ui:

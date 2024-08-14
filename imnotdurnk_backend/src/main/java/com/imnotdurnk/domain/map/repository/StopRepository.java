@@ -4,6 +4,7 @@ import com.imnotdurnk.domain.map.dto.MapDto;
 import com.imnotdurnk.domain.map.entity.MapResult;
 import com.imnotdurnk.domain.map.entity.RouteResult;
 import com.imnotdurnk.domain.map.entity.StopEntity;
+import com.imnotdurnk.domain.map.entity.TransitResult;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -53,4 +54,15 @@ public interface StopRepository extends JpaRepository<StopEntity, String> {
             "and st.stop_sequence between :seq1 and :seq2 " +
             "order by stop_sequence", nativeQuery = true)
     List<RouteResult> findRoute(@Param("seq1") int seq1, @Param("seq2") int seq2, @Param("routeId") String routeId);
+
+    @Query(value="select distinct s.route_short_name as route, s.stop_name as start, s2.stop_name as end " +
+            "from (select s.stop_name, r.route_id, st.stop_sequence, r.route_short_name from stop s join stop_time st on s.stop_id=st.stop_id join route r on r.route_id=st.route_id where ST_Distance_Sphere(point(stop_lon, stop_lat), point(:startlon, :startlat)) < 500 and st.departure_time>:time) s " +
+            "join (select s.stop_name, r.route_id, st.stop_sequence from stop s join stop_time st on s.stop_id=st.stop_id join route r on r.route_id=st.route_id where ST_Distance_Sphere(point(stop_lon, stop_lat), point(:destlon, :destlat)) < 500) s2 " +
+            "on s.route_id=s2.route_id " +
+            "where s.stop_sequence<s2.stop_sequence", nativeQuery = true)
+    List<TransitResult> findTransitRoute(@Param("startlat") Double startlat,
+                                         @Param("startlon") Double startlon,
+                                         @Param("destlat") Double destlat,
+                                         @Param("destlon") Double destlon,
+                                         @Param("time") String time);
 }

@@ -71,30 +71,23 @@
     background: var(--color-white1) !important;
 }
 
-/* 삭제 modal */
-.delete-popup-class {
-    grid-row: 1 !important;
-    padding: 1rem 3rem !important;
-    width: auto;
-    background-color: var(--color-white1);
-    font-family: 'Pretendard' !important;
-}
-
-.delete-confirm-button-class {
-    background-color: var(--color-red);
-    color: var(--color-white1);
-}
-
 /* 인포 modal */
 .info-popup-class {
     grid-row: 1 !important;
-    padding: 1rem 2rem !important;
+    padding: 1rem 1.6rem !important;
     width: auto;
+    
+    border-radius: 20px;
     background-color: var(--color-white1);
     font-family: 'Pretendard' !important;
 }
 
 .info-confirm-button-class {
-    background-color: var(--color-blue);
+    border-radius: 10px;
+    background-color: var(--color-green1);
     color: var(--color-white1);
+}
+
+.info-cancel-button-class {
+    border-radius: 10px;
 }

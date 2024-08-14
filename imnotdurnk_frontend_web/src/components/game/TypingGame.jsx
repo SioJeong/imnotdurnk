@@ -82,10 +82,7 @@ const TypingGame = () => {
             }
         }
         // setInputTyping('');
-        console.log(
-            `일치하는 문자 수: ${matchCount} 전체 문자수 : `,
-            testTextArray.length,
-        );
+
         return (matchCount / testTextArray.length) * 100;
     };
 
@@ -104,8 +101,6 @@ const TypingGame = () => {
                 gameScore: gameScore,
             },
         });
-        // 여기까지
-        // return { shouldRepeat: true, delay: 1.5 };
     };
 
     useEffect(() => {
