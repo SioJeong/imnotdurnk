@@ -113,6 +113,28 @@ public class GameLogController {
         return ResponseEntity.status(response.getHttpStatus()).body(response);
     }
 
+    /**
+     * 일정 아이디를 받아오고 해당 일정 내의 게임 기록을 전부 삭제
+     *
+     */
+    @Operation(
+            summary = "일정 내의 게임 기록 전부 삭제"
+    )
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> deleteGameLogByPlanId(@RequestAttribute(value = "AccessToken", required = true) String accessToken,
+                                                   @RequestParam(required = true) int planId) throws BadRequestException {
+
+        if(planId < 0) throw new BadRequestException("잘못된 형식의 일정 아이디");
+
+        gameLogService.deleteGameLogByPlanId(accessToken, planId);
+
+        CommonResponse response = new CommonResponse();
+        response.setStatusCode(HttpStatus.OK.value());
+        response.setMessage("삭제 완료");
+
+        return ResponseEntity.status(response.getHttpStatus()).body(response);
+    }
+
     /***
      * 날짜 유효성 체크
      *      yyyy-MM-dd 형태
