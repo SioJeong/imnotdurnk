@@ -162,7 +162,7 @@ const CreatePlan = () => {
                         </St.InputItemBox>
                     </St.InputContainer>
                 </St.ScheduleContainer>
-                {shouldRenderAlcoholComponent && (
+                {shouldRenderAlcoholComponent ? (
                     <CreatePlanAlcohol
                         openAlcoholModal={() => openModal('alcoholModal')}
                         openAlcoholLevelModal={() =>
@@ -176,6 +176,10 @@ const CreatePlan = () => {
                         selectedBeerBottleCount={selectedBeerBottleCount}
                         selectedBeerGlassCount={selectedBeerGlassCount}
                     />
+                ) : (
+                    <St.NoticeAboutFuturePlan>
+                        미래 일정에는 음주 및 게임 기록이 저장되지 않습니다.
+                    </St.NoticeAboutFuturePlan>
                 )}
             </St.Container>
             <CreatePlanModalController
