@@ -31,7 +31,8 @@ public class AuthConfig implements WebMvcConfigurer {
                         "/users/signup/**", //회원가입
                         "/map/**",
                         "/voice/pronounce", //발음 평가 요청
-                        "/game-logs/question" //게임용 랜덤 문장 제공
+                        "/game-logs/question", //게임용 랜덤 문장 제공
+                        "/voice/pronounce/not-save" //발음 평가 저장하지 않음
                         );
     }
 }
