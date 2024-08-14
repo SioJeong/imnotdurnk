@@ -162,15 +162,25 @@ const Login = () => {
                         비밀번호를 잊으셨나요?
                     </St.ForgetPasswordMessage>
                 </St.LoginSubQuestionContainer>
-                <Button
-                    text="로그인"
-                    size="big"
-                    isRed="true"
-                    onClick={(e) => {
-                        e.preventDefault(); // 기본 동작 방지
-                        checkValidation(); // 유효성 검사 및 로그인 처리
-                    }}
-                />
+                <St.ButtonBox>
+                    <Button
+                        text="로그인"
+                        size="big"
+                        isRed={true}
+                        onClick={(e) => {
+                            e.preventDefault(); // 기본 동작 방지
+                            checkValidation(); // 유효성 검사 및 로그인 처리
+                        }}
+                    />
+                    <Button
+                        text="HOME"
+                        isRed={false}
+                        onClick={(e) => {
+                            e.preventDefault(); // 기본 동작 방지
+                            navigate('/');
+                        }}
+                    />
+                </St.ButtonBox>
             </St.FormContainer>
         </St.LoginContainer>
     );

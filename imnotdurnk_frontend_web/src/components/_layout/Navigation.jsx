@@ -9,6 +9,7 @@ import useNavigationStore from '@/stores/useNavigationStore.js';
 import useUserStore from '@/stores/useUserStore.js';
 import { useQueryClient } from '@tanstack/react-query';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { deleteGameFromPlan } from '../../services/game.js';
 import { putUserDetailedInfo } from '../../services/user.js';
 import useGameStore from '../../stores/useGameStore.js';
 import { ToastError, ToastSuccess, ToastWarning } from '../_common/alert.js';
@@ -143,13 +144,18 @@ const Navigation = () => {
                 '오전 12시 00분',
             );
 
+            // 미래 일정으로 수정한 경우, 음주 및 게임 기록 제거 및 초기화
             if (planDetailDate > today) {
+                console.log(planDetail);
+                if (planDetail.gameLogDtos.length > 0) {
+                    await deleteGameFromPlan({ planId: planDetail.id });
+                }
                 setPlanDetail({
                     sojuAmount: 0,
                     beerAmount: 0,
                     alcoholLevel: 0,
                     arrivalTime: '',
-                    // gameLogEntities: [], // TODO: 게임 기록 지우는 API 필요할 듯
+                    gameLogEntities: [],
                 });
             }
 
