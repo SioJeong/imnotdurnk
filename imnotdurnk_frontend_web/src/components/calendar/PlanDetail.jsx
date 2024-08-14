@@ -75,11 +75,7 @@ const PlanDetail = () => {
 
             if (success) {
                 // 쿼리 무효화
-                queryClient.invalidateQueries([
-                    'monthlyEventList',
-                    year,
-                    month,
-                ]);
+                queryClient.invalidateQueries(['allEventList']);
                 ToastSuccess('일정이 삭제되었습니다', true);
                 resetPlanDetail();
                 navigate('/calendar'); // 캘린더 페이지로 이동

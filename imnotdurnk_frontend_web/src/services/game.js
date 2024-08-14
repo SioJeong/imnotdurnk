@@ -56,7 +56,11 @@ const saveVoiceGameResult = async ({ data }) => {
 
 const deleteVoiceGameResult = async ({ data }) => {
     try {
-        const response = await api.post('/voice/pronounce/not-save', data, {});
+        const response = await apiNoToken.post(
+            '/voice/pronounce/not-save',
+            data,
+            {},
+        );
 
         const { statusCode, httpStatus, message } = response.data;
         apiErrorHandler(statusCode, httpStatus, message);

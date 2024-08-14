@@ -115,11 +115,7 @@ const Navigation = () => {
 
             if (success) {
                 // 쿼리 무효화
-                queryClient.invalidateQueries([
-                    'monthlyEventList',
-                    year,
-                    month,
-                ]);
+                queryClient.invalidateQueries(['allEventList']);
             }
         } else if (path === 'goEditPlan') {
             const planId = location.pathname.split('/')[4];
@@ -162,6 +158,8 @@ const Navigation = () => {
             const success = await editPlan(); // 일정 수정 함수 호출
 
             if (success) {
+                // 쿼리 무효화
+                queryClient.invalidateQueries(['allEventList']);
                 queryClient.invalidateQueries(['planDetail', planId]);
                 ToastSuccess('일정이 수정되었습니다!', true, true);
                 resetPlanDetail();
