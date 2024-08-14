@@ -6,6 +6,7 @@ import com.imnotdurnk.domain.map.dto.RouteDto;
 import com.imnotdurnk.domain.map.dto.TransitDto;
 import com.imnotdurnk.domain.map.service.MapService;
 import com.imnotdurnk.global.response.ListResponse;
+import com.imnotdurnk.global.response.ListsResponse;
 import com.imnotdurnk.global.response.SingleResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
@@ -86,11 +87,11 @@ public class MapController {
             description = "Odsay API에서 환승 지점을 찾아 경로를 탐색합니다."
     )
     @GetMapping("/odsay/route")
-    public ResponseEntity<ListResponse<?>> getOptimizeRoute(@RequestParam(required = true) double startlat, @RequestParam(required = true) double startlon,
+    public ResponseEntity<ListsResponse<?>> getOptimizeRoute(@RequestParam(required = true) double startlat, @RequestParam(required = true) double startlon,
                                                             @RequestParam(required = true) double destlat, @RequestParam(required = true) double destlon,
                                                             @RequestParam(required = true) String time){
-        ListResponse<TransitDto> response = new ListResponse<>();
-        List<TransitDto> result = mapService.getOptimizeRoute(destlat,destlon,startlat,startlon,time);
+        ListsResponse<TransitDto> response = new ListsResponse<>();
+        List<List<TransitDto>> result = mapService.getOptimizeRoute(destlat,destlon,startlat,startlon,time);
         response.setDataList(result);
         response.setMessage("대중교통 경로 조회 성공");
         return ResponseEntity.ok(response);
