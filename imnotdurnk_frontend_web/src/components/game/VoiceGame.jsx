@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import RecordRTC from 'recordrtc';
 import { getTestSentence, sendVoiceRecord } from '../../services/game';
@@ -38,6 +38,15 @@ const VoiceGame = () => {
         cacheTime: 0, // 캐시 비활성화
     });
 
+    useEffect(() => {
+        if (!isRecording && audioBlob) {
+            const audioUrl = URL.createObjectURL(audioBlob);
+            if (audioRef.current) {
+                audioRef.current.src = audioUrl;
+            }
+        }
+    }, [isRecording, audioBlob]);
+
     const dataURLToBlob = (dataURL) => {
         const binary = atob(dataURL.split(',')[1]);
         const array = [];
@@ -53,8 +62,6 @@ const VoiceGame = () => {
             recorderRef.current.stopRecording(() => {
                 recorderRef.current.getDataURL((dataURL) => {
                     const blob = dataURLToBlob(dataURL);
-                    const audioUrl = URL.createObjectURL(blob);
-                    audioRef.current.src = audioUrl;
                     setAudioBlob(blob);
                     setIsRecording(false);
                     setRecordingStatus('다시 녹음해 볼까요?');
@@ -142,7 +149,7 @@ const VoiceGame = () => {
                 <VoiceSvgAnimation $isRecording={isRecording} />
                 <h3>{recordingStatus}</h3>
             </St.RecordButton>
-            <St.CustomAudio ref={audioRef} controls />
+            {audioBlob && <St.CustomAudio ref={audioRef} controls />}
             <Button text="제출하기" isRed={true} onClick={handleSubmit} />
         </St.VoiceGameContainer>
     );
