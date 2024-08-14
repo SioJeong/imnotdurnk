@@ -26,14 +26,14 @@ public class SecurityConfig {
         return httpSecurity
                 .httpBasic(HttpBasicConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(AbstractHttpConfigurer::disable)
-//                .authorizeRequests()
-//                .requestMatchers("/api/users",
-//                        "/v3/api-docs/**", // Swagger 문서 경로 허용
-//                        "/swagger-ui/**",  // Swagger UI 경로 허용
-//                        "/swagger-resources/**",
-//                        "/webjars/**").permitAll()
-//                .and()
+                .cors().and()
+                .authorizeRequests()
+                .requestMatchers("/api/users",
+                        "/v3/api-docs/**", // Swagger 문서 경로 허용
+                        "/swagger-ui/**",  // Swagger UI 경로 허용
+                        "/swagger-resources/**",
+                        "/webjars/**").permitAll()
+                .and()
                 .build();
     }
 }
