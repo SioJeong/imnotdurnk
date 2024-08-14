@@ -16,6 +16,7 @@ public interface MapResult {
     Optional<String> getRouteId();
     Optional<String> getStartLat();
     Optional<String> getStartLon();
+    Optional<Integer> getType();
 
 
 }
