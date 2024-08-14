@@ -63,7 +63,6 @@ const deleteVoiceGameResult = async ({ data }) => {
         );
 
         const { statusCode, httpStatus, message } = response.data;
-        console.log('발음 임시 파일 삭제', statusCode);
         apiErrorHandler(statusCode, httpStatus, message);
 
         if (statusCode === 200) {
