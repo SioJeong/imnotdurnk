@@ -30,9 +30,11 @@ const Home = () => {
     const goToNavigation = () => {
         // Map 열기
         console.log('Sending message to React Native');
-        window.ReactNativeWebView.postMessage(JSON.stringify({
-            type: 'Map',
-        }));
+        window.ReactNativeWebView.postMessage(
+            JSON.stringify({
+                type: 'Map',
+            }),
+        );
     };
 
     const tabContentsList = [
@@ -88,7 +90,7 @@ const Home = () => {
 
 const HomeContainer = styled.div`
     display: flex;
-    width: 25.7143rem;
+
     height: 38.7143rem;
     padding: 1rem 1rem 2rem 1rem;
     flex-direction: column;
