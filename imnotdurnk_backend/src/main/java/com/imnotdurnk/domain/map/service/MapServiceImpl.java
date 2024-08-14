@@ -260,7 +260,16 @@ public class MapServiceImpl implements MapService {
                             List<MapResult> stops = stopRepository.findStop(slat, slon, destlat, destlon, curTime);
                             if (!stops.isEmpty()) {
                                 MapResult stop = stops.get(0);
-                                result.get(cnt).add(new TransitDto(String.valueOf(stop.getRoute().orElse("택시")), String.valueOf(stop.getStartStop().orElse("0")), String.valueOf(stop.getDestStop().orElse("0")), Double.valueOf(stop.getStartLat().orElse("0").toString()), Double.valueOf(stop.getStartLon().orElse("0").toString()), Double.valueOf(stop.getDestLat().orElse("0").toString()), Double.valueOf(stop.getDestLon().orElse("0").toString()), Integer.valueOf(stop.getDuration().orElse(0.0).toString())));
+                                result.get(cnt).add(new TransitDto(
+                                        stop.getRoute().orElse("택시"),
+                                        stop.getStartStop().orElse("0"),
+                                        stop.getDestStop().orElse("0"),
+                                        stop.getStartLat().map(Double::parseDouble).orElse(0.0), 
+                                        stop.getStartLon().map(Double::parseDouble).orElse(0.0), 
+                                        stop.getDestLat().map(Double::parseDouble).orElse(0.0),
+                                        stop.getDestLon().map(Double::parseDouble).orElse(0.0),
+                                        stop.getDuration().map(Double::intValue).orElse(0)
+                                ));
                             }
                             break;
                         }
