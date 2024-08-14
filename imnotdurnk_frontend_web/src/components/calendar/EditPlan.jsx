@@ -78,6 +78,10 @@ const EditPlan = () => {
         if (titleRef.current) {
             titleRef.current.focus();
         }
+        // 최초 렌더링 시, memo 초기 값에 맞춰 메모 입력 박스 높이 조절
+        if (memoRef.current) {
+            memoRef.current.style.height = `${memoRef.current.scrollHeight}px`;
+        }
     }, []);
 
     // 일정 제목, 메모 글자 수 제한
@@ -110,8 +114,9 @@ const EditPlan = () => {
     return (
         <>
             <St.Container>
-                <St.ScheduleContainerForEdit
+                <St.ScheduleContainer
                     $alcoholLevel={planDetail.alcoholLevel}
+                    $isFuturePlan={planDetailDate > today}
                 >
                     <h3>일정 정보</h3>
                     <St.InputContainer>
@@ -153,8 +158,8 @@ const EditPlan = () => {
                             />
                         </St.InputItemBox>
                     </St.InputContainer>
-                </St.ScheduleContainerForEdit>
-                {shouldRenderAlcoholComponent && (
+                </St.ScheduleContainer>
+                {shouldRenderAlcoholComponent ? (
                     <EditPlanAlcohol
                         openAlcoholModal={() => openModal('alcoholModal')}
                         openAlcoholLevelModal={() =>
@@ -168,6 +173,10 @@ const EditPlan = () => {
                         selectedBeerBottleCount={selectedBeerBottleCount}
                         selectedBeerGlassCount={selectedBeerGlassCount}
                     />
+                ) : (
+                    <St.NoticeAboutFuturePlan>
+                        미래 일정에는 음주 및 게임 기록이 저장되지 않습니다.
+                    </St.NoticeAboutFuturePlan>
                 )}
             </St.Container>
             <EditPlanModalController

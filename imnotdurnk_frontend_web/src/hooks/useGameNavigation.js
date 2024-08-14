@@ -14,7 +14,7 @@ const useGameNavigation = () => {
         // GameResult, AddGameToPlan 경로일 경우 네비게이션 설정을 하지 않음
         if (
             path.match('/game/game-result') ||
-            path.match('/game/voicegame/result/add-to-plan')
+            path.match('/game/game-result/add-to-plan')
         ) {
             return;
         }
@@ -38,6 +38,13 @@ const useGameNavigation = () => {
                 isVisible: true,
                 icon1: { iconname: 'backarrow', path: '/game' },
                 title: '타이핑 게임',
+                icon2: { iconname: 'empty' },
+            });
+        } else if (path.match('/game/memorizegame')) {
+            setNavigation({
+                isVisible: true,
+                icon1: { iconname: 'backarrow', path: '/game' },
+                title: '기억력 게임',
                 icon2: { iconname: 'empty' },
             });
         } else {

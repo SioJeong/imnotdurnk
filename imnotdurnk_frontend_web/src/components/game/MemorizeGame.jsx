@@ -1,4 +1,3 @@
-import Button from '@/components/_button/Button';
 import Modal from '@/components/_modal/Modal';
 import { icons } from '@/shared/constants/icons';
 import { useEffect, useState } from 'react';
@@ -162,8 +161,9 @@ const MemorizeGame = () => {
                 setIsGameOver(true);
                 handleFinishGame();
             }
-        }, 2000);
+        }, 500);
     }, [matchedPairs]);
+
     useEffect(() => {
         if (!firstCard || !secondCard) {
             return;
@@ -252,14 +252,6 @@ const MemorizeGame = () => {
                 ))}
             </St.TestDiv>
 
-            <St.ButtonBox>
-                <Button
-                    text="제출하기"
-                    size="large"
-                    isRed={true}
-                    onClick={handleFinishGame}
-                />
-            </St.ButtonBox>
             <Modal
                 isGame={true}
                 modalId="memorizeGameNoticeModal"
