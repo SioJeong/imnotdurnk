@@ -52,6 +52,7 @@ const MemorizeGame = () => {
     const [secondCard, setSecondCard] = useState(null);
     const [isGameOver, setIsGameOver] = useState(false);
     const [matchedPairs, setMatchedPairs] = useState(0); // 맞춘 쌍의 횟수
+    const [mismatchedCnt, setMismatchedCnt] = useState(0); //틀린 쌍의 수
     const [isClickDisabled, setIsClickDisabled] = useState(false); // 카드 클릭 비활성화 상태
     //타이머 조절용 변수 0 -> 5초 카운터 1 -> 30초 카운터
     const [activeTimer, setActiveTimer] = useState(0);
@@ -123,6 +124,13 @@ const MemorizeGame = () => {
     //점수 계산 함수
     const calculateGameScore = () => {
         let gameScore = matchedPairs === 6 ? 100 : matchedPairs * 16;
+
+        //틀린 횟수만큼 1점씩 차감
+        if(gameScore >= mismatchedCnt)
+            gameScore = gameScore - mismatchedCnt;
+        else
+            gameScore = 0;
+
         return gameScore;
     };
 
@@ -193,6 +201,7 @@ const MemorizeGame = () => {
                 );
                 setFirstCard(null);
                 setSecondCard(null);
+                setMismatchedCnt(mismatchedCnt + 1);
                 setTimeout(() => setIsClickDisabled(false), 20);
             }, 1000);
         }
