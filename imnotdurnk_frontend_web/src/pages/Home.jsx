@@ -28,11 +28,13 @@ const Home = () => {
     const goToMyPage = () => navigate('/mypage');
     const goToGame = () => navigate('/game');
     const goToNavigation = () => {
-        // Map 열기
-        console.log('Sending message to React Native');
-        window.ReactNativeWebView.postMessage(JSON.stringify({
-            type: 'Map',
-        }));
+        // 웹 뷰 환경이라면 Map 메시지 전송
+        if (window.ReactNativeWebView && typeof window.ReactNativeWebView.postMessage === 'function') {
+            console.log('Sending message to React Native');
+            window.ReactNativeWebView.postMessage(JSON.stringify({
+                type: 'Map',
+            }));
+        }
     };
 
     const tabContentsList = [

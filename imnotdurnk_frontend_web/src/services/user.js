@@ -27,7 +27,8 @@ const login = async (email, password) => {
 
         const { statusCode, httpStatus } = response.data;
 
-        if (statusCode === 200) {
+        // 웹 뷰 환경일 때만
+        if (window.ReactNativeWebView && typeof window.ReactNativeWebView.postMessage === 'function') {
             // 토큰 디코딩 
             const decodedToken = jwtDecode(accessToken);
             const expiryTime = decodedToken.exp * 1000; // 초 단위를 밀리초로 변환
