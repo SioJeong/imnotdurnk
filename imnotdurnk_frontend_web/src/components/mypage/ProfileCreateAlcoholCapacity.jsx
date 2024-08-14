@@ -2,10 +2,12 @@ import Button from '@/components/_button/Button';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { putUserDetailedInfo } from '../../services/user';
+import { icons } from '../../shared/constants/icons';
 import StepperButton from '../_button/StepperButton';
 import { ToastSuccess } from '../_common/alert';
 import Checkbox from '../_common/Checkbox';
 import * as St from './ProfileCreateAlcoholCapacity.style';
+
 const ProfileCreateAlcoholCapacity = () => {
     const [selectedSojuBottleCount, setSelectedSojuBottleCount] = useState(0);
     const [selectedSojuGlassCount, setSelectedSojuGlassCount] = useState(0);
@@ -126,7 +128,7 @@ const ProfileCreateAlcoholCapacity = () => {
                     <St.AlcoholInputContainer>
                         <St.AlcoholInputBox>
                             <St.AlcoholImage
-                                src={`/src/assets/images/sojubottle.webp`}
+                                src={icons['sojuBottle']}
                                 alt={`soju bottle image`}
                             />
                             <StepperButton
@@ -138,7 +140,7 @@ const ProfileCreateAlcoholCapacity = () => {
                         </St.AlcoholInputBox>
                         <St.AlcoholInputBox>
                             <St.AlcoholImage
-                                src={`/src/assets/images/sojuglass.webp`}
+                                src={icons['sojuGlass']}
                                 alt={`soju glass image`}
                             />
                             <StepperButton
@@ -166,7 +168,7 @@ const ProfileCreateAlcoholCapacity = () => {
                     <St.AlcoholInputContainer>
                         <St.AlcoholInputBox>
                             <St.AlcoholImage
-                                src={`/src/assets/images/beerbottle.webp`}
+                                src={icons['beerBottle']}
                                 alt={`beer bottle image`}
                             />
                             <StepperButton
@@ -178,7 +180,7 @@ const ProfileCreateAlcoholCapacity = () => {
                         </St.AlcoholInputBox>
                         <St.AlcoholInputBox>
                             <St.AlcoholImage
-                                src={`/src/assets/images/beerglass.webp`}
+                                src={icons['beerGlass']}
                                 alt={`beer glass image`}
                             />
                             <StepperButton
