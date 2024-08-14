@@ -11,7 +11,8 @@ import * as St from './GameResult.style';
 
 const GameResult = () => {
     const { accessToken } = useAuthStore();
-    const { voiceGameResult } = useGameStore();
+    const { voiceGameResult, isVoiceGameResultSet, resetVoiceGameResult } =
+        useGameStore();
 
     const setNavigation = useNavigationStore((state) => state.setNavigation);
 
@@ -92,10 +93,16 @@ const GameResult = () => {
             },
         );
     };
-    const onClickGameListButton = () => {
-        deleteVoiceGameResult({
-            data: voiceGameResult,
-        });
+    const onClickGameListButton = async () => {
+        // 발음 게임의 경우, DB에 저장된 임시 파일 삭제 요청 API 처리
+        if (isVoiceGameResultSet) {
+            const result = await deleteVoiceGameResult({
+                data: voiceGameResult,
+            });
+            if (result) {
+                resetVoiceGameResult();
+            }
+        }
         navigate('/game');
     };
 
