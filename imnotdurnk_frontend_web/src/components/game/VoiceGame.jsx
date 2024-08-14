@@ -73,6 +73,7 @@ const VoiceGame = () => {
         } else {
             // 녹음 중이 아니면 새로 녹음 시작
             try {
+                setAudioBlob(null); // 기존 녹음 파일 초기화
                 const stream = await navigator.mediaDevices.getUserMedia({
                     audio: true,
                 });
