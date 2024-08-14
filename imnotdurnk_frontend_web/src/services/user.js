@@ -186,6 +186,11 @@ const logout = async () => {
 
         const { statusCode, httpStatus } = response.data;
 
+        // 로그아웃 성공 시 토큰 삭제
+        if (statusCode === 200) {
+            useAuthStore.getState().clearAccessToken();
+        }
+
         // 웹 뷰 환경일 때만
         if (window.ReactNativeWebView && typeof window.ReactNativeWebView.postMessage === 'function') {
             // 로그아웃 성공 시 네이티브 앱에 메시지 전송
