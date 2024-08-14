@@ -13,8 +13,9 @@ public class TransitDto {
     Double slon;
     Double dlat;
     Double dlon;
+    Integer duration;
 
-    public TransitDto(String route, String start, String end, Double slat, Double slon, Double dlat, Double dlon) {
+    public TransitDto(String route, String start, String end, Double slat, Double slon, Double dlat, Double dlon, Integer duration) {
         this.route=route;
         this.start=start;
         this.end=end;
@@ -22,6 +23,7 @@ public class TransitDto {
         this.slon=slon;
         this.dlat=dlat;
         this.dlon=dlon;
+        this.duration=duration;
     }
 
     public TransitDto() {}

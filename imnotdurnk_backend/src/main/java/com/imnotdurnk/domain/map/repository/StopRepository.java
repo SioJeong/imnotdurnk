@@ -55,11 +55,12 @@ public interface StopRepository extends JpaRepository<StopEntity, String> {
             "order by stop_sequence", nativeQuery = true)
     List<RouteResult> findRoute(@Param("seq1") int seq1, @Param("seq2") int seq2, @Param("routeId") String routeId);
 
-    @Query(value="select distinct s.route_short_name as route, s.stop_name as start, s2.stop_name as end " +
+    @Query(value="select distinct s.route_short_name as route, s.stop_name as start, s2.stop_name as end,  abs(time(s.departure_time)-time(s2.departure_time))/60 as duration " +
             "from (select s.stop_name, r.route_id, st.stop_sequence, r.route_short_name from stop s join stop_time st on s.stop_id=st.stop_id join route r on r.route_id=st.route_id where ST_Distance_Sphere(point(stop_lon, stop_lat), point(:startlon, :startlat)) < 500 and st.departure_time>:time) s " +
             "join (select s.stop_name, r.route_id, st.stop_sequence from stop s join stop_time st on s.stop_id=st.stop_id join route r on r.route_id=st.route_id where ST_Distance_Sphere(point(stop_lon, stop_lat), point(:destlon, :destlat)) < 500) s2 " +
             "on s.route_id=s2.route_id " +
-            "where s.stop_sequence<s2.stop_sequence", nativeQuery = true)
+            "where s.stop_sequence<s2.stop_sequence " +
+            "order by duration asc", nativeQuery = true)
     List<TransitResult> findTransitRoute(@Param("startlat") Double startlat,
                                          @Param("startlon") Double startlon,
                                          @Param("destlat") Double destlat,

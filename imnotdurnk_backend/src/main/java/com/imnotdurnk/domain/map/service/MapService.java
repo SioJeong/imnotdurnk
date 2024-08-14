@@ -16,6 +16,6 @@ public interface MapService {
 
     JsonNode requestOdsayApi(String depLng, String depLat, String destLng, String destLat);
 
-    List<TransitDto> getOptimizeRoute(double destlat, double destlon, double startlat, double startlon, String time);
+    List<List<TransitDto>> getOptimizeRoute(double destlat, double destlon, double startlat, double startlon, String time);
 }
 

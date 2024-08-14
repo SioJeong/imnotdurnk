@@ -4,4 +4,5 @@ public interface TransitResult {
     String getRoute();
     String getStart();
     String getEnd();
+    Integer getDuration();
 }
