@@ -84,7 +84,26 @@ const saveRestGameResult = async ({ data }) => {
     }
 };
 
+const deleteGameFromPlan = async ({ planId }) => {
+    try {
+        const response = await api.delete('game-logs/delete', {
+            params: { planId },
+        });
+
+        const { statusCode, httpStatus, message } = response.data;
+        console.log('statusCode', statusCode);
+        apiErrorHandler(statusCode, httpStatus, message);
+
+        if (statusCode === 200) {
+            return true;
+        }
+    } catch (error) {
+        throw new Error(error.message || '일정 내 게임 기록 삭제 중 오류 발생');
+    }
+};
+
 export {
+    deleteGameFromPlan,
     deleteVoiceGameResult,
     getTestSentence,
     saveRestGameResult,
