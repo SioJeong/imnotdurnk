@@ -173,7 +173,7 @@ const Login = () => {
                         }}
                     />
                     <Button
-                        text="HOME"
+                        text="홈으로"
                         isRed={false}
                         onClick={(e) => {
                             e.preventDefault(); // 기본 동작 방지
