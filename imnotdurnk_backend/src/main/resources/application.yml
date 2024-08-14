@@ -5,8 +5,8 @@ spring:
   security: ignored=/**   # 일단 비활성화
 
   # ------이거 있으면 오류나유--------
-  #config:
-  #  import: application-secret.yml
+  config:
+    import: application-secret.yml
   #---------------------------------
 
   # DB Setting
@@ -71,20 +71,6 @@ jwt:
 
 etri:
   accessKey: ${ETRI_ACCESS_KEY}
-
-logging:
-  level:
-    root: ${LOG_LEVEL_ROOT}
-    com:
-      imnotdurnk:
-        domain:
-          auth: ${LOG_LEVEL_AUTH}
-          calendar: ${LOG_LEVEL_CALENDAR}
-          MAP: ${LOG_LEVEL_MAP}
-          gamelog: ${LOG_LEVEL_GAMELOG}
-          user: ${LOG_LEVEL_USER}
-        global:
-          util: ${LOG_LEVEL_UTIL}
 
 Odsay:
   apikey: ${ODSAY_API_KEY}
