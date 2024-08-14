@@ -92,7 +92,6 @@ public class MapServiceImpl implements MapService {
      */
     public List<MapDto> getStopsAndRoutesInAreaWithTaxi(double destlat, double destlon, double startlat, double startlon, String time) {
         List<Mono<MapDto>> mapDtoList = new ArrayList<>();
-
         List<MapResult> stop = stopRepository.findStop(startlat, startlon, destlat, destlon, time);
         Set<String> set = new HashSet<String>();
         int cnt=0;
@@ -233,6 +232,7 @@ public class MapServiceImpl implements MapService {
         JsonNode response = restTemplate.getForObject(url, JsonNode.class);
         List<List<TransitDto>> result = new ArrayList<>();
         String curTime = time;
+
         // Odsay api 호출을 통해 환승 지점을 구한다
         if (response != null && response.has("result")) {
             int cnt=0;
@@ -253,7 +253,7 @@ public class MapServiceImpl implements MapService {
                         List<TransitResult> routes = stopRepository.findTransitRoute(slat, slon, dlat, dlon, curTime);
                         if (!routes.isEmpty()) {
                             TransitResult route = routes.get(0);
-                            result.get(cnt).add(new TransitDto(route.getRoute(), route.getStart(), route.getEnd(), slat, slon, dlat, dlon, route.getDuration()));
+                            result.get(cnt).add(new TransitDto(route.getRoute(), route.getStart(), route.getEnd(), slat, slon, dlat, dlon, route.getDuration(),route.getSeq1(), route.getSeq2(), route.getType(), route.getRouteId()));
                             sectionTime = route.getDuration();
                         } else {
                             // 경로가 없다면 목적지까지 최대한 가까이 가서 택시 탑승해야 함
@@ -264,11 +264,15 @@ public class MapServiceImpl implements MapService {
                                         stop.getRoute().orElse("택시"),
                                         stop.getStartStop().orElse("0"),
                                         stop.getDestStop().orElse("0"),
-                                        stop.getStartLat().map(Double::parseDouble).orElse(0.0), // 수정된 부분
-                                        stop.getStartLon().map(Double::parseDouble).orElse(0.0), // 수정된 부분
-                                        stop.getDestLat().map(Double::parseDouble).orElse(0.0), // 수정된 부분
-                                        stop.getDestLon().map(Double::parseDouble).orElse(0.0), // 수정된 부분
-                                        stop.getDuration().map(Double::intValue).orElse(0) // 수정된 부분
+                                        stop.getStartLat().map(Double::parseDouble).orElse(0.0),
+                                        stop.getStartLon().map(Double::parseDouble).orElse(0.0),
+                                        stop.getDestLat().map(Double::parseDouble).orElse(0.0),
+                                        stop.getDestLon().map(Double::parseDouble).orElse(0.0),
+                                        stop.getDuration().map(Double::intValue).orElse(0),
+                                        stop.getSeq1().orElse(0),
+                                        stop.getSeq2().orElse(0),
+                                        stop.getType().orElse(0),
+                                        stop.getRouteId().orElse("0")
                                 ));
                             }
                             break;
@@ -276,7 +280,7 @@ public class MapServiceImpl implements MapService {
                     }
                     curTime = addMinutes(curTime, sectionTime+10);
                 }
-                if(++cnt==4) break;
+                if(++cnt==3) break;
             }
         }
         return result;
