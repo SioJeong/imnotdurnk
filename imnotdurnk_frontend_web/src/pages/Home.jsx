@@ -1,7 +1,8 @@
 import useNavigationStore from '@/stores/useNavigationStore';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
+import { ToastWarning } from '../components/_common/alert';
 import { icons } from '../shared/constants/icons';
 import useAuthStore from '../stores/useAuthStore';
 import useCalendarStore from '../stores/useCalendarStore';
@@ -9,21 +10,40 @@ import useCalendarStore from '../stores/useCalendarStore';
 const Home = () => {
     const setNavigation = useNavigationStore((state) => state.setNavigation);
     const navigate = useNavigate();
+
     const { accessToken } = useAuthStore();
     const { setSelectedDate } = useCalendarStore();
+
+    const beforeLogin = {
+        iconname: 'login',
+        isRed: false,
+        path: '/account',
+    };
+
+    const afterLogin = {
+        iconname: 'mypage',
+        isRed: false,
+        path: '/mypage',
+    };
+
+    const [icon2, setIcon2] = useState(beforeLogin);
+
+    useEffect(() => {
+        if (accessToken) {
+            setIcon2(afterLogin);
+        } else {
+            setIcon2(beforeLogin);
+        }
+    }, [accessToken]);
 
     useEffect(() => {
         setNavigation({
             isVisible: true,
             icon1: { iconname: 'empty' },
             title: 'Home',
-            icon2: {
-                iconname: 'profile',
-                isRed: false,
-                path: '/mypage/profile',
-            },
+            icon2: icon2,
         });
-    }, [setNavigation]);
+    }, [setNavigation, icon2]);
 
     // 홈으로 오면 selectedDate 상태를 오늘로 변경 (게임 기록 등록 시 날짜 위해)
     useEffect(() => {
@@ -31,10 +51,8 @@ const Home = () => {
     }, []);
 
     const goToCalender = () => navigate('/calendar');
-    const goToAccount = () => navigate('/account');
-    const goToMyPage = () => navigate('/mypage');
     const goToGame = () => navigate('/game');
-    const goToNavigation = () => {
+    const goToMap = () => {
         // 웹 뷰 환경이라면 Map 메시지 전송
         if (
             window.ReactNativeWebView &&
@@ -46,6 +64,8 @@ const Home = () => {
                     type: 'Map',
                 }),
             );
+        } else {
+            ToastWarning('모바일 환경에서 사용 가능합니다.');
         }
     };
 
@@ -67,22 +87,14 @@ const Home = () => {
         {
             iconName: 'homeLocation',
             text: '최소 택시비 길찾기',
-            onClick: goToNavigation,
+            onClick: goToMap,
             backgroundColor: 'var(--color-white2)',
             fontColor: 'var(--color-green2)',
-        },
-        {
-            iconName: 'homeChart',
-            text: '나의 음주 통계',
-            onClick: goToMyPage,
-            backgroundColor: 'var(--color-green2)',
-            fontColor: 'var(--color-white1)',
         },
     ];
 
     return (
         <HomeContainer>
-            <div onClick={goToAccount}> (임시)로그인으로 이동</div>
             {tabContentsList.map((item, index) => (
                 <HomeBox
                     key={index}

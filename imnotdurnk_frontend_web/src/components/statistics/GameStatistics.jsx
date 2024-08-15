@@ -352,6 +352,7 @@ const Game = styled.div`
         props.$isClicked
             ? 'var(--color-green2, #465a54)'
             : 'var(--color-white2, #f7f7ec)'};
+    cursor: pointer;
 `;
 const StyledIcon = styled.img`
     filter: ${({ isActive }) =>
