@@ -246,7 +246,7 @@ public class MapServiceImpl implements MapService {
                 JsonNode info = path.get("info");
                 int totalTransit = info.get("busTransitCount").asInt() + info.get("subwayTransitCount").asInt();
                 int totalWalk = info.get("totalWalk").asInt();
-                int totalWalkTime = (int)(totalWalk/90);   //평균 도보시간 4km/h 가정
+                int totalWalkTime = (int)(totalWalk/90);   //1분에 90m 걷는 것으로 가정
 
                 if (totalTransit > 2) {
                     continue;
