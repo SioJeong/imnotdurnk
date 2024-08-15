@@ -26,7 +26,6 @@ import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import reactor.core.publisher.Mono;
@@ -235,7 +234,6 @@ public class MapServiceImpl implements MapService {
 
         JsonNode response = restTemplate.getForObject(url, JsonNode.class);
         List<List<TransitDto>> result = new ArrayList<>();
-        AtomicReference<String> curTime = new AtomicReference<>(time);
         String dup[] = {"", "", "", ""};
 
         // Odsay api 호출을 통해 환승 지점을 구한다
@@ -247,6 +245,8 @@ public class MapServiceImpl implements MapService {
             for (JsonNode path : response.get("result").get("path")) {
                 JsonNode info = path.get("info");
                 int totalTransit = info.get("busTransitCount").asInt() + info.get("subwayTransitCount").asInt();
+                int totalWalk = info.get("totalWalk").asInt();
+                int totalWalkTime = (int)(totalWalk/90);   //1분에 90m 걷는 것으로 가정
 
                 if (totalTransit > 2) {
                     continue;
@@ -282,28 +282,30 @@ public class MapServiceImpl implements MapService {
                 futures.add(CompletableFuture.supplyAsync(() -> {
                     List<TransitDto> transitList = new ArrayList<>();
                     JsonNode subPath = path.get("subPath");
+                    String curTime = time;
 
                     for (JsonNode transfer : subPath) {
+
                         if (transfer.has("trafficType")) {
                             int trafficType = transfer.get("trafficType").asInt();
-                            int sectionTime = transfer.has("sectionTime") ? transfer.get("sectionTime").asInt() : 0;
-
+                            int duration =0;
                             if (trafficType == 1 || trafficType == 2) { // 버스나 지하철일 때
                                 double slat = transfer.get("startY").asDouble();
                                 double slon = transfer.get("startX").asDouble();
                                 double dlat = transfer.get("endY").asDouble();
                                 double dlon = transfer.get("endX").asDouble();
 
-                                List<TransitResult> routes = stopRepository.findTransitRoute(slat, slon, dlat, dlon, curTime.get());
+                                List<TransitResult> routes = stopRepository.findTransitRoute(slat, slon, dlat, dlon, curTime);
 
                                 if (!routes.isEmpty()) {
                                     TransitResult route = routes.get(0);
-                                    transitList.add(new TransitDto(route.getRoute(), route.getStart(), route.getEnd(), slat, slon, dlat, dlon, route.getDuration(), route.getSeq1(), route.getSeq2(), route.getType(), getRoutes(route.getRouteId(), route.getSeq1(), route.getSeq2())));
-                                    sectionTime = route.getDuration();
+                                    duration = route.getDuration();
+                                    transitList.add(new TransitDto(route.getRoute(), route.getStart(), route.getEnd(), slat, slon, dlat, dlon, duration, route.getSeq1(), route.getSeq2(), route.getType(), getRoutes(route.getRouteId(), route.getSeq1(), route.getSeq2()), totalWalk, totalWalkTime, curTime));
                                 } else {
-                                    List<MapResult> stops = stopRepository.findStop(slat, slon, destlat, destlon, curTime.get());
+                                    List<MapResult> stops = stopRepository.findStop(slat, slon, destlat, destlon, curTime);
                                     if (!stops.isEmpty()) {
                                         MapResult stop = stops.get(0);
+                                        duration = stop.getDuration().map(Double::intValue).orElse(0);
                                         transitList.add(new TransitDto(
                                                 stop.getRoute().orElse("택시"),
                                                 stop.getStartStop().orElse("0"),
@@ -312,18 +314,25 @@ public class MapServiceImpl implements MapService {
                                                 stop.getStartLon().map(Double::parseDouble).orElse(0.0),
                                                 stop.getDestLat().map(Double::parseDouble).orElse(0.0),
                                                 stop.getDestLon().map(Double::parseDouble).orElse(0.0),
-                                                stop.getDuration().map(Double::intValue).orElse(0),
+                                                duration,
                                                 stop.getSeq1().orElse(0),
                                                 stop.getSeq2().orElse(0),
                                                 stop.getType().orElse(0),
-                                                getRoutes(stop.getRouteId().orElse("0"), stop.getSeq1().orElse(0), stop.getSeq2().orElse(0)))
-                                        );
+                                                getRoutes(stop.getRouteId().orElse("0"), stop.getSeq1().orElse(0), stop.getSeq2().orElse(0)),
+                                                totalWalk,
+                                                totalWalkTime,
+                                                curTime
+                                        ));
                                     }
                                     break;
                                 }
+                            }else{  //도보 이동할 때
+                                int d = transfer.get("distance").asInt();
+                                duration = (int)(d/90);
                             }
-                            curTime.set(addMinutes(curTime.get(), sectionTime + 10));
-                        }
+
+                            curTime = addMinutes(curTime,duration);
+                                                    }
                     }
                     return transitList;
                 }));
@@ -356,4 +365,5 @@ public class MapServiceImpl implements MapService {
         // 결과 문자열 형식화 (00:00:00 형식)
         return String.format("%02d:%02d:%02d", hours, minutes, seconds);
     }
+
 }

@@ -50,7 +50,7 @@ const useGameNavigation = () => {
         } else {
             setNavigation({
                 isVisible: true,
-                icon1: { iconname: 'backarrow', path: '/' },
+                icon1: { iconname: 'address', path: '/' },
                 title: '게임 목록',
                 icon2: { iconname: 'empty' },
             });
