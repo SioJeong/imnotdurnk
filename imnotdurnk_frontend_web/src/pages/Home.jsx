@@ -65,7 +65,7 @@ const Home = () => {
                 }),
             );
         } else {
-            ToastWarning('모바일 환경에서 사용 가능합니다.', true, true);
+            ToastWarning('모바일 앱에서 사용 가능합니다.', true, true);
         }
     };
 
@@ -73,7 +73,7 @@ const Home = () => {
         <HomeContainer>
             <h3>
                 술자리 전천후 서비스, <br />
-                <Title>나안취햄ㅅ어</Title>에 오신 것을 환영합니다
+                <Title>나안취햄ㅅ어</Title>에 오신 것을 환영합니다!
             </h3>
             <MenuItemList>
                 <MenuItemDouble>
