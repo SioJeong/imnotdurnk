@@ -42,14 +42,14 @@ import Zany from '../../assets/icons/size_40/Icon-zanny.svg';
 import BeerBottle from '../../assets/images/beerbottle.webp';
 import BeerGlass from '../../assets/images/beerglass.webp';
 import Bezel from '../../assets/images/bezel.svg';
-import HomeCalendar from '../../assets/images/calendar.webp';
-import HomeChart from '../../assets/images/chart.webp';
+import HomeCalendar from '../../assets/images/home-calendar.png';
+import HomeCalendar2 from '../../assets/images/home-calendar2.png';
+import HomeMiniGame from '../../assets/images/home-mini-game.png';
+import HomeTaxi from '../../assets/images/home-taxi.png';
 import LoadingBeerLeft from '../../assets/images/loading-beer-left.svg';
 import LoadingBeerRight from '../../assets/images/loading-beer-right.svg';
-import HomeLocation from '../../assets/images/location.webp';
 import MiniBeerBottle from '../../assets/images/mini-beer-bottle.webp';
 import MiniSojuBottle from '../../assets/images/mini-soju-bottle.webp';
-import HomeMiniGame from '../../assets/images/minigame.webp';
 import NauseatedResult from '../../assets/images/nauseated-result.svg';
 import ShakingResult from '../../assets/images/shaking-result.svg';
 import SojuBottle from '../../assets/images/sojubottle.webp';
@@ -98,10 +98,6 @@ const icons = {
     beerGlass: BeerGlass,
     empty: Empty,
     emptyWhite2: EmptyWhite2,
-    homeCalendar: HomeCalendar,
-    homeMiniGame: HomeMiniGame,
-    homeLocation: HomeLocation,
-    homeChart: HomeChart,
     chicken: Chicken,
     heart: Heart,
     nauseated: Nauseated,
@@ -116,6 +112,10 @@ const icons = {
     loadingBeerRight: LoadingBeerRight,
     profile: Profile,
     login: Login,
+    homeMiniGame: HomeMiniGame,
+    homeCalendar: HomeCalendar,
+    homeCalendar2: HomeCalendar2,
+    homeTaxi: HomeTaxi,
 };
 
 export { icons };
