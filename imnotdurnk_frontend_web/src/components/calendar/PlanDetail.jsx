@@ -12,6 +12,7 @@ import useModalStore from '../../stores/useModalStore';
 import useNavigationStore from '../../stores/useNavigationStore';
 import Button from '../_button/Button';
 import { ToastSuccess } from '../_common/alert';
+import Loading from '../_common/Loading';
 import Modal from '../_modal/Modal';
 import ModalTextBox from '../_modal/ModalTextBox';
 import CalendarStatusBar from './CalendarStatusBar';
@@ -102,9 +103,9 @@ const PlanDetail = () => {
             <CalendarStatusBar />
             <St.PlanDetailBox>
                 {isLoading ? (
-                    <St.LoadingAndErrorText>
-                        일정 상세 정보를 가져오는 중입니다.
-                    </St.LoadingAndErrorText>
+                    <St.LoadingBox>
+                        <Loading text={'일정 상세 정보를 가져오는 중입니다.'} />
+                    </St.LoadingBox>
                 ) : isError ? (
                     <St.LoadingAndErrorText>
                         Error: {error.message}

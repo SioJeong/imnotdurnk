@@ -12,6 +12,10 @@ const PlanDetailBox = styled.div`
     gap: 1.7857rem;
 `;
 
+const LoadingBox = styled.div`
+    padding: 8rem 0;
+`;
+
 const LoadingAndErrorText = styled.h3`
     padding-top: 3rem;
     text-align: center;
@@ -76,6 +80,7 @@ export {
     InputContainer,
     InputItemBox,
     LoadingAndErrorText,
+    LoadingBox,
     MemoIconImage,
     PlanDetailBox,
     PlanDetailContainer,

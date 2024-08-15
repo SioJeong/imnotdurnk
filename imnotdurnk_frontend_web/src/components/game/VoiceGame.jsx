@@ -4,12 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import RecordRTC from 'recordrtc';
 import { getTestSentence, sendVoiceRecord } from '../../services/game';
 import useGameStore from '../../stores/useGameStore';
-import { ToastSuccess, ToastWarning } from '../_common/alert';
+import { ToastWarning } from '../_common/alert';
 import VoiceSvgAnimation from '../_common/VoiceSvgAnimation';
 import Button from './../_button/Button';
 import * as St from './VoiceGame.style';
 
 import useUserStore from '@/stores/useUserStore.js';
+import Loading from '../_common/Loading';
 const VoiceGame = () => {
     const { user } = useUserStore((state) => ({
         user: state.user,
@@ -21,6 +22,7 @@ const VoiceGame = () => {
     const [audioBlob, setAudioBlob] = useState(null);
     const [recordingStatus, setRecordingStatus] =
         useState('버튼을 눌러 녹음을 시작해주세요.');
+    const [isSubmitting, setIsSubmitting] = useState(false); // 음성 분석 중일 때 Loading 띄우게
 
     const audioRef = useRef();
     const recorderRef = useRef(null);
@@ -106,12 +108,12 @@ const VoiceGame = () => {
 
     const handleSubmit = async () => {
         if (audioBlob) {
+            setIsSubmitting(true); // 제출 시작
+
             const formData = new FormData();
             formData.append('file', audioBlob, 'recording.wav');
             formData.append('script', testSentence);
             try {
-                ToastSuccess('음성 분석 중입니다.');
-
                 const dataResult = await sendVoiceRecord({ formData });
                 if (dataResult) {
                     setVoiceGameResult(dataResult);
@@ -124,6 +126,8 @@ const VoiceGame = () => {
                 }
             } catch (err) {
                 ToastWarning('음성 파일을 다시 녹음해주세요.');
+            } finally {
+                setIsSubmitting(false); // 제출 완료 후 로딩 상태 해제
             }
         } else {
             ToastWarning('음성 파일을 다시 녹음해주세요.');
@@ -146,10 +150,17 @@ const VoiceGame = () => {
             ) : (
                 <St.TestText>{testSentence}</St.TestText>
             )}
-            <St.RecordButton onClick={handleToggleRecording}>
-                <VoiceSvgAnimation $isRecording={isRecording} />
-                <h3>{recordingStatus}</h3>
-            </St.RecordButton>
+            {isSubmitting && (
+                <St.LoadingBox>
+                    <Loading text="음성 파일을 분석 중입니다!" />
+                </St.LoadingBox>
+            )}
+            {!isSubmitting && (
+                <St.RecordButton onClick={handleToggleRecording}>
+                    <VoiceSvgAnimation $isRecording={isRecording} />
+                    <h3>{recordingStatus}</h3>
+                </St.RecordButton>
+            )}
             {audioBlob && <St.CustomAudio ref={audioRef} controls />}
             <Button text="제출하기" isRed={true} onClick={handleSubmit} />
         </St.VoiceGameContainer>

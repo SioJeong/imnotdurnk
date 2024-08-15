@@ -9,6 +9,7 @@ import { getDailyEventList } from '../../services/calendar';
 import useNavigationStore from '../../stores/useNavigationStore';
 import Button from '../_button/Button';
 import { ToastSuccess } from '../_common/alert';
+import Loading from '../_common/Loading';
 import CalendarStatusBar from '../calendar/CalendarStatusBar';
 import EventCard from '../calendar/EventCard';
 import * as St from './AddGameToPlan.style';
@@ -57,9 +58,9 @@ const AddGameToPlan = () => {
             <CalendarStatusBar />
             <St.CalendarListBox>
                 {isLoading ? (
-                    <St.LoadingAndErrorText>
-                        일정을 불러오는 중입니다.
-                    </St.LoadingAndErrorText>
+                    <St.LoadingBox>
+                        <Loading text={'일정을 불러오는 중입니다.'} />
+                    </St.LoadingBox>
                 ) : isError ? (
                     <St.LoadingAndErrorText>
                         Error: {error.message}

@@ -4,6 +4,7 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { getAllEventList } from '../../services/calendar';
 import useCalendarStore from '../../stores/useCalendarStore';
+import Loading from '../_common/Loading';
 import './ReactCalendar.css';
 import * as St from './ReactCalendar.style';
 
@@ -71,7 +72,7 @@ const ReactCalendar = ({
     }, [data]);
 
     useEffect(() => {
-        if (selectedDate && allEventList.length > 0) {
+        if (selectedDate && allEventList) {
             const eventListOnSelectedDate = allEventList.filter((e) => {
                 const eventDate = new Date(e.date);
                 return (
@@ -181,9 +182,9 @@ const ReactCalendar = ({
     return (
         <div>
             {isLoading ? (
-                <St.LoadingAndErrorText>
-                    달력 데이터를 가져오는 중입니다.
-                </St.LoadingAndErrorText>
+                <St.LoadingBox>
+                    <Loading text={'달력 데이터를 가져오는 중입니다.'} />
+                </St.LoadingBox>
             ) : isError ? (
                 <St.LoadingAndErrorText>
                     Error: {error.message}
