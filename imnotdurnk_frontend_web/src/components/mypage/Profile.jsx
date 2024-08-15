@@ -12,6 +12,7 @@ import {
 import useUserStore from '@/stores/useUserStore';
 import { useEffect, useState } from 'react';
 import { Outlet, Route, Routes, useNavigate } from 'react-router-dom';
+import useAuthStore from '../../stores/useAuthStore';
 import useModalStore from '../../stores/useModalStore';
 import { ToastError, ToastSuccess } from '../_common/alert';
 import ModalPassword from '../_modal/ModalPassword';
@@ -48,6 +49,9 @@ const Profile = () => {
         user: state.user,
         setUser: state.setUser,
     }));
+    const { clearAccessToken } = useAuthStore((state) => ({
+        clearAccessToken: state.clearAccessToken,
+    }));
     const navigate = useNavigate();
 
     // TODO: 배포 상태에서 되는지 확인 필요(로컬은 쿠키가 없어서 불가능.. )
@@ -56,6 +60,7 @@ const Profile = () => {
 
         ToastSuccess('로그아웃 되었습니다!', true);
         clearUser();
+        clearAccessToken();
         navigate('/account');
     };
 

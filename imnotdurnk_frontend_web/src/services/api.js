@@ -39,9 +39,13 @@ let isTokenRefreshing = false; //토큰 요청 상태 저장
 //api 요청 후의 처리
 api.interceptors.response.use(
     (response) => {
-        const accessToken = response.headers['authorization'];
-        if (accessToken) {
-            useAuthStore.getState().setAccessToken(accessToken);
+        // const accessToken = response.headers['authorization'];
+        // if (accessToken) {
+        //     useAuthStore.getState().setAccessToken(accessToken);
+        // }
+        console.log('요청 어떻게 디었나 ,', response);
+        if (response.status === 401) {
+            ToastError('로그인이 필요합니다', true);
         }
         return response;
     },
@@ -50,6 +54,10 @@ api.interceptors.response.use(
         const { clearUser } = useUserStore((state) => ({
             clearUser: state.clearUser,
         }));
+        const { clearAccessToken } = useAuthStore((state) => ({
+            clearAccessToken: state.clearAccessToken,
+        }));
+        console.log('1', '클리어 어세스 토큰', clearAccessToken);
         if (response.data.statusCode === 401) {
             //AT이 없는 경우 401 에러가 뜸
             const originalRequest = config;
@@ -67,7 +75,14 @@ api.interceptors.response.use(
                         refreshResponse.headers['authorization'];
                     useAuthStore.getState().setAccessToken(newAccessToken);
                     originalRequest.headers['Authorization'] = newAccessToken;
-
+                    console.log('재발급 결과', refreshResponse);
+                    if (refreshResponse.status === 401) {
+                        console.log('재발급 실패', refreshResponse);
+                        ToastError('로그인이 필요합니다', true);
+                        clearUser();
+                        clearAccessToken();
+                        window.location.href = '/account';
+                    }
                     isTokenRefreshing = false;
                     return api(originalRequest);
                 } catch (error) {
@@ -75,6 +90,7 @@ api.interceptors.response.use(
                     window.location.href = '/account';
                     ToastError('로그인이 필요합니다', true);
                     clearUser();
+                    clearAccessToken();
                     return Promise.reject(error);
                 }
             }

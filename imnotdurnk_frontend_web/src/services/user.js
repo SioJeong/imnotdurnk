@@ -30,8 +30,11 @@ const login = async (email, password) => {
         const { statusCode, httpStatus } = response.data;
 
         // 웹 뷰 환경일 때만
-        if (window.ReactNativeWebView && typeof window.ReactNativeWebView.postMessage === 'function') {
-            // 토큰 디코딩 
+        if (
+            window.ReactNativeWebView &&
+            typeof window.ReactNativeWebView.postMessage === 'function'
+        ) {
+            // 토큰 디코딩
             const decodedToken = jwtDecode(accessToken);
             const expiryTime = decodedToken.exp * 1000; // 초 단위를 밀리초로 변환
             // 로그인 성공 시 네이티브 앱에 메시지 전송
@@ -146,6 +149,7 @@ const getUserProfile = async () => {
         const response = await api.get(`/users/profile`, {});
         const { statusCode, httpStatus, message, data } = response.data;
         //apiErrorHandler(statusCode, httpStatus, message);
+
         return {
             isSuccess: statusCode === 200,
             data: data,
@@ -194,7 +198,10 @@ const logout = async () => {
         }
 
         // 웹 뷰 환경일 때만
-        if (window.ReactNativeWebView && typeof window.ReactNativeWebView.postMessage === 'function') {
+        if (
+            window.ReactNativeWebView &&
+            typeof window.ReactNativeWebView.postMessage === 'function'
+        ) {
             // 로그아웃 성공 시 네이티브 앱에 메시지 전송
             window.ReactNativeWebView.postMessage(
                 JSON.stringify({
@@ -266,6 +273,5 @@ export {
     putUserDetailedInfo,
     sendCertificationNumber,
     sendNewPassword,
-    signup
+    signup,
 };
-
