@@ -54,6 +54,7 @@ const Login = () => {
             }
         } else {
             // TODO: 임의로 Error 넣어두긴 했는데, 이메일/비번 틀린 경우 분기 하실 거면 추가하심 좋을 것 같습니다 !
+            console.log(inputValues);
             ToastError('로그인 정보가 틀렸습니다.', false);
         }
     };
