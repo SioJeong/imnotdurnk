@@ -17,6 +17,7 @@ import Health from '../../assets/icons/size_24/Icon-health.svg';
 import Invisible from '../../assets/icons/size_24/Icon-invisible.svg';
 import KeyboardWhite from '../../assets/icons/size_24/Icon-keyboard-white.svg';
 import Keyboard from '../../assets/icons/size_24/Icon-keyboard.svg';
+import Login from '../../assets/icons/size_24/Icon-login.svg';
 import Mailbox from '../../assets/icons/size_24/Icon-mailbox.svg';
 import Memo from '../../assets/icons/size_24/Icon-memo.svg';
 import MemorizeWhite from '../../assets/icons/size_24/Icon-memorize-white.svg';
@@ -24,6 +25,7 @@ import Memorize from '../../assets/icons/size_24/Icon-memorize.svg';
 import Menu from '../../assets/icons/size_24/Icon-menu.svg';
 import Minus from '../../assets/icons/size_24/Icon-minus.svg';
 import Modify from '../../assets/icons/size_24/Icon-modify.svg';
+import MyPage from '../../assets/icons/size_24/Icon-mypage.svg';
 import Phone from '../../assets/icons/size_24/Icon-phone.svg';
 import Plus from '../../assets/icons/size_24/Icon-plus.svg';
 import Profile from '../../assets/icons/size_24/Icon-profile.svg';
@@ -85,7 +87,7 @@ const icons = {
     key: Key,
     bin: Bin,
     signout: Signout,
-    profile: Profile,
+    mypage: MyPage,
     gameLog: GameLog,
     miniSojuBottle: MiniSojuBottle,
     miniBeerBottle: MiniBeerBottle,
@@ -112,6 +114,8 @@ const icons = {
     zanyResult: ZanyResult,
     loadingBeerLeft: LoadingBeerLeft,
     loadingBeerRight: LoadingBeerRight,
+    profile: Profile,
+    login: Login,
 };
 
 export { icons };

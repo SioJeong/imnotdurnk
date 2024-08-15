@@ -5,7 +5,9 @@ const BalanceGameContainer = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
+
     height: 100vh;
+    height: calc(100vh - 6.1429rem);
     border-radius: 15px;
     background: #caeaf7;
 `;
@@ -50,6 +52,7 @@ const GameConditionContainer = styled.div`
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    padding: 1rem;
 `;
 export {
     BalanceGameContainer,
