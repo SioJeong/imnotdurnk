@@ -42,6 +42,8 @@ import BeerGlass from '../../assets/images/beerglass.webp';
 import Bezel from '../../assets/images/bezel.svg';
 import HomeCalendar from '../../assets/images/calendar.webp';
 import HomeChart from '../../assets/images/chart.webp';
+import LoadingBeerLeft from '../../assets/images/loading-beer-left.svg';
+import LoadingBeerRight from '../../assets/images/loading-beer-right.svg';
 import HomeLocation from '../../assets/images/location.webp';
 import MiniBeerBottle from '../../assets/images/mini-beer-bottle.webp';
 import MiniSojuBottle from '../../assets/images/mini-soju-bottle.webp';
@@ -52,6 +54,7 @@ import SojuBottle from '../../assets/images/sojubottle.webp';
 import SojuGlass from '../../assets/images/sojuglass.webp';
 import WinkingResult from '../../assets/images/winking-result.svg';
 import ZanyResult from '../../assets/images/zany-result.svg';
+
 const icons = {
     address: Address,
     backarrow: BackArrow,
@@ -107,6 +110,8 @@ const icons = {
     shakingResult: ShakingResult,
     winkingResult: WinkingResult,
     zanyResult: ZanyResult,
+    loadingBeerLeft: LoadingBeerLeft,
+    loadingBeerRight: LoadingBeerRight,
 };
 
 export { icons };

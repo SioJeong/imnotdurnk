@@ -22,6 +22,10 @@ const TestText = styled.h2`
     white-space: pre-line;
 `;
 
+const LoadingBox = styled.div`
+    padding: 3rem 0 1rem 0;
+`;
+
 const RecordButton = styled.button`
     display: flex;
     flex-direction: column;
@@ -37,4 +41,11 @@ const CustomAudio = styled.audio`
     }
 `;
 
-export { CustomAudio, Notice, RecordButton, TestText, VoiceGameContainer };
+export {
+    CustomAudio,
+    LoadingBox,
+    Notice,
+    RecordButton,
+    TestText,
+    VoiceGameContainer,
+};

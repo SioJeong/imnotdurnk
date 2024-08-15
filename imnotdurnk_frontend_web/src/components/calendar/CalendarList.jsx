@@ -1,9 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import { useLocation } from 'react-router-dom';
+import EventCard from '../../components/calendar/EventCard';
 import { getDailyEventList } from '../../services/calendar';
+import Loading from '../_common/Loading';
 import * as St from './CalendarList.style';
 import CalendarStatusBar from './CalendarStatusBar';
-import EventCard from './EventCard';
 
 const CalendarList = () => {
     const location = useLocation();
@@ -26,9 +27,9 @@ const CalendarList = () => {
             <CalendarStatusBar />
             <St.CalendarListBox>
                 {isLoading ? (
-                    <St.LoadingAndErrorText>
-                        일정을 불러오는 중입니다.
-                    </St.LoadingAndErrorText>
+                    <St.LoadingBox>
+                        <Loading text={'일정을 불러오는 중입니다.'} />
+                    </St.LoadingBox>
                 ) : isError ? (
                     <St.LoadingAndErrorText>
                         Error: {error.message}

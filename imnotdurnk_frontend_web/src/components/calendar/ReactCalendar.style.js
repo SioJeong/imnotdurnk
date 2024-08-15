@@ -35,9 +35,13 @@ const DateDot = styled.li`
     }};
 `;
 
+const LoadingBox = styled.div`
+    padding: 8rem 0;
+`;
+
 const LoadingAndErrorText = styled.h3`
     padding: 12rem 0;
     text-align: center;
 `;
 
-export { DateDot, DateNum, DateTile, LoadingAndErrorText };
+export { DateDot, DateNum, DateTile, LoadingAndErrorText, LoadingBox };

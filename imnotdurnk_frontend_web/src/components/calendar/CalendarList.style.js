@@ -13,6 +13,10 @@ const CalendarListBox = styled.div`
     gap: 1rem;
 `;
 
+const LoadingBox = styled.div`
+    padding: 8rem 0;
+`;
+
 const LoadingAndErrorText = styled.h3`
     padding-top: 3rem;
 `;
@@ -37,5 +41,6 @@ export {
     CalendarListBox,
     CalendarListContainer,
     LoadingAndErrorText,
+    LoadingBox,
     StyledEmptyEvent,
 };
