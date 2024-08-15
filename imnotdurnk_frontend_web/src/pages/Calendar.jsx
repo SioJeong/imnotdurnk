@@ -2,12 +2,25 @@ import CalendarList from '@/components/calendar/CalendarList';
 import CreatePlan from '@/components/calendar/CreatePlan';
 import MainCalendar from '@/components/calendar/MainCalendar';
 import PlanDetail from '@/components/calendar/PlanDetail';
-import { Route, Routes } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Route, Routes, useNavigate } from 'react-router-dom';
+import { ToastWarning } from '../components/_common/alert';
 import EditPlan from '../components/calendar/EditPlan';
 import useCalendarNavigation from '../hooks/useCalendarNavigation';
+import useAuthStore from '../stores/useAuthStore';
 
 const Calendar = () => {
     useCalendarNavigation();
+    const navigate = useNavigate();
+
+    const { accessToken } = useAuthStore();
+
+    useEffect(() => {
+        if (!accessToken) {
+            ToastWarning('로그인이 필요합니다.', false);
+            navigate('/account');
+        }
+    }, [accessToken]);
 
     return (
         <Routes>
