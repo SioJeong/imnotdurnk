@@ -30,11 +30,10 @@ const Home = () => {
     const handleMessage = async (event) => {
         try {
             const data = JSON.parse(event.nativeEvent.data);
-            console.log(data); // 추후 삭제 예정
             if (data.type === 'login') {
                 // 로그인 토큰을 AsyncStorage에 저장
-                await AsyncStorage.setItem('authToken', data.accessToken);
-                await AsyncStorage.setItem('expiryTime', data.expiryTime);
+                await AsyncStorage.setItem('accessToken', data.accessToken);
+                await AsyncStorage.setItem('expiryTime', String(data.expiryTime));
                 console.log('Token saved successfully:', data.accessToken);
                 // 추가적인 로그인 후처리를 여기에 작성
             } else if (data.type === 'logout') {

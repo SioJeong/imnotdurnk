@@ -1,5 +1,5 @@
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import MapFinish from '../assets/images/MapFinish.svg';
 import Button from '../components/_common/Button';
 import * as St from '../components/_layout/globalStyle';
@@ -14,13 +14,14 @@ const PathFinal = () => {
 
     const sendArrivalTime = async () => {
         try {
-            const currentTime = new Date();
-            const datetimestr = currentTime.toISOString().slice(0, 16);
-            console.log(datetimestr)
-
+            const currentTime = Date.now(); // 현재 시간 (밀리초)
+            const oneDayInMilliseconds = 24 * 60 * 60 * 1000; // 하루를 밀리초로 변환
+            const adjustedTime = currentTime - oneDayInMilliseconds; // 하루 전 시간
+            const kstTime = new Date(adjustedTime + (9 * 60 * 60 * 1000)); // KST 시간으로 변환
+    
+            const datetimestr = kstTime.toISOString().slice(0, 16); // ISO 문자열에서 필요한 부분만 추출
+    
             await api.put(`/calendars/arrival/${datetimestr}`);
-            console.log('도착 시간이 성공적으로 전송되었습니다.');
-            
         } catch (error) {
             console.error('도착 시간 전송 중 오류 발생:', error);
         }
@@ -29,6 +30,7 @@ const PathFinal = () => {
     useEffect(() => {
         const checkLogin = async () => {
             const status = await checkLoginStatus();
+
             setIsLoggedIn(status);
 
             if (status) {
@@ -36,8 +38,6 @@ const PathFinal = () => {
             }
         };
         checkLogin();
-
-        
     }, []);
 
     useFocusEffect(

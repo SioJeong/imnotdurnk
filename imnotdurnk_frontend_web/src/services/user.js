@@ -1,6 +1,8 @@
 import { jwtDecode } from 'jwt-decode';
+import useAuthStore from '../stores/useAuthStore';
 import { api, apiNoToken } from './api';
 import apiErrorHandler from './apiErrorHandler';
+
 // response body 형식 : httpStatus, message, statusCode, dataList
 //[예시] 사용자 정보 가져오는 함수
 const getUser = async () => {
@@ -185,6 +187,11 @@ const logout = async () => {
         const response = await api.post(`/users/logout`);
 
         const { statusCode, httpStatus } = response.data;
+
+        // 로그아웃 성공 시 토큰 삭제
+        if (statusCode === 200) {
+            useAuthStore.getState().clearAccessToken();
+        }
 
         // 웹 뷰 환경일 때만
         if (window.ReactNativeWebView && typeof window.ReactNativeWebView.postMessage === 'function') {

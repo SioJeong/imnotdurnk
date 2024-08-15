@@ -24,7 +24,11 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import java.time.Duration;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
+
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
 
@@ -231,12 +235,15 @@ public class MapServiceImpl implements MapService {
 
         JsonNode response = restTemplate.getForObject(url, JsonNode.class);
         List<List<TransitDto>> result = new ArrayList<>();
-        String curTime = time;
+        AtomicReference<String> curTime = new AtomicReference<>(time);
         String dup[] = {"", "", "", ""};
 
-// Odsay api 호출을 통해 환승 지점을 구한다
+        // Odsay api 호출을 통해 환승 지점을 구한다
+
         if (response != null && response.has("result")) {
+            List<CompletableFuture<List<TransitDto>>> futures = new ArrayList<>();
             int cnt = 0;
+
             for (JsonNode path : response.get("result").get("path")) {
                 JsonNode info = path.get("info");
                 int totalTransit = info.get("busTransitCount").asInt() + info.get("subwayTransitCount").asInt();
@@ -271,57 +278,68 @@ public class MapServiceImpl implements MapService {
                     if (isDup) continue; // 중복일 경우 다음 경로로 넘어감
                 }
 
-                result.add(new ArrayList<TransitDto>());
-                JsonNode subPath = path.get("subPath");
-                for (JsonNode transfer : subPath) {
-                    if (transfer.has("trafficType")) {
-                        int trafficType = transfer.get("trafficType").asInt();
-                        int sectionTime = transfer.has("sectionTime") ? transfer.get("sectionTime").asInt() : 0;
+                // 비동기 처리를 위한 CompletableFuture 추가
+                futures.add(CompletableFuture.supplyAsync(() -> {
+                    List<TransitDto> transitList = new ArrayList<>();
+                    JsonNode subPath = path.get("subPath");
 
-                        if (trafficType == 1 || trafficType == 2) { // 버스나 지하철일 때
-                            double slat = transfer.get("startY").asDouble();
-                            double slon = transfer.get("startX").asDouble();
-                            double dlat = transfer.get("endY").asDouble();
-                            double dlon = transfer.get("endX").asDouble();
+                    for (JsonNode transfer : subPath) {
+                        if (transfer.has("trafficType")) {
+                            int trafficType = transfer.get("trafficType").asInt();
+                            int sectionTime = transfer.has("sectionTime") ? transfer.get("sectionTime").asInt() : 0;
 
-                            List<TransitResult> routes = stopRepository.findTransitRoute(slat, slon, dlat, dlon, curTime);
+                            if (trafficType == 1 || trafficType == 2) { // 버스나 지하철일 때
+                                double slat = transfer.get("startY").asDouble();
+                                double slon = transfer.get("startX").asDouble();
+                                double dlat = transfer.get("endY").asDouble();
+                                double dlon = transfer.get("endX").asDouble();
 
-                            if (!routes.isEmpty()) {
-                                TransitResult route = routes.get(0);
-                                result.get(cnt).add(new TransitDto(route.getRoute(), route.getStart(), route.getEnd(), slat, slon, dlat, dlon, route.getDuration(), route.getSeq1(), route.getSeq2(), route.getType(), route.getRouteId()));
-                                sectionTime = route.getDuration();
-                            } else {
-                                List<MapResult> stops = stopRepository.findStop(slat, slon, destlat, destlon, curTime);
-                                if (!stops.isEmpty()) {
-                                    MapResult stop = stops.get(0);
-                                    result.get(cnt).add(new TransitDto(
-                                            stop.getRoute().orElse("택시"),
-                                            stop.getStartStop().orElse("0"),
-                                            stop.getDestStop().orElse("0"),
-                                            stop.getStartLat().map(Double::parseDouble).orElse(0.0),
-                                            stop.getStartLon().map(Double::parseDouble).orElse(0.0),
-                                            stop.getDestLat().map(Double::parseDouble).orElse(0.0),
-                                            stop.getDestLon().map(Double::parseDouble).orElse(0.0),
-                                            stop.getDuration().map(Double::intValue).orElse(0),
-                                            stop.getSeq1().orElse(0),
-                                            stop.getSeq2().orElse(0),
-                                            stop.getType().orElse(0),
-                                            stop.getRouteId().orElse("0")
-                                    ));
+                                List<TransitResult> routes = stopRepository.findTransitRoute(slat, slon, dlat, dlon, curTime.get());
+
+                                if (!routes.isEmpty()) {
+                                    TransitResult route = routes.get(0);
+                                    transitList.add(new TransitDto(route.getRoute(), route.getStart(), route.getEnd(), slat, slon, dlat, dlon, route.getDuration(), route.getSeq1(), route.getSeq2(), route.getType(), getRoutes(route.getRouteId(), route.getSeq1(), route.getSeq2())));
+                                    sectionTime = route.getDuration();
+                                } else {
+                                    List<MapResult> stops = stopRepository.findStop(slat, slon, destlat, destlon, curTime.get());
+                                    if (!stops.isEmpty()) {
+                                        MapResult stop = stops.get(0);
+                                        transitList.add(new TransitDto(
+                                                stop.getRoute().orElse("택시"),
+                                                stop.getStartStop().orElse("0"),
+                                                stop.getDestStop().orElse("0"),
+                                                stop.getStartLat().map(Double::parseDouble).orElse(0.0),
+                                                stop.getStartLon().map(Double::parseDouble).orElse(0.0),
+                                                stop.getDestLat().map(Double::parseDouble).orElse(0.0),
+                                                stop.getDestLon().map(Double::parseDouble).orElse(0.0),
+                                                stop.getDuration().map(Double::intValue).orElse(0),
+                                                stop.getSeq1().orElse(0),
+                                                stop.getSeq2().orElse(0),
+                                                stop.getType().orElse(0),
+                                                getRoutes(stop.getRouteId().orElse("0"), stop.getSeq1().orElse(0), stop.getSeq2().orElse(0)))
+                                        );
+                                    }
+                                    break;
                                 }
-                                break;
                             }
+                            curTime.set(addMinutes(curTime.get(), sectionTime + 10));
                         }
-                        curTime = addMinutes(curTime, sectionTime + 10);
                     }
-                }
+                    return transitList;
+                }));
+
                 if (++cnt == 3) break; // 최대 3개 경로만 추가
             }
+
+            // 모든 CompletableFuture의 결과를 가져오기
+            result = futures.stream()
+                    .map(CompletableFuture::join) // 각 Future의 결과 대기
+                    .collect(Collectors.toList());
         }
-        return result;
+            return result;
     }
 
-    public String addMinutes(String time, int minutesToAdd) {
+    public String addMinutes (String time, int minutesToAdd) {
         // 시간, 분, 초를 분리
         String[] timeParts = time.split(":");
         int hours = Integer.parseInt(timeParts[0]);

@@ -5,6 +5,10 @@ const logout = async () => {
     try {
         await AsyncStorage.removeItem('accessToken');
         await AsyncStorage.removeItem('expiryTime');
+        const accessToken = await AsyncStorage.getItem('accessToken');
+        const expiryTime = await AsyncStorage.getItem('expiryTime');
+        console.log(accessToken);
+        console.log(expiryTime);
         console.log('로그아웃되었습니다.');
     } catch (error) {
         console.error('로그아웃 중 오류 발생:', error);
@@ -14,16 +18,23 @@ const logout = async () => {
 // Async Storage에 accessToken이 있는지, 그리고 만료되지 않았는지 확인
 const checkLoginStatus = async () => {
     try {
-        const token = await AsyncStorage.getItem('accessToken');
+        const accessToken = await AsyncStorage.getItem('accessToken');
         const expiryTime = await AsyncStorage.getItem('expiryTime');
-
-        if (!token || !expiryTime) {
+        console.log('user에서 로그인 여부 확인 중')
+        console.log(accessToken);
+        console.log(expiryTime);
+        if (!accessToken || !expiryTime) {
             return false; // 토큰이나 만료 시간이 없으면 로그아웃 상태로 간주
         }
 
         const currentTime = Date.now(); // 현재 시간 (밀리초)
+        const oneDayInMilliseconds = 24 * 60 * 60 * 1000; // 하루를 밀리초로 변환
+        const adjustedTime = currentTime - oneDayInMilliseconds; // 하루 전 시간
+        console.log('토큰 시간')
+        console.log(new Date(adjustedTime).toISOString());
+        console.log(new Date(parseInt(expiryTime, 10)).toISOString());
         
-        if (currentTime >= parseInt(expiryTime, 10)) {
+        if (adjustedTime >= parseInt(expiryTime, 10)) {
             // 토큰이 만료되었으면 로그아웃 처리
             await logout();
             return false; // 로그아웃 상태로 반환
