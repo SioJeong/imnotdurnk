@@ -28,7 +28,7 @@ const login = async (email, password) => {
         const accessToken = response.headers['authorization'];
 
         const { statusCode, httpStatus } = response.data;
-
+        console.log('at', accessToken);
         // 웹 뷰 환경일 때만
         if (
             window.ReactNativeWebView &&
