@@ -233,8 +233,8 @@ public class UserController {
             @RequestAttribute(value = "RefreshToken", required = false) String refreshToken,
             @RequestAttribute(value = "AccessToken", required = false) String accessToken) throws BadRequestException {
 
-        if (refreshToken == null && accessToken == null){
-            throw new BadRequestException("인증 정보가 존재하지 않습니다.");
+        if (refreshToken == null){
+            throw new BadRequestException("refresh token 누락");
         }
 
         userService.logout(accessToken, refreshToken);
