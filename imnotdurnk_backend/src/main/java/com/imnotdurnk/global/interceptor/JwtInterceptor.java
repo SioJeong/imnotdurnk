@@ -31,6 +31,11 @@ public class JwtInterceptor implements HandlerInterceptor {
 
         Cookie[] cookies = request.getCookies();
 
+        if(cookies == null) {
+            log.warn("쿠키가 존재하지 않음");
+            return false;
+        }
+
         // 쿠키에서 Refresh Token 탐색 후 존재하면 유효성 검증
         for(Cookie cookie : cookies) {
             //쿠키 이름이 RefreshToken이 아니면 다음 쿠키로 넘어감
