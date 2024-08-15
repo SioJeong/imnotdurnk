@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { Bar, BarChart, ResponsiveContainer, XAxis } from 'recharts';
 import { styled } from 'styled-components';
 import { getAlcoholStaticsticsData } from '../../services/statistics';
+import Button from '../_button/Button';
 
 import { useNavigate } from 'react-router-dom';
 const AlcoholStatistics = ({ today, formattedDate }) => {
@@ -119,7 +120,14 @@ const AlcoholStatistics = ({ today, formattedDate }) => {
             <StatisticsVisualization>
                 <MainTitle>월별 음주 통계</MainTitle>
                 {alcoholStatistics.planForMonths.length === 0 ? (
-                    <SubTitle>아직 등록된 음주기록이 없습니다.</SubTitle>
+                    <EmptyEventBox>
+                        <h3>아직 등록된 음주기록이 없습니다.</h3>
+                        <Button
+                            text="음주 기록 등록하러 가기"
+                            isRed={true}
+                            onClick={() => navigate('/calendar')}
+                        />
+                    </EmptyEventBox>
                 ) : (
                     <SubTitle>
                         지난 달보다 이번 달{' '}
@@ -132,15 +140,7 @@ const AlcoholStatistics = ({ today, formattedDate }) => {
                 )}
 
                 <Graph>
-                    {alcoholStatistics.planForMonths.length === 0 ? (
-                        <p
-                            onClick={() => {
-                                navigate('/calendar');
-                            }}
-                        >
-                            음주 기록 등록하러 가기
-                        </p>
-                    ) : (
+                    {alcoholStatistics.planForMonths.length > 0 && (
                         <ResponsiveContainer width="100%" height={215}>
                             <BarChart
                                 width={300}
@@ -238,6 +238,7 @@ const MainTitle = styled.h2`
     color: var(--color-green3, #252f2c);
     font-size: var(--font-title-h2);
 `;
+
 const SubTitle = styled.p`
     height: 1.7143rem;
     align-self: stretch;
@@ -245,6 +246,17 @@ const SubTitle = styled.p`
 
     font-size: var(--font-title-h3);
 `;
+
+const EmptyEventBox = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6rem;
+
+    width: 100%;
+    padding-top: 6rem;
+`;
+
 const Graph = styled.div`
     display: flex;
     flex-direction: column;
