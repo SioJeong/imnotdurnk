@@ -30,9 +30,8 @@ const checkLoginStatus = async () => {
         const currentTime = Date.now(); // 현재 시간 (밀리초)
         const oneDayInMilliseconds = 24 * 60 * 60 * 1000; // 하루를 밀리초로 변환
         const adjustedTime = currentTime - oneDayInMilliseconds; // 하루 전 시간
-        console.log('토큰 시간')
-        console.log(new Date(adjustedTime).toISOString());
-        console.log(new Date(parseInt(expiryTime, 10)).toISOString());
+        console.log('현재시간' + new Date(adjustedTime).toISOString());
+        console.log('토큰 시간' + new Date(parseInt(expiryTime, 10)).toISOString());
         
         if (adjustedTime >= parseInt(expiryTime, 10)) {
             // 토큰이 만료되었으면 로그아웃 처리

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { apiNoToken } from './api';
+import { api, apiNoToken } from './api';
 
 // 좌표로 한글 주소 찾기
 const getReverseGeocoding = async (latitude, longitude) => {
@@ -21,7 +21,7 @@ const getReverseGeocoding = async (latitude, longitude) => {
     }
 };
 
-// 현재 시간으로 이용 가능한 대중교통 경유지 찾기
+// 백으로 현재 시간으로 이용 가능한 대중교통 경유지 요청
 const getOptimalTransitStopover = async (departure, destination) => {
     const { latitude: depLat, longitude: depLng } = departure;
     const { latitude: destLat, longitude: destLng } = destination;
@@ -43,14 +43,8 @@ const getOptimalTransitStopover = async (departure, destination) => {
     const formattedTime = `${hours.toString().padStart(2, '0')}:${minutes}:${seconds}`;
 
     try {
-        console.log(depLat);
-        console.log(depLng);
-        console.log(destLat);
-        console.log(destLng);
-        console.log(formattedTime);
-        console.log(typeof formattedTime);
-        // 백엔드로 좌표 및 시간 정보 전송하여 최적 경유지 정보 받기
-        const response = await apiNoToken.get('/map', {
+        const response = await apiNoToken.get('/map/odsay/route', {
+
             params: {
                 startlat: depLat,
                 startlon: depLng,
@@ -67,69 +61,50 @@ const getOptimalTransitStopover = async (departure, destination) => {
         const { statusCode, dataList } = response.data;
 
         if (statusCode === 0 && dataList && dataList.length > 0) {
-            // 최대 3개의 destLat과 destLon 쌍을 추출
-            const coordinates = dataList.slice(0, 3).map((item) => ({
-                latitude: parseFloat(item.destLat),
-                longitude: parseFloat(item.destLon),
-            }));
+            // 경로 데이터를 가공하여 반환
+            const pathData = dataList.map((path) => {
+                if (path.length === 0) return null;
 
-            return coordinates;
+                const firstStation = path[0].start;
+                const lastStation = path[path.length - 1].end;
+                const totalTime = path.reduce((acc, item) => acc + item.duration, 0);
+                const types = path.map(item => item.type);
+                const pathType = types.every(type => type === 1) 
+                    ? '지하철' 
+                    : types.every(type => type === 0) 
+                        ? '버스' 
+                        : '지하철 + 버스';
+
+                const busTransitCount = types.filter(type => type === 0).length;
+                const subwayTransitCount = types.filter(type => type === 1).length;
+                const totalWalkTime = path[0].totalWalkTime;
+                const summaryCoordinates = path.flatMap(item => 
+                    item.routeList.map(stop => ({
+                        latitude: parseFloat(stop.lat),
+                        longitude: parseFloat(stop.lon),
+                    }))
+                );
+
+                return {
+                    firstStation,
+                    lastStation,
+                    totalTime,
+                    pathType,
+                    busTransitCount,
+                    subwayTransitCount,
+                    totalWalkTime,
+                    summaryCoordinates,
+                    transitPathInfo: path
+                };
+            });
+
+            return pathData;
         } else {
             throw new Error('적절한 경유지 데이터를 받지 못했습니다.');
         }
     } catch (error) {
         console.error('최적 경유지 요청 중 오류 발생', error);
         throw new Error('최적 경유지 요청 중 오류 발생');
-    }
-};
-
-// 대중교통 경로 찾기
-const fetchTransitDirections = async (departure, stopover) => {
-    const { latitude: depLat, longitude: depLng } = departure;
-    const { latitude: destLat, longitude: destLng } = stopover;
-
-    console.log(stopover);
-
-    const directionsUrl = `https://api.odsay.com/v1/api/searchPubTransPathT?SX=${depLng}&SY=${depLat}&EX=${destLng}&EY=${destLat}&apiKey=yPtxRPMa8thnw9UFLUnu5vholrViOMIYNolIXPJ1Pvo`;
-    try {
-        const response = await axios.get(directionsUrl);
-        if (response.status === 200) {
-            const data = response.data;
-
-            console.log(data);
-
-            const firstPath = data.result.path[0];
-
-            console.log(firstPath);
-
-            const transitPathInfo = extractTransitCoordinates(firstPath);
-            const summaryCoordinates = transitPathInfo.reduce(
-                (acc, route) => acc.concat(route.coordinates),
-                [],
-            );
-
-            const transitData = {
-                firstStation: firstPath.info.firstStartStation,
-                lastStation: firstPath.info.lastEndStation,
-                totalTime: firstPath.info.totalTime,
-                pathType:
-                    firstPath.pathType === 1
-                        ? '지하철'
-                        : firstPath.pathType === 2
-                          ? '버스'
-                          : '지하철 + 버스',
-                busTransitCount: firstPath.info.busTransitCount,
-                subwayTransitCount: firstPath.info.subwayTransitCount,
-                totalWalkTime: Math.floor(firstPath.info.totalWalk / 90),
-                transitPathInfo,
-                summaryCoordinates,
-            };
-
-            return transitData;
-        }
-    } catch (error) {
-        console.error('fetch 실패', error);
-        return null;
     }
 };
 
@@ -178,48 +153,11 @@ const fetchTaxiDirections = async (departure, stopover, destination) => {
             };
         }
     } catch (error) {
-        console.error('fetch 실패', error);
+        console.error('택시 fetch 실패', error);
         throw error;
     }
 };
 
-// 대중교통 길찾기에서 좌표 추출
-function extractTransitCoordinates(firstPath) {
-    const routes = [];
-
-    firstPath.subPath.forEach((subPath, index) => {
-        if (subPath.trafficType === 1 || subPath.trafficType === 2) {
-            const newRoute = {
-                trafficType: subPath.trafficType,
-                name:
-                    subPath.lane && subPath.lane[0]
-                        ? subPath.lane[0].name || subPath.lane[0].busNo
-                        : 'Unknown',
-                stationCount: subPath.stationCount,
-                sectionTime: subPath.sectionTime,
-                startName: subPath.startName,
-                endName: subPath.endName,
-                coordinates: [],
-            };
-
-            if (subPath.passStopList && subPath.passStopList.stations) {
-                subPath.passStopList.stations.forEach((station) => {
-                    if (station.x && station.y) {
-                        newRoute.coordinates.push({
-                            latitude: parseFloat(station.y),
-                            longitude: parseFloat(station.x),
-                        });
-                    }
-                });
-            }
-
-            routes.push(newRoute);
-        } else if (subPath.trafficType === 3) {
-        }
-    });
-
-    return routes;
-}
 
 // 택시 경로 찾기에서 좌표 추출
 const extractTaxiCoordinates = (response) => {
@@ -241,10 +179,35 @@ const extractTaxiCoordinates = (response) => {
     return taxiCoordinates;
 };
 
+// 도착 시간 업데이트
+const sendArrivalTime = async () => {
+    try {
+        const currentTime = Date.now(); // 현재 시간 (밀리초)
+        const oneDayInMilliseconds = 24 * 60 * 60 * 1000; // 하루를 밀리초로 변환
+        const adjustedTime = currentTime - oneDayInMilliseconds; // 하루 전 시간
+        const kstTime = new Date(adjustedTime + (9 * 60 * 60 * 1000)); // KST 시간으로 변환
+        const datetimestr = kstTime.toISOString().slice(0, 16); // ISO 문자열에서 필요한 부분만 추출
+
+        const response = await api.put(
+            `/calendars/plans/${datetimestr}`,
+            datetimestr,
+            {},
+        );
+
+        if(response.status === 200) {
+            console.log('도착 시간 저장 완료');
+        }
+        
+
+    } catch (error) {
+        throw new Error(error.message || '도착 시간 저장 중 오류 발생');
+    }
+};
+
 export {
     fetchTaxiDirections,
-    fetchTransitDirections,
     getOptimalTransitStopover,
-    getReverseGeocoding
+    getReverseGeocoding,
+    sendArrivalTime
 };
 

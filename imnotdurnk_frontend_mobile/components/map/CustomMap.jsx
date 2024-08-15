@@ -44,7 +44,6 @@ const CustomMap = ({
                     },
                 );
 
-                console.log('백그라운드 위치 추적이 시작되었습니다.');
             } catch (error) {
                 console.error('위치 추적 설정 중 오류 발생:', error);
             }
@@ -66,11 +65,9 @@ const CustomMap = ({
                             longitudeDelta: 0.005,
                         };
                         useLocationStore.getState().setCurrentLocation(coords);
-                        console.log('Foreground location update:', coords);
                     },
                 );
                 setForegroundSubscription(subscription);
-                console.log('포그라운드 위치 추적이 시작되었습니다.');
             } catch (error) {
                 console.error('위치 추적 설정 중 오류 발생:', error);
             }
@@ -80,11 +77,9 @@ const CustomMap = ({
         startForegroundLocationTracking();
 
         return () => {
-            console.log('백그라운드 위치 추적이 종료되었습니다');
             Location.stopLocationUpdatesAsync(BACKGROUND_LOCATION_TASK);
             if (foregroundSubscription) {
                 foregroundSubscription.remove();
-                console.log('포그라운드 위치 추적이 종료되었습니다');
             }
         };
     }, []);
