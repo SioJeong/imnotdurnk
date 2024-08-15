@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import WebView from 'react-native-webview';
-import { logout } from '../services/user';
+import { checkLoginStatus, logout } from '../services/user';
 import useLocationStore from '../stores/useLocationStore';
 import useNavigationStore from '../stores/useNavigationStore';
 
@@ -21,6 +21,12 @@ const Home = () => {
                 title: '',
                 icon2: { iconname: 'empty', isRed: false },
             });
+
+            const checkLogin = async () => {
+                await checkLoginStatus();
+            };
+            
+            checkLogin();
 
             // Home 화면으로 오면 전역의 출발지와 목적지 초기화
             resetDepartureAndDestination();
@@ -41,7 +47,6 @@ const Home = () => {
                 await logout();
             } else if (data.type === 'Map') {
                 // Map 컴포넌트로 네비게이트
-                console.log('Map 버튼을 누름'); // 추후 삭제 예정
                 navi.navigate('Map');
             }
         } catch (error) {

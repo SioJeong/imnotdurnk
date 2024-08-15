@@ -6,7 +6,6 @@ import * as St from '../components/_layout/globalStyle';
 import PathOption from '../components/map/PathOption';
 import {
     fetchTaxiDirections,
-    fetchTransitDirections,
     getOptimalTransitStopover,
 } from '../services/map';
 import useLocationStore from '../stores/useLocationStore';
@@ -39,40 +38,49 @@ const PathFinder = () => {
             }
 
             try {
-                // 경유지 찾기
-                const stopoverPositions = await getOptimalTransitStopover(
+                // 경유지 및 대중교통 경로 찾기
+                const stopoverPaths = await getOptimalTransitStopover(
                     departure,
                     destination,
                 );
-                setStopover(stopoverPositions);
 
-                if (
-                    !stopoverPositions ||
-                    stopoverPositions.length < 1 ||
-                    stopoverPositions.length > 3
-                ) {
+                // 유효성 검사 추가
+                const validStopoverPaths = stopoverPaths.filter(path => path !== null && path !== undefined);
+
+                // 각 경유지 경로의 마지막 지점을 추출하여 setStopover에 전달
+                const stopoverPoints = validStopoverPaths.map((path) => {
+                    const lastStop = path.summaryCoordinates[path.summaryCoordinates.length - 1];
+                    return {
+                        latitude: lastStop.latitude,
+                        longitude: lastStop.longitude,
+                    };
+                });
+
+                setStopover(stopoverPoints);
+
+                if (!stopoverPoints || stopoverPoints.length === 0) {
                     setIsLoading(false);
                     return;
                 }
 
                 const newPathInfos = await Promise.all(
-                    stopoverPositions.map(async (stop) => {
-                        const transitInfo = await fetchTransitDirections(
-                            departure,
-                            stop,
-                        );
-
-                        if (!transitInfo) {
-                            return null; // transitInfo가 null이면 null을 반환
-                        }
-
+                    validStopoverPaths.map(async (stopoverPath, index) => {
                         const taxiPathInfo = await fetchTaxiDirections(
                             departure,
-                            stop,
+                            stopoverPoints[index], // stopoverPositions을 직접 사용
                             destination,
                         );
 
-                        return { transitInfo, taxiPathInfo, chipdata: [] };
+                        // 경유지를 거치는 비용이 직행 비용보다 비쌀 경우 null 반환
+                        if (taxiPathInfo.fee > taxiPathInfo.originFee) {
+                            return null;
+                        }
+
+                        return {
+                            transitInfo: stopoverPath,
+                            taxiPathInfo,
+                            chipdata: [],
+                        };
                     }),
                 );
 
@@ -83,6 +91,12 @@ const PathFinder = () => {
                 validPathInfos.sort(
                     (a, b) => a.taxiPathInfo.fee - b.taxiPathInfo.fee,
                 );
+
+                // validPathInfos.forEach((path) => {
+                //     if (path.taxiPathInfo.fee === validPathInfos[0].taxiPathInfo.fee) {
+                //         path.chipdata.push('최저 비용');
+                //     }
+                // });
 
                 if (validPathInfos.length > 0) {
                     validPathInfos[0].chipdata.push('최저 비용');
@@ -131,12 +145,12 @@ const PathFinder = () => {
 
     return (
         <St.Container2>
-            <St.GlobalText fontSize={'H3'} weight={'medium'}>
+            <St.GlobalText fontSize={'H3'} weight={'medium'} style={{ textAlign: 'center' }}>
                 {isLoading
                     ? '최적 경로를 찾는 중입니다'
                     : pathInfos.length === 0
-                      ? '찾을 수 있는 경로가 없습니다'
-                      : '마음에 드는 옵션을 선택하세요'}
+                    ? '찾을 수 있는 경로가 없습니다\n택시 탑승을 권해드립니다'
+                    : '마음에 드는 옵션을 선택하세요'}
             </St.GlobalText>
             {isLoading ? (
                 <ActivityIndicator size={100} color={theme.colors.red} />

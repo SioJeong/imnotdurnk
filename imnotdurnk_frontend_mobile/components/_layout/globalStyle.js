@@ -37,10 +37,10 @@ const Container = styled(View)`
 const Container2 = styled(View)`
     flex: 1;
     flex-direction: column;
-    justify-content: space-evenly;
+    justify-content: start;
     align-items: center;
 
-    gap: 16px;
+    gap: 26px;
     background-color: ${({ theme }) => theme.colors.white2};
 
     padding: 24px;
@@ -127,5 +127,6 @@ export {
     LayoutContainer,
     MapSearchContainer,
     NavContainer,
-    ScrollContainer,
+    ScrollContainer
 };
+

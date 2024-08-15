@@ -15,50 +15,38 @@ const PathDescription = ({ pathInfo }) => {
 
     const getSubwayColor = (laneName) => {
         switch (laneName) {
-            case '수도권 1호선':
+            case '서울1호선':
                 return '#0052A4';
-            case '수도권 2호선':
+            case '서울2호선':
                 return '#00A84D';
-            case '수도권 3호선':
+            case '서울3호선':
                 return '#EF7C1C';
-            case '수도권 4호선':
+            case '서울4호선':
                 return '#00A5DE';
-            case '수도권 5호선':
+            case '서울5호선':
                 return '#996CAC';
-            case '수도권 6호선':
+            case '서울6호선':
                 return '#CD7C2F';
-            case '수도권 7호선':
+            case '서울7호선':
                 return '#747F00';
-            case '수도권 8호선':
+            case '서울8호선':
                 return '#E6186C';
-            case '수도권 9호선':
+            case '서울9호선':
                 return '#BDB092';
-            case '수도권 경의중앙선':
+            case '경의중앙선':
                 return '#77C4A3';
-            case '수도권 경춘선':
+            case '경춘선':
                 return '#0C8E72';
-            case '수도권 인천1호선':
+            case '인천1호선':
                 return '#7CA8D5';
-            case '수도권 인천2호선':
+            case '인천2호선':
                 return '#ED8B00';
-            case '수도권 수인.분당선':
+            case '수인분당선':
                 return '#FABE00';
-            case '수도권 신분당선':
+            case '신분당선':
                 return '#D4003B';
-            case '수도권 의정부경전철':
-                return '#FDA600';
-            case '수도권 에버라인':
-                return '#6FB245';
-            case '수도권 김포골드라인':
-                return '#A17800';
-            case '수도권 우이신설경전철':
-                return '#B7C452';
-            case '수도권 서해선':
+            case '서해선':
                 return '#8FC31F';
-            case '수도권 공항철도':
-                return '#0090D2';
-            case '수도권 신림선':
-                return '#6789CA';
             default:
                 return 'transparent';
         }
@@ -90,29 +78,29 @@ const PathDescription = ({ pathInfo }) => {
                 <Map.InfoView key={index}>
                     <Map.InfoHeaderView>
                         <Map.InfoTitleView>
-                            {renderIconWithStyle(path.trafficType, path.name)}
+                            {renderIconWithStyle(path.type, path.route)}
                             <St.GlobalText
                                 weight={'medium'}
                                 fontSize="H3"
                                 color="green3"
                             >
-                                {path.name}
+                                {path.route}
                             </St.GlobalText>
                         </Map.InfoTitleView>
                         <Map.InfoDurationView>
                             <St.GlobalText fontSize="H5" color="green3">
-                                총 {path.stationCount} 정거장
+                                총 {path.stopCnt} 정거장
                             </St.GlobalText>
                             <St.GlobalText fontSize="H5" color="green3">
-                                총 {formatMinutes(path.sectionTime)} 소요
+                                총 {formatMinutes(path.duration)} 소요
                             </St.GlobalText>
                         </Map.InfoDurationView>
                     </Map.InfoHeaderView>
                     <St.GlobalText fontSize="H5" color="green3">
-                        {path.startName}
-                        {path.trafficType === 1 ? '역' : ''} 탑승{` - `}
-                        {path.endName}
-                        {path.trafficType === 1 ? '역' : ''} 하차
+                        {path.start}
+                        {path.type === 1 ? '역' : ''} 탑승{` - `}
+                        {path.end}
+                        {path.type === 1 ? '역' : ''} 하차
                     </St.GlobalText>
                 </Map.InfoView>
             ))}
