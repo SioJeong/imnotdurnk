@@ -164,7 +164,7 @@ const BalanceGame = () => {
         };
 
         setScore(0);
-        setTimeLeft(30);
+        setTimeLeft(20);
         setIsGameActive(false);
         setTarget(null);
         setPosition(initialDuckPosition);
@@ -213,9 +213,9 @@ const BalanceGame = () => {
             <St.GameConditionContainer>
                 <St.Description>점수 : {score}</St.Description>
                 <CountdownCircleTimer
-                    duration={30}
+                    duration={20}
                     colors={['#004777', '#F7B801', '#A30000', '#A30000']}
-                    colorsTime={[30, 15, 10, 0]}
+                    colorsTime={[20, 10, 5, 0]}
                     size={50}
                     strokeWidth={5}
                     isSmoothColorTransition={true}

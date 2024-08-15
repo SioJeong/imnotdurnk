@@ -15,9 +15,10 @@ import ModalTextBox from '../components/_modal/ModalTextBox';
 import useUserStore from '../stores/useUserStore';
 
 const CheckEmail = () => {
-    const { user, setUser } = useUserStore((state) => ({
+    const { user, setUser, clearUser } = useUserStore((state) => ({
         user: state.user,
         setUser: state.setUser,
+        clearUser: state.clearUser,
     }));
 
     const [alertContents, setAlertContents] = useState('');
@@ -73,6 +74,7 @@ const CheckEmail = () => {
             );
             if (signupResult.isSuccess) {
                 openSignupSuccessModal(modalId);
+                clearUser();
             }
         } else {
             setIsWrong(true);

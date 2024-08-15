@@ -62,6 +62,11 @@ const useUserStore = create((set) => ({
         })),
     isValid: true, // profileUpdate 페이지의 유효성 검사
     setIsValid: (newIsValid) => set({ isValid: newIsValid }),
+    clearUser: () =>
+        set((initialUserState) => ({
+            user: { ...initialUserState },
+            tmpUser: { ...initialUserState },
+        })),
 }));
 
 export default useUserStore;

@@ -23,6 +23,9 @@ import ProfileCreateInfo from './ProfileCreateInfo';
 import ProfileUpdate from './ProfileUpdate';
 
 const Profile = () => {
+    const { clearUser } = useUserStore((state) => ({
+        clearUser: state.clearUser,
+    }));
     //입력되는 값
     const [inputValues, setInputValues] = useState({
         name: '',
@@ -50,12 +53,10 @@ const Profile = () => {
     // TODO: 배포 상태에서 되는지 확인 필요(로컬은 쿠키가 없어서 불가능.. )
     const handleLogout = async () => {
         const logoutResult = await logout();
-        if (logoutResult.isSuccess) {
-            ToastSuccess('로그아웃 되었습니다!', true);
-            navigate('/account');
-        } else {
-            ToastError('로그아웃에 실패하였습니다.', true);
-        }
+
+        ToastSuccess('로그아웃 되었습니다!', true);
+        clearUser();
+        navigate('/account');
     };
 
     const { openModal, closeModal } = useModalStore();

@@ -117,17 +117,14 @@ const TypingGame = () => {
         <St.TypingGameContainer>
             <St.TitleContainer>
                 <St.Title>아래의 글을 따라 입력해주세요!</St.Title>
-                <St.SubTitle>
-                    {user.nickname !== '' ? user.nickname : user.name}님의
-                    타자로 취했는지 판단해드릴게요.
-                </St.SubTitle>
+                <St.SubTitle>오타 정도로 취했는지 판단해드릴게요.</St.SubTitle>
             </St.TitleContainer>
             <St.TimerBox>
                 {' '}
                 <CountdownCircleTimer
-                    duration={30}
+                    duration={20}
                     colors={['#004777', '#F7B801', '#A30000', '#A30000']}
-                    colorsTime={[30, 15, 10, 0]}
+                    colorsTime={[20, 10, 5, 0]}
                     size={120}
                     isSmoothColorTransition={true}
                     isPlaying={isGameStarted}
@@ -171,7 +168,7 @@ const TypingGame = () => {
                 isGame={true}
                 modalId="typingGameNoticeModal"
                 contents={
-                    <ModalTextBox text="30초 안에 주어진 문장을 입력하세요!" />
+                    <ModalTextBox text="20초 안에 주어진 문장을 입력하세요!" />
                 }
                 buttonText={'시작하기'}
                 onButtonClick={closeHandler}

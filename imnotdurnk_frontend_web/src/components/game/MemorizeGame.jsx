@@ -56,6 +56,7 @@ const MemorizeGame = () => {
     const [isClickDisabled, setIsClickDisabled] = useState(false); // 카드 클릭 비활성화 상태
     //타이머 조절용 변수 0 -> 5초 카운터 1 -> 30초 카운터
     const [activeTimer, setActiveTimer] = useState(0);
+    const [showRedOverlay, setShowRedOverlay] = useState(false); // 틀렸을 때 화면 보이니 참/거짓
 
     const handleCardClick = (id) => {
         if (isClickDisabled || isGameOver) {
@@ -126,10 +127,11 @@ const MemorizeGame = () => {
         let gameScore = matchedPairs === 6 ? 100 : matchedPairs * 16;
 
         //틀린 횟수만큼 1점씩 차감
-        if(gameScore >= mismatchedCnt)
+        if (gameScore >= mismatchedCnt) {
             gameScore = gameScore - mismatchedCnt;
-        else
+        } else {
             gameScore = 0;
+        }
 
         return gameScore;
     };
@@ -191,6 +193,7 @@ const MemorizeGame = () => {
             setIsClickDisabled(false);
         } else {
             //isFlipped === false로 변경
+            setShowRedOverlay(true);
             setTimeout(() => {
                 setCardList((prevCardList) =>
                     prevCardList.map((card) =>
@@ -199,16 +202,44 @@ const MemorizeGame = () => {
                             : card,
                     ),
                 );
+                setShowRedOverlay(false);
                 setFirstCard(null);
                 setSecondCard(null);
                 setMismatchedCnt(mismatchedCnt + 1); //틀린 횟수 추가
                 setTimeout(() => setIsClickDisabled(false), 20);
-            }, 1000);
+            }, 800);
         }
     }, [secondCard]);
 
     return (
         <St.TypingGameContainer>
+            {showRedOverlay && (
+                <div
+                    style={{
+                        position: 'fixed',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        backgroundColor: 'rgba(255, 0, 0, 0.2)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        zIndex: 9999,
+                    }}
+                >
+                    <span
+                        style={{
+                            color: 'red',
+                            fontSize: '100px',
+                            fontWeight: 'bold',
+                        }}
+                    >
+                        -1
+                    </span>
+                </div>
+            )}
+
             <St.TitleContainer>
                 <St.Title>카드의 뒷면을 기억해보세요!</St.Title>
                 <St.SubTitle>
@@ -218,10 +249,10 @@ const MemorizeGame = () => {
             </St.TitleContainer>
             <St.TimerBox>
                 <CountdownCircleTimer
-                    duration={activeTimer === 0 ? 5 : 35}
+                    duration={activeTimer === 0 ? 5 : 25}
                     colors={['#004777', '#F7B801', '#A30000', '#A30000']}
                     colorsTime={
-                        activeTimer === 0 ? [5, 3, 2, 0] : [30, 15, 5, 0]
+                        activeTimer === 0 ? [5, 3, 2, 0] : [20, 10, 5, 0]
                     }
                     size={50}
                     strokeWidth={5}
@@ -264,7 +295,7 @@ const MemorizeGame = () => {
                 isGame={true}
                 modalId="memorizeGameNoticeModal"
                 contents={
-                    <ModalTextBox text="30초 안에 같은 그림의 카드를 찾으세요!" />
+                    <ModalTextBox text="20초 안에 같은 그림의 카드를 찾으세요!" />
                 }
                 buttonText={'시작하기'}
                 onButtonClick={closeHandler}

@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { ToastError } from '../components/_common/alert';
 import useAuthStore from '../stores/useAuthStore';
+import useUserStore from '../stores/useUserStore';
 
 // 게임 등 로그인이 필요없는 api 요청시 사용(토큰없이도 요청 가능한 용)
 const apiNoToken = axios.create({
@@ -46,7 +47,9 @@ api.interceptors.response.use(
     },
     async (error) => {
         const { config, response } = error;
-
+        const { clearUser } = useUserStore((state) => ({
+            clearUser: state.clearUser,
+        }));
         if (response.data.statusCode === 401) {
             //AT이 없는 경우 401 에러가 뜸
             const originalRequest = config;
@@ -68,6 +71,7 @@ api.interceptors.response.use(
                     isTokenRefreshing = false;
                     return api(originalRequest);
                 } catch (error) {
+                    clearUser();
                     window.location.href = '/account';
                     ToastError('로그인이 필요합니다', true);
                     return Promise.reject(error);
@@ -79,4 +83,3 @@ api.interceptors.response.use(
 );
 
 export { api, apiNoToken };
-
