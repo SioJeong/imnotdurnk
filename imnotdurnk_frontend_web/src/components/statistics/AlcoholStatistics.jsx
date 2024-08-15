@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react';
 import { Bar, BarChart, ResponsiveContainer, XAxis } from 'recharts';
 import { styled } from 'styled-components';
 import { getAlcoholStaticsticsData } from '../../services/statistics';
+
+import { useNavigate } from 'react-router-dom';
 const AlcoholStatistics = ({ today, formattedDate }) => {
     //날짜 관련 변수- 오늘 통계 불러오기 위한 formattedDate용, 음주량 계산용
 
@@ -74,6 +76,7 @@ const AlcoholStatistics = ({ today, formattedDate }) => {
         setAvgData(updatedData);
     };
 
+    const navigate = useNavigate();
     //첫번째 통계 얼마나 더 마셨는지 나타내는 변수
     const [differenceOfSchedule, setDifferenceOfSchedule] = useState(0);
     //첫번째 통계의 월 표시 변경하는 함수 ex. 08->8월
@@ -103,6 +106,7 @@ const AlcoholStatistics = ({ today, formattedDate }) => {
                             getStatisticsResult.data.planForMonths[10].count,
                     );
                 }
+                console.log('앍콜0', alcoholStatistics.planForMonths);
             } catch (error) {
                 console.error('Error fetching user data:', error);
             }
@@ -114,48 +118,64 @@ const AlcoholStatistics = ({ today, formattedDate }) => {
         <StatisticsBox>
             <StatisticsVisualization>
                 <MainTitle>월별 음주 통계</MainTitle>
-                <SubTitle>
-                    지난 달보다 이번 달{' '}
-                    <Highlight>{Math.abs(differenceOfSchedule)}번 </Highlight>
-                    {differenceOfSchedule < 0 ? ' 더 적게' : ' 더 많이 '}{' '}
-                    마셨습니다.
-                </SubTitle>
+                {alcoholStatistics.planForMonths.length === 0 ? (
+                    <SubTitle>아직 등록된 음주기록이 없습니다.</SubTitle>
+                ) : (
+                    <SubTitle>
+                        지난 달보다 이번 달{' '}
+                        <Highlight>
+                            {Math.abs(differenceOfSchedule)}번{' '}
+                        </Highlight>
+                        {differenceOfSchedule < 0 ? ' 더 적게' : ' 더 많이 '}{' '}
+                        마셨습니다.
+                    </SubTitle>
+                )}
 
                 <Graph>
-                    <ResponsiveContainer width="100%" height={215}>
-                        <BarChart
-                            width={300}
-                            height={150}
-                            data={alcoholStatistics.planForMonths}
-                            margin={{
-                                top: 25,
-                                right: 15,
-                                left: 15,
-                                bottom: 5,
+                    {alcoholStatistics.planForMonths.length === 0 ? (
+                        <p
+                            onClick={() => {
+                                navigate('/calendar');
                             }}
-                            barSize={20}
                         >
-                            <XAxis
-                                dataKey="month"
-                                scale="point"
-                                tick={{
-                                    fontSize: 8,
+                            음주 기록 등록하러 가기
+                        </p>
+                    ) : (
+                        <ResponsiveContainer width="100%" height={215}>
+                            <BarChart
+                                width={300}
+                                height={150}
+                                data={alcoholStatistics.planForMonths}
+                                margin={{
+                                    top: 25,
+                                    right: 15,
+                                    left: 15,
+                                    bottom: 5,
                                 }}
-                                label={{
-                                    value: '월', // x축 레이블 텍스트
-                                    position: 'insideBottom', // Set position to 'insideBottom'
-                                    offset: -2, // Adjust offset to move label down
-                                    fontSize: 12, // Optional: Adjust font size for better visibility
-                                }}
-                            />
-                            <Bar
-                                dataKey="count"
-                                fill="var(--color-red, #f7f7ec)"
-                                background={{ fill: 'var(--color-white2)' }}
-                                label={{ position: 'top', fontSize: '11' }}
-                            ></Bar>
-                        </BarChart>
-                    </ResponsiveContainer>
+                                barSize={20}
+                            >
+                                <XAxis
+                                    dataKey="month"
+                                    scale="point"
+                                    tick={{
+                                        fontSize: 8,
+                                    }}
+                                    label={{
+                                        value: '월', // x축 레이블 텍스트
+                                        position: 'insideBottom', // Set position to 'insideBottom'
+                                        offset: -2, // Adjust offset to move label down
+                                        fontSize: 12, // Optional: Adjust font size for better visibility
+                                    }}
+                                />
+                                <Bar
+                                    dataKey="count"
+                                    fill="var(--color-red, #f7f7ec)"
+                                    background={{ fill: 'var(--color-white2)' }}
+                                    label={{ position: 'top', fontSize: '11' }}
+                                ></Bar>
+                            </BarChart>
+                        </ResponsiveContainer>
+                    )}
                 </Graph>
             </StatisticsVisualization>
             <StatisticsText>
