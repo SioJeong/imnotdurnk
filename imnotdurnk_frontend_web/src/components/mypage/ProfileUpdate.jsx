@@ -37,15 +37,14 @@ const ProfileUpdate = () => {
         emergencyCall: '', //유효한 번호 형식이 아닙니다.
     });
 
-    const { user, setTmpUser, tmpUser, isValid, setIsValid } = useUserStore(
-        (state) => ({
+    const { user, setTmpUser, tmpUser, isValid, setIsValid, clearUser } =
+        useUserStore((state) => ({
             user: state.user,
             setTmpUser: state.setTmpUser,
             tmpUser: state.tmpUser,
             isValid: state.isValid,
             setIsValid: state.setIsValid,
-        }),
-    );
+        }));
 
     // TODO : alcoholModal용
     const [selectedSojuBottleCount, setSelectedSojuBottleCount] = useState(0);

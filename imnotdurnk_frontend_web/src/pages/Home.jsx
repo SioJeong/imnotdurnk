@@ -36,11 +36,16 @@ const Home = () => {
     const goToGame = () => navigate('/game');
     const goToNavigation = () => {
         // 웹 뷰 환경이라면 Map 메시지 전송
-        if (window.ReactNativeWebView && typeof window.ReactNativeWebView.postMessage === 'function') {
+        if (
+            window.ReactNativeWebView &&
+            typeof window.ReactNativeWebView.postMessage === 'function'
+        ) {
             console.log('Sending message to React Native');
-            window.ReactNativeWebView.postMessage(JSON.stringify({
-                type: 'Map',
-            }));
+            window.ReactNativeWebView.postMessage(
+                JSON.stringify({
+                    type: 'Map',
+                }),
+            );
         }
     };
 
