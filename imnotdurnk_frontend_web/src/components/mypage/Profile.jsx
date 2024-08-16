@@ -205,7 +205,6 @@ const Profile = () => {
                     setUser(getProfileResult.data);
                 }
             } catch (error) {
-                console.error('Error fetching user data:', error);
             }
         };
         fetchUserProfile();

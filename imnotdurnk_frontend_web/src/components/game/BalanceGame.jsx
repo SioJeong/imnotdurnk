@@ -136,7 +136,6 @@ const BalanceGame = () => {
                     ToastError('권한이 허용되지 않았습니다');
                 }
             } catch (error) {
-                console.error('에러가 발생했습니다:', error);
             }
         } else {
             window.addEventListener('deviceorientation', handleOrientation);

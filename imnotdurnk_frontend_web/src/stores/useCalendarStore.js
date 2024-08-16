@@ -79,7 +79,6 @@ const usePersistentStore = create(
                         return true;
                     }
                 } catch (error) {
-                    console.error('일정 수정 중 오류 발생:', error.message);
                 }
 
                 return false;
@@ -222,7 +221,6 @@ const useNonPersistentStore = create((set, get) => ({
                 }
             }
         } catch (error) {
-            console.error('일정 등록 중 오류 발생:', error.message);
         }
 
         return false;

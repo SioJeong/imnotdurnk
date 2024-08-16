@@ -95,7 +95,6 @@ const deleteGameFromPlan = async ({ planId }) => {
         });
 
         const { statusCode, httpStatus, message } = response.data;
-        console.log('statusCode', statusCode);
         apiErrorHandler(statusCode, httpStatus, message);
 
         if (statusCode === 200) {
@@ -112,5 +111,6 @@ export {
     getTestSentence,
     saveRestGameResult,
     saveVoiceGameResult,
-    sendVoiceRecord,
+    sendVoiceRecord
 };
+

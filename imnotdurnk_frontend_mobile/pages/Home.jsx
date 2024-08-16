@@ -40,7 +40,6 @@ const Home = () => {
                 // 로그인 토큰을 AsyncStorage에 저장
                 await AsyncStorage.setItem('accessToken', data.accessToken);
                 await AsyncStorage.setItem('expiryTime', String(data.expiryTime));
-                console.log('Token saved successfully:', data.accessToken);
                 // 추가적인 로그인 후처리를 여기에 작성
             } else if (data.type === 'logout') {
                 // 로그아웃 처리
@@ -50,7 +49,6 @@ const Home = () => {
                 navi.navigate('Map');
             }
         } catch (error) {
-            console.error('Failed to handle message:', error);
         }
     };
 

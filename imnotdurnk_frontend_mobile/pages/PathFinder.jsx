@@ -134,7 +134,6 @@ const PathFinder = () => {
 
                 setPathInfos(validPathInfos);
             } catch (error) {
-                console.error('Failed to fetch directions or stopover', error);
             } finally {
                 setIsLoading(false);
             }

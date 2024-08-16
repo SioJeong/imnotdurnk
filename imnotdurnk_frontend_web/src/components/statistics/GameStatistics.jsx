@@ -156,7 +156,6 @@ const GameStatistics = ({ formattedDate }) => {
                 convertGameStatisticsResult(results);
             } catch (error) {
                 ToastError('데이터를 불러오는데 실패했습니다.', true);
-                console.error('Error fetching user data:', error);
             }
         };
         fetchGameStatistics();

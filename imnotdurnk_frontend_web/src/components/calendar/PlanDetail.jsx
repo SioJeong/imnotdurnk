@@ -83,7 +83,6 @@ const PlanDetail = () => {
                 return true;
             }
         } catch (error) {
-            console.error('일정 삭제 중 오류 발생:', error.message);
         }
 
         return false;

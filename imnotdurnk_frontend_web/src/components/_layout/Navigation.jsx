@@ -142,7 +142,6 @@ const Navigation = () => {
 
             // 미래 일정으로 수정한 경우, 음주 및 게임 기록 제거 및 초기화
             if (planDetailDate > today) {
-                console.log(planDetail);
                 if (planDetail.gameLogDtos.length > 0) {
                     await deleteGameFromPlan({ planId: planDetail.id });
                 }

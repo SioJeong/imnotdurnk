@@ -99,7 +99,6 @@ const VoiceGame = () => {
                     audioRef.current.load();
                 }
             } catch (error) {
-                console.error('미디어 장치 접속 중 오류 발생: ', error);
                 setIsRecording(false);
                 setRecordingStatus('버튼을 눌러 녹음을 시작해주세요.');
             }

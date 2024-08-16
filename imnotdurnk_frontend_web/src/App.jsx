@@ -37,10 +37,8 @@ const App = () => {
                     if (newAccessToken) {
                         setAccessToken(newAccessToken);
                         setIsAuthenticated(true);
-                        console.log('Authentication successful');
                     }
                 } catch (error) {
-                    console.error('Auth check failed:', error);
                     setIsAuthenticated(false);
                 }
             } else {
