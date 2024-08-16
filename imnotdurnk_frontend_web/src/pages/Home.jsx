@@ -84,8 +84,8 @@ const Home = () => {
                         <MenuItemIcon
                             src={icons['homeMiniGame']}
                             alt="mini-game"
-                            $width="7.5rem"
-                            $height="5.7rem"
+                            $width="105px"
+                            $height="79.8px"
                         />
                     </MenuItem>
                     <MenuItem $menu="taxi" onClick={goToMap}>
@@ -95,8 +95,8 @@ const Home = () => {
                         <MenuItemIcon
                             src={icons['homeTaxi']}
                             alt="taxi"
-                            $width="6.8rem"
-                            $height="5.4rem"
+                            $width="95.2px"
+                            $height="75.6px"
                         />
                     </MenuItem>
                 </MenuItemDouble>
@@ -108,15 +108,15 @@ const Home = () => {
                         <MenuItemIcon
                             src={icons['homeCalendar']}
                             alt="calendar"
-                            $width="8rem"
-                            $height="6.8rem"
+                            $width="112px"
+                            $height="95.2px"
                         />
                     </TitleAndIcon>
                     <MenuItemIcon
                         src={icons['homeCalendar2']}
                         alt="calendar2"
-                        $width="11rem"
-                        $height="10.5rem"
+                        $width="154px"
+                        $height="147px"
                     />
                 </MenuItemSingle>
             </MenuItemList>
@@ -130,7 +130,7 @@ const HomeContainer = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1.5rem;
+    gap: 21px;
 
     text-align: center;
     line-height: normal;
@@ -145,7 +145,7 @@ const Title = styled.span`
 const MenuItemList = styled.div`
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 21px;
     width: 100%;
 `;
 
@@ -158,11 +158,12 @@ const MenuItem = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1rem;
+    gap: 14px;
 
-    padding: 2rem 1.7rem 1rem 1.7rem;
+    padding: 28px 23.8px 14px 23.8px;
+    width: 10.7143rem;
 
-    border-radius: 20px;
+    border-radius: 1.4286rem;
     background-color: ${({ $menu }) => {
         switch ($menu) {
             case 'game':
@@ -183,18 +184,18 @@ const MenuItemTitle = styled.h3`
 `;
 
 const MenuItemIcon = styled.img`
-    width: ${({ $width }) => $width || '7.5714rem'};
-    height: ${({ $height }) => $height || ' 5.7143rem'};
+    width: ${({ $width }) => $width || '105.9996px'};
+    height: ${({ $height }) => $height || ' 80.0002px'};
 `;
 
 const MenuItemSingle = styled.div`
     display: flex;
     justify-content: center;
-    gap: 1.5rem;
+    gap: 21px;
 
-    padding: 2rem;
+    padding: 28px;
 
-    border-radius: 20px;
+    border-radius: 1.4286rem;
     background-color: ${({ $menu }) => {
         switch ($menu) {
             case 'calendar':
@@ -211,5 +212,5 @@ const TitleAndIcon = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 1.4rem;
+    gap: 19.6px;
 `;
