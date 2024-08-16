@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 //import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { useEffect } from 'react';
 import Router from '../Router.jsx';
 import { api } from './services/api.js';
 import GlobalStyles from './shared/styles/GlobalStyles.jsx';
