@@ -1,0 +1,8 @@
+node_modules/
+dist/
+build/
+public/
+
+.eslintrc.cjs
+vite.config.js
+main.jsx

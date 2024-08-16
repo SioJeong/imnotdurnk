@@ -1,0 +1,36 @@
+{
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "todohighlight.isEnable": true,
+    "todohighlight.exclude": [
+        "**/node_modules/**",
+        "**/bower_components/**",
+        "**/dist/**",
+        "**/build/**",
+        "**/.vscode/**",
+        "**/.github/**",
+        "**/_output/**",
+        "**/*.min.*",
+        "**/*.map",
+        "**/.next/**"
+    ],
+    "todohighlight.keywords": ["NOTE"],
+    "editor.formatOnSave": true,
+    "editor.wordWrap": "on",
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": "explicit", // 명시적으로 설정된 규칙에 대해서만 자동 수정 실행
+        "source.fixAll.stylelint": "explicit",
+        "source.organizeImports": "explicit"
+    },
+    "files.autoSave": "onFocusChange",
+    "eslint.run": "onSave",
+    "javascript.updateImportsOnFileMove.enabled": "always", // 파일 이동 시 import 경로 자동 업데이트
+    "search.exclude": {
+        // 검색 시 제외할 디렉토리
+        "**/node_modules": true,
+        "**/bower_components": true,
+        "**/dist": true,
+        "**/build": true,
+        "**/.vscode": true,
+        "**/.github": true
+    }
+}
