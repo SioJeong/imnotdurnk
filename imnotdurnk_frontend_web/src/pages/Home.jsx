@@ -161,6 +161,7 @@ const MenuItem = styled.div`
     gap: 1rem;
 
     padding: 2rem 1.7rem 1rem 1.7rem;
+    width: 10.7143rem;
 
     border-radius: 20px;
     background-color: ${({ $menu }) => {
