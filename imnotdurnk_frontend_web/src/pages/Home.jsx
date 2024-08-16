@@ -79,7 +79,7 @@ const Home = () => {
                 <MenuItemDouble>
                     <MenuItem $menu="game" onClick={goToGame}>
                         <MenuItemTitle $dark={false}>
-                            만취 판단 미니 게임
+                            만취 판단<br />미니 게임
                         </MenuItemTitle>
                         <MenuItemIcon
                             src={icons['homeMiniGame']}
@@ -90,7 +90,7 @@ const Home = () => {
                     </MenuItem>
                     <MenuItem $menu="taxi" onClick={goToMap}>
                         <MenuItemTitle $dark={false}>
-                            최소 택시비 길 찾기
+                            최소 택시비<br />길 찾기
                         </MenuItemTitle>
                         <MenuItemIcon
                             src={icons['homeTaxi']}
@@ -160,7 +160,7 @@ const MenuItem = styled.div`
     align-items: center;
     gap: 1rem;
 
-    padding: 2rem 1.8rem 1rem 1.8rem;
+    padding: 2rem 1.7rem 1rem 1.7rem;
 
     border-radius: 20px;
     background-color: ${({ $menu }) => {
@@ -179,7 +179,7 @@ const MenuItem = styled.div`
 
 const MenuItemTitle = styled.h3`
     color: ${({ $dark }) =>
-        $dark ? 'var(--color-green2)' : 'var(--color-white2)'};
+        $dark ? 'var(--color-green3)' : 'var(--color-white2)'};
 `;
 
 const MenuItemIcon = styled.img`
