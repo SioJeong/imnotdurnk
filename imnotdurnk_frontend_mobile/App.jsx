@@ -35,7 +35,6 @@ const defineBackgroundTask = () => {
     if (!TaskManager.isTaskDefined(BACKGROUND_LOCATION_TASK)) {
         TaskManager.defineTask(BACKGROUND_LOCATION_TASK, ({ data, error }) => {
             if (error) {
-                console.error('Background location task error:', error);
                 return;
             }
             if (data) {
@@ -49,7 +48,6 @@ const defineBackgroundTask = () => {
                         longitudeDelta: 0.005,
                     };
                     useLocationStore.getState().setCurrentLocation(coords);
-                    console.log('Background location update:', coords);
                 }
             }
         });
@@ -76,13 +74,10 @@ const App = () => {
                     foregroundPermission.status !== 'granted' ||
                     backgroundPermission.status !== 'granted'
                 ) {
-                    console.log('위치 권한이 거부되었습니다.');
                 } else {
-                    console.log('위치 권한이 허용되었습니다.');
                     defineBackgroundTask();
                 }
             } catch (error) {
-                console.error('위치 권한 요청 중 오류 발생:', error);
             }
         };
 
