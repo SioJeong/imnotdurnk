@@ -34,9 +34,14 @@ api.interceptors.request.use(
     },
 );
 
-let isTokenRefreshing = false; //토큰 요청 상태 저장
+let isTokenRefreshing = false;
+let refreshSubscribers = [];
 
-//api 요청 후의 처리
+const processQueue = (error, token = null) => {
+    refreshSubscribers.forEach(cb => cb(error, token));
+    refreshSubscribers = [];
+};
+
 api.interceptors.response.use(
     (response) => {
         const accessToken = response.headers['authorization'];
@@ -47,38 +52,48 @@ api.interceptors.response.use(
         return response;
     },
     async (error) => {
-        const { config, response } = error;
-        const { clearUser } = useUserStore.getState();
-        const { clearAccessToken, setIsAuthenticated } = useAuthStore.getState();
-
-        if (response?.data?.statusCode === 401) {
-            if (!isTokenRefreshing) {
-                isTokenRefreshing = true;
-                try {
-                    const refreshResponse = await api.get('/auth/refresh', {
-                        params: { type: 'access' },
+        const originalRequest = error.config;
+        if (error.response?.status === 401 && !originalRequest._retry) {
+            if (isTokenRefreshing) {
+                return new Promise((resolve, reject) => {
+                    refreshSubscribers.push((error, token) => {
+                        if (error) {
+                            reject(error);
+                        } else {
+                            originalRequest.headers['Authorization'] = token;
+                            resolve(api(originalRequest));
+                        }
                     });
-                    const newAccessToken = refreshResponse.headers['authorization'];
-                    if (newAccessToken) {
-                        useAuthStore.getState().setAccessToken(newAccessToken);
-                        useAuthStore.getState().setIsAuthenticated(true);
-                        config.headers['Authorization'] = newAccessToken;
-                        isTokenRefreshing = false;
-                        return api(config);
-                    } else {
-                        throw new Error('No new access token received');
-                    }
-                } catch (refreshError) {
-                    console.error('Token refresh failed:', refreshError);
-                    clearUser();
-                    clearAccessToken();
-                    setIsAuthenticated(false);
-                    ToastError('로그인이 필요합니다', true);
-                    window.location.href = '/account';
-                    return Promise.reject(refreshError);
-                } finally {
-                    isTokenRefreshing = false;
+                });
+            }
+
+            originalRequest._retry = true;
+            isTokenRefreshing = true;
+
+            try {
+                const refreshResponse = await api.get('/auth/refresh', {
+                    params: { type: 'access' },
+                });
+                const newAccessToken = refreshResponse.headers['authorization'];
+                if (newAccessToken) {
+                    useAuthStore.getState().setAccessToken(newAccessToken);
+                    useAuthStore.getState().setIsAuthenticated(true);
+                    api.defaults.headers['Authorization'] = newAccessToken;
+                    processQueue(null, newAccessToken);
+                    return api(originalRequest);
+                } else {
+                    throw new Error('No new access token received');
                 }
+            } catch (refreshError) {
+                processQueue(refreshError, null);
+                useAuthStore.getState().clearAccessToken();
+                useAuthStore.getState().setIsAuthenticated(false);
+                useUserStore.getState().clearUser();
+                ToastError('로그인이 필요합니다', true);
+                window.location.href = '/account';
+                return Promise.reject(refreshError);
+            } finally {
+                isTokenRefreshing = false;
             }
         }
         return Promise.reject(error);
