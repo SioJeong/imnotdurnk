@@ -24,23 +24,28 @@ const queryClient = new QueryClient({
 });
 
 const App = () => {
-    const { accessToken } = useAuthStore();
+    const { setAccessToken, setIsAuthenticated } = useAuthStore();
 
     useEffect(() => {
-        if (accessToken) {
-            // 토큰이 존재하면 간단한 API 요청을 수행
-            api.get('/users/profile')
-                .then(() => {
-                    // 요청이 성공하면 토큰이 유효한 것으로 간주
-                    console.log('Token is valid');
-                })
-                .catch((error) => {
-                    // 요청이 실패하면 인터셉터에서 자동으로 처리
-                    console.error('Token validation failed:', error);
+        const checkAuthStatus = async () => {
+            try {
+                const response = await api.get('/auth/refresh', {
+                    params: { type: 'access' }
                 });
-        }
-    }, [accessToken]);
+                const newAccessToken = response.headers['authorization'];
+                if (newAccessToken) {
+                    setAccessToken(newAccessToken);
+                    setIsAuthenticated(true);
+                    console.log('Authentication successful');
+                }
+            } catch (error) {
+                console.error('Auth check failed:', error);
+                setIsAuthenticated(false);
+            }
+        };
 
+        checkAuthStatus();
+    }, [setAccessToken, setIsAuthenticated]);
     return (
         <QueryClientProvider client={queryClient}>
             <GlobalStyles />
