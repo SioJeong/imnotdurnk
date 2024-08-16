@@ -21,7 +21,6 @@ api.interceptors.request.use(
                 config.headers['Authorization'] = accessToken;
             }
         } catch (error) {
-            console.error('Error reading token from AsyncStorage:', error);
         }
         return config;
     },
@@ -60,7 +59,6 @@ api.interceptors.response.use(
                     isTokenRefreshing = false;
                     return api(originalRequest);
                 } catch (error) {
-                    console.error('Token refresh failed:', error);
                     isTokenRefreshing = false;
                     
                     return Promise.reject(error);

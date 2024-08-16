@@ -58,7 +58,6 @@ const Home = () => {
             window.ReactNativeWebView &&
             typeof window.ReactNativeWebView.postMessage === 'function'
         ) {
-            console.log('Sending message to React Native');
             window.ReactNativeWebView.postMessage(
                 JSON.stringify({
                     type: 'Map',

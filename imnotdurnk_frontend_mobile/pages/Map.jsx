@@ -57,7 +57,6 @@ const Map = () => {
                 setCurrentLocation(initialPosition);
                 setDeparture(initialPosition);
             } catch (error) {
-                console.error('위치 권한 요청 중 오류 발생', error);
             }
         };
 
@@ -75,7 +74,6 @@ const Map = () => {
                     );
                     setDeparturePlaceholder(address);
                 } catch (error) {
-                    console.error('주소 요청 중 오류 발생', error);
                 }
             };
 

@@ -45,7 +45,6 @@ const CustomMap = ({
                 );
 
             } catch (error) {
-                console.error('위치 추적 설정 중 오류 발생:', error);
             }
         };
 
@@ -69,7 +68,6 @@ const CustomMap = ({
                 );
                 setForegroundSubscription(subscription);
             } catch (error) {
-                console.error('위치 추적 설정 중 오류 발생:', error);
             }
         };
 

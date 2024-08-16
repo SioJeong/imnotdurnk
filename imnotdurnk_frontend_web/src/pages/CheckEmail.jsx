@@ -44,7 +44,6 @@ const CheckEmail = () => {
                     );
                 }
             } catch (error) {
-                console.error('이메일 인증 코드 발송 중 오류 발생', error);
             }
         };
         sendEmailVerification();

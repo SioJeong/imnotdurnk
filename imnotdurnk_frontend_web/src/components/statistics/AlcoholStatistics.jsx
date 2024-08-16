@@ -107,9 +107,7 @@ const AlcoholStatistics = ({ today, formattedDate }) => {
                             getStatisticsResult.data.planForMonths[10].count,
                     );
                 }
-                console.log('앍콜0', alcoholStatistics.planForMonths);
             } catch (error) {
-                console.error('Error fetching user data:', error);
             }
         };
         fetchAlcoholStatistics();

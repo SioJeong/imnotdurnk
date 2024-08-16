@@ -16,7 +16,6 @@ const getReverseGeocoding = async (latitude, longitude) => {
 
         return address;
     } catch (error) {
-        console.error('주소 요청 중 오류 발생', error);
         throw error;
     }
 };
@@ -103,7 +102,6 @@ const getOptimalTransitStopover = async (departure, destination) => {
             throw new Error('적절한 경유지 데이터를 받지 못했습니다.');
         }
     } catch (error) {
-        console.error('최적 경유지 요청 중 오류 발생', error);
         throw new Error('최적 경유지 요청 중 오류 발생');
     }
 };
@@ -153,7 +151,6 @@ const fetchTaxiDirections = async (departure, stopover, destination) => {
             };
         }
     } catch (error) {
-        console.error('택시 fetch 실패', error);
         throw error;
     }
 };
@@ -183,19 +180,17 @@ const extractTaxiCoordinates = (response) => {
 const sendArrivalTime = async () => {
     try {
         const currentTime = Date.now(); // 현재 시간 (밀리초)
-        const oneDayInMilliseconds = 24 * 60 * 60 * 1000; // 하루를 밀리초로 변환
-        const adjustedTime = currentTime - oneDayInMilliseconds; // 하루 전 시간
-        const kstTime = new Date(adjustedTime + (9 * 60 * 60 * 1000)); // KST 시간으로 변환
+        const kstTime = new Date(currentTime + (9 * 60 * 60 * 1000)); // KST 시간으로 변환
         const datetimestr = kstTime.toISOString().slice(0, 16); // ISO 문자열에서 필요한 부분만 추출
 
+
         const response = await api.put(
-            `/calendars/plans/${datetimestr}`,
+            `/calendars/arrival/${datetimestr}`,
             datetimestr,
             {},
         );
 
         if(response.status === 200) {
-            console.log('도착 시간 저장 완료');
         }
         
 
