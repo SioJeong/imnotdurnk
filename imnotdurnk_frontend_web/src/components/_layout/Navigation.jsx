@@ -11,6 +11,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { deleteGameFromPlan } from '../../services/game.js';
 import { putUserDetailedInfo } from '../../services/user.js';
+import useAuthStore from '../../stores/useAuthStore.js';
 import useGameStore from '../../stores/useGameStore.js';
 import { ToastError, ToastSuccess, ToastWarning } from '../_common/alert.js';
 import * as St from './Navigation.style.js';
@@ -26,6 +27,7 @@ const Navigation = () => {
         resetPlanDetail,
         editPlan,
     } = useCalendarStore();
+    const { accessToken } = useAuthStore();
     const { tmpUser, user, setUser, isValid, setUserFromTmp } = useUserStore(
         (state) => ({
             user: state.user,
@@ -115,9 +117,10 @@ const Navigation = () => {
 
             if (success) {
                 // 쿼리 무효화
-                queryClient.invalidateQueries(['allEventList']);
+                queryClient.invalidateQueries(['allEventList', accessToken]);
             }
         } else if (path === 'goEditPlan') {
+            ``;
             const planId = location.pathname.split('/')[4];
             navigate(`/calendar/edit-plan/${planId}`);
         } else if (path === 'editPlan') {
@@ -158,7 +161,7 @@ const Navigation = () => {
 
             if (success) {
                 // 쿼리 무효화
-                queryClient.invalidateQueries(['allEventList']);
+                queryClient.invalidateQueries(['allEventList', accessToken]);
                 queryClient.invalidateQueries(['planDetail', planId]);
                 ToastSuccess('일정이 수정되었습니다!', true, true);
                 resetPlanDetail();

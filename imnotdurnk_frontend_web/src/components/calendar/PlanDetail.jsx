@@ -7,6 +7,7 @@ import {
 } from '../../hooks/useDateTimeFormatter';
 import { deleteEvent, getEventDetail } from '../../services/calendar';
 import { icons } from '../../shared/constants/icons';
+import useAuthStore from '../../stores/useAuthStore';
 import useCalendarStore from '../../stores/useCalendarStore';
 import useModalStore from '../../stores/useModalStore';
 import useNavigationStore from '../../stores/useNavigationStore';
@@ -30,6 +31,7 @@ const PlanDetail = () => {
     const { openModal, closeModal } = useModalStore();
     const setNavigation = useNavigationStore((state) => state.setNavigation);
     const { setFullPlanDetail, resetPlanDetail } = useCalendarStore();
+    const { accessToken } = useAuthStore();
 
     const [selectedGameType, setSelectedGameType] = useState(1); // 최초 발음 게임
 
@@ -76,7 +78,7 @@ const PlanDetail = () => {
 
             if (success) {
                 // 쿼리 무효화
-                queryClient.invalidateQueries(['allEventList']);
+                queryClient.invalidateQueries(['allEventList', accessToken]);
                 ToastSuccess('일정이 삭제되었습니다', true);
                 resetPlanDetail();
                 navigate('/calendar'); // 캘린더 페이지로 이동
