@@ -24,28 +24,33 @@ const queryClient = new QueryClient({
 });
 
 const App = () => {
-    const { setAccessToken, setIsAuthenticated } = useAuthStore();
+    const { accessToken, setAccessToken, setIsAuthenticated } = useAuthStore();
 
     useEffect(() => {
         const checkAuthStatus = async () => {
-            try {
-                const response = await api.get('/auth/refresh', {
-                    params: { type: 'access' }
-                });
-                const newAccessToken = response.headers['authorization'];
-                if (newAccessToken) {
-                    setAccessToken(newAccessToken);
-                    setIsAuthenticated(true);
-                    console.log('Authentication successful');
+            if (!accessToken) {
+                try {
+                    const response = await api.get('/auth/refresh', {
+                        params: { type: 'access' }
+                    });
+                    const newAccessToken = response.headers['authorization'];
+                    if (newAccessToken) {
+                        setAccessToken(newAccessToken);
+                        setIsAuthenticated(true);
+                        console.log('Authentication successful');
+                    }
+                } catch (error) {
+                    console.error('Auth check failed:', error);
+                    setIsAuthenticated(false);
                 }
-            } catch (error) {
-                console.error('Auth check failed:', error);
-                setIsAuthenticated(false);
+            } else {
+                setIsAuthenticated(true);
             }
         };
 
         checkAuthStatus();
-    }, [setAccessToken, setIsAuthenticated]);
+    }, [accessToken, setAccessToken, setIsAuthenticated]);
+    
     return (
         <QueryClientProvider client={queryClient}>
             <GlobalStyles />
