@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Router from '../Router.jsx';
 import { api } from './services/api.js';
 import GlobalStyles from './shared/styles/GlobalStyles.jsx';
+import useAuthStore from './stores/useAuthStore.js';
 
 const queryClient = new QueryClient({
     defaultOptions: {
