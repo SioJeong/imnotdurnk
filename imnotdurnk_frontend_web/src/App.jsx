@@ -1,6 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 //import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import Router from '../Router.jsx';
+import { api } from './services/api.js';
 import GlobalStyles from './shared/styles/GlobalStyles.jsx';
 
 const queryClient = new QueryClient({
@@ -21,6 +22,23 @@ const queryClient = new QueryClient({
 });
 
 const App = () => {
+    const { accessToken } = useAuthStore();
+
+    useEffect(() => {
+        if (accessToken) {
+            // 토큰이 존재하면 간단한 API 요청을 수행
+            api.get('/user/profile')
+                .then(() => {
+                    // 요청이 성공하면 토큰이 유효한 것으로 간주
+                    console.log('Token is valid');
+                })
+                .catch((error) => {
+                    // 요청이 실패하면 인터셉터에서 자동으로 처리
+                    console.error('Token validation failed:', error);
+                });
+        }
+    }, [accessToken]);
+
     return (
         <QueryClientProvider client={queryClient}>
             <GlobalStyles />
