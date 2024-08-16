@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import useCalendarNavigation from '../../hooks/useCalendarNavigation';
 import CalendarStatusBar from './CalendarStatusBar';
 import EventCard from './EventCard';
@@ -23,6 +23,10 @@ const MainCalendar = () => {
         const formattedDate = utcDate.toISOString().split('T')[0]; // 날짜를 YYYY-MM-DD 형식으로 변환
         navigate(`/calendar/${formattedDate}`);
     };
+
+    useEffect(() => {
+        window.location.reload();
+    }, []);
 
     return (
         <St.MainContainer>
