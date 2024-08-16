@@ -42,61 +42,48 @@ api.interceptors.response.use(
         const accessToken = response.headers['authorization'];
         if (accessToken) {
             useAuthStore.getState().setAccessToken(accessToken);
-        }
-        console.log('요청 어떻게 디었나 ,', response);
-        if (response.status === 401) {
-            ToastError('로그인이 필요합니다', true);
+            useAuthStore.getState().setIsAuthenticated(true);
         }
         return response;
     },
     async (error) => {
         const { config, response } = error;
-        const { clearUser } = useUserStore((state) => ({
-            clearUser: state.clearUser,
-        }));
-        const { clearAccessToken } = useAuthStore((state) => ({
-            clearAccessToken: state.clearAccessToken,
-        }));
-        console.log('1', '클리어 어세스 토큰', clearAccessToken);
-        if (response.data.statusCode === 401) {
-            //AT이 없는 경우 401 에러가 뜸
-            const originalRequest = config;
+        const { clearUser } = useUserStore.getState();
+        const { clearAccessToken, setIsAuthenticated } = useAuthStore.getState();
 
-            //AT 재발급 시도
+        if (response?.data?.statusCode === 401) {
             if (!isTokenRefreshing) {
                 isTokenRefreshing = true;
                 try {
                     const refreshResponse = await api.get('/auth/refresh', {
-                        params: {
-                            type: 'access',
-                        },
+                        params: { type: 'access' },
                     });
-                    const newAccessToken =
-                        refreshResponse.headers['authorization'];
-                    useAuthStore.getState().setAccessToken(newAccessToken);
-                    originalRequest.headers['Authorization'] = newAccessToken;
-                    console.log('재발급 결과', refreshResponse);
-                    if (refreshResponse.status === 401) {
-                        console.log('재발급 실패', refreshResponse);
-                        ToastError('로그인이 필요합니다', true);
-                        clearUser();
-                        clearAccessToken();
-                        window.location.href = '/account';
+                    const newAccessToken = refreshResponse.headers['authorization'];
+                    if (newAccessToken) {
+                        useAuthStore.getState().setAccessToken(newAccessToken);
+                        useAuthStore.getState().setIsAuthenticated(true);
+                        config.headers['Authorization'] = newAccessToken;
+                        isTokenRefreshing = false;
+                        return api(config);
+                    } else {
+                        throw new Error('No new access token received');
                     }
-                    isTokenRefreshing = false;
-                    return api(originalRequest);
-                } catch (error) {
-                    console.log('error');
-                    window.location.href = '/account';
-                    ToastError('로그인이 필요합니다', true);
+                } catch (refreshError) {
+                    console.error('Token refresh failed:', refreshError);
                     clearUser();
                     clearAccessToken();
-                    return Promise.reject(error);
+                    setIsAuthenticated(false);
+                    ToastError('로그인이 필요합니다', true);
+                    window.location.href = '/account';
+                    return Promise.reject(refreshError);
+                } finally {
+                    isTokenRefreshing = false;
                 }
             }
         }
         return Promise.reject(error);
-    },
+    }
 );
 
 export { api, apiNoToken };
+
