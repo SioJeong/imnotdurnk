@@ -29,7 +29,7 @@ const App = () => {
     useEffect(() => {
         if (accessToken) {
             // 토큰이 존재하면 간단한 API 요청을 수행
-            api.get('/user/profile')
+            api.get('/users/profile')
                 .then(() => {
                     // 요청이 성공하면 토큰이 유효한 것으로 간주
                     console.log('Token is valid');
