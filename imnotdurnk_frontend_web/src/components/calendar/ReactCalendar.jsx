@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { getAllEventList } from '../../services/calendar';
+import useAuthStore from '../../stores/useAuthStore';
 import useCalendarStore from '../../stores/useCalendarStore';
 import Loading from '../_common/Loading';
 import './ReactCalendar.css';
@@ -14,6 +15,7 @@ const ReactCalendar = ({
     setStatusOnDate,
 }) => {
     const { selectedDate, setSelectedDate } = useCalendarStore();
+    const { accessToken } = useAuthStore();
 
     const fetchEventList = async ({ pageParam }) => {
         const response = await getAllEventList({
@@ -31,7 +33,7 @@ const ReactCalendar = ({
         fetchPreviousPage,
         fetchNextPage,
     } = useInfiniteQuery({
-        queryKey: ['allEventList'],
+        queryKey: ['allEventList', accessToken],
         queryFn: fetchEventList,
         getNextPageParam: (lastPage) => {
             let { year, month } = lastPage.pageParam;
