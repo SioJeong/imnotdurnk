@@ -5,7 +5,7 @@ import { api, apiNoToken } from './api';
 const getReverseGeocoding = async (latitude, longitude) => {
     try {
         const response = await axios.get(
-            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyDushsIyoXh3N-MV2gDlhFlvPWYYbASgjg&language=ko`,
+            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=YOUR_ODSAY_API_KEY&language=ko`,
         );
         let address =
             response.data.results[0]?.formatted_address ||
@@ -119,7 +119,7 @@ const fetchTaxiDirections = async (departure, stopover, destination) => {
         // 원래 출발지에서 목적지까지의 택시비
         const originResponse = await axios.get(originDirectionsUrl, {
             headers: {
-                Authorization: `KakaoAK 5ab9885b1d3961d30c9b4d9fdfa0d10e`,
+                Authorization: `YOUR_KAKAO_API_KEY`,
             },
         });
         let originFare = 0;
@@ -133,7 +133,7 @@ const fetchTaxiDirections = async (departure, stopover, destination) => {
         // 알고리즘으로 도출된 최적 경유지부터 목적지까지의 택시비
         const response = await axios.get(directionsUrl, {
             headers: {
-                Authorization: `KakaoAK 5ab9885b1d3961d30c9b4d9fdfa0d10e`,
+                Authorization: `YOUR_KAKAO_API_KEY`,
             },
         });
         if (response.status === 200) {
